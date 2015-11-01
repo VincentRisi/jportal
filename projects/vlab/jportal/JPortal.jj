@@ -17,7 +17,6 @@ PARSER_BEGIN(JPortal)
 package vlab.jportal;
 
 import java.util.*;
-import java.lang.*;
 import java.io.*;
 
 /**
@@ -238,7 +237,6 @@ public class JPortal
       int dE;
       boolean strung = false;
       int addB = 0;
-      int addE = 0;
       char c = 0;
       for (dE=1; dE < s.length(); dE++)
       {
@@ -254,10 +252,7 @@ public class JPortal
           break;
       }
       if (strung == true && c == '\'')
-      {
-        addE = 1;
         dE++;
-      }
       String dVar = s.substring(1+addB, dE-addB);
       s = s.substring(dE);
       int sB = dVar.indexOf("(");
@@ -291,7 +286,7 @@ public class JPortal
     }
     return s;
   }
-  static void loadTableModule(String s, Vector useProcs)
+  static void loadTableModule(String s, Vector<String> useProcs)
   {
     try
     {

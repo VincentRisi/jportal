@@ -1,0 +1,812 @@
+options
+{
+  STATIC = false;
+  KEEP_LINE_COLUMN = true;
+  //JDK_VERSION = "1.7";
+}
+
+PARSER_BEGIN(IDL)
+package vlab.crackle;
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+/**
+* YET ANOTHER INTERFACE DEFINITION LANGUAGE
+* Actually this started out as an IDL but ended up
+* as a remote server C++ code compiler. It still can be
+* used as an IDL
+*/
+public class IDL
+{
+  protected static Module     module;
+  protected static Structure  structure;
+  protected static Enumerator enumerator;
+  protected static Prototype  prototype;
+  protected static Message    message;
+  protected static Table      table;
+  protected static Field      field;
+  protected static Type       type;
+  protected static Operation  operation;
+  protected static Action     action;
+  protected static Vector     messageNos;
+  static private   IDL parser;
+  private static   PrintWriter idlLog;
+  /**
+  * Reads input from standard input
+  */
+  public static void main(String args[])
+  {
+    try
+    {
+      PrintWriter outLog = new PrintWriter(System.out);
+      for (int i = 0; i <args.length; i++)
+      {
+        System.out.println(args[i]+": Parsing ...");
+        Module module = run(args[i], outLog);
+        //System.out.println("Outputting "+module.name+".repository");
+        //ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(module.name+".repository"));
+        //out.writeObject(module);
+        //out.close();
+      }
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+  /**
+  * Reads input from supplied file
+  * @param  inFile is the input file to parse
+  * @return Module from IDL package
+  */
+  public static Module run(String inFile, PrintWriter outLog)
+  {
+    try
+    {
+      FileReader inputReader = new FileReader(inFile);
+      return run(inFile, inputReader, outLog);
+    }
+    catch (FileNotFoundException e)
+    {
+      e.printStackTrace();
+      return null;
+    }
+  }
+  public static Module run(String inFile, Reader reader, PrintWriter outLog)
+  {
+    idlLog = outLog;
+    try
+    {
+      parser = new IDL(reader);
+      messageNos = new Vector();
+      parser.idlStart();
+      module.sourceName = inFile;
+      return module;
+    }
+    catch (Exception e)
+    {
+      outLog.println("ParseException ["+e.getMessage()+"]");
+      e.printStackTrace();
+      return null;
+    }
+  }
+  static String uniqueNumber()
+  {
+    int procNumber = Module.hashCode(prototype.name);
+    if (procNumber < 0)
+      procNumber *= -1;
+    Integer newNo;
+    incProcNumber: for (;; procNumber++)
+    {
+      for (int i=0; i<messageNos.size(); i++)
+      {
+        Integer n = (Integer)messageNos.elementAt(i);
+        if (n.intValue() == procNumber)
+          continue incProcNumber;
+      }
+      newNo = new Integer(procNumber);
+      messageNos.addElement(newNo);
+      break;
+    }
+    return newNo.toString();
+  }
+}
+
+PARSER_END(IDL)
+
+SKIP :
+{  " "
+|  "\t"
+|  "\n"
+|  "\r"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+|  <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+}
+
+TOKEN :
+{  <INTEGER: ["1"-"9"] (["0"-"9"])* | "0">
+|  <QSTRING:  "\"" (~["\"","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"]))* "\"">
+|  <CHARACTER: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'">
+}
+
+TOKEN :
+{ <BOOLEAN:    "boolean"|"bool">
+| <BYTE:       "byte">
+| <CHAR:       "char">
+| <DOUBLE:     "double">
+| <ENUM:       "enum">
+| <FLOAT:      "float">
+| <MODULE:     "module">
+| <PACKAGE:    "package">
+| <INT:        "int">
+| <INT8:       "int8">
+| <INT16:      "int16">
+| <INT32:      "int32">
+| <INT64:      "int64">
+| <LONG:       "long">
+| <MESSAGE:    "message">
+| <SHORT:      "short">
+| <SIZE:       "size">
+| <STRING:     "string">
+| <STRING2:    "String">
+| <STRUCT:     "struct">
+| <TABLE:      "table">
+| <UNSIGNED:   "unsigned">
+| <VERSION:    "version">
+| <VOID:       "void">
+| <WCHAR:      "wchar">
+| <POINTER:    "*">
+| <POINTERREF: "*&">
+}
+
+TOKEN[IGNORE_CASE] :
+{ <INPUT:      "input">
+| <OUTPUT:     "output">
+}
+
+TOKEN :
+{ <PRIVATE:   "private">
+| <PROTECTED: "protected">
+| <PUBLIC:    "public">
+| <PRAGMA:    "pragma"    (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+}
+
+TOKEN :
+{ <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
+| <#LETTER: ["$","A"-"Z","_","a"-"z"]>
+| <#DIGIT: ["0"-"9"]>
+}
+
+SPECIAL_TOKEN[IGNORE_CASE] :
+{ <CODE : "code" (~["\n","\r"])* ("\n" | "\r" | "\r\n")> : CODESTATE
+}
+
+<CODESTATE> SPECIAL_TOKEN[IGNORE_CASE] :
+{ <ENDCODE : (" "|"\t")* "endcode" (~["\n","\r"])* ("\n" | "\r" | "\r\n")> : DEFAULT
+}
+
+<CODESTATE> TOKEN :
+{
+  <LINENO : (" "|"\t")* "#line" (" "|"\t")+ <INTEGER> (" "|"\t")+ <QSTRING> (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+}
+
+<CODESTATE> TOKEN :
+{ <CODELINE: (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+}
+
+void idlStart() :
+{
+  Token t;
+  String s;
+  boolean hasLinemarker = false;
+}
+{
+  <MODULE> t = <IDENTIFIER> (";")?
+  {
+    module = new Module();
+    module.name = t.image;
+    module.hash(t.image);
+  }
+  ( <PACKAGE> s = idlPackage() (";")?
+    {
+      module.packageName = s;
+    }
+  ) ? 
+  ( <VERSION> t = <QSTRING> (";")?
+    {
+      module.version = t.image;
+      module.hash(t.image);
+    }
+  ) ?
+  (
+    idlCodeBlock()
+  |
+    LOOKAHEAD(2)
+    idlStructure()
+    {
+      module.structures.addElement(structure);
+    }
+  |
+    idlEnum()
+    {
+      module.enumerators.addElement(enumerator);
+    }
+  |
+    LOOKAHEAD(2)
+    idlPrototype()
+    {
+      module.prototypes.addElement(prototype);
+    }
+  |
+    idlMessage()
+  |
+    idlTable()
+    {
+      module.tables.addElement(table);
+    }
+  |
+    t = <PRAGMA>
+    {
+      s = t.image;
+      module.pragmas.addElement(s.substring(6));
+    }
+  | 
+    idlSubModule()  
+  )*
+}
+
+void idlSubModule() :
+{
+  Token t;
+}
+{
+  <MODULE> t = <IDENTIFIER> (";")?
+}
+
+String idlPackage() :
+{
+  Token t;
+  String s;
+}
+{
+  t = <IDENTIFIER>
+  {
+    s = t.image;
+  }
+  (
+    "." t = <IDENTIFIER>
+    {
+      s = s+"."+t.image;  
+    }
+  ) *
+  {
+    return s;
+  }
+}
+
+void idlCodeBlock() :
+{
+  Token t;
+  boolean hasLinemarker = false;
+}
+{
+  t = <LINENO>
+  {
+    if (module.codeStart == 0)
+      module.codeStart = t.beginLine;
+    hasLinemarker = true;
+      module.code.addElement(t.image);
+  }
+| t = <CODELINE>
+  {
+    if (module.codeStart == 0)
+      module.codeStart = t.beginLine;
+    if (module.codeLine == 0 && hasLinemarker == false)
+      module.codeLine = t.beginLine;
+    module.code.addElement(t.image);
+  }
+}
+
+void idlMessage() :
+{
+  Token t;
+  String s;
+  Integer i;
+}
+{
+  t = <MESSAGE>
+  {
+    if (module.messageStart == 0)
+      module.messageStart = t.beginLine;
+  }
+  (
+    "(" t = <INTEGER> ")"
+    {
+      s = t.image;
+      i = new Integer(s);
+      module.messageBase = i.intValue();
+    }
+  ) ?
+  "{"
+  ( idlMsgElement()
+    {
+      module.messages.addElement(message);
+    }
+  ) +
+  "}"
+  (";")?
+}
+
+void idlMsgElement() :
+{
+  Token t;
+}
+{
+  t = <IDENTIFIER>
+  {
+    message = new Message();
+    message.name = t.image;
+    module.hash(t.image);
+  }
+  ("=")? t = <QSTRING> (";")?
+  {
+    message.value = t.image;
+  }
+}
+
+void idlTable() :
+{
+  Token t;
+}
+{
+  <TABLE> t = <IDENTIFIER>
+  {
+    table = new Table();
+    table.name = t.image;
+  }
+  "{"
+  ( idlMsgElement()
+    {
+      table.messages.addElement(message);
+    }
+  ) +
+  "}"
+  (";")?
+}
+
+void idlEnum() :
+{
+  Token t;
+}
+{
+  <ENUM> t = <IDENTIFIER>
+  {
+    enumerator = new Enumerator();
+    enumerator.name = t.image;
+    module.hash(t.image);
+  }
+  "{"
+  idlEnumElement() ( "," idlEnumElement())*
+  "}"
+  (";")?
+}
+
+void idlEnumElement() :
+{
+  Token t;
+  String s;
+}
+{
+  t = <IDENTIFIER>
+  {
+    s = t.image;
+  }
+  (
+    "=" (t = <INTEGER> | t = <CHARACTER> )
+    {
+      s = s + " = " + t.image;
+    }
+  )?
+  {
+    enumerator.elements.addElement(s);
+  }
+}
+
+void idlStructure() :
+{
+  Token t;
+  boolean hasLinemarker = false;
+}
+{
+  {
+    structure = new Structure();
+  }
+  (
+    <PRIVATE>
+    {
+      structure.codeType = Structure.PRIVATE;
+    }
+  | <PUBLIC>
+    {
+      structure.codeType = Structure.PUBLIC;
+    }
+  | <PROTECTED>
+    {
+      structure.codeType = Structure.PROTECTED;
+    }
+  )?
+  <STRUCT> t = <IDENTIFIER>
+  {
+    structure.name = t.image;
+    structure.start = t.beginLine;
+    module.hash(t.image);
+  }
+  ( t = <QSTRING>
+    {
+      structure.header = t.image;
+      module.hash(t.image);
+    }
+    (
+      "(" t = <IDENTIFIER> ")"
+      {
+        structure.categories.addElement(t.image);
+        module.hash(t.image);
+      }
+    ) ?
+  ) ?
+  ( "{"
+    (
+      idlFielddef() ";"
+      {
+        structure.fields.addElement(field);
+      }
+    ) *
+    (
+    t = <LINENO>
+    {
+      hasLinemarker = true;
+      structure.code.addElement(t.image);
+    }
+    | t = <CODELINE>
+      {
+        if (structure.codeLine == 0 && hasLinemarker == false)
+          structure.codeLine = t.beginLine;
+        structure.code.addElement(t.image);
+      }
+    ) *
+    "}"
+  ) ?
+  (";")?
+}
+
+void idlFielddef() :
+{
+  Token t;
+}
+{
+  {
+    field = new Field();
+    type  = field.type;
+  }
+  idlType() t = <IDENTIFIER>
+  {
+    field.name = t.image;
+    module.hash(t.image);
+  }
+  (
+    idlArrayStuff()
+  ) *
+}
+
+void idlType() :
+{
+  Token t;
+}
+{
+  idlTypeLookup()
+  (
+    idlAccessType()
+  ) ?
+}
+
+void idlAccessType() :
+{
+}
+{
+  <POINTERREF>
+  {
+    module.hash("*&");
+    type.reference = Type.BYREFPTR;
+  }
+| <POINTER>
+  {
+    module.hash("*");
+    type.reference = Type.BYPTR;
+  }
+| "[" "]"
+  {
+    module.hash("[]");
+    type.reference = Type.ARRAYED;
+  }
+}
+
+void idlTypeLookup() :
+{
+  Token t;
+}
+{
+  idlUnsigned() 
+  (
+    <BOOLEAN>
+    {
+      type.name = "boolean";
+      module.hash(type.name);
+      type.typeof = Type.BOOLEAN;
+    }
+  |
+    <CHAR>
+    {
+      type.name = "char";
+      module.hash(type.name);
+      type.typeof = Type.CHAR;
+    }
+  |
+    <WCHAR>
+    {
+      type.name = "wchar_t";
+      module.hash(type.name);
+      type.typeof = Type.WCHAR;
+    }
+  |
+    (<STRING>|<STRING2>)
+    {
+      type.name = "string";
+      module.hash(type.name);
+      type.typeof = Type.STRING;
+    }
+  |
+    (<BYTE>|<INT8>)
+    {
+      type.name = "byte";
+      module.hash(type.name);
+      type.typeof = Type.BYTE;
+    }
+  |
+    (<SHORT>|<INT16>)
+    {
+      type.name = "short";
+      module.hash(type.name);
+      type.typeof = Type.SHORT;
+    }
+  |
+    (<INT>|<INT32>)
+    {
+      type.name = "int";
+      module.hash(type.name);
+      type.typeof = Type.INT;
+    }
+  |
+    (<LONG>|<INT64>)
+    {
+      type.name = "long";
+      module.hash(type.name);
+      type.typeof = Type.LONG;
+    }
+  |
+    <FLOAT>
+    {
+      type.name = "float";
+      module.hash(type.name);
+      type.typeof = Type.FLOAT;
+    }
+  |
+    <DOUBLE>
+    {
+      type.name = "double";
+      module.hash(type.name);
+      type.typeof = Type.DOUBLE;
+    }
+  |
+    <VOID>
+    {
+      type.name = "void";
+      module.hash(type.name);
+      type.typeof = Type.VOID;
+    }
+  |
+    t = <IDENTIFIER>
+    {
+      type.name = t.image;
+      module.hash(t.image);
+      type.typeof = Type.USERTYPE;
+    }
+  )  
+}
+
+void idlUnsigned() :
+{
+}
+{
+  (
+    <UNSIGNED>
+    {
+      type.isUnsigned = true;
+    }
+  ) ?
+}
+
+void idlArrayStuff() :
+{
+  Token t;
+  String s;
+  Integer i;
+}
+{
+  "[" {i = new Integer(0);} 
+  ( t = <INTEGER> 
+    {
+      s = t.image;
+      module.hash(t.image);
+      i = new Integer(s);
+    }
+  )?  
+  "]"
+  {
+    type.arraySizes.addElement(i);
+  }
+}
+
+void idlPrototype() :
+{
+  Token t;
+}
+{
+  {
+    prototype = new Prototype();
+    type  = prototype.type;
+  }
+  (
+    <PRIVATE>
+    {
+      prototype.codeType = Prototype.PRIVATE;
+    }
+  | <PUBLIC>
+    {
+      prototype.codeType = Prototype.PUBLIC;
+    }
+  | <PROTECTED>
+    {
+      prototype.codeType = Prototype.PROTECTED;
+    }
+  )?
+  idlType() t = <IDENTIFIER>
+  {
+    prototype.name = t.image;
+    prototype.start = t.beginLine;
+    module.hash(t.image);
+  }
+  "(" idlPrototypeParameters() ")"
+  "{" idlPrototypeActions() "}"
+  (";")?
+}
+
+void idlPrototypeParameters() :
+{
+}
+{
+  (
+    idlFielddef()
+    {
+      prototype.addParameter(field);
+    }
+    (
+      "," idlFielddef()
+      {
+        prototype.addParameter(field);
+      }
+    ) *
+  ) ?
+}
+
+void idlPrototypeActions() :
+{
+  Token t;
+  boolean hasLinemarker = false;
+}
+{
+  (
+    <MESSAGE> ":" (
+    ( t = <IDENTIFIER> | t = <INTEGER> )
+      {
+        prototype.message = t.image;
+      }
+    | "#"
+      {
+
+        prototype.message = uniqueNumber();
+      }
+    )
+    (";") ?
+  ) ?
+  (
+    <INPUT> (":")?
+    (
+      idlAction()
+      {
+        prototype.addInput(action);
+      }
+    ) *
+  ) ?
+  (
+    <OUTPUT> (":")?
+    (
+      idlAction()
+      {
+        prototype.addOutput(action);
+      }
+    ) *
+  ) ?
+  (
+    t = <LINENO>
+    {
+      hasLinemarker = true;
+      prototype.code.addElement(t.image);
+    }
+    | t = <CODELINE>
+    {
+      if (prototype.codeLine == 0 && hasLinemarker == false)
+        prototype.codeLine = t.beginLine;
+      prototype.code.addElement(t.image);
+    }
+  ) *
+}
+
+void idlAction() :
+{
+  Token t;
+}
+{
+  t = <IDENTIFIER>
+  {
+    action = new Action();
+    action.name = t.image;
+    module.hash(t.image);
+  }
+  (
+    idlOperation()
+    {
+      action.addOperation(operation);
+    }
+  ) ?
+  ";"
+}
+
+void idlOperation() :
+{
+  Token t;
+}
+{
+  <SIZE> "("
+  (
+    t = <IDENTIFIER>
+    {
+      operation = new Operation();
+      operation.name = t.image;
+      module.hash(t.image);
+      operation.code = Operation.SIZE;
+      operation.isConstant = false;
+    }
+  | t = <INTEGER>
+    {
+      operation = new Operation();
+      operation.name = t.image;
+      module.hash(t.image);
+      operation.code = Operation.SIZE;
+      operation.isConstant = true;
+    }
+  )
+  ")"
+}
+

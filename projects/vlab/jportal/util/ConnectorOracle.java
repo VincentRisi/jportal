@@ -39,8 +39,7 @@ public class ConnectorOracle extends Connector
                String user, String password) throws ClassNotFoundException, SQLException
   {
     userId = user;
-    DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-    connection = DriverManager.getConnection(url, user, password);
+    connection = DriverManager.getConnection(url, user, password);    
     System.out.println(!connection.isClosed ());
     connection.setAutoCommit(false);
   }

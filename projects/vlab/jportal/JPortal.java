@@ -13,7 +13,6 @@
 package vlab.jportal;
 
 import java.util.*;
-import java.lang.*;
 import java.io.*;
 
 /**
@@ -233,7 +232,6 @@ public class JPortal implements JPortalConstants {
       int dE;
       boolean strung = false;
       int addB = 0;
-      int addE = 0;
       char c = 0;
       for (dE=1; dE < s.length(); dE++)
       {
@@ -249,10 +247,7 @@ public class JPortal implements JPortalConstants {
           break;
       }
       if (strung == true && c == '\u005c'')
-      {
-        addE = 1;
         dE++;
-      }
       String dVar = s.substring(1+addB, dE-addB);
       s = s.substring(dE);
       int sB = dVar.indexOf("(");
@@ -286,7 +281,7 @@ public class JPortal implements JPortalConstants {
     }
     return s;
   }
-  static void loadTableModule(String s, Vector useProcs)
+  static void loadTableModule(String s, Vector<String> useProcs)
   {
     try
     {
@@ -2961,6 +2956,51 @@ public class JPortal implements JPortalConstants {
     finally { jj_save(6, xla); }
   }
 
+  static private boolean jj_3R_73() {
+    if (jj_scan_token(UPDATE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_55() {
+    if (jj_3R_60()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_59() {
+    if (jj_scan_token(GRANT)) return true;
+    Token xsp;
+    if (jj_3R_64()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_64()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_52() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_54()) {
+    jj_scanpos = xsp;
+    if (jj_3R_55()) {
+    jj_scanpos = xsp;
+    if (jj_3R_56()) {
+    jj_scanpos = xsp;
+    if (jj_3R_57()) {
+    jj_scanpos = xsp;
+    if (jj_3R_58()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_54() {
+    if (jj_3R_59()) return true;
+    return false;
+  }
+
   static private boolean jj_3R_72() {
     if (jj_scan_token(SELECT)) return true;
     return false;
@@ -3113,51 +3153,6 @@ public class JPortal implements JPortalConstants {
 
   static private boolean jj_3R_64() {
     if (jj_3R_66()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_73() {
-    if (jj_scan_token(UPDATE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_55() {
-    if (jj_3R_60()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_52() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_54()) {
-    jj_scanpos = xsp;
-    if (jj_3R_55()) {
-    jj_scanpos = xsp;
-    if (jj_3R_56()) {
-    jj_scanpos = xsp;
-    if (jj_3R_57()) {
-    jj_scanpos = xsp;
-    if (jj_3R_58()) return true;
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_54() {
-    if (jj_3R_59()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_59() {
-    if (jj_scan_token(GRANT)) return true;
-    Token xsp;
-    if (jj_3R_64()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_64()) { jj_scanpos = xsp; break; }
-    }
     return false;
   }
 
