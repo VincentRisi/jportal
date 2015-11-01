@@ -32,9 +32,9 @@ public class CliCCode extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate CLI C++ Code for DB2");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -273,7 +273,8 @@ public class CliCCode extends Generator
   /**
    * Build of output data rec for standard procedures
    */
-  static Vector nullVector = new Vector();
+  //static Vector<Field> nullVectorF = new Vector<Field>();
+  static Vector<String> nullVectorS = new Vector<String>();
   static String structName = "";
   static void generateStdOutputRec(Table table, PrintWriter outData)
   {
@@ -287,7 +288,7 @@ public class CliCCode extends Generator
     outData.println("struct D" + table.useName());
     outData.println("{");
     boolean canExtend = true;
-    Vector fields = table.fields;
+    Vector<Field> fields = table.fields;
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field)fields.elementAt(i);
@@ -310,9 +311,9 @@ public class CliCCode extends Generator
     headerSwaps(outData, "", fields, null);
     String useName = table.useName();
     if (canExtend == true)
-      extendHeader(outData, "", fields, useName, nullVector, null);
+      extendHeader(outData, "", fields, useName, nullVectorS, null);
     else
-      extendDataBuildHeader(outData, "", fields, useName, nullVector, null);
+      extendDataBuildHeader(outData, "", fields, useName, nullVectorS, null);
     // we cannot put in a virtual destructor here as the data has to remaina POD for GNU
     //outData.println("  virtual ~D" + table.useName() + "() {}");
     outData.println("};");
@@ -333,7 +334,7 @@ public class CliCCode extends Generator
       String work = "";
       String baseClass = "";
       boolean canExtend = true;
-      Vector fields = proc.outputs;
+      Vector<Field> fields = proc.outputs;
       for (int j = 0; j < fields.size(); j++)
       {
         Field field = (Field)fields.elementAt(j);
@@ -380,9 +381,9 @@ public class CliCCode extends Generator
         headerSwaps(outData, "", fields, null);
         String useName = table.useName() + proc.upperFirst();
         if (canExtend == true)
-          extendHeader(outData, "", fields, useName, nullVector, null);
+          extendHeader(outData, "", fields, useName, nullVectorS, null);
         else
-          extendDataBuildHeader(outData, "", fields, useName, nullVector, null);
+          extendDataBuildHeader(outData, "", fields, useName, nullVectorS, null);
         // we cannot put in a virtual destructor here as the data has to remaina POD for GNU
         //outData.println("  virtual ~" + typeChar + table.useName() + proc.upperFirst() + "() {}");
         outData.println("};");
@@ -394,7 +395,7 @@ public class CliCCode extends Generator
         outData.println("struct D" + table.useName() + proc.upperFirst() + work);
         outData.println("{");
         int filler = 0;
-        Vector inputs = proc.inputs;
+        Vector<Field> inputs = proc.inputs;
         for (int j = 0; j < inputs.size(); j++)
         {
           Field field = (Field)inputs.elementAt(j);
@@ -434,7 +435,7 @@ public class CliCCode extends Generator
       }
     }
   }
-  private static void headerSwaps(PrintWriter outData, String baseClass, Vector inputs, Proc proc)
+  private static void headerSwaps(PrintWriter outData, String baseClass, Vector<Field> inputs, Proc proc)
   {
     outData.println("  void Clear()");
     outData.println("  {");
@@ -477,7 +478,7 @@ public class CliCCode extends Generator
     outData.println("  }");
     outData.println("  #endif");
   }
-  private static void extendHeader(PrintWriter outData, String baseClass, Vector inputs, String useName, Vector dynamics, Proc proc)
+  private static void extendHeader(PrintWriter outData, String baseClass, Vector<Field> inputs, String useName, Vector<String> dynamics, Proc proc)
   {
     outData.println("  #if defined(_TBUFFER_H_)");
     outData.println("  void _toXML(TBAmp &XRec)");
@@ -551,7 +552,7 @@ public class CliCCode extends Generator
       return ", " + field.useName() + "IsNull";
     return "";
   }
-  private static void extendDataBuildHeader(PrintWriter outData, String baseClass, Vector inputs, String useName, Vector dynamics, Proc proc)
+  private static void extendDataBuildHeader(PrintWriter outData, String baseClass, Vector<Field> inputs, String useName, Vector<String> dynamics, Proc proc)
   {
     outData.println("  #if defined(_DATABUILD_H_)");
     int inputNo = 0;
@@ -827,7 +828,7 @@ public class CliCCode extends Generator
       Field field = (Field)proc.inputs.elementAt(j);
       generateCppBind(field, outData);
     }
-    Vector blobs = new Vector();
+    Vector<Field> blobs = new Vector<Field>();
     for (int j = 0; j < placeHolder.pairs.size(); j++)
     {
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(j);
@@ -920,7 +921,7 @@ public class CliCCode extends Generator
     boolean isReturning = false;
     boolean isBulkSequence = false;
     String front = "", back = "", sequencer = "";
-    Vector lines = placeHolder.getLines();
+    Vector<String> lines = placeHolder.getLines();
     int size = 1;
     if (proc.isInsert == true && proc.hasReturning == true && proc.outputs.size() == 1)
     {
@@ -1656,7 +1657,7 @@ public class CliCCode extends Generator
       case Field.USERSTAMP:
         return "(char*)  (q_.data+" + field.useName().toUpperCase() + "_POS), 9";
       case Field.BLOB:
-        return "(char*)  (q_.data+" + field.useName().toUpperCase() + "_POS), " + (field.length); ;
+        return "(char*)  (q_.data+" + field.useName().toUpperCase() + "_POS), " + (field.length);
       //case Field.BIGXML:
       //  return "(char*)  (q_.data+" + field.useName().toUpperCase() + "_POS), sizeof(" + field.useName() + ")";
       case Field.DATE:

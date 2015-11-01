@@ -31,7 +31,7 @@ public class AdoVBCode3 extends Generator
       for (int i = 0; i <args.length; i++)
       {
         outLog.println(args[i]+": Generate VB Code for ADO");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
+        in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
         generate(database, "", outLog);
       }
@@ -179,6 +179,7 @@ public class AdoVBCode3 extends Generator
     }
   }
   static int questionsSeen;
+private static ObjectInputStream in;
   static String question(Proc proc, String line)
   {
     String result = "";

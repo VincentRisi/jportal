@@ -34,6 +34,7 @@ public class JPortalSI extends Generator
         outLog.println(args[i]+": generate JPortal SI");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();

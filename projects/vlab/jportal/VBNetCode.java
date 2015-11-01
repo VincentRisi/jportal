@@ -32,6 +32,7 @@ public class VBNetCode extends Generator
 				outLog.println(args[i]+": Generate VB.NET Code for Ado.Net");
 				ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
 				Database database = (Database)in.readObject();
+				in.close();
 				generate(database, "", outLog);
 			}
 			outLog.flush();
@@ -90,7 +91,7 @@ public class VBNetCode extends Generator
 			outLog.println("Generate Procs IO Error");
 		}
 	}
-	public static void generateStructPairs(Vector fields, Vector dynamics, String name, PrintWriter outData)
+	public static void generateStructPairs(Vector<Field> fields, Vector<String> dynamics, String name, PrintWriter outData)
 	{
 		outData.println("  [Serializable()]");
 		outData.println("  public class "+name+"Rec");
@@ -134,7 +135,7 @@ public class VBNetCode extends Generator
 					}
 					outData.println("  /// </summary>");
 				}
-				Vector fields = new Vector();
+				Vector<Field> fields = new Vector<Field>();
 				for (int j=0; j<proc.outputs.size(); j++)
 					fields.addElement(proc.outputs.elementAt(j));
 				for (int j=0; j<proc.inputs.size(); j++)
@@ -232,7 +233,7 @@ public class VBNetCode extends Generator
 			this.pos = pos;
 		}
 	}
-	static Vector pairs;
+	static Vector<Pairs> pairs;
 	static void generateCommand(Proc proc, PrintWriter outData)
 	{
 		String command = "\"";
@@ -254,7 +255,7 @@ public class VBNetCode extends Generator
 		outData.println("    {");
 		outData.print("      get { return ");
 		StringBuffer command2 = new StringBuffer(command);
-		pairs = new Vector();
+		pairs = new Vector<Pairs>();
 		for (int j=0; j<proc.inputs.size();)
 		{
 			Field field = (Field) proc.inputs.elementAt(j);

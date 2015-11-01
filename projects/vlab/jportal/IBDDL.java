@@ -34,6 +34,7 @@ public class IBDDL extends Generator
         outLog.println(args[i]+": generating Interbase DDL");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -281,8 +282,8 @@ public class IBDDL extends Generator
   {
     for (int i=0; i < proc.lines.size(); i++)
     {
-      String l = (String) proc.lines.elementAt(i);
-      outData.println(l);
+      Line l = proc.lines.elementAt(i);
+      outData.println(l.line);
     }
     outData.println();
   }

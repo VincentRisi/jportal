@@ -35,6 +35,7 @@ public class Java3Code
         outLog.println(args[i]+": generate Java code for jdbc and idl2 consumption");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -77,7 +78,7 @@ public class Java3Code
       OutputStream outFile = new FileOutputStream(output+table.useName() + "Struct.java");
       try
       {
-        PrintWriter outData = new PrintWriter(outFile);
+        outData = new PrintWriter(outFile);
         if (table.database.packageName.length() > 0)
         {
           outData.println("package " + table.database.packageName + ";");
@@ -169,42 +170,42 @@ public class Java3Code
       OutputStream outFile = new FileOutputStream(output+table.useName()+proc.upperFirst()+"Struct.java");
       try
       {
-        PrintWriter outData = new PrintWriter(outFile);
+        outData2 = new PrintWriter(outFile);
         if (table.database.packageName.length() > 0)
         {
-          outData.println("package " + table.database.packageName + ";");
-          outData.println();
+          outData2.println("package " + table.database.packageName + ";");
+          outData2.println();
         }
-        outData.println("import java.io.Serializable;");
-        outData.println("import java.sql.*;");
-        outData.println();
-        outData.println("/**");
+        outData2.println("import java.io.Serializable;");
+        outData2.println("import java.sql.*;");
+        outData2.println();
+        outData2.println("/**");
         for (int j=0; j<proc.comments.size(); j++)
         {
           String comment = (String) proc.comments.elementAt(j);
-          outData.println(" *"+comment);
+          outData2.println(" *"+comment);
         }
-        outData.println(" */");
-        outData.println("public class "+table.useName()+proc.upperFirst()+"Struct implements Serializable");
-        outData.println("{");
+        outData2.println(" */");
+        outData2.println("public class "+table.useName()+proc.upperFirst()+"Struct implements Serializable");
+        outData2.println("{");
         int maxSize = 0;
         for (int j=0; j<proc.inputs.size(); j++)
         {
           Field field = (Field) proc.inputs.elementAt(j);
           if (field.useName().length() > maxSize)
             maxSize = field.useName().length();
-          outData.println("  /**");
+          outData2.println("  /**");
           for (int c=0; c < field.comments.size(); c++)
           {
             String s = (String) field.comments.elementAt(c);
-            outData.println("   *"+s);
+            outData2.println("   *"+s);
           }
           if (!proc.hasOutput(field.name))
-            outData.println("   * (input)");
+            outData2.println("   * (input)");
           else
-            outData.println("   * (input/output)");
-          outData.println("   */");
-          outData.println("  public "+javaVar(field)+";");
+            outData2.println("   * (input/output)");
+          outData2.println("   */");
+          outData2.println("  public "+javaVar(field)+";");
         }
         for (int j=0; j<proc.outputs.size(); j++)
         {
@@ -213,15 +214,15 @@ public class Java3Code
             maxSize = field.useName().length();
           if (!proc.hasInput(field.name))
           {
-            outData.println("  /**");
+            outData2.println("  /**");
             for (int c=0; c < field.comments.size(); c++)
             {
               String s = (String) field.comments.elementAt(c);
-              outData.println("   *"+s);
+              outData2.println("   *"+s);
             }
-            outData.println("   * (output)");
-            outData.println("   */");
-            outData.println("  public "+javaVar(field)+";");
+            outData2.println("   * (output)");
+            outData2.println("   */");
+            outData2.println("  public "+javaVar(field)+";");
           }
         }
         for (int j=0; j<proc.dynamics.size(); j++)
@@ -229,65 +230,65 @@ public class Java3Code
           String s = (String) proc.dynamics.elementAt(j);
           if (s.length() > maxSize)
             maxSize = s.length();
-          outData.println("  /**");
-          outData.println("   * (dynamic)");
-          outData.println("   */");
-          outData.println("  public String "+s+";");
+          outData2.println("  /**");
+          outData2.println("   * (dynamic)");
+          outData2.println("   */");
+          outData2.println("  public String "+s+";");
         }
-        outData.println("  public "+table.useName()+proc.upperFirst()+"Struct()");
-        outData.println("  {");
+        outData2.println("  public "+table.useName()+proc.upperFirst()+"Struct()");
+        outData2.println("  {");
         for (int j=0; j<proc.inputs.size(); j++)
         {
           Field field = (Field) proc.inputs.elementAt(j);
-          outData.println("    "+initJavaVar(field));
+          outData2.println("    "+initJavaVar(field));
         }
         for (int j=0; j<proc.outputs.size(); j++)
         {
           Field field = (Field) proc.outputs.elementAt(j);
           if (!proc.hasInput(field.name))
-            outData.println("    "+initJavaVar(field));
+            outData2.println("    "+initJavaVar(field));
         }
         for (int j=0; j<proc.dynamics.size(); j++)
         {
           String s = (String) proc.dynamics.elementAt(j);
-          outData.println("    "+s+" = \"\";");
+          outData2.println("    "+s+" = \"\";");
         }
-        outData.println("  }");
-        outData.println("  public String toString()");
-        outData.println("  {");
-        outData.println("    String CRLF = (String) System.getProperty(\"line.separator\");");
+        outData2.println("  }");
+        outData2.println("  public String toString()");
+        outData2.println("  {");
+        outData2.println("    String CRLF = (String) System.getProperty(\"line.separator\");");
         String ret = "    return ";
         for (int j=0; j<proc.inputs.size(); j++)
         {
-          outData.print(ret);
+          outData2.print(ret);
           ret = "         + ";
           Field field = (Field) proc.inputs.elementAt(j);
           int no = maxSize - field.useName().length();
-          outData.println("\"  "+field.useName()+padded(no+1)+": \" + "+field.useName()+" + CRLF");
+          outData2.println("\"  "+field.useName()+padded(no+1)+": \" + "+field.useName()+" + CRLF");
         }
         for (int j=0; j<proc.outputs.size(); j++)
         {
           Field field = (Field) proc.outputs.elementAt(j);
           if (!proc.hasInput(field.name))
           {
-            outData.print(ret);
+            outData2.print(ret);
             ret = "         + ";
             int no = maxSize - field.useName().length();
-            outData.println("\"  "+field.useName()+padded(no+1)+": \" + "+field.useName()+" + CRLF");
+            outData2.println("\"  "+field.useName()+padded(no+1)+": \" + "+field.useName()+" + CRLF");
           }
         }
         for (int j=0; j<proc.dynamics.size(); j++)
         {
           String s = (String) proc.dynamics.elementAt(j);
-          outData.print(ret);
+          outData2.print(ret);
           ret = "         + ";
           int no = maxSize - s.length();
-          outData.println("\"  "+s+padded(no+1)+": \" + "+s+" + CRLF");
+          outData2.println("\"  "+s+padded(no+1)+": \" + "+s+" + CRLF");
         }
-        outData.println("    ;");
-        outData.println("  }");
-        outData.println("}");
-        outData.flush();
+        outData2.println("    ;");
+        outData2.println("  }");
+        outData2.println("}");
+        outData2.flush();
       }
       finally
       {
@@ -454,7 +455,7 @@ public class Java3Code
     outData.println("  public static void "+proc.lowerFirst()+"(Connector connector) throws SQLException");
     outData.println("  {");
     placeHolders = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
-    Vector lines = placeHolders.getLines();
+    Vector<?> lines = placeHolders.getLines();
   	outData.println("    String statement = ");
     String plus = "    ";
     for (int i=0; i<lines.size(); i++)
@@ -503,7 +504,7 @@ public class Java3Code
       outData.println("  public Query "+procName+"() throws SQLException");
     outData.println("  {");
 		placeHolders = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
-		Vector lines = placeHolders.getLines();
+		Vector<?> lines = placeHolders.getLines();
 		outData.println("    String statement = ");
     String plus = "      ";
     for (int i=0; i<lines.size(); i++)
@@ -526,7 +527,7 @@ public class Java3Code
       if (field.type == Field.USERSTAMP)
         outData.println("    "+field.useName()+" = connector.getUserstamp();");
     }
-    Vector pairs = placeHolders.getPairs();
+    Vector<?> pairs = placeHolders.getPairs();
     for (int i=0; i<pairs.size(); i++)
     {
       PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
@@ -845,7 +846,9 @@ public class Java3Code
     }
     return "unknown";
   }
-  static String padString = "                                                         "; 
+  static String padString = "                                                         ";
+private static PrintWriter outData;
+private static PrintWriter outData2; 
   private static String padded(int size)
   {
     if (size == 0)

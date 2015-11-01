@@ -35,6 +35,7 @@ public class VBCode extends Generator
         outLog.println(args[i]+": Generate VB DAO Code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -52,7 +53,7 @@ public class VBCode extends Generator
   {
     return "Generate VB DAO Code";
   }
-  protected static Vector flagsVector;
+  protected static Vector<Flag> flagsVector;
   static boolean ioRoutines;
   static boolean handleErrors;
   private static void flagDefaults()
@@ -60,11 +61,11 @@ public class VBCode extends Generator
     ioRoutines = false;
     handleErrors = true;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagDefaults();
       flagsVector.addElement(new Flag("io routines", new Boolean (ioRoutines), "Generate IO Routines"));
       flagsVector.addElement(new Flag("handle errors", new Boolean (handleErrors), "Handle Errors"));

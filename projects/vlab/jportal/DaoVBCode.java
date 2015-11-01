@@ -35,6 +35,7 @@ public class DaoVBCode extends Generator
         outLog.println(args[i]+": Generate VB DAO Code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -44,17 +45,17 @@ public class DaoVBCode extends Generator
       e.printStackTrace();
     }
   }
-  protected static Vector flagsVector;
+  protected static Vector<Flag> flagsVector;
   static boolean ioRoutines;
   private static void flagDefaults()
   {
     ioRoutines = false;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagDefaults();
       flagsVector.addElement(new Flag("io routines", new Boolean (ioRoutines), "Generate IO Routines"));
     }
@@ -452,7 +453,7 @@ public class DaoVBCode extends Generator
   /**
   * Build's a VB Record
   */
-  static void generateRec(Vector fields, PrintWriter outData)
+  static void generateRec(Vector<?> fields, PrintWriter outData)
   {
     for (int i=0; i < fields.size(); i++)
     {

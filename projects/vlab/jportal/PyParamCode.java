@@ -32,6 +32,7 @@ public class PyParamCode extends Generator
         outLog.println(args[i]+": Generate Param Python Code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -292,7 +293,7 @@ public class PyParamCode extends Generator
   {
     outData.println(data);
   }
-  static void outputStrings(Vector strings, PrintWriter outData)
+  static void outputStrings(Vector<String> strings, PrintWriter outData)
   {
     outData.println("pp.strings('''");
     for (int i=0; i<strings.size(); i++)

@@ -35,6 +35,7 @@ public class IdlObjCCode extends Generator
         outLog.println(args[i] + ": Generate objective C Code for 3 Tier Access");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -157,7 +158,7 @@ public class IdlObjCCode extends Generator
       return "nu" + name.substring(3);
     return name;
   }
-  private static void generateInterfaceTableStructs(Vector fields, String mainName, PrintWriter outData)
+  private static void generateInterfaceTableStructs(Vector<?> fields, String mainName, PrintWriter outData)
   {
     outData.println("@interface D" + mainName + "Rec:NSObject");
     outData.println("{");
@@ -387,7 +388,7 @@ public class IdlObjCCode extends Generator
       generateImplementationStructPairs(proc, table.useName() + proc.upperFirst(), outData);
     }
   }
-  private static void generateImplementationTableStructs(Vector fields, String mainName, PrintWriter outData)
+  private static void generateImplementationTableStructs(Vector<?> fields, String mainName, PrintWriter outData)
   {
     outData.println("@implementation D" + mainName + "Rec");
     for (int i = 0; i < fields.size(); i++)
@@ -947,29 +948,6 @@ public class IdlObjCCode extends Generator
     }
     return result + " " + name + ";";
   }
-  private static boolean isStringOrDate(Field field)
-  {
-    switch (field.type)
-    {
-      case Field.ANSICHAR:
-        if (field.length == 1)
-          return false;
-      case Field.CHAR:
-      case Field.MONEY:
-      case Field.TLOB:
-      case Field.USERSTAMP:
-      case Field.DATE:
-      case Field.DATETIME:
-      case Field.TIME:
-      case Field.TIMESTAMP:
-        return true;
-      case Field.DOUBLE:
-        return field.precision > 15;
-      default:
-        break;
-    }
-    return false;
-  }
   static boolean isNull(Field field)
   {
     if (field.isNull == false)
@@ -996,37 +974,5 @@ public class IdlObjCCode extends Generator
         return true;
     }
     return false;
-  }
-  private static String underScoreWords(String input)
-  {
-    char[] bits = input.toCharArray();
-    StringBuffer buffer = new StringBuffer();
-    buffer.append(bits[0]);
-    for (int i = 1; i < bits.length; i++)
-    {
-      if ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(bits[i]) >= 0
-        && bits[i - 1] != ' ')
-      {
-        buffer.append('_');
-        buffer.append(bits[i]);
-      }
-      else
-        buffer.append(bits[i]);
-    }
-    return buffer.toString();
-  }
-  private static String splitWords(String input)
-  {
-    char[] bits = underScoreWords(input).toCharArray();
-    StringBuffer buffer = new StringBuffer();
-    buffer.append(bits[0]);
-    for (int i = 1; i < bits.length; i++)
-    {
-      if (bits[i] == '_')
-        buffer.append(' ');
-      else
-        buffer.append(bits[i]);
-    }
-    return buffer.toString();
   }
 }

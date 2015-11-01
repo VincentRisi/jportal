@@ -36,6 +36,7 @@ public class IdlBinUCode extends Generator
         outLog.println(args[i]+": Generate IDL Code for BinU 3 Tier Access");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -152,7 +153,7 @@ public class IdlBinUCode extends Generator
     }
   }
   private static int maxVarNameLen = 4;
-  private static void setMaxVarNameLen(Vector fields, int minVarNameLen)
+  private static void setMaxVarNameLen(Vector<Field> fields, int minVarNameLen)
   {
     maxVarNameLen = minVarNameLen;
     for (int i = 0; i < fields.size(); i++)
@@ -164,7 +165,7 @@ public class IdlBinUCode extends Generator
         maxVarNameLen = len;
     }
   }
-  private static void generateTableStructs(Vector fields, String mainName, PrintWriter outData)
+  private static void generateTableStructs(Vector<Field> fields, String mainName, PrintWriter outData)
   {
     setMaxVarNameLen(fields, 4);
     outData.println("  public partial class U" + mainName);
@@ -180,7 +181,7 @@ public class IdlBinUCode extends Generator
     generateWriter(fields, outData);
     outData.println("  }");
   }
-  private static void generateWriter(Vector fields, PrintWriter outData)
+  private static void generateWriter(Vector<Field> fields, PrintWriter outData)
   {
     outData.println("    public void Writer(BinUWriter writer)");
     outData.println("    {");
@@ -191,7 +192,7 @@ public class IdlBinUCode extends Generator
     }
     outData.println("    }");
   }
-  private static void generateReader(Vector fields, PrintWriter outData)
+  private static void generateReader(Vector<Field> fields, PrintWriter outData)
   {
     outData.println("    public void Reader(BinUReader reader)");
     outData.println("    {");
@@ -208,7 +209,7 @@ public class IdlBinUCode extends Generator
     setMaxVarNameLen(proc.inputs, maxVarNameLen);
     outData.println("  public partial class U" + mainName);
     outData.println("  {");
-    Vector fields = new Vector();
+    Vector<Field> fields = new Vector<Field>();
     for (int i=0; i<proc.outputs.size(); i++)
       fields.addElement(proc.outputs.elementAt(i));
     if (fields.size() > 0)
@@ -223,7 +224,7 @@ public class IdlBinUCode extends Generator
     }
     if (proc.hasDiscreteInput())
     {
-      Vector inputs = proc.inputs;
+      Vector<Field> inputs = proc.inputs;
       for (int j = 0; j < inputs.size(); j++)
       {
         Field field = (Field)inputs.elementAt(j);
@@ -651,7 +652,7 @@ public class IdlBinUCode extends Generator
     outData.writeByte(0);
   }
   private static PlaceHolder placeHolder;
-  private static class OutPos
+  public static class OutPos
   {
     String name;
     int offset;
@@ -714,7 +715,7 @@ public class IdlBinUCode extends Generator
             writeString("i=" + proc.inputs.size(), outData);
             writeString("o=" + proc.outputs.size(), outData);
             writeString("d=" + proc.dynamics.size(), outData);
-            Vector lines = placeHolder.getLines();
+            Vector<String> lines = placeHolder.getLines();
             writeString("l=" + lines.size(), outData);
             for (int j = 0; j < lines.size(); j++)
             {
@@ -742,7 +743,7 @@ public class IdlBinUCode extends Generator
               }
             }
             int fieldPos = 0;
-            Vector outFields = new Vector();
+            Vector<OutPos> outFields = new Vector<OutPos>();
             for (int j = 0; j < proc.outputs.size(); j++)
             {
               Field field = (Field)proc.outputs.elementAt(j);

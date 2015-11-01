@@ -35,6 +35,7 @@ public class IdlJCode extends Generator
         outLog.println(args[i] + ": Generate IDL Code for 3 Tier Access");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -134,7 +135,7 @@ public class IdlJCode extends Generator
       generateStructPairs(proc, table.useName() + proc.upperFirst(), outData);
     }
   }
-  private static void generateTableStructs(Vector fields, String mainName, PrintWriter outData)
+  private static void generateTableStructs(Vector<?> fields, String mainName, PrintWriter outData)
   {
     outData.println("  [Serializable()]");
     outData.println("  public class " + mainName + "Rec");

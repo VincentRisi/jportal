@@ -30,20 +30,20 @@ public class View implements Serializable
   /** Name of view */
   public String name;
   /** List of aliases from view */
-  public Vector aliases;
+  public Vector<String> aliases;
   /** SQL Code for view */
-  public Vector lines;
+  public Vector<String> lines;
   /** Users of the view */
-  public Vector users;
+  public Vector<String> users;
   /** Code starts at line */
   public int start;
   /** Constructs the view with proper defaults */
   public View()
   {
     name      = "";
-    aliases   = new Vector();
-    lines     = new Vector();
-    users     = new Vector();
+    aliases   = new Vector<String>();
+    lines     = new Vector<String>();
+    users     = new Vector<String>();
     start     = 0;
   }
   public void reader(DataInputStream ids) throws IOException

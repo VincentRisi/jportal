@@ -35,6 +35,7 @@ public class VBScriptCode extends Generator
         outLog.println(args[i]+": Generate VBScript Code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -52,17 +53,17 @@ public class VBScriptCode extends Generator
   {
     return "Generates ADO (OleDB) VBScript Code";
   }
-  protected static Vector flagsVector;
+  protected static Vector<Flag> flagsVector;
   static boolean mSSqlStoredProcs;
   private static void flagDefaults()
   {
     mSSqlStoredProcs = false;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagDefaults();
       flagsVector.addElement(new Flag("mssql storedprocs", new Boolean (mSSqlStoredProcs), "Generate MSSql Stored Procedures"));
     }
@@ -126,7 +127,7 @@ public class VBScriptCode extends Generator
       outLog.println("Generate Procs IO Error");
     }
   }
-  static void generateRec(Vector fields, PrintWriter outData)
+  static void generateRec(Vector<?> fields, PrintWriter outData)
   {
     for (int i=0; i < fields.size(); i++)
     {

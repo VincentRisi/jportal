@@ -35,6 +35,7 @@ public class JavaRWiiCode extends Generator
         outLog.println(args[i] + ": Generate Java IDL Code for 3 Tier Access");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -174,13 +175,11 @@ public class JavaRWiiCode extends Generator
   static void generateSingle(Table table, Proc proc, PrintWriter outData)
   {
     String dataStruct;
-    String added = "";
     if (proc.isStdExtended())
       dataStruct = table.useName() + "Rec";
     else
     {
       dataStruct = table.useName() + proc.upperFirst() + "Rec";
-      added = "Proc";
     }
     outData.println(dataStruct + " " + table.useName() + proc.upperFirst()
                    + "(" + dataStruct + " rec)");
@@ -269,13 +268,11 @@ public class JavaRWiiCode extends Generator
   static void generateAction(Table table, Proc proc, PrintWriter outData)
   {
     String dataStruct;
-    String added = "";
     if (proc.isStdExtended())
       dataStruct = table.useName() + "Rec";
     else
     {
       dataStruct = table.useName() + proc.upperFirst() + "Rec";
-      added = "Proc";
     }
     boolean hasMods = proc.hasModifieds();
     boolean hasInput = (proc.inputs.size() > 0 || proc.dynamics.size() > 0);
@@ -325,13 +322,11 @@ public class JavaRWiiCode extends Generator
   static void generateBulkAction(Table table, Proc proc, PrintWriter outData)
   {
     String dataStruct;
-    String added = "";
     if (proc.isStdExtended())
       dataStruct = table.useName() + "Rec";
     else
     {
       dataStruct = table.useName() + proc.upperFirst() + "Rec";
-      added = "Proc";
     }
     boolean hasMods = proc.hasModifieds();
     boolean hasInput = (proc.inputs.size() > 0 || proc.dynamics.size() > 0);
@@ -380,7 +375,7 @@ public class JavaRWiiCode extends Generator
     outData.println("}");
     outData.println();
   }
-  static void generateCacheLoader(Table table, Proc proc, Vector extras, PrintWriter outData)
+  static void generateCacheLoader(Table table, Proc proc, Vector<?> extras, PrintWriter outData)
   {
     String dataStruct;
     if (proc.isStdExtended())

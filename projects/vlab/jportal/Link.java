@@ -32,6 +32,7 @@ public class Link implements Serializable
   public String linkName;
   public Vector<String> fields;
   public Vector<String> linkFields;
+  public Vector<String> options;
   public boolean isDeleteCascade;
   public Link()
   {
@@ -39,6 +40,7 @@ public class Link implements Serializable
     linkName = "";
     fields    = new Vector<String>();
     linkFields = new Vector<String>();
+    options = new Vector<String>();
     isDeleteCascade = false;
   }
   public void reader(DataInputStream ids) throws IOException

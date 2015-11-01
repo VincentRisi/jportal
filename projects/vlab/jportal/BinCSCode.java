@@ -136,7 +136,7 @@ public class BinCSCode extends Generator
     }
   }
   private static int maxVarNameLen = 4;
-  private static void setMaxVarNameLen(Vector fields, int minVarNameLen)
+  private static void setMaxVarNameLen(Vector<Field> fields, int minVarNameLen)
   {
     maxVarNameLen = minVarNameLen;
     for (int i = 0; i < fields.size(); i++)
@@ -148,7 +148,7 @@ public class BinCSCode extends Generator
         maxVarNameLen = len;
     }
   }
-  private static void generateStruct(Vector fields, String mainName, PrintWriter outData)
+  private static void generateStruct(Vector<Field> fields, String mainName, PrintWriter outData)
   {
     setMaxVarNameLen(fields, 4);
     outData.println("  public partial class " + mainName + " : ITJMarshal");
@@ -163,7 +163,7 @@ public class BinCSCode extends Generator
     generateReader(fields, outData);
     generateWriter(fields, outData);
   }
-  private static void generateWriter(Vector fields, PrintWriter outData)
+  private static void generateWriter(Vector<Field> fields, PrintWriter outData)
   {
     outData.println("    public void Write(TJWriter writer)");
     outData.println("    {");
@@ -174,7 +174,7 @@ public class BinCSCode extends Generator
     }
     outData.println("    }");
   }
-  private static void generateReader(Vector fields, PrintWriter outData)
+  private static void generateReader(Vector<Field> fields, PrintWriter outData)
   {
     outData.println("    public void Read(TJReader reader)");
     outData.println("    {");
@@ -187,12 +187,12 @@ public class BinCSCode extends Generator
   }
   private static void generateStructSetup(Proc proc, String mainName, PrintWriter outData)
   {
-    Vector fields = new Vector();
+    Vector<Field> fields = new Vector<Field>();
     for (int i=0; i<proc.outputs.size(); i++)
       fields.addElement(proc.outputs.elementAt(i));
     if (proc.hasDiscreteInput())
     {
-      Vector inputs = proc.inputs;
+      Vector<?> inputs = proc.inputs;
       for (int j = 0; j < inputs.size(); j++)
       {
         Field field = (Field)inputs.elementAt(j);
@@ -553,9 +553,9 @@ public class BinCSCode extends Generator
   }
   private static PlaceHolder placeHolder;
   private static int recLength;
-  private static HashMap makeHashMap(Proc proc)
+  private static HashMap<String, Integer> makeHashMap(Proc proc)
   {
-    HashMap map = new HashMap();
+    HashMap<String, Integer> map = new HashMap<String, Integer>();
     recLength = 0;
     if (proc.isStd == true)
     {
@@ -627,7 +627,7 @@ public class BinCSCode extends Generator
       return 262144 / recLength;
     return 1;
   }
-  private static void generateBinCode(Table table, Proc proc, Vector fields, PrintWriter outData)
+  private static void generateBinCode(Table table, Proc proc, Vector<Field> fields, PrintWriter outData)
   {
     boolean hasInput = (proc.inputs.size() > 0 || proc.dynamics.size() > 0);
     String dataStruct;
@@ -635,7 +635,7 @@ public class BinCSCode extends Generator
       dataStruct = table.useName();
     else
       dataStruct = table.useName() + proc.upperFirst();
-    HashMap map = makeHashMap(proc);
+    HashMap<?, ?> map = makeHashMap(proc);
     placeHolder = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
     outData.println("    const string " + table.name.toUpperCase() + "_" + proc.name.toUpperCase() + "_BIN =");
     outData.print("@\"");
@@ -649,7 +649,7 @@ public class BinCSCode extends Generator
       outData.print(" " + database.userid + " " + database.password);
     outData.println();
     outData.print("  proc " + table.name + " " + proc.name);
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     outData.print("(" + noRows(proc, recLength) + " ");
     outData.print(proc.lines.size() + " ");
     outData.print(placeHolder.pairs.size() + " ");

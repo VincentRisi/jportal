@@ -36,9 +36,9 @@ public class PythonTreeCode extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate Python Tree Code");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -306,7 +306,7 @@ public class PythonTreeCode extends Generator
       outData.println("_pr.outputs.append(_fd)");
     }
     PlaceHolder holder = new PlaceHolder(proc, PlaceHolder.COLON, "&");
-    Vector lines = holder.getLines();
+    Vector<String> lines = holder.getLines();
     if (lines.size() > 0)
     {
       outData.print("_pr.lines = ");
@@ -500,12 +500,12 @@ public class PythonTreeCode extends Generator
     out(outData, string("_fg.value", toBoolean(flag.value)));
     outData.println("_fg.description = '" + flag.description + "'");
   }
-  static void generateString(Vector strings, PrintWriter outData, PrintWriter outLog)
+  static void generateString(Vector<?> allUsers, PrintWriter outData, PrintWriter outLog)
   {
     outData.println("_strings('''\\");
-    for (int i = 0; i < strings.size(); i++)
+    for (int i = 0; i < allUsers.size(); i++)
     {
-      String string = (String) strings.elementAt(i);
+      String string = (String) allUsers.elementAt(i);
       if (string.length() > 2 && string.charAt(0) == '"')
         outData.println(string.substring(1, string.length() - 1));
       else
@@ -513,7 +513,7 @@ public class PythonTreeCode extends Generator
     }
     outData.println("''')");
   }
-  static void generateInteger(Vector integers, PrintWriter outData, PrintWriter outLog)
+  static void generateInteger(Vector<Integer> integers, PrintWriter outData, PrintWriter outLog)
   {
     outData.println("_integers('''\\");
     for (int i = 0; i < integers.size(); i++)

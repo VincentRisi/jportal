@@ -38,7 +38,7 @@ public class PlaceHolder implements Serializable
   private static final long serialVersionUID = 1L;
   public static final byte COLON=0, QUESTION=1, AT=2, CURLY=3, AT_NAMED=4, PERC_STRING=5, DOLLAR_NO=6;
   private Proc proc;
-  public Vector pairs;
+  public Vector<PlaceHolderPairs> pairs;
   private StringBuffer command, upper;
   private int questionsSeen;
   private String varPrefix;
@@ -73,9 +73,9 @@ public class PlaceHolder implements Serializable
   }
   }
 	private static final String BEGIN = "\uFFBB", END = "\uFFEE";
-  public Vector getLines()
+  public Vector<String> getLines()
   {
-    Vector result = new Vector();
+    Vector<String> result = new Vector<String>();
     int anchor = 0, beg, end;
     beg = indexOf(command, BEGIN, anchor);
     if (beg > 0)
@@ -106,7 +106,7 @@ public class PlaceHolder implements Serializable
     }
     return result;
   }
-  public Vector getPairs()
+  public Vector<PlaceHolderPairs> getPairs()
   {
     return pairs;
   }
@@ -136,7 +136,7 @@ public class PlaceHolder implements Serializable
   }
   private void makePairs()
   {
-		pairs = new Vector();
+		pairs = new Vector<PlaceHolderPairs>();
 		upper = new StringBuffer(command.toString().toUpperCase());
 		for (int i=0; i<proc.inputs.size();)
 		{

@@ -1,5 +1,5 @@
 //options {
-//  JDK_VERSION = "1.1";
+//  JDK_VERSION = "1.7";
 //}
 
 PARSER_BEGIN(JPortal)
@@ -2049,7 +2049,8 @@ void jOldData() :
   }
   ( jLine()
     {
-      proc.lines.addElement(line);
+      Line l1 = new Line(line);    
+      proc.lines.addElement(l1);
     }
   )*
   <ENDDATA>
@@ -2064,11 +2065,13 @@ void jNewData() :
   {
     proc = new Proc();
     proc.isData = true;
-    proc.lines.addElement(t.image.trim());
+    Line l1 = new Line(t.image.trim());
+    proc.lines.addElement(l1);
   }
   ( LOOKAHEAD(2) t = <DATALINE>
     {
-      proc.lines.addElement(t.image.trim());
+      Line l2 = new Line(t.image.trim());
+      proc.lines.addElement(l2);
     }
   )*
 }
@@ -2082,11 +2085,13 @@ void jIdlCode() :
   {
     proc = new Proc();
     proc.isIdlCode = true;
-    proc.lines.addElement(t.image);
+    Line l1 = new Line(t.image.trim());
+    proc.lines.addElement(l1);
   }
   ( LOOKAHEAD(2) t = <IDLLINE>
     {
-      proc.lines.addElement(t.image);
+      Line l2 = new Line(t.image.trim());
+      proc.lines.addElement(l2);
     }
   )*
 }

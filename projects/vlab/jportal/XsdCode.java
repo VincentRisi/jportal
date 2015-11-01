@@ -22,13 +22,11 @@ import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.awt.*;
-import java.awt.event.*;
 
 class Dataset
 {
   public String name;
-  public Vector tables;
+  public Vector<Table> tables;
   public String connectionStringName;
   public String connectionStringProperty;
   public Dataset(String name, String connectionStringName,
@@ -37,14 +35,14 @@ class Dataset
     this.name = name;
     this.connectionStringName = connectionStringName;
     this.connectionStringProperty = connectionStringProperty;
-    tables = new Vector();
+    tables = new Vector<Table>();
   }
 }
 
 public class XsdCode extends Generator
 {
-  protected static Hashtable projectFlagsVector = null;
-  protected static Vector     flagsVector;
+  protected static Hashtable<?, ?> projectFlagsVector = null;
+  protected static Vector<Flag>     flagsVector;
   public static void main(String args[])
   {
     try
@@ -53,9 +51,9 @@ public class XsdCode extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate XSD for NET");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -79,11 +77,11 @@ public class XsdCode extends Generator
     connectionProperty = "";
     namespace = "";
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagDefaults();
       flagsVector.addElement(new Flag("mssql storedprocs", new Boolean(
           mSSqlStoredProcs), "Generate MSSql Stored Procedures"));
@@ -112,7 +110,7 @@ public class XsdCode extends Generator
         + "\r\n- \"tableAdapters\" generate table adapter code";
   }
 
-  private static Hashtable datasets;
+  private static Hashtable<String, Dataset> datasets;
 
   static void markDatasets(Table table, String option,
       String connectionStringName, String connectionStringProperty)
@@ -193,7 +191,7 @@ public class XsdCode extends Generator
 			PrintWriter outLog)
   {
     setFlags(database, outLog);
-    datasets = new Hashtable();
+    datasets = new Hashtable<String, Dataset>();
 
 		if (projectFlagsVector != null)
 		{
@@ -263,7 +261,7 @@ public class XsdCode extends Generator
       dataset.tables = database.tables;
       datasets.put(database.name, dataset);
     }
-    Enumeration elements = datasets.elements();
+    Enumeration<Dataset> elements = datasets.elements();
     while (elements.hasMoreElements())
     {
       Dataset dataset = (Dataset) elements.nextElement();
@@ -387,7 +385,7 @@ public class XsdCode extends Generator
           boolean hasLinks = false;
           String relationName;
           int relationCount = 0;
-          Hashtable relations = new Hashtable();
+          Hashtable<String, String> relations = new Hashtable<String, String>();
 
           for (int i = 0; i < dataset.tables.size(); i++)
           {
@@ -840,7 +838,7 @@ public class XsdCode extends Generator
   static void genCommand(Table table, PlaceHolder placeHolder, String name,
       String commandType, PrintWriter outData, PrintWriter outLog)
   {
-    Vector fields = new Vector();
+    Vector<Field> fields = new Vector<Field>();
     String line;
     boolean autoincrement;
 
@@ -1228,7 +1226,7 @@ public class XsdCode extends Generator
     return placeHolder;
   }
 
-  static void genStoredProc(String storedProcName, Vector lines,
+  static void genStoredProc(String storedProcName, Vector<?> lines,
       PrintWriter procData, PlaceHolder placeHolder)
   {
     procData
@@ -1269,7 +1267,7 @@ public class XsdCode extends Generator
   {
     PlaceHolder placeHolder = new PlaceHolder(proc, PlaceHolder.AT_NAMED, "");
     String storedProcName = proc.table.useName() + proc.upperFirst();
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     genStoredProc(storedProcName, lines, procData, placeHolder);
     // outData.println("<!-- genCommand");
     // outData.println(storedProcName);
@@ -1284,7 +1282,7 @@ public class XsdCode extends Generator
     outData.println("          " + "<xs:complexType>");
     outData.println("            " + "<xs:sequence>");
 
-    Vector fields;
+    Vector<?> fields;
     String isNullable = "";
     String autoIncrement = "";
     String dataType = "";

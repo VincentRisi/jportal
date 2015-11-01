@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Vector;
 
 public class CSIdl2Code extends Generator
 {
@@ -33,9 +32,9 @@ public class CSIdl2Code extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate C# IDL Code for 3 Tier Access");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -220,13 +219,11 @@ public class CSIdl2Code extends Generator
   private static void genAction(Table table, Proc proc, PrintWriter outData)
   {
     String dataStruct;
-    String added = "";
     if (proc.isStdExtended())
       dataStruct = table.useName()+"Rec";
     else
     {
       dataStruct = table.useName()+proc.upperFirst()+"Rec";
-      added = "Proc";
     }
     boolean hasMods  = proc.hasModifieds();
     boolean hasInput = (proc.inputs.size() > 0 || proc.dynamics.size() > 0);

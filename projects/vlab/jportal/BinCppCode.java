@@ -134,9 +134,9 @@ public class BinCppCode extends Generator
     return 0;
   }
   private static int recLength;
-  private static HashMap makeHashMap(Proc proc)
+  private static HashMap<String, Integer> makeHashMap(Proc proc)
   {
-    HashMap map = new HashMap();
+    HashMap<String, Integer> map = new HashMap<String, Integer>();
     recLength = 0;
     if (proc.isStd == true)
     {
@@ -229,7 +229,7 @@ public class BinCppCode extends Generator
             Proc proc = (Proc)table.procs.elementAt(i);
             if (proc.isData == true)
               continue;
-            HashMap map = makeHashMap(proc);
+            HashMap<?, ?> map = makeHashMap(proc);
             placeHolder = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
             outHeadData.println("extern const char *" + table.name.toUpperCase() + "_" + proc.name.toUpperCase() + "_BIN;");
             outCppData.println("const char *" + table.name.toUpperCase() + "_" + proc.name.toUpperCase() + "_BIN =");
@@ -244,7 +244,7 @@ public class BinCppCode extends Generator
             outCppData.println(" \"");
             outCppData.print("  \"proc " + table.name + " " + proc.name);
             String tween = "";
-            Vector lines = placeHolder.getLines();
+            Vector<?> lines = placeHolder.getLines();
             outCppData.print("(" + noRows(proc, recLength) + " ");
             outCppData.print(proc.lines.size() + " ");
             outCppData.print(placeHolder.pairs.size() + " ");
@@ -424,7 +424,7 @@ public class BinCppCode extends Generator
     }
   }
   private static int maxVarNameLen = 4;
-  private static void setMaxVarNameLen(Vector fields, int minVarNameLen)
+  private static void setMaxVarNameLen(Vector<Field> fields, int minVarNameLen)
   {
     maxVarNameLen = minVarNameLen;
     for (int i = 0; i < fields.size(); i++)
@@ -436,7 +436,7 @@ public class BinCppCode extends Generator
         maxVarNameLen = len;
     }
   }
-  private static void generateTableStructs(Vector fields, String mainName, PrintWriter outData)
+  private static void generateTableStructs(Vector<Field> fields, String mainName, PrintWriter outData)
   {
     setMaxVarNameLen(fields, 4);
     outData.println("struct " + mainName);
@@ -460,7 +460,7 @@ public class BinCppCode extends Generator
     generateWriter(fields, outData);
     outData.println("};");
   }
-  private static void generateWriter(Vector fields, PrintWriter outData)
+  private static void generateWriter(Vector<Field> fields, PrintWriter outData)
   {
     outData.println("  void _write(TJWriter &writer)");
     outData.println("  {");
@@ -471,7 +471,7 @@ public class BinCppCode extends Generator
     }
     outData.println("  }");
   }
-  private static void generateReader(Vector fields, PrintWriter outData)
+  private static void generateReader(Vector<Field> fields, PrintWriter outData)
   {
     outData.println("  void _read(TJReader &reader)");
     outData.println("  {");
@@ -488,7 +488,7 @@ public class BinCppCode extends Generator
     setMaxVarNameLen(proc.inputs, maxVarNameLen);
     outData.println("struct " + mainName);
     outData.println("{");
-    Vector fields = new Vector();
+    Vector<Field> fields = new Vector<Field>();
     for (int i=0; i<proc.outputs.size(); i++)
       fields.addElement(proc.outputs.elementAt(i));
     if (fields.size() > 0)
@@ -503,7 +503,7 @@ public class BinCppCode extends Generator
     }
     if (proc.hasDiscreteInput())
     {
-      Vector inputs = proc.inputs;
+      Vector<?> inputs = proc.inputs;
       for (int j = 0; j < inputs.size(); j++)
       {
         Field field = (Field)inputs.elementAt(j);

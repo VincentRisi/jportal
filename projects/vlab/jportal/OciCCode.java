@@ -33,9 +33,9 @@ public class OciCCode extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate OCI C++ Code");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -61,7 +61,7 @@ public class OciCCode extends Generator
       s = s + " ";
     return s + " ";
   }
-  protected static Vector flagsVector;
+  protected static Vector<Flag> flagsVector;
   static boolean          aix;
   static boolean          lowercase;
   private static void flagDefaults()
@@ -69,11 +69,11 @@ public class OciCCode extends Generator
     aix = false;
     lowercase = false;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagDefaults();
       flagsVector.addElement(new Flag("aix", new Boolean(aix),
           "Generate for AIX"));
@@ -201,7 +201,7 @@ public class OciCCode extends Generator
     outData.println("struct D" + table.useName());
     outData.println("{");
     boolean canExtend = true;
-    Vector fields = table.fields;
+    Vector<Field> fields = table.fields;
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field) table.fields.elementAt(i);
@@ -239,7 +239,7 @@ public class OciCCode extends Generator
     outData.println();
   }
   private static void headerSwaps(PrintWriter outData, String baseClass,
-      Vector inputs)
+      Vector<Field> inputs)
   {
     outData.println("  void Clear()");
     outData.println("  {");
@@ -273,7 +273,7 @@ public class OciCCode extends Generator
     outData.println("  #endif");
   }
   private static void extendHeader(PrintWriter outData, String baseClass,
-      Vector inputs, String useName)
+      Vector<Field> inputs, String useName)
   {
     outData.println("  #if defined(_TBUFFER_H_)");
     outData.println("  void _toXML(TBAmp &XRec)");
@@ -320,7 +320,7 @@ public class OciCCode extends Generator
     extendDataBuildHeader(outData, baseClass, inputs, useName);
   }
   private static void extendDataBuildHeader(PrintWriter outData,
-      String baseClass, Vector inputs, String useName)
+      String baseClass, Vector<Field> inputs, String useName)
   {
     outData.println("  #if defined(_DATABUILD_H_)");
     if (baseClass.length() > 0)
@@ -388,7 +388,7 @@ public class OciCCode extends Generator
       String work = "";
       String work2 = "";
       boolean canExtend = true;
-      Vector fields = proc.outputs;
+      Vector<Field> fields = proc.outputs;
       for (int j = 0; j < fields.size(); j++)
       {
         Field field = (Field) fields.elementAt(j);

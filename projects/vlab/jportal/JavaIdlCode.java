@@ -35,6 +35,7 @@ public class JavaIdlCode extends Generator
         outLog.println(args[i]+": Generate Java IDL Code for 3 Tier Access");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -319,7 +320,7 @@ public class JavaIdlCode extends Generator
     outData.println("}");
     outData.println();
   }
-  static void generateCacheLoader(Table table, Proc proc, Vector extras, PrintWriter outData)
+  static void generateCacheLoader(Table table, Proc proc, Vector<?> extras, PrintWriter outData)
   {
     String dataStruct;
     if (proc.isStdExtended())

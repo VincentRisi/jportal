@@ -33,9 +33,9 @@ public class MySqlCCode extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate MySql C Code");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -158,7 +158,7 @@ public class MySqlCCode extends Generator
     }
     outData.println("typedef struct S_" + table.useName());
     outData.println("{");
-    Vector fields = table.fields;
+    Vector<Field> fields = table.fields;
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field) table.fields.elementAt(i);
@@ -197,7 +197,7 @@ public class MySqlCCode extends Generator
         }
         outData.println(" */");
       }
-      Vector fields;
+      Vector<?> fields;
       fields = proc.outputs;
       outData.println("typedef struct S_" + table.useName() + "_" + proc.name.toUpperCase());
       outData.println("{");
@@ -311,7 +311,7 @@ public class MySqlCCode extends Generator
   static void generateCommand(Proc proc, PrintWriter outData)
   {
     placeHolder = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     if (lines.size() > 0)
     {
       outData.println("static char* "+proc.table.useName().toUpperCase()+"_"+proc.name.toUpperCase()+"_COMMAND =");
@@ -335,7 +335,7 @@ public class MySqlCCode extends Generator
   static void generateImplementation(Table table, Proc proc, PrintWriter outData)
   {
     generateCommand(proc, outData);
-    Vector pairs = placeHolder.getPairs();
+    Vector<?> pairs = placeHolder.getPairs();
     String NOBINDS = table.name.toUpperCase() + "_" + proc.name.toUpperCase() + "_NOBINDS";
     String NODEFINES = table.name.toUpperCase() + "_" + proc.name.toUpperCase() + "_NODEFINES";
     outData.println("#define " + NOBINDS + " " + pairs.size());

@@ -32,6 +32,7 @@ public class Lite3PasCode extends Generator
         outLog.println(args[i] + ": Generate Lite3 Pascal Code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();

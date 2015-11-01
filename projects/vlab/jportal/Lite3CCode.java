@@ -33,9 +33,9 @@ public class Lite3CCode extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate Lite3 C Code");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -156,7 +156,7 @@ public class Lite3CCode extends Generator
     }
     outData.println("struct " + table.useName());
     outData.println("{");
-    Vector fields = table.fields;
+    Vector<?> fields = table.fields;
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field) table.fields.elementAt(i);
@@ -199,7 +199,7 @@ public class Lite3CCode extends Generator
         }
         outData.println(" */");
       }
-      Vector fields;
+      Vector<?> fields;
       fields = proc.outputs;
       outData.println("struct " + table.useName() + proc.upperFirst());
       outData.println("{");
@@ -297,7 +297,7 @@ public class Lite3CCode extends Generator
   static void generateCommand(Proc proc, PrintWriter outData)
   {
     placeHolder = new PlaceHolder(proc, PlaceHolder.COLON, "");
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     if (lines.size() > 0)
     {
       outData.println("const char* "+proc.table.useName()+proc.upperFirst()+"Command =");
@@ -324,11 +324,9 @@ public class Lite3CCode extends Generator
   {
     generateCommand(proc, outData);
     outData.println();
-    String dataStruct;
-    if (proc.isStdExtended())
-      dataStruct = table.useName();
-    else
-      dataStruct = table.useName() + proc.upperFirst();
+    if (proc.isStdExtended()) {
+	} else {
+	}
     outData.println("void X" + table.useName() + proc.upperFirst() + "::Exec()");
     outData.println("{");
     String COMMAND = proc.table.useName() + proc.upperFirst() + "Command";

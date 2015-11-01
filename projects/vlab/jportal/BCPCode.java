@@ -22,7 +22,11 @@ import java.io.PrintWriter;
 
 public class BCPCode extends Generator
 {
-  /**
+  private static ObjectInputStream in;
+private static PrintWriter outData;
+private static PrintWriter outData2;
+private static PrintWriter outData3;
+/**
    * Reads input from stored repository
    */
   public static void main(String args[])
@@ -33,7 +37,7 @@ public class BCPCode extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate bulk loader for MS SQL Server Code");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
+        in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
         generate(database, "", outLog);
       }
@@ -76,7 +80,7 @@ public class BCPCode extends Generator
       {
         String x;
         String fileName;
-        PrintWriter outData = new PrintWriter(outFile);
+        outData = new PrintWriter(outFile);
         if (table.database.output.length() > 0)
         {
           fileName = table.database.output;
@@ -100,9 +104,9 @@ public class BCPCode extends Generator
       outFile = new FileOutputStream(output + table.name + ".fmt");
       try
       {
-        PrintWriter outData = new PrintWriter(outFile);
-        outData.println("6.0");
-        outData.println("" + table.fields.size());
+        outData2 = new PrintWriter(outFile);
+        outData2.println("6.0");
+        outData2.println("" + table.fields.size());
         for (int i = 0; i < table.fields.size(); i++)
         {
           Field field = (Field) table.fields.elementAt(i);
@@ -111,7 +115,7 @@ public class BCPCode extends Generator
             r = "\"\\r\\n\"";
           else
             r = "\"\\t\"";
-          outData.println("" + (i + 1) +
+          outData2.println("" + (i + 1) +
               " " + varType(field) +
               " 0" +
               " " + fieldLength(field) +
@@ -119,7 +123,7 @@ public class BCPCode extends Generator
               " " + (i + 1) +
               " " + field.name);
         }
-        outData.flush();
+        outData2.flush();
       }
       finally
       {
@@ -129,19 +133,19 @@ public class BCPCode extends Generator
       outFile = new FileOutputStream(output + table.name + ".flt");
       try
       {
-        PrintWriter outData = new PrintWriter(outFile);
+        outData3 = new PrintWriter(outFile);
         for (int i = 0; i < table.fields.size(); i++)
         {
           String s;
           Field field = (Field) table.fields.elementAt(i);
           s = (field.isNull) ? "Y" : "N";
-          outData.println(field.name + "\t" +
+          outData3.println(field.name + "\t" +
               filterType(field) + "\t" +
               fieldLength(field) + "\t" +
               s + "\t" +
               fieldSize(field));
         }
-        outData.flush();
+        outData3.flush();
       }
       finally
       {

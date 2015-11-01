@@ -33,6 +33,7 @@ public class CSNetCode extends Generator
         outLog.println(args[i] + ": Generate C# Code for ADO.NET via IDbConnection");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -58,7 +59,7 @@ public class CSNetCode extends Generator
     + "\r\n- \"use separate\" generate classes in separate files"
       ;
   }
-  protected static Vector flagsVector;
+  protected static Vector<Flag> flagsVector;
   static boolean mSSqlStoredProcs;
   static boolean useGenerics;
   static boolean usePartials;
@@ -73,11 +74,11 @@ public class CSNetCode extends Generator
     useYields = false;
     useSeparate = false;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagDefaults();
       flagsVector.addElement(new Flag("mssql storedprocs", new Boolean(mSSqlStoredProcs), "Generate MSSql Stored Procedures"));
       flagsVector.addElement(new Flag("use generics", new Boolean(useGenerics), "Generate C# 2.0 Generics"));
@@ -516,7 +517,7 @@ public class CSNetCode extends Generator
       }
     }
   }
-  public static void generateStructPairs(Vector fields, Vector dynamics, String mainName, PrintWriter outData)
+  public static void generateStructPairs(Vector<Field> fields, Vector<?> dynamics, String mainName, PrintWriter outData)
   {
     outData.println("  [Serializable()]");
     outData.println("  public " + (usePartials ? "partial " : "") + "class " + mainName + "Rec");
@@ -600,7 +601,7 @@ public class CSNetCode extends Generator
           }
           outData.println("  /// </summary>");
         }
-        Vector fields = new Vector();
+        Vector<Field> fields = new Vector<Field>();
         for (int j = 0; j < proc.outputs.size(); j++)
           fields.addElement(proc.outputs.elementAt(j));
         for (int j = 0; j < proc.inputs.size(); j++)
@@ -645,7 +646,7 @@ public class CSNetCode extends Generator
     }
   }
   static PlaceHolder placeHolder;
-  static void generateStoredProc(Proc proc, String storedProcName, Vector lines)
+  static void generateStoredProc(Proc proc, String storedProcName, Vector<?> lines)
   {
     procData.println("if exists (select * from sysobjects where id = object_id('dbo." + storedProcName + "') and sysstat & 0xf = 4)");
     procData.println("drop procedure dbo." + storedProcName);
@@ -679,7 +680,7 @@ public class CSNetCode extends Generator
   {
     placeHolder = new PlaceHolder(proc, PlaceHolder.AT, "");
     String storedProcName = proc.table.useName() + proc.upperFirst();
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     generateStoredProc(proc, storedProcName, lines);
     outData.println("    public string Command" + proc.upperFirst() + "()");
     outData.println("    {");
@@ -703,7 +704,7 @@ public class CSNetCode extends Generator
       placeHolder = new PlaceHolder(proc, PlaceHolder.CURLY, "Rec.");
       outData.println("    public string Command" + proc.upperFirst() + "()");
     }
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     outData.println("    {");
     if (proc.hasReturning)
       outData.println("      Returning _ret = new Returning(aConnect.TypeOfVendor, aTable, aField);");
@@ -749,7 +750,7 @@ public class CSNetCode extends Generator
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(i);
       Field field = pair.field;
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
@@ -801,7 +802,7 @@ public class CSNetCode extends Generator
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(i);
       Field field = pair.field;
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
@@ -842,7 +843,7 @@ public class CSNetCode extends Generator
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(i);
       Field field = pair.field;
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
@@ -862,7 +863,7 @@ public class CSNetCode extends Generator
     {
       Field field = (Field)proc.outputs.elementAt(i);
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".Buffer";
       outData.println("          mRec." + field.useLowerName() + member + " = " + castOf(field) + "wCursor." + cursorGet(field, i) + ";");
     }
@@ -924,7 +925,7 @@ public class CSNetCode extends Generator
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(i);
       Field field = pair.field;
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
@@ -942,7 +943,7 @@ public class CSNetCode extends Generator
     {
       Field field = (Field)proc.outputs.elementAt(i);
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".Buffer";
       outData.println("        mRec." + field.useLowerName() + member + " = " + castOf(field) + "mCursor." + cursorGet(field, i) + ";");
     }

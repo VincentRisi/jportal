@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="19"  release="0" />
+    <Plugin name="JPortal">
+        <Value title="jportal" />
+        <Value version="15.1101" />
+        <Value description="JPortal Generator" />
+        <Value author="Vincent Risi" />
+        <Value authorEmail="vincent.risi@gmail.com" />
+        <Value authorWebsite="" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

@@ -84,9 +84,9 @@ public class BinCode extends Generator
     return result + "]";
   }
   private static int recLength;
-  private static HashMap makeHashMap(Proc proc)
+  private static HashMap<String, Integer> makeHashMap(Proc proc)
   {
-    HashMap map = new HashMap();
+    HashMap<String, Integer> map = new HashMap<String, Integer>();
     recLength = 0;
     if (proc.isStd == true)
     {
@@ -169,7 +169,7 @@ public class BinCode extends Generator
             Proc proc = (Proc)table.procs.elementAt(i);
             if (proc.isData == true)
               continue;
-            HashMap map = makeHashMap(proc);
+            HashMap<String, Integer> map = makeHashMap(proc);
             placeHolder = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
             outData.println("code " + table.name.toUpperCase() + "_" + proc.name.toUpperCase());
             Database database = table.database;
@@ -183,7 +183,7 @@ public class BinCode extends Generator
             outData.println();
             outData.print("  proc " + table.name + " " + proc.name);
             String tween = "";
-            Vector lines = placeHolder.getLines();
+            Vector<?> lines = placeHolder.getLines();
             outData.print("(" + noRows(proc, recLength) + " ");
             outData.print(proc.lines.size() + " ");
             outData.print(placeHolder.pairs.size() + " ");
@@ -211,7 +211,7 @@ public class BinCode extends Generator
             for (int j = 0; j < proc.outputs.size(); j++)
             {
               Field field = (Field)proc.outputs.elementAt(j);
-              Integer offset = (Integer)map.get(field.name);
+              Integer offset = map.get(field.name);
               int fieldLen = cppLength(field);
               outData.println("  out " + field.name + "(" + field.type + " " + field.length
                 + " " + field.precision + " " + field.scale + " " + offset.intValue() + " " + fieldLen + " " + fieldIs(field) + ")");
@@ -219,7 +219,7 @@ public class BinCode extends Generator
             for (int j = 0; j < proc.inputs.size(); j++)
             {
               Field field = (Field)proc.inputs.elementAt(j);
-              Integer offset = (Integer)map.get(field.name);
+              Integer offset = map.get(field.name);
               int fieldLen = cppLength(field);
               outData.println("  inp " + field.name + "(" + field.type + " " + field.length
                 + " " + field.precision + " " + field.scale + " " + offset.intValue() + " " + fieldLen + " " + fieldIs(field) + ")");
@@ -227,7 +227,7 @@ public class BinCode extends Generator
             for (int j = 0; j < proc.dynamics.size(); j++)
             {
               String s = (String)proc.dynamics.elementAt(j);
-              Integer offset = (Integer)map.get(s);
+              Integer offset = map.get(s);
               Integer n = (Integer)proc.dynamicSizes.elementAt(j);
               int len = n.intValue();
               outData.println("  dyn " + s + "(" + len + " " + offset.intValue() + ")");

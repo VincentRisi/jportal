@@ -32,9 +32,9 @@ public class CliCCode2 extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate CLI C++ Code for DB2");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -129,7 +129,7 @@ public class CliCCode2 extends Generator
   /**
    * Build of output data rec for standard procedures
    */
-  static Vector nullVector = new Vector();
+  static Vector<String> nullVector = new Vector<String>();
   static String structName = "";
   static void generateStdOutputRec(Table table, PrintWriter outData)
   {
@@ -142,7 +142,7 @@ public class CliCCode2 extends Generator
     structName = "D" + table.useName();
     outData.println("struct D" + table.useName());
     outData.println("{");
-    Vector fields = table.fields;
+    Vector<Field> fields = table.fields;
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field)fields.elementAt(i);
@@ -181,16 +181,16 @@ public class CliCCode2 extends Generator
       boolean needsFold = false;
       String work = "";
       String baseClass = "";
-      Vector fields = proc.outputs;
-      for (int j = 0; j < fields.size(); j++)
-      {
-        Field field = (Field)fields.elementAt(j);
-      }
-      fields = proc.inputs;
-      for (int j = 0; j < fields.size(); j++)
-      {
-        Field field = (Field)fields.elementAt(j);
-      }
+      Vector<Field> fields = proc.outputs;
+      //for (int j = 0; j < fields.size(); j++)
+      //{
+      //  Field field = fields.elementAt(j);
+      //}
+      //fields = proc.inputs;
+      //for (int j = 0; j < fields.size(); j++)
+      //{
+      //  Field field = (Field)fields.elementAt(j);
+      //}
       fields = proc.outputs;
       if (fields.size() > 0)
       {
@@ -233,7 +233,7 @@ public class CliCCode2 extends Generator
         outData.println("struct D" + table.useName() + proc.upperFirst() + work);
         outData.println("{");
         int filler = 0;
-        Vector inputs = proc.inputs;
+        Vector<Field> inputs = proc.inputs;
         for (int j = 0; j < inputs.size(); j++)
         {
           Field field = (Field)inputs.elementAt(j);
@@ -268,7 +268,7 @@ public class CliCCode2 extends Generator
       }
     }
   }
-  private static boolean headerSwaps(PrintWriter outData, String baseClass, Vector inputs, Proc proc, boolean setFold)
+  private static boolean headerSwaps(PrintWriter outData, String baseClass, Vector<Field> inputs, Proc proc, boolean setFold)
   {
     outData.println("  void Clear()");
     outData.println("  {");
@@ -385,7 +385,7 @@ public class CliCCode2 extends Generator
     }
     return "";
   }
-  private static void extendDataBuildHeader(PrintWriter outData, String baseClass, Vector inputs, String useName, Vector dynamics, Proc proc)
+  private static void extendDataBuildHeader(PrintWriter outData, String baseClass, Vector<Field> inputs, String useName, Vector<String> dynamics, Proc proc)
   {
     int inputNo = 0;
     if (baseClass.length() > 0)
@@ -748,7 +748,7 @@ public class CliCCode2 extends Generator
     boolean isReturning = false;
     boolean isBulkSequence = false;
     String front = "", back = "", sequencer = "";
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     int size = 1;
     if (proc.isInsert == true && proc.hasReturning == true && proc.outputs.size() == 1)
     {

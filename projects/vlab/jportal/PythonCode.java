@@ -41,6 +41,7 @@ public class PythonCode extends Generator
         outLog.println(args[i] + ": Generate Ado Python Code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -119,7 +120,7 @@ public class PythonCode extends Generator
       outLog.println("Generate Procs IO Error");
     }
   }
-  static void generateDataFields(Vector fields, String superName, String tableName, PrintWriter outData)
+  static void generateDataFields(Vector<Field> fields, String superName, String tableName, PrintWriter outData)
   {
     outData.println(" def __init__(self):");
     if (superName.length() > 0)
@@ -189,7 +190,7 @@ public class PythonCode extends Generator
       if (proc.hasDiscreteInput())
       {
         outData.println("class D" + table.useName() + proc.upperFirst() + work + ":");
-        Vector discreteInputs = new Vector();
+        Vector<Field> discreteInputs = new Vector<Field>();
         for (int j = 0; j < proc.inputs.size(); j++)
         {
           Field field = (Field) proc.inputs.elementAt(j);
@@ -388,9 +389,9 @@ public class PythonCode extends Generator
 
     }
   }
-  static Vector generatePutFields(Proc proc)
+  static Vector<Field> generatePutFields(Proc proc)
   {
-    Vector holders = new Vector();
+    Vector<Field> holders = new Vector<Field>();
 
     if (proc.placeHolders.size() > 0)
       for (int j = 0; j < proc.placeHolders.size(); j++)
@@ -398,7 +399,11 @@ public class PythonCode extends Generator
         String s = (String) proc.placeHolders.elementAt(j);
         int n = proc.indexOf(s);
         if (n < 0)
-          holders.addElement("(" + s + " is not an input)");
+        {
+          Field field = new Field();
+          field.name = "(" + s + " is not an input)";
+          holders.addElement(field);
+        }
         else
           holders.addElement(proc.inputs.elementAt(n));
       }
@@ -418,7 +423,7 @@ public class PythonCode extends Generator
   static void generateParmPut(Proc proc, Table table, PrintWriter outData)
   {
 //		Vector holders = generatePutFields(proc);
-    Vector holders = proc.inputs;
+    Vector<Field> holders = proc.inputs;
     if (holders.size() == 0)
       return;
     String t = "";
@@ -448,7 +453,7 @@ public class PythonCode extends Generator
   }
   static void generatePuts(Proc proc, Table table, PrintWriter outData)
   {
-    Vector holders = generatePutFields(proc);
+    Vector<Field> holders = generatePutFields(proc);
 
     for (int j = 0; j < holders.size(); j++)
     {

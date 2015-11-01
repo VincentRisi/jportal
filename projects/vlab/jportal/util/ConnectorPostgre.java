@@ -37,7 +37,7 @@ public class ConnectorPostgre extends Connector
   }
   void connect(String url, String password) throws Exception
   {
-    Class postgresqlDriver = Class.forName("org.postgresql.Driver");
+    Class<?> postgresqlDriver = Class.forName("org.postgresql.Driver");
     Driver driver = (Driver) postgresqlDriver.newInstance();
     DriverManager.registerDriver(driver);
     connection = DriverManager.getConnection(url, user, password);

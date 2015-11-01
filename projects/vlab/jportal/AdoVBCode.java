@@ -33,7 +33,7 @@ public class AdoVBCode extends Generator
       for (int i = 0; i <args.length; i++)
       {
         outLog.println(args[i]+": Generate VB ADO Code");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
+        in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
         generate(database, "", outLog);
       }
@@ -52,17 +52,18 @@ public class AdoVBCode extends Generator
   {
     return "Generates VB5/6 ADO Code";
   }
-  protected static Vector flagsVector;
+  protected static Vector<Flag> flagsVector;
   static boolean ioRoutines;
+private static ObjectInputStream in;
   private static void flagDefaults()
   {
     ioRoutines = false;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagDefaults();
       flagsVector.addElement(new Flag("io routines", new Boolean (ioRoutines), "Generate IO Routines"));
     }
@@ -435,7 +436,7 @@ public class AdoVBCode extends Generator
   /**
   * Build's a VB Record
   */
-  static void generateRec(Vector fields, PrintWriter outData)
+  static void generateRec(Vector<Field> fields, PrintWriter outData)
   {
     for (int i=0; i < fields.size(); i++)
     {

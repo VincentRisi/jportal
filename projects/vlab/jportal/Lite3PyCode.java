@@ -35,6 +35,7 @@ public class Lite3PyCode extends Generator
         outLog.println(args[i]+": Generate Lite3 Code for Python");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -114,7 +115,7 @@ public class Lite3PyCode extends Generator
       outLog.println("Generate Procs IO Error");
     }
   }
-  static void generateDataFields(Vector fields, String superName,
+  static void generateDataFields(Vector<Field> fields, String superName,
       String tableName, PrintWriter outData)
   {
     outData.print("  __slots__ = [");
@@ -130,8 +131,6 @@ public class Lite3PyCode extends Generator
     }
     outData.println("]");
     outData.println("  def __init__(self):");
-//    if (superName.length() > 0)
-//      outData.println("    " + superName + ".__init__(self)");
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field)fields.elementAt(i);
@@ -141,12 +140,6 @@ public class Lite3PyCode extends Generator
         outData.println("    self." + field.useName() + " = ''");
     }
     outData.println("  def _fromList(self, _result):");
-    String no = "";
-//    if (superName.length() > 0)
-//    {
-//      outData.println("    _no = " + superName + "._fromList(self, _result)");
-//      no = "_no+";
-//    }
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field)fields.elementAt(i);
@@ -192,7 +185,7 @@ public class Lite3PyCode extends Generator
       if (proc.isStdExtended())
         continue;
       String superName = "";
-      Vector procFields = new Vector();
+      Vector<Field> procFields = new Vector<Field>();
       superName = table.useName() + proc.upperFirst();
       outData.println("class " + table.useName() + proc.upperFirst() + "(object):");
       outData.println("  def _make(self): return " + table.useName() + proc.upperFirst() + "()");
@@ -247,19 +240,6 @@ public class Lite3PyCode extends Generator
       outData.println();
     }
   }
-  private static void generateSql(Table table, PrintWriter outData)
-  {
-    for (int i = 0; i < table.procs.size(); i++)
-    {
-      Proc proc = (Proc)table.procs.elementAt(i);
-      if (proc.isData)
-        continue;
-      PlaceHolder holder = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
-      Vector lines = holder.getLines();
-      generateString(proc, proc.lowerFirst(), lines, outData);
-      outData.println();
-    }
-  }
   private static void generateCode(Table table, PrintWriter outData)
   {
     for (int i = 0; i < table.procs.size(); i++)
@@ -268,7 +248,7 @@ public class Lite3PyCode extends Generator
       if (proc.isData)
         continue;
       PlaceHolder holder = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
-      Vector pairs = holder.getPairs();
+      Vector<?> pairs = holder.getPairs();
       String parent;
       if (proc.hasNoData() == true)
         parent = "object";
@@ -285,7 +265,7 @@ public class Lite3PyCode extends Generator
         outData.println("    " + parent + ".__init__(self)");
       }
       outData.println("  def " + proc.lowerFirst() + "(self, connect):");
-      Vector lines = holder.getLines();
+      Vector<?> lines = holder.getLines();
       String command = "_command";
       generateString(proc, command, lines, outData);
       outData.println("    cursor = connect.cursor()");
@@ -335,7 +315,7 @@ public class Lite3PyCode extends Generator
   {
     outData.println("    pass");
   }
-  static void generateString(Proc proc, String name, Vector strings, PrintWriter outData)
+  static void generateString(Proc proc, String name, Vector<?> strings, PrintWriter outData)
   {
     String added = "";
     outData.println("    "+name+" = '''\\");

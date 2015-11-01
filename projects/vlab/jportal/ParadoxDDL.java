@@ -34,6 +34,7 @@ public class ParadoxDDL extends Generator
         outLog.println(args[i]+": generating Paradox DDL");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -226,7 +227,7 @@ public class ParadoxDDL extends Generator
   {
     for (int i=0; i < proc.lines.size(); i++)
     {
-      String l = (String) proc.lines.elementAt(i);
+      String l = proc.lines.elementAt(i).line;
       outData.println(l);
     }
     outData.println();

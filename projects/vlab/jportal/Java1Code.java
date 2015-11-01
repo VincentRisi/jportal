@@ -34,6 +34,7 @@ public class Java1Code extends Generator
         outLog.println(args[i]+": generate Java code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();

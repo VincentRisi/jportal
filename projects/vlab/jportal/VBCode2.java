@@ -35,6 +35,7 @@ public class VBCode2 extends Generator
         outLog.println(args[i]+": Generate VB DAO Code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -54,17 +55,17 @@ public class VBCode2 extends Generator
 		  +"If has flag 'io routines' then will generate get and put files "
 		  +"for the records.";
   }
-  protected static Vector flagsVector;
+  protected static Vector<Flag> flagsVector;
   static boolean ioRoutines;
   private static void flagDefaults()
   {
     ioRoutines = false;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagDefaults();
       flagsVector.addElement(new Flag("io routines", new Boolean (ioRoutines), "Generate IO Routines"));
     }
@@ -496,7 +497,7 @@ public class VBCode2 extends Generator
   /**
   * Build's a VB Record
   */
-  static void generateRec(Vector fields, PrintWriter outData)
+  static void generateRec(Vector<?> fields, PrintWriter outData)
   {
     for (int i=0; i < fields.size(); i++)
     {
@@ -514,19 +515,6 @@ public class VBCode2 extends Generator
         outData.println("  "+field.useName()+"IsNull as Boolean");
     }
   }
-//  static void emitSpecialInputCode(Proc proc, int index, PrintWriter outData, String tableName, String optUseIndex)
-//  {
-//    Field field = (Field) proc.inputs.elementAt(index);
-//    if (proc.isInsert)
-//    {
-//      if (field.isSequence)
-//        outData.println("  Rec"+optUseIndex+"."+field.useName()+" = getSequence(\""+tableName+"\") ' User supplied Function for Sequences");
-//    }
-//    if (field.type == field.TIMESTAMP)
-//      outData.println("  Rec"+optUseIndex+"."+field.useName()+" = getTimeStamp ' User supplied Function for Time Stamp");
-//    if (field.type == field.USERSTAMP)
-//      outData.println("  Rec"+optUseIndex+"."+field.useName()+" = getUserStamp ' User supplied Function for User Stamp");
-//  }
   /**
   * Emit function for processing the inputs
   */

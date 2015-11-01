@@ -35,6 +35,7 @@ public class IdlJRWCode extends Generator
         outLog.println(args[i] + ": Generate IDL Code for 3 Tier Access");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -261,7 +262,7 @@ public class IdlJRWCode extends Generator
       generateProcRec(proc, table.useName() + proc.upperFirst(), outData);
     }
   }
-  private static void generateTableRec(Vector fields, String mainName, PrintWriter outData)
+  private static void generateTableRec(Vector<?> fields, String mainName, PrintWriter outData)
   {
     outData.println("  public partial class " + mainName + "Rec");
     outData.println("  {");
@@ -511,29 +512,6 @@ public class IdlJRWCode extends Generator
       + " { get { return " + field.useLowerName() + ";}"
       + " set { " + field.useLowerName() + " = value; } }";
   }
-  private static boolean isStringOrDate(Field field)
-  {
-    switch (field.type)
-    {
-      case Field.ANSICHAR:
-        if (field.length == 1)
-          return false;
-      case Field.CHAR:
-      case Field.MONEY:
-      case Field.TLOB:
-      case Field.USERSTAMP:
-      case Field.DATE:
-      case Field.DATETIME:
-      case Field.TIME:
-      case Field.TIMESTAMP:
-        return true;
-      case Field.DOUBLE:
-        return field.precision > 15;
-      default:
-        break;
-    }
-    return false;
-  }
   static boolean isNull(Field field)
   {
     if (field.isNull == false)
@@ -561,43 +539,5 @@ public class IdlJRWCode extends Generator
     //Field.BLOB
     //Field.XML
     return false;
-  }
-  private static String rpcAttributes(Field field)
-  {
-    if (field.type == Field.BLOB)
-      return "";
-    if (field.type == Field.ANSICHAR && field.length == 1)
-      return "";
-    int l = 0;
-    if (field.type == Field.MONEY)
-      l = 21;
-    else if (field.type == Field.DOUBLE && field.precision > 15)
-      l = field.precision + 3;
-    else if (field.type == Field.USERSTAMP) // special case (used to be 8)
-      l = 17;
-    else if (isStringOrDate(field))
-        l = field.length + 1;
-    if (l != 0)
-      return "[Field(Size=" + (l) + ")] ";
-    if (field.type == Field.BLOB)
-      return "[Field(Size=" + (field.length - 4) + ")] ";
-    else
-      return "";
-  }
-  private static String attributes(Field field)
-  {
-    String result = "";
-    boolean continued = false;
-    for (int i = 0; i < field.comments.size(); i++)
-    {
-      String comment = (String)field.comments.elementAt(i);
-      int last = comment.length() - 1;
-      if (continued == true || comment.charAt(0) == '[')
-      {
-        result += " " + comment;
-        continued = comment.charAt(last) == ',';
-      }
-    }
-    return result;
   }
 }

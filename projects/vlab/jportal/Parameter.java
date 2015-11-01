@@ -31,9 +31,9 @@ public class Parameter implements Serializable
   public Proc   update;
   public String title;
   public Proc   cache;
-  public Vector supplied;
-  public Vector shows;
-  public Vector cacheExtras;
+  public Vector<Field> supplied;
+  public Vector<Field> shows;
+  public Vector<String> cacheExtras;
   public boolean isViewOnly;
   public Parameter()
   {
@@ -44,9 +44,9 @@ public class Parameter implements Serializable
     update      = null;
     title       = "";
     cache       = null;
-    supplied    = new Vector();
-    shows       = new Vector();
-    cacheExtras = new Vector();
+    supplied    = new Vector<Field>();
+    shows       = new Vector<Field>();
+    cacheExtras = new Vector<String>();
     isViewOnly  = false;
   }
   public void reader(DataInputStream ids) throws IOException

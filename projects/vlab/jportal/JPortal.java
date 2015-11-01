@@ -238,7 +238,7 @@ public class JPortal implements JPortalConstants {
       for (dE=1; dE < s.length(); dE++)
       {
         c = s.charAt(dE);
-        if (dE == 1 && c == '\'')
+        if (dE == 1 && c == '\u005c'')
         {
           strung = true;
           addB = 1;
@@ -248,7 +248,7 @@ public class JPortal implements JPortalConstants {
         if (valid.indexOf(c) == -1)
           break;
       }
-      if (strung == true && c == '\'')
+      if (strung == true && c == '\u005c'')
       {
         addE = 1;
         dE++;
@@ -2464,10 +2464,10 @@ public class JPortal implements JPortalConstants {
     s = t.image;
     while (s.indexOf('*') == 0)
       s = s.substring(1);
-    n = s.indexOf('\r');
+    n = s.indexOf('\u005cr');
     if (n == -1)
     {
-      n = s.indexOf('\n');
+      n = s.indexOf('\u005cn');
       if (n == -1)
         n = s.length()-1;
     }
@@ -2866,7 +2866,8 @@ public class JPortal implements JPortalConstants {
         break label_49;
       }
       jLine();
-      proc.lines.addElement(line);
+      Line l1 = new Line(line);
+      proc.lines.addElement(l1);
     }
     jj_consume_token(ENDDATA);
   }
@@ -2876,7 +2877,8 @@ public class JPortal implements JPortalConstants {
     t = jj_consume_token(DATALINE);
     proc = new Proc();
     proc.isData = true;
-    proc.lines.addElement(t.image.trim());
+    Line l1 = new Line(t.image.trim());
+    proc.lines.addElement(l1);
     label_50:
     while (true) {
       if (jj_2_6(2)) {
@@ -2885,7 +2887,8 @@ public class JPortal implements JPortalConstants {
         break label_50;
       }
       t = jj_consume_token(DATALINE);
-      proc.lines.addElement(t.image.trim());
+      Line l2 = new Line(t.image.trim());
+      proc.lines.addElement(l2);
     }
   }
 
@@ -2894,7 +2897,8 @@ public class JPortal implements JPortalConstants {
     t = jj_consume_token(IDLLINE);
     proc = new Proc();
     proc.isIdlCode = true;
-    proc.lines.addElement(t.image);
+    Line l1 = new Line(t.image.trim());
+    proc.lines.addElement(l1);
     label_51:
     while (true) {
       if (jj_2_7(2)) {
@@ -2903,114 +2907,120 @@ public class JPortal implements JPortalConstants {
         break label_51;
       }
       t = jj_consume_token(IDLLINE);
-      proc.lines.addElement(t.image);
+      Line l2 = new Line(t.image.trim());
+      proc.lines.addElement(l2);
     }
   }
 
-  static final private boolean jj_2_1(int xla) {
+  static private boolean jj_2_1(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_1(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(0, xla); }
   }
 
-  static final private boolean jj_2_2(int xla) {
+  static private boolean jj_2_2(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
   }
 
-  static final private boolean jj_2_3(int xla) {
+  static private boolean jj_2_3(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_3(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(2, xla); }
   }
 
-  static final private boolean jj_2_4(int xla) {
+  static private boolean jj_2_4(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_4(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(3, xla); }
   }
 
-  static final private boolean jj_2_5(int xla) {
+  static private boolean jj_2_5(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_5(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(4, xla); }
   }
 
-  static final private boolean jj_2_6(int xla) {
+  static private boolean jj_2_6(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_6(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(5, xla); }
   }
 
-  static final private boolean jj_2_7(int xla) {
+  static private boolean jj_2_7(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_7(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(6, xla); }
   }
 
-  static final private boolean jj_3R_72() {
+  static private boolean jj_3R_72() {
     if (jj_scan_token(SELECT)) return true;
     return false;
   }
 
-  static final private boolean jj_3_3() {
+  static private boolean jj_3_3() {
     if (jj_scan_token(LEFTPAREN)) return true;
     if (jj_3R_53()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_53() {
+  static private boolean jj_3R_53() {
     if (jj_scan_token(NUMBER)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_71() {
+  static private boolean jj_3R_71() {
     if (jj_scan_token(INSERT)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_62() {
+  static private boolean jj_3R_62() {
     if (jj_scan_token(VIEW)) return true;
     if (jj_3R_65()) return true;
     return false;
   }
 
-  static final private boolean jj_3_1() {
+  static private boolean jj_3_1() {
     if (jj_3R_52()) return true;
     return false;
   }
 
-  static final private boolean jj_3_2() {
+  static private boolean jj_3_2() {
     if (jj_scan_token(LEFTPAREN)) return true;
     if (jj_scan_token(MULTIPLE)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_61() {
+  static private boolean jj_3R_61() {
     if (jj_scan_token(LINK)) return true;
     if (jj_3R_65()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_70() {
+  static private boolean jj_3R_70() {
     if (jj_scan_token(DELETE)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_69() {
+  static private boolean jj_3_7() {
+    if (jj_scan_token(IDLLINE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_69() {
     if (jj_scan_token(ALL)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_66() {
+  static private boolean jj_3R_66() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_69()) {
@@ -3032,34 +3042,29 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static final private boolean jj_3R_63() {
+  static private boolean jj_3R_63() {
     if (jj_scan_token(CONST)) return true;
     if (jj_3R_65()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_60() {
+  static private boolean jj_3R_60() {
     if (jj_scan_token(KEY)) return true;
     if (jj_3R_65()) return true;
     return false;
   }
 
-  static final private boolean jj_3_7() {
-    if (jj_scan_token(IDLLINE)) return true;
-    return false;
-  }
-
-  static final private boolean jj_3R_68() {
+  static private boolean jj_3R_68() {
     if (jj_scan_token(LIDENTIFIER)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_67() {
+  static private boolean jj_3R_67() {
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_65() {
+  static private boolean jj_3R_65() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_67()) {
@@ -3069,59 +3074,59 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static final private boolean jj_3_5() {
+  static private boolean jj_3_5() {
     if (jj_scan_token(LEFTPAREN)) return true;
     if (jj_3R_53()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_58() {
+  static private boolean jj_3R_58() {
     if (jj_3R_63()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_57() {
+  static private boolean jj_3R_57() {
     if (jj_3R_62()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_74() {
+  static private boolean jj_3R_74() {
     if (jj_scan_token(EXECUTE)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_56() {
+  static private boolean jj_3_6() {
+    if (jj_scan_token(DATALINE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_56() {
     if (jj_3R_61()) return true;
     return false;
   }
 
-  static final private boolean jj_3_4() {
+  static private boolean jj_3_4() {
     if (jj_scan_token(LEFTPAREN)) return true;
     if (jj_scan_token(SINGLE)) return true;
     return false;
   }
 
-  static final private boolean jj_3_6() {
-    if (jj_scan_token(DATALINE)) return true;
-    return false;
-  }
-
-  static final private boolean jj_3R_64() {
+  static private boolean jj_3R_64() {
     if (jj_3R_66()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_73() {
+  static private boolean jj_3R_73() {
     if (jj_scan_token(UPDATE)) return true;
     return false;
   }
 
-  static final private boolean jj_3R_55() {
+  static private boolean jj_3R_55() {
     if (jj_3R_60()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_52() {
+  static private boolean jj_3R_52() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_54()) {
@@ -3140,12 +3145,12 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static final private boolean jj_3R_54() {
+  static private boolean jj_3R_54() {
     if (jj_3R_59()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_59() {
+  static private boolean jj_3R_59() {
     if (jj_scan_token(GRANT)) return true;
     Token xsp;
     if (jj_3R_64()) return true;
@@ -3157,14 +3162,16 @@ public class JPortal implements JPortalConstants {
   }
 
   static private boolean jj_initialized_once = false;
+  /** Generated Token Manager. */
   static public JPortalTokenManager token_source;
   static SimpleCharStream jj_input_stream;
-  static public Token token, jj_nt;
+  /** Current token. */
+  static public Token token;
+  /** Next token. */
+  static public Token jj_nt;
   static private int jj_ntk;
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
-  static public boolean lookingAhead = false;
-  static private boolean jj_semLA;
   static private int jj_gen;
   static final private int[] jj_la1 = new int[138];
   static private int[] jj_la1_0;
@@ -3173,40 +3180,45 @@ public class JPortal implements JPortalConstants {
   static private int[] jj_la1_3;
   static private int[] jj_la1_4;
   static {
-      jj_la1_0();
-      jj_la1_1();
-      jj_la1_2();
-      jj_la1_3();
-      jj_la1_4();
+      jj_la1_init_0();
+      jj_la1_init_1();
+      jj_la1_init_2();
+      jj_la1_init_3();
+      jj_la1_init_4();
    }
-   private static void jj_la1_0() {
+   private static void jj_la1_init_0() {
       jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x100000,0x0,0x0,0x0,0x0,0x0,0x10100000,0x0,0x10100000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60a7f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x400000,0x0,0x0,0x20000080,0x0,0x20000080,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40000,0x20000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0218000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0218000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
-   private static void jj_la1_1() {
+   private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x10,0x0,0x8000000,0x4000200,0x4000200,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x200,0x40000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000000,0x0,0x0,0x0,0xc00000,0x400000,0xc00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x21,0x0,0xa4121,0x0,0x10000,0x0,0x0,0x0,0x10000,0x0,0x0,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x18080,0x0,0x0,0x2004,0x0,0x2004,0x1000000,0x0,0x20000000,0x0,0x20000000,0x0,0x0,0x0,0x0,0x1000000,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x0,0x40000000,0x42008,0x0,0x40000000,0x0,0x0,0x0,0x40,0x80000000,0x80000040,0x400,0x2000400,0x40,0x80000000,0x80000040,0x42008,0x1000000,0x0,0x0,0x0,0x1000000,0x0,0x0,0x0,0x1000,0x0,0x0,0x800,0x0,0x0,0x4000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
-   private static void jj_la1_2() {
+   private static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x1000,0x800000,0x2,0x100000,0x0,0x0,0x0,0x1000,0x400,0x8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x762e0a0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf0000000,0x0,0x0,0x8,0x0,0x8,0x0,0x80000,0x0,0xf0000000,0x800000,0x0,0x0,0x80004,0x0,0x80004,0x0,0x0,0x40000,0x0,0x40000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x0,0x0,0x0,0x0,0x400,0x80018,0x0,0x400,0x1,0x0,0x0,0x0,0x80000,0x80000,0x0,0x0,0x0,0x80000,0x80000,0x80018,0x0,0x0,0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x80000,0x0,};
    }
-   private static void jj_la1_3() {
+   private static void jj_la1_init_3() {
       jj_la1_3 = new int[] {0x0,0x200000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3200000,0x3000000,0x0,0x20,0x0,0x3000000,0x4000,0x8000,0x8000,0x0,0x100,0x0,0x200000,0x3000000,0x8000,0x0,0x0,0x0,0x100,0x10c000,0xa000,0xa000,0x10c000,0x2000,0x10c000,0x10c000,0x2000,0x10c000,0x10c000,0x2000,0xa000,0xa000,0xa000,0xa000,0x10c000,0x10c000,0x10c000,0x0,0xc000,0x1000,0x8000,0x0,0x800,0x3000000,0xc000,0x0,0x800,0x3000000,0x3100000,0x10c000,0x10c000,0x800,0x3000000,0x200000,0xf,0x3000000,0x3000000,0x3000000,0x3000000,0x3000000,0x3000000,0x3000000,0x3000000,0xf,0x0,0x800,0x3000000,0x0,0x3000000,0x0,0x0,0x200000,0x0,0x3000000,0x0,0x3000000,0x8000,0x0,0x0,0x0,0x200000,0x3000000,0x3000000,0x0,0x3000000,0x0,0x10,0x80000000,0x200000,0x0,0x3000000,0x20,0x20,0x0,0x8000,0x8000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200000,0x0,0x100,0x0,0x200000,0x8000,0x3000000,0x0,0x8000,0x3000000,0x0,0x8000,0x3000000,0x0,0x10,0x0,0x3200000,0x3200000,0x80000000,0x8000,0x0,0x200000,};
    }
-   private static void jj_la1_4() {
+   private static void jj_la1_init_4() {
       jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40,0x0,0x0,0x0,0x24,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x24,0x24,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[7];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
+  /** Constructor with InputStream. */
   public JPortal(java.io.InputStream stream) {
+     this(stream, null);
+  }
+  /** Constructor with InputStream and supplied encoding */
+  public JPortal(java.io.InputStream stream, String encoding) {
     if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser.  You must");
-      System.out.println("       either use ReInit() or set the JavaCC option STATIC to false");
+      System.out.println("ERROR: Second call to constructor of static parser.  ");
+      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
       System.out.println("       during parser generation.");
       throw new Error();
     }
     jj_initialized_once = true;
-    jj_input_stream = new SimpleCharStream(stream, 1, 1);
+    try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new JPortalTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
@@ -3215,8 +3227,13 @@ public class JPortal implements JPortalConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Reinitialise. */
   static public void ReInit(java.io.InputStream stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
+     ReInit(stream, null);
+  }
+  /** Reinitialise. */
+  static public void ReInit(java.io.InputStream stream, String encoding) {
+    try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
@@ -3225,10 +3242,11 @@ public class JPortal implements JPortalConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Constructor. */
   public JPortal(java.io.Reader stream) {
     if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser.  You must");
-      System.out.println("       either use ReInit() or set the JavaCC option STATIC to false");
+      System.out.println("ERROR: Second call to constructor of static parser. ");
+      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
       System.out.println("       during parser generation.");
       throw new Error();
     }
@@ -3242,6 +3260,7 @@ public class JPortal implements JPortalConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Reinitialise. */
   static public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
@@ -3252,10 +3271,11 @@ public class JPortal implements JPortalConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Constructor with generated Token Manager. */
   public JPortal(JPortalTokenManager tm) {
     if (jj_initialized_once) {
-      System.out.println("ERROR: Second call to constructor of static parser.  You must");
-      System.out.println("       either use ReInit() or set the JavaCC option STATIC to false");
+      System.out.println("ERROR: Second call to constructor of static parser. ");
+      System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
       System.out.println("       during parser generation.");
       throw new Error();
     }
@@ -3268,6 +3288,7 @@ public class JPortal implements JPortalConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
+  /** Reinitialise. */
   public void ReInit(JPortalTokenManager tm) {
     token_source = tm;
     token = new Token();
@@ -3277,7 +3298,7 @@ public class JPortal implements JPortalConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  static final private Token jj_consume_token(int kind) throws ParseException {
+  static private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -3303,7 +3324,7 @@ public class JPortal implements JPortalConstants {
 
   static private final class LookaheadSuccess extends java.lang.Error { }
   static final private LookaheadSuccess jj_ls = new LookaheadSuccess();
-  static final private boolean jj_scan_token(int kind) {
+  static private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {
       jj_la--;
       if (jj_scanpos.next == null) {
@@ -3324,6 +3345,8 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
+
+/** Get the next Token. */
   static final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -3332,8 +3355,9 @@ public class JPortal implements JPortalConstants {
     return token;
   }
 
+/** Get the specific Token. */
   static final public Token getToken(int index) {
-    Token t = lookingAhead ? jj_scanpos : token;
+    Token t = token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
       else t = t.next = token_source.getNextToken();
@@ -3341,14 +3365,14 @@ public class JPortal implements JPortalConstants {
     return t;
   }
 
-  static final private int jj_ntk() {
+  static private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }
 
-  static private java.util.Vector jj_expentries = new java.util.Vector();
+  static private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
   static private int[] jj_expentry;
   static private int jj_kind = -1;
   static private int[] jj_lasttokens = new int[100];
@@ -3363,31 +3387,26 @@ public class JPortal implements JPortalConstants {
       for (int i = 0; i < jj_endpos; i++) {
         jj_expentry[i] = jj_lasttokens[i];
       }
-      boolean exists = false;
-      for (java.util.Enumeration e = jj_expentries.elements(); e.hasMoreElements();) {
-        int[] oldentry = (int[])(e.nextElement());
+      jj_entries_loop: for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
+        int[] oldentry = (int[])(it.next());
         if (oldentry.length == jj_expentry.length) {
-          exists = true;
           for (int i = 0; i < jj_expentry.length; i++) {
             if (oldentry[i] != jj_expentry[i]) {
-              exists = false;
-              break;
+              continue jj_entries_loop;
             }
           }
-          if (exists) break;
+          jj_expentries.add(jj_expentry);
+          break jj_entries_loop;
         }
       }
-      if (!exists) jj_expentries.addElement(jj_expentry);
       if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
     }
   }
 
+  /** Generate ParseException. */
   static public ParseException generateParseException() {
-    jj_expentries.removeAllElements();
+    jj_expentries.clear();
     boolean[] la1tokens = new boolean[135];
-    for (int i = 0; i < 135; i++) {
-      la1tokens[i] = false;
-    }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -3417,7 +3436,7 @@ public class JPortal implements JPortalConstants {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
-        jj_expentries.addElement(jj_expentry);
+        jj_expentries.add(jj_expentry);
       }
     }
     jj_endpos = 0;
@@ -3425,20 +3444,23 @@ public class JPortal implements JPortalConstants {
     jj_add_error_token(0, 0);
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = (int[])jj_expentries.elementAt(i);
+      exptokseq[i] = jj_expentries.get(i);
     }
     return new ParseException(token, exptokseq, tokenImage);
   }
 
+  /** Enable tracing. */
   static final public void enable_tracing() {
   }
 
+  /** Disable tracing. */
   static final public void disable_tracing() {
   }
 
-  static final private void jj_rescan_token() {
+  static private void jj_rescan_token() {
     jj_rescan = true;
     for (int i = 0; i < 7; i++) {
+    try {
       JJCalls p = jj_2_rtns[i];
       do {
         if (p.gen > jj_gen) {
@@ -3455,11 +3477,12 @@ public class JPortal implements JPortalConstants {
         }
         p = p.next;
       } while (p != null);
+      } catch(LookaheadSuccess ls) { }
     }
     jj_rescan = false;
   }
 
-  static final private void jj_save(int index, int xla) {
+  static private void jj_save(int index, int xla) {
     JJCalls p = jj_2_rtns[index];
     while (p.gen > jj_gen) {
       if (p.next == null) { p = p.next = new JJCalls(); break; }

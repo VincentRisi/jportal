@@ -52,8 +52,8 @@ public class Decompile
         return;
       }
       outLog.println(args[i]+" "+args[i+1]);
-      Class c0 = Class.forName("vlab.jportal.decompiler."+args[i]);
-      Class d0[] = {args[i+1].getClass(), outLog.getClass()};
+      Class<?> c0 = Class.forName("vlab.jportal.decompiler."+args[i]);
+      Class<?> d0[] = {args[i+1].getClass(), outLog.getClass()};
       Method m0 = c0.getMethod("devolve", d0);
       Object o0[] = {args[i+1], outLog};
       Database database = (Database) m0.invoke(null, o0);
@@ -89,8 +89,8 @@ public class Decompile
           continue;
         }
         outLog.println(args[i]);
-        Class c = Class.forName("jportal."+args[i]);
-        Class d[] = {database.getClass(), output.getClass(), outLog.getClass()};
+        Class<?> c = Class.forName("jportal."+args[i]);
+        Class<?> d[] = {database.getClass(), output.getClass(), outLog.getClass()};
         Method m = c.getMethod("generate", d);
         Object o[] = {database, output, outLog};
         m.invoke(database, o);

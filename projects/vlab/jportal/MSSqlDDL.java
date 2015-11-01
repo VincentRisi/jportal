@@ -35,6 +35,7 @@ public class MSSqlDDL extends Generator
         outLog.println(args[i]+": Generate MSSql DDL");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -52,7 +53,7 @@ public class MSSqlDDL extends Generator
   {
     return "Generate MSSql DDL";
   }
-  protected static Vector flagsVector;
+  protected static Vector<Flag> flagsVector;
   static boolean addTimestamp;
   static boolean useInsertTrigger;
   static boolean useUpdateTrigger;
@@ -68,12 +69,12 @@ public class MSSqlDDL extends Generator
     auditTrigger = false;
     generate42 = false;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
       flagDefaults();
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagsVector.addElement(new Flag("add timestamp", new Boolean (addTimestamp), "Add Timestamp - legacy flags"));
       flagsVector.addElement(new Flag("use insert trigger", new Boolean (useInsertTrigger), "Use Insert Trigger - legacy flags"));
       flagsVector.addElement(new Flag("use update trigger", new Boolean (useUpdateTrigger), "Use Update Trigger - legacy flags"));
@@ -561,8 +562,8 @@ public class MSSqlDDL extends Generator
   {
     for (int i=0; i < proc.lines.size(); i++)
     {
-      String l = (String) proc.lines.elementAt(i);
-      outData.println(l);
+      Line l = proc.lines.elementAt(i);
+      outData.println(l.line);
     }
     outData.println();
   }

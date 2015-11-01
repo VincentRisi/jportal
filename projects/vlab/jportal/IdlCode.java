@@ -35,6 +35,7 @@ public class IdlCode extends Generator
         outLog.println(args[i]+": Generate IDL Code for 3 Tier Access");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -94,7 +95,7 @@ public class IdlCode extends Generator
       //generateSnips(table, output, outLog);
     }
   }
-  static Vector enumsGenerated;
+  static Vector<String> enumsGenerated;
   private static boolean hasEnum(String name)
   {
     for (int i = 0; i < enumsGenerated.size(); i++)
@@ -280,7 +281,7 @@ public class IdlCode extends Generator
             else
               generateAction(table, proc, outData);
           }
-          enumsGenerated = new Vector();
+          enumsGenerated = new Vector<String>();
           if (table.hasStdProcs)
             generatePragma(table, outData);
           for (int i = 0; i < table.procs.size(); i++)
@@ -571,7 +572,7 @@ public class IdlCode extends Generator
       generateStructPairs(proc, table.useName() + proc.upperFirst(), outData);
     }
   }
-  private static void generateTableStructs(Vector fields, String mainName, PrintWriter outData)
+  private static void generateTableStructs(Vector<?> fields, String mainName, PrintWriter outData)
   {
     boolean usePartials = true;
     outData.println("  [Serializable()]");
@@ -594,7 +595,7 @@ public class IdlCode extends Generator
     boolean didO = false;
     boolean didD = false;
     String typeChar = "D";
-    Vector fields = proc.outputs;
+    Vector<?> fields = proc.outputs;
     if (fields.size() > 0)
     {
       if (proc.hasDiscreteInput() || (proc.inputs.size() + proc.dynamics.size()) == 0)
@@ -625,7 +626,7 @@ public class IdlCode extends Generator
         outData.println("  public " + (usePartials ? "partial " : "") + "class D" + mainName);
       didD = true;
       outData.println("  {");
-      Vector inputs = proc.inputs;
+      Vector<?> inputs = proc.inputs;
       for (int j = 0; j < inputs.size(); j++)
       {
         Field field = (Field)inputs.elementAt(j);

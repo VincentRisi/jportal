@@ -34,6 +34,7 @@ public class CBuilderCode extends Generator
         outLog.println(args[i]+": Generate C++ Builder BDE Code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();

@@ -34,6 +34,7 @@ public class OracleExportList extends Generator
         outLog.println(args[i]+": generating Oracle Export List");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -80,6 +81,7 @@ public class OracleExportList extends Generator
         outData.println("LOG="+database.name+".log");
         outData.println("RECORDLENGTH=40000");
         outData.flush();
+        outData.close();
       }
       finally
       {

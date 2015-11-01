@@ -33,7 +33,7 @@ public class QueryCode extends Generator
       for (int i = 0; i <args.length; i++)
       {
         outLog.println(args[i]+": Generate SQL Query Code");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
+        in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
         generate(database, "", outLog);
       }
@@ -94,7 +94,7 @@ public class QueryCode extends Generator
       outLog.println("Generate Procs IO Error");
     }
   }
-  static Vector parmsSeen;
+  static Vector<String> parmsSeen;
   static void addToParms(String parm)
   {
     for (int i=0; i<parmsSeen.size(); i++)
@@ -133,6 +133,7 @@ public class QueryCode extends Generator
     return python(result);
   }
   static final String VALID_NAME_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+private static ObjectInputStream in;
   static String python(String line)
   {
     String result = "";
@@ -165,7 +166,7 @@ public class QueryCode extends Generator
   static void generateSQLCode(Proc proc, PrintWriter outData)
   {
     questionsSeen = 0;
-    parmsSeen = new Vector();
+    parmsSeen = new Vector<String>();
 
     outData.println("_"+lowerFirst(proc.name)+"_='''\\");
     for (int i=0; i < proc.lines.size(); i++)

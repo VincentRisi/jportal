@@ -22,11 +22,11 @@ public class Const implements Serializable
 {
   private static final long serialVersionUID = 1L;
   public String name;
-  public Vector values;
+  public Vector<Value> values;
   public Const()
   {
     name = "";
-    values = new Vector();
+    values = new Vector<Value>();
   }
   public void reader(DataInputStream ids) throws IOException
   {

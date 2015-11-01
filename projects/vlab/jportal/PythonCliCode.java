@@ -35,9 +35,9 @@ public class PythonCliCode extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate CLI Python Code");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database) in.readObject();
+        in.close();
         generate(database, "", outLog);
       }
       outLog.flush();
@@ -55,7 +55,7 @@ public class PythonCliCode extends Generator
   {
     return "Generates CLI Python Code";
   }
-  protected static Vector flagsVector;  
+  protected static Vector<Flag> flagsVector;  
   static String pymodName;
   static String pymodFront;
   static boolean dontQualify;
@@ -69,12 +69,12 @@ public class PythonCliCode extends Generator
     useUTF8 = false;
     useLatin1 = false;
   }
-  public static Vector flags()
+  public static Vector<Flag> flags()
   {
     if (flagsVector == null)
     {
       flagDefaults();
-      flagsVector = new Vector();
+      flagsVector = new Vector<Flag>();
       flagsVector.addElement(new Flag("use pymod", new String(pymodName), "Use pymod"));
       flagsVector.addElement(new Flag("dont qualify", new Boolean(dontQualify), "Dont Qualify"));
       flagsVector.addElement(new Flag("utf-8", new Boolean(useUTF8), "use utf-8"));
@@ -243,7 +243,7 @@ public class PythonCliCode extends Generator
       outLog.println("Generate Procs IO Error");
     }
   }
-  static void generateDataFields(Vector fields, String superName, String className,
+  static void generateDataFields(Vector<Field> fields, String superName, String className,
       String tableName, PrintWriter outData)
   {
     outData.print("    __slots__ = [");
@@ -354,7 +354,7 @@ public class PythonCliCode extends Generator
     {
       outData.println("class " + table.useName() + "(D" + table.useName() + "):");
       outData.println("    def __init__(self): D" + table.useName() + ".__init__(self)");
-      coverFunctions = new Vector();
+      coverFunctions = new Vector<String>();
       for (int i = 0; i < table.procs.size(); i++)
       {
         Proc proc = (Proc)table.procs.elementAt(i);
@@ -377,7 +377,7 @@ public class PythonCliCode extends Generator
         outData.println((String)coverFunctions.elementAt(i));
     }
   }
-  private static Vector coverFunctions;
+  private static Vector<String> coverFunctions;
   private static void generateInput(String tableName, String dataStruct, String procName, String parms, PrintWriter outData)
   {
     outData.println("    def _" + procName + "_dict(self, parms):");
@@ -400,7 +400,7 @@ public class PythonCliCode extends Generator
   }
   private static void generateMultiple(Table table, Proc proc, PrintWriter outData)
   {
-    String parameters="", comma="";
+    String parameters="";
     String dataStruct;
     if (proc.isStd || proc.isStdExtended())
       dataStruct = table.useName();
@@ -420,14 +420,12 @@ public class PythonCliCode extends Generator
         Field field = (Field) proc.inputs.elementAt(f);
         outData.println("            " + field.useName());
         parameters += ", " + field.useName() + "=" + defValue(field);
-        comma = ", ";
       }
       for (int f = 0; f < proc.dynamics.size(); f++)
       {
         String field = (String)proc.dynamics.elementAt(f);
         outData.println("            " + field);
         parameters += ", " + field + "=''";
-        comma = ", ";
       }
     }
     outData.println("        Output:");
@@ -450,7 +448,7 @@ public class PythonCliCode extends Generator
       dataStruct = table.useName();
     else
       dataStruct = table.useName() + proc.upperFirst();
-    String parameters = "", comma = "";
+    String parameters = "";
     boolean hasInput = (proc.inputs.size() > 0 || proc.dynamics.size() > 0);
     outData.println("    def " + proc.name + "(self):");
     outData.println("        ''' Single returns boolean and record");
@@ -462,7 +460,6 @@ public class PythonCliCode extends Generator
         Field field = (Field)proc.inputs.elementAt(f);
         outData.println("            " + field.useName());
         parameters += ", " + field.useName() + "=" + defValue(field);
-        comma = ", ";
       }
       for (int f = 0; f < proc.dynamics.size(); f++)
       {
@@ -491,7 +488,7 @@ public class PythonCliCode extends Generator
       dataStruct = table.useName();
     else
       dataStruct = table.useName() + proc.upperFirst();
-    String parameters = "", comma = "";
+    String parameters = "";
     outData.println("    def " + proc.name + "(self):");
     outData.println("        ''' Action");
     outData.println("        Input:");
@@ -500,14 +497,12 @@ public class PythonCliCode extends Generator
       Field field = (Field)proc.inputs.elementAt(f);
       outData.println("            " + field.useName());
       parameters += ", " + field.useName() + "=" + defValue(field);
-      comma = ", ";
     }
     for (int f = 0; f < proc.dynamics.size(); f++)
     {
       String field = (String)proc.dynamics.elementAt(f);
       outData.println("            " + field);
       parameters += ", " + field + "=''";
-      comma = ", ";
     }
     outData.println("        '''");
     outData.println("        return " + pymodFront + table.useName() + proc.upperFirst() + "(self)");
@@ -571,7 +566,7 @@ public class PythonCliCode extends Generator
         outData.println("class D" + table.useName() + proc.upperFirst() + work + ":");
         outData.println("    def _make(self): return D" + table.useName() + proc.upperFirst() + "()");
         outData.println("    def _name(self): return ('D" + table.useName() + proc.upperFirst() + "')");
-        Vector discreteInputs = new Vector();
+        Vector<Field> discreteInputs = new Vector<Field>();
         for (int j = 0; j < proc.inputs.size(); j++)
         {
           Field field = (Field) proc.inputs.elementAt(j);
@@ -600,7 +595,7 @@ public class PythonCliCode extends Generator
       }
       if (pymodName.length() > 0)
       {
-        coverFunctions = new Vector();
+        coverFunctions = new Vector<String>();
         outData.println("class " + table.useName() + proc.upperFirst() + "(D" + table.useName() + proc.upperFirst() + "):");
         outData.println("    def __init__(self): D" + table.useName()  + proc.upperFirst() + ".__init__(self)");
         if (proc.isMultipleInput)
