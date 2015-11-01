@@ -15,8 +15,8 @@ public class PopRWJavaServer extends Generator
   public static class RcString { boolean rc; String result; }
   public static PrintWriter errLog;
   static OutputStream outFile;
-  private static Vector usings;
-  public static Vector parameterList;
+  private static Vector<String> usings;
+  public static Vector<Parameter> parameterList;
   static String padString = "                                                         ";
   public static String asHex(int value)
   {
@@ -84,7 +84,7 @@ public class PopRWJavaServer extends Generator
   }
   public static boolean buildParameterList(Prototype prototype)
   {
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     boolean hasReturn = Parameter.build(parameterList, prototype, false);
     return hasReturn;
   }
@@ -653,7 +653,7 @@ public class PopRWJavaServer extends Generator
         printImport(structure.name, structure.header.substring(1, n - 1), outData);
     }
   }
-  private static void generateUsings(Module module, Vector fields, PrintWriter outData)
+  private static void generateUsings(Module module, Vector<Field> fields, PrintWriter outData)
   {
     for (int i = 0; i < module.structures.size(); i++)
     {
@@ -720,6 +720,7 @@ public class PopRWJavaServer extends Generator
       {
         outLog.println(args[i] + ": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
+        in.close();
         Module module = (Module) in.readObject();
         generate(module, "", outLog);
       }
@@ -769,7 +770,7 @@ public class PopRWJavaServer extends Generator
   }
   private static void primeUsings(Module module)
   {
-    usings = new Vector();
+    usings = new Vector<String>();
     usings.addElement("import " + packageName(module) + ".*;");
   }
   private static void printImport(String name, String data, PrintWriter outData)

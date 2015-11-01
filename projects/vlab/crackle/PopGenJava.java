@@ -28,10 +28,10 @@ public class PopGenJava extends Generator
   }
   private static boolean keepTee = false;
   public static PrintWriter errLog;
-	public static Vector parameterList;
+	public static Vector<Parameter> parameterList;
 	public static boolean buildParameterList(Prototype prototype)
 	{
-		parameterList = new Vector();
+		parameterList = new Vector<Parameter>();
 		boolean hasReturn = Parameter.build(parameterList, prototype, keepTee);
 		return hasReturn;
 	}
@@ -46,6 +46,7 @@ public class PopGenJava extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -70,12 +71,12 @@ public class PopGenJava extends Generator
     outData.println();
 		return outData;
   }
-  static Vector usings;
+  static Vector<String> usings;
   public static void generate(Module module, String output, PrintWriter outLog)
   {
     try
     {
-      usings = new Vector();
+      usings = new Vector<String>();
       errLog = outLog;
       outLog.println(module.name+" version "+module.version);
       for (int i = 0; i < module.pragmas.size(); i++)
@@ -107,7 +108,7 @@ public class PopGenJava extends Generator
         continue;
       if (structure.name.compareTo(module.name) == 0)
         continue;
-      usings = new Vector();
+      usings = new Vector<String>();
       generateStruct(module, structure, output, outLog);
     }
   }
@@ -125,7 +126,7 @@ public class PopGenJava extends Generator
       outData.println("package "+packageName(module)+";");
       outData.println();
       outData.println("import java.io.Serializable;");
-      usings = new Vector();
+      usings = new Vector<String>();
       generateUsings(module, structure.fields, outData);
       outData.println();
       outData.println("public class "+dropTee(structure.name)+" implements Serializable");
@@ -144,7 +145,7 @@ public class PopGenJava extends Generator
       outFile.close();
     }
   }
-  public static void generateUsings(Module module, Vector fields, PrintWriter outData)
+  public static void generateUsings(Module module, Vector<Field> fields, PrintWriter outData)
   {
     for (int i = 0; i < module.structures.size(); i++)
     {
@@ -195,7 +196,7 @@ public class PopGenJava extends Generator
       outData.println("package "+packageName(module)+";");
       outData.println();
       outData.println("import java.io.Serializable;");
-      usings = new Vector();
+      usings = new Vector<String>();
       generateUsingsNoTables(module, outData);
       outData.println();
       generateCallStructs(module, outData);
@@ -318,7 +319,7 @@ public class PopGenJava extends Generator
       outData.println();
       outData.println("import bbd.idl2.rpc.BaseIFace;");
       outData.println("import java.util.Hashtable;");
-      usings = new Vector();
+      usings = new Vector<String>();
       generateUsingsNoTables(module, outData);
       outData.println();
       outData.println("public interface "+module.name+"IFace extends BaseIFace");
@@ -387,7 +388,7 @@ public class PopGenJava extends Generator
       outData.println();
       outData.println("import bbd.idl2.rpc.Rpc;");
       outData.println("import java.util.Hashtable;");
-      usings = new Vector();
+      usings = new Vector<String>();
       generateUsingsNoTables(module, outData);
       outData.println();
       outData.println("public class "+module.name+"Proxy extends "+module.name+"Structs implements "+module.name+"IFace");
@@ -533,7 +534,7 @@ public class PopGenJava extends Generator
       outData.println("import bbd.idl2.rpc.Event;");
       outData.println("import bbd.jportal.Connector;");
       outData.println("import org.apache.log4j.Logger;");
-      usings = new Vector();
+      usings = new Vector<String>();
       generateUsingsNoTablesNoStructs(module, outData);
       outData.println();
       outData.println("public class "+module.name+"Assign extends "+module.name+"Impl");
@@ -562,7 +563,7 @@ public class PopGenJava extends Generator
       outData.println("import bbd.idl2.rpc.Rpc;");
       outData.println("import bbd.jportal.Connector;");
       outData.println("import java.util.Hashtable;");
-      usings = new Vector();
+      usings = new Vector<String>();
       generateUsings(module, outData);
       outData.println();
       outData.println("public class "+module.name+"Impl extends "+module.name+"Structs implements "+module.name+"IFace");

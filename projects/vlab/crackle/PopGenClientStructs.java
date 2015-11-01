@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 
 public class PopGenClientStructs extends Generator
 {
-  private static PrintWriter errLog;
   /**
   * Reads input from stored repository
   */
@@ -26,12 +25,12 @@ public class PopGenClientStructs extends Generator
     try
     {
       PrintWriter outLog = new PrintWriter(System.out);
-      errLog = outLog;
       for (int i = 0; i <args.length; i++)
       {
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -50,7 +49,6 @@ public class PopGenClientStructs extends Generator
   */
   public static void generate(Module module, String output, PrintWriter outLog)
   {
-    errLog = outLog;
     outLog.println(module.name+" version "+module.version);
     generateCClientHeader(module, output, outLog);
   }

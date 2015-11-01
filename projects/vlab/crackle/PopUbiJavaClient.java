@@ -26,8 +26,8 @@ public class PopUbiJavaClient extends Generator
   public static PrintWriter errLog;
   public static class Pragmas
   {
-    private static Vector selected;
-    private static HashMap packages;
+    private static Vector<String> selected;
+    private static HashMap<String, String> packages;
     private static final String UBI_JAVA_CLIENT = "ubijavaclient:";
     private static final String II_PACKAGE = "ii(";
     private static String strip(String pragma)
@@ -55,11 +55,11 @@ public class PopUbiJavaClient extends Generator
       else
         outData.println(defaultUsing + "." + name + ".*;");
     }
-    public static void load(Vector pragmas)
+    public static void load(Vector<String> pragmas)
     {
-      Vector stubs = new Vector();
-      selected = new Vector();
-      packages = new HashMap();
+      Vector<String> stubs = new Vector<String>();
+      selected = new Vector<String>();
+      packages = new HashMap<String, String>();
       for (int i = 0; i < pragmas.size(); i++)
       {
         String pragma = strip((String) pragmas.elementAt(i));
@@ -126,9 +126,9 @@ public class PopUbiJavaClient extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate ... ");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module) in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -607,7 +607,7 @@ public class PopUbiJavaClient extends Generator
         generateCall(module, prototype, i, outData);
     }
   }
-  private static Vector parameterList;
+  private static Vector<Parameter> parameterList;
   private static final class GenerateCommonTuple
   {
     public boolean hasReturn;
@@ -625,7 +625,7 @@ public class PopUbiJavaClient extends Generator
   private static GenerateCommonTuple generateCommon(Module module,
       Prototype prototype, int no, PrintWriter outData, String extra1)
   {
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     Parameter.language = Parameter.JAVA_BASED;
     Parameter.build(parameterList, prototype, false, true);
     GenerateCommonTuple result = new GenerateCommonTuple();

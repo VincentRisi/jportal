@@ -16,8 +16,6 @@ import java.io.PrintWriter;
  */
 public class NetGenStructs extends Generator
 {
-  private static PrintWriter errLog;
-  private static boolean alignForSun = false;
   private static boolean keepTee = false;
   public static String description()
   {
@@ -36,12 +34,12 @@ public class NetGenStructs extends Generator
     try
     {
       PrintWriter outLog = new PrintWriter(System.out);
-      errLog = outLog;
       for (int i = 0; i <args.length; i++)
       {
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -53,14 +51,12 @@ public class NetGenStructs extends Generator
   }
   public static void generate(Module module, String output, PrintWriter outLog)
   {
-    errLog = outLog;
     outLog.println(module.name+" version "+module.version);
     for (int i = 0; i < module.pragmas.size(); i++)
     {
       String pragma = (String) module.pragmas.elementAt(i);
-      if (pragma.trim().equalsIgnoreCase("AlignForSUN") == true)
-        alignForSun = true;
-      else if (pragma.trim().equalsIgnoreCase("KeepTee") == true)
+      if (pragma.trim().equalsIgnoreCase("AlignForSUN") == true) {
+	} else if (pragma.trim().equalsIgnoreCase("KeepTee") == true)
         keepTee = true;
     }
     generateStructs(module, output, outLog);

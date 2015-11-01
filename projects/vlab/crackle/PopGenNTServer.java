@@ -50,7 +50,6 @@ public class PopGenNTServer extends Generator
         doDBFill = true;
     }
   }
-  private static boolean hasVariants = false;
   private static boolean hasShutDownCode = false;
   private static PrintWriter errLog;
   /**
@@ -67,6 +66,7 @@ public class PopGenNTServer extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -875,10 +875,6 @@ public class PopGenNTServer extends Generator
       if (field == null)
         continue;
       byte savedReference = field.type.reference;
-      Action output = (Action) prototype.getOutputAction(field.name);
-      Operation op = null;
-      if (output != null)
-        op = output.sizeOperation();
       if (field.type.reference == Type.BYPTR
       ||  field.type.reference == Type.BYREFPTR)
       {
@@ -1079,12 +1075,8 @@ public class PopGenNTServer extends Generator
         continue;
       Operation op = output.sizeOperation();
       Action input = (Action) prototype.getInputAction(field.name);
-      Action opInput = null;
-      Action opOutput = null;
       if (op != null)
       {
-        opInput = (Action) prototype.getInputAction(op.name);
-        opOutput = (Action) prototype.getOutputAction(op.name);
       }
       if (field.type.reference == Type.BYPTR)
       {
@@ -1143,10 +1135,8 @@ public class PopGenNTServer extends Generator
           continue;
         else
         {
-          String w1 = "";
-          if (op.isConstant == false)
-            w1 = "*";
-          else
+          if (op.isConstant == false) {
+		} else
             outData.println("#error Constant Size with BYREFPTR output");
           outData.println("    Variants["+(Variants++)+"] = ip-ReplyBody;");
           if (input != null)
@@ -1230,7 +1220,6 @@ public class PopGenNTServer extends Generator
     }
     if (Variants > 0)
     {
-      hasVariants = true;
       outData.println("    // We are going to setup a new ReplyBody because of Variants");
       outData.println("    char *oldReplyBody = ReplyBody;");
       outData.println("    ip = ReplyBody;");

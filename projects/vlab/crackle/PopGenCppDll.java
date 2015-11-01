@@ -17,18 +17,17 @@ public class PopGenCppDll extends Generator
   {
     return "Generates Cpp Dll Code";
   }
-  private static PrintWriter errLog;
   public static void main(String[] args)
   {
     try
     {
       PrintWriter outLog = new PrintWriter(System.out);
-      errLog = outLog;
       for (int i = 0; i <args.length; i++)
       {
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -40,7 +39,6 @@ public class PopGenCppDll extends Generator
   }
   public static void generate(Module module, String output, PrintWriter outLog)
   {
-    errLog = outLog;
     outLog.println(module.name+" version "+module.version);
     try
     {

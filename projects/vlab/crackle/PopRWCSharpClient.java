@@ -15,8 +15,8 @@ import java.util.Vector;
 public class PopRWCSharpClient extends Generator
 {
   public static PrintWriter errLog;
-  private static Vector usings;
-  private static Vector parameterList;
+  private static Vector<String> usings;
+  private static Vector<Parameter> parameterList;
   public static String asHex(int value)
   {
     return "0x" + Integer.toHexString(value);
@@ -37,20 +37,6 @@ public class PopRWCSharpClient extends Generator
   {
     return "Generates C# Client Code for Java Server Code"
       ;
-  }
-  private static String assignValue(Field field)
-  {
-    String result = assignValue(field.type);
-    if (field.type.reference == Type.ARRAYED)
-      result = result + "[0]";
-    else if (field.type.typeof == Type.USERTYPE)
-    {
-      if (field.type.arraySizes.size() > 0)
-        result = result + "[0]";
-      else
-        result = result + "()";
-    }
-    return result;
   }
   private static String assignValue(Type type)
   {
@@ -84,7 +70,7 @@ public class PopRWCSharpClient extends Generator
   }
   public static boolean buildParameterList(Prototype prototype)
   {
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     boolean hasReturn = Parameter.build(parameterList, prototype, false);
     return hasReturn;
   }
@@ -215,7 +201,7 @@ public class PopRWCSharpClient extends Generator
   private static boolean generateCommon(Module module, Prototype prototype, int no, PrintWriter outData, String extra1)
   {
     Parameter pd = null;
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     boolean hasReturn = false;
     if (prototype.type.reference == Type.BYVAL
       &&  prototype.type.typeof != Type.VOID)
@@ -626,7 +612,7 @@ public class PopRWCSharpClient extends Generator
   }
   private static void generateUsings(Module module, PrintWriter outData)
   {
-    usings = new Vector();
+    usings = new Vector<String>();
     if (module.packageName.length() != 0)
     {
       String defaultUsing = "using " + module.packageName + ";";
@@ -670,6 +656,7 @@ public class PopRWCSharpClient extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();

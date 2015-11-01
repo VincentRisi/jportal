@@ -43,6 +43,7 @@ public class PopUbiCSharp extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -404,10 +405,10 @@ public class PopUbiCSharp extends Generator
     outData.println(data);
     usings.addElement(data);
   }
-  private static Vector usings;
+  private static Vector<String> usings;
   private static void generateUsings(Module module, PrintWriter outData)
   {
-    usings = new Vector();
+    usings = new Vector<String>();
     if (module.packageName.length() != 0)
     {
       String defaultUsing = "using " + module.packageName + ";";
@@ -519,11 +520,11 @@ public class PopUbiCSharp extends Generator
         generateCall(module, prototype, i, outData);
     }
   }
-  private static Vector parameterList;
+  private static Vector<Parameter> parameterList;
   private static boolean generateCommon(Module module, Prototype prototype, int no, PrintWriter outData, String extra1)
   {
     Parameter pd = null;
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     boolean hasReturn = false;
     if (prototype.type.reference == Type.BYVAL
       &&  prototype.type.typeof != Type.VOID)

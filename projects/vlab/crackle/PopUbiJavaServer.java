@@ -32,6 +32,7 @@ public class PopUbiJavaServer extends Generator
         outLog.println(args[i] + ": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module) in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -83,7 +84,7 @@ public class PopUbiJavaServer extends Generator
     outData.println();
     return outData;
   }
-  private static Vector usings;
+  private static Vector<String> usings;
   private static void generateStructs(Module module, String output, PrintWriter outLog) throws Throwable
   {
     for (int i = 0; i < module.structures.size(); i++)
@@ -93,7 +94,7 @@ public class PopUbiJavaServer extends Generator
         continue;
       if (structure.name.compareTo(module.name) == 0)
         continue;
-      usings = new Vector();
+      usings = new Vector<String>();
       generateStruct(module, structure, output, outLog);
     }
   }
@@ -105,7 +106,7 @@ public class PopUbiJavaServer extends Generator
   }
   private static void primeUsings(Module module)
   {
-    usings = new Vector();
+    usings = new Vector<String>();
     usings.addElement("import " + packageName(module) + ".*;");
   }
   private static void generateStruct(Module module, Structure structure, String output, PrintWriter outLog) throws Throwable
@@ -149,7 +150,7 @@ public class PopUbiJavaServer extends Generator
       outFile.close();
     }
   }
-  private static void generateUsings(Module module, Vector fields, PrintWriter outData)
+  private static void generateUsings(Module module, Vector<Field> fields, PrintWriter outData)
   {
     for (int i = 0; i < module.structures.size(); i++)
     {
@@ -488,10 +489,10 @@ public class PopUbiJavaServer extends Generator
   {
     return "0x" + Integer.toHexString(Integer.parseInt(value));
   }
-  public static Vector parameterList;
+  public static Vector<Parameter> parameterList;
   public static boolean buildParameterList(Prototype prototype)
   {
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     boolean hasReturn = Parameter.build(parameterList, prototype, false);
     return hasReturn;
   }
@@ -579,7 +580,7 @@ public class PopUbiJavaServer extends Generator
     }
   }
   public static void generateCallStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
-  {
+  {Parameter
     boolean hasReturn = buildParameterList(prototype);
     if (hasReturn == true)
       generateReturnStruct(prototype, outData);
@@ -635,7 +636,7 @@ public class PopUbiJavaServer extends Generator
   public static void generateInterfaceConsts(Module module, PrintWriter outData) throws Throwable
   {
     for (int i = 0; i < module.prototypes.size(); i++)
-    {
+    {Parameter
       Prototype prototype = (Prototype)module.prototypes.elementAt(i);
       if (prototype.codeType != Prototype.RPCCALL)
         continue;
@@ -708,7 +709,7 @@ public class PopUbiJavaServer extends Generator
     }
   }
   public static void generateAssignCall(Module module, Prototype prototype, PrintWriter outData)
-  {
+  {Parameter
     boolean hasReturn = buildParameterList(prototype);
     String comma = "";
     String work = "  public " + (hasReturn ? prototype.type.javaName() : "void") + " " + prototype.name + "(";

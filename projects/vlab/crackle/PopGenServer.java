@@ -35,7 +35,7 @@ public class PopGenServer extends Generator
   {
 	  if (pragmaVector == null) 
 	  {
-		  pragmaVector = new Vector();
+		  pragmaVector = new Vector<Pragma>();
 		  pragmaVector.addElement(new Pragma("AlignForSun", false, "Ensure that all fields are on 8 byte boundaries."));
 		  pragmaVector.addElement(new Pragma("DBConnect",   true,  "Requires automatic database activity."));
 		  pragmaVector.addElement(new Pragma("DBFill",      true,  "DBFill template must be generated."));
@@ -50,7 +50,7 @@ public class PopGenServer extends Generator
   private static boolean doMetrics;
   private static void setPragmas(Module module)
   {
-    // Ensure these are in the same order as aobove
+    // Ensure these are in the same order as above
     setupPragmaVector();
     alignForSun = ((Pragma)pragmaVector.elementAt(0)).value;
     doConnect = ((Pragma)pragmaVector.elementAt(1)).value;
@@ -88,6 +88,7 @@ public class PopGenServer extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -219,19 +220,6 @@ public class PopGenServer extends Generator
       System.out.flush();
       e.printStackTrace();
     }
-  }
-  /**
-  * Sets up the writer and generates the general stuff
-  */
-  private static String nameOf(String fullName)
-  {
-    int n = fullName.lastIndexOf('/');
-    if (n > 0)
-      return fullName.substring(n+1);
-    n = fullName.lastIndexOf('\\');
-    if (n > 0)
-      return fullName.substring(n+1);
-    return fullName;
   }
   private static void generateCHeader(Module module, String output, PrintWriter outLog)
   {

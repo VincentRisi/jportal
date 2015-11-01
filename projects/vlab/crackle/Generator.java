@@ -35,14 +35,14 @@ public abstract class Generator
       this.description = description;
     }
   }
-  protected static Vector pragmaVector;
+  protected static Vector<Pragma> pragmaVector;
   /*
    *  Static constructor
    */
   {
-    pragmaVector = new Vector();
+    pragmaVector = new Vector<Pragma>();
   }
-  public static Vector pragma()
+  public static Vector<Pragma> pragma()
   {
     return pragmaVector;
   }

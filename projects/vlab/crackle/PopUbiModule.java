@@ -1,6 +1,5 @@
 package vlab.crackle;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class PopUbiModule extends Generator
   {
     if (pragmaVector == null) 
     {
-      pragmaVector = new Vector();
+      pragmaVector = new Vector<Pragma>();
       pragmaVector.addElement(new Pragma("AlignForSun", false, "Ensure that all fields are on 8 byte boundaries."));
     }
   }
@@ -62,6 +61,7 @@ public class PopUbiModule extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -282,16 +282,6 @@ public class PopUbiModule extends Generator
       e.printStackTrace();
     }
   }
-  private static String cleanUp(String data)
-  {
-    if (data.indexOf("HEADER:") == 0)
-      return data.substring(7);
-    if (data.indexOf("CODE:") == 0)
-      return data.substring(5);
-    if (data.indexOf("BOTH:") == 0)
-      return data.substring(5);
-    return data;
-  }
   private static void generateCCode(Module module, String output, PrintWriter outLog)
   {
     try
@@ -365,46 +355,6 @@ public class PopUbiModule extends Generator
       result = "0" + result;
     result = "0x" + result.toUpperCase();
     return result;
-  }
-  private static void generateReqIDTable(Module module, String output, PrintWriter outLog)
-  {
-    try
-    {
-      outLog.println("Code: "+output+module.name.toLowerCase()+"ReqID.txt");
-      OutputStream outFile = new FileOutputStream(output+module.name.toLowerCase()+"ReqID.txt");
-      PrintWriter outData = new PrintWriter(outFile);
-      try
-      {
-        for (int i = 0; i < module.prototypes.size(); i++)
-        {
-          Prototype prototype = (Prototype)module.prototypes.elementAt(i);
-          if (prototype.codeType != Prototype.RPCCALL)
-            continue;
-          if (prototype.message.length() > 0)
-            outData.println("'" + module.name + "', " + toHex(prototype.message) + ", '" + prototype.name + "'");
-          else
-            outData.println("'" + module.name + "', " + toHex(i) + ", '" + prototype.name + "'");
-        }
-      }
-      finally
-      {
-        outData.flush();
-        outFile.close();
-      }
-    }
-    catch (IOException e1)
-    {
-      outLog.println("Generate Procs IO Error");
-      System.out.println(e1.toString ());
-      System.out.flush();
-      e1.printStackTrace();
-    }
-    catch (Throwable e)
-    {
-      System.out.println(e.toString ());
-      System.out.flush();
-      e.printStackTrace();
-    }
   }
   /**
   * Sets up the writer and generates the general stuff

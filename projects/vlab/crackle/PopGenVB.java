@@ -31,6 +31,7 @@ public class PopGenVB extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -328,8 +329,8 @@ public class PopGenVB extends Generator
   static void generateVBHeader(Module module, Prototype prototype, PrintWriter outData)
   {
     String w1 = "", w2 = "";
-    Vector retrievals = new Vector();
-    Vector submittals = new Vector();
+    Vector<Field> retrievals = new Vector<Field>();
+    Vector<Field> submittals = new Vector<Field>();
     for (int i = 0; i < prototype.parameters.size(); i++)
     {
       Field parameter = (Field) prototype.parameters.elementAt(i);
@@ -409,8 +410,8 @@ public class PopGenVB extends Generator
   {
     String w1 = "", w2 = "", w3 ="";
     boolean hasVBLists = false;
-    Vector retrievals = new Vector();
-    Vector submittals = new Vector();
+    Vector<Field> retrievals = new Vector<Field>();
+    Vector<Field> submittals = new Vector<Field>();
     if (prototype.type.typeof != Type.VOID)
       outData.print("Public Function "+module.name+prototype.name + "(");
     else

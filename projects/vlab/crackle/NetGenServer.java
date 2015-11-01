@@ -16,10 +16,7 @@ import java.util.Vector;
  */
 public class NetGenServer extends Generator
 {
-  private static PrintWriter errLog;
-  private static boolean alignForSun = false;
   private static boolean keepTee = false;
-  private static boolean hasShutDownCode = false;
   public static String description()
   {
     return "Generates Net C# Server Code";
@@ -33,12 +30,12 @@ public class NetGenServer extends Generator
     try
     {
       PrintWriter outLog = new PrintWriter(System.out);
-      errLog = outLog;
       for (int i = 0; i <args.length; i++)
       {
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -50,14 +47,12 @@ public class NetGenServer extends Generator
   }
   public static void generate(Module module, String output, PrintWriter outLog)
   {
-    errLog = outLog;
     outLog.println(module.name+" version "+module.version);
     for (int i = 0; i < module.pragmas.size(); i++)
     {
       String pragma = (String) module.pragmas.elementAt(i);
-      if (pragma.trim().equalsIgnoreCase("AlignForSUN") == true)
-        alignForSun = true;
-      else if (pragma.trim().equalsIgnoreCase("KeepTee") == true)
+      if (pragma.trim().equalsIgnoreCase("AlignForSUN") == true) {
+	} else if (pragma.trim().equalsIgnoreCase("KeepTee") == true)
         keepTee = true;
     }
     generateClasses(module, output, outLog);
@@ -131,11 +126,11 @@ public class NetGenServer extends Generator
       e.printStackTrace();
     }
   }
-  public static Vector parameterList;
+  public static Vector<Parameter> parameterList;
   public static boolean generateCommon(Module module, Prototype prototype, int no, PrintWriter outData, String extra1)
   {
     Parameter pd = null;
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     boolean hasReturn = false;
     if (prototype.type.reference == Type.BYVAL
       &&  prototype.type.typeof != Type.VOID)

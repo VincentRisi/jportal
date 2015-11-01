@@ -22,7 +22,6 @@ public class PopBinuJavaServer extends Generator
         + "\r\n  AlignForSUN - ensure that all fields are on 8 byte boundaries.";
   }
 
-  private static boolean alignForSun = false;
   public static PrintWriter errLog;
 
   public static void main(String[] args)
@@ -36,6 +35,7 @@ public class PopBinuJavaServer extends Generator
         outLog.println(args[i] + ": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module) in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -57,7 +57,6 @@ public class PopBinuJavaServer extends Generator
         if (pragma.trim().equalsIgnoreCase("AlignForSUN") == true)
         {
           outLog.println(module.name + ": Align For Sun");
-          alignForSun = true;
         }
       }
       Parameter.language = Parameter.BINU_BASED;
@@ -89,7 +88,7 @@ public class PopBinuJavaServer extends Generator
     return outData;
   }
 
-  private static Vector usings;
+  private static Vector<String> usings;
 
   private static String packageName(Module module)
   {
@@ -100,7 +99,7 @@ public class PopBinuJavaServer extends Generator
 
   private static void primeUsings(Module module)
   {
-    usings = new Vector();
+    usings = new Vector<String>();
     usings.addElement("import " + packageName(module) + ".*;");
   }
 
@@ -113,7 +112,7 @@ public class PopBinuJavaServer extends Generator
         continue;
       if (structure.name.compareTo(module.name) == 0)
         continue;
-      usings = new Vector();
+      usings = new Vector<String>();
       generateStruct(module, structure, output, outLog);
     }
   }
@@ -159,7 +158,7 @@ public class PopBinuJavaServer extends Generator
     }
   }
 
-  private static void generateUsings(Module module, Vector fields, PrintWriter outData)
+  private static void generateUsings(Module module, Vector<Field> fields, PrintWriter outData)
   {
     for (int i = 0; i < module.structures.size(); i++)
     {
@@ -540,11 +539,11 @@ public class PopBinuJavaServer extends Generator
     return "0x" + Integer.toHexString(Integer.parseInt(value));
   }
 
-  public static Vector parameterList;
+  public static Vector<Parameter> parameterList;
 
   public static boolean buildParameterList(Prototype prototype)
   {
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     boolean hasReturn = Parameter.buildBinu(parameterList, prototype);
     if (hasReturn == false)
     {
@@ -867,7 +866,6 @@ public class PopBinuJavaServer extends Generator
       work += " void ";
     work += Parameter.lowerFirst(prototype.name) + "(";
     outData.print(work);
-    Parameter pd;
     for (int i = 0; i < prototype.parameters.size(); i++)
     {
       Field field = (Field) prototype.parameters.elementAt(i);

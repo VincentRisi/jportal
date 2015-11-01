@@ -34,6 +34,7 @@ public class PopGenNPClient extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -243,8 +244,8 @@ public class PopGenNPClient extends Generator
         outData.println("  e"+module.name+" result;");
         outData.println("  char errorBuff[4192];");
         outData.println("  int32 RC;");
-        Vector retrievals = new Vector();
-        Vector submittals = new Vector();
+        Vector<String> retrievals = new Vector<String>();
+        Vector<String> submittals = new Vector<String>();
         for (int i = 0; i < module.prototypes.size(); i++)
         {
           Prototype prototype = (Prototype) module.prototypes.elementAt(i);
@@ -470,8 +471,8 @@ public class PopGenNPClient extends Generator
   public static void generateCClient(Module module, Prototype prototype, int no, PrintWriter outData)
   {
     boolean hasReturn = false;
-    Vector retrievals = new Vector();
-    Vector submittals = new Vector();
+    Vector<Field> retrievals = new Vector<Field>();
+    Vector<Field> submittals = new Vector<Field>();
     if (prototype.type.reference != Type.BYVAL)
     {
       outData.println("#error Only non pointers are allowed as return values");
@@ -617,7 +618,6 @@ public class PopGenNPClient extends Generator
           errLog.println("#error "+output.name+" is an undefined input parameter");
           continue;
         }
-        Operation op = output.sizeOperation();
         if (field.type.reference == Type.BYPTR
         ||  field.type.reference == Type.BYREFPTR)
         {

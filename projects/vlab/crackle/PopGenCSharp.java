@@ -40,9 +40,9 @@ public class PopGenCSharp extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate ... ");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module) in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -477,12 +477,12 @@ public class PopGenCSharp extends Generator
       generateCall(module, prototype, i, outData);
     }
   }
-  public static Vector parameterList;
+  public static Vector<Parameter> parameterList;
   public static boolean generateCommon(Module module, Prototype prototype,
       int no, PrintWriter outData, String extra1)
   {
     Parameter pd = null;
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     boolean hasReturn = false;
     if (prototype.type.reference == Type.BYVAL
         && prototype.type.typeof != Type.VOID) hasReturn = true;

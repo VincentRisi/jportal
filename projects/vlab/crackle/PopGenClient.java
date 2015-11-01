@@ -38,6 +38,7 @@ public class PopGenClient extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -285,8 +286,8 @@ public class PopGenClient extends Generator
         outData.println("  int32 recvSize;");
         outData.println("  e"+module.name+" result;");
         outData.println("  int32 RC;");
-        Vector retrievals = new Vector();
-        Vector submittals = new Vector();
+        Vector<String> retrievals = new Vector<String>();
+        Vector<String> submittals = new Vector<String>();
         for (int i = 0; i < module.prototypes.size(); i++)
         {
           Prototype prototype = (Prototype) module.prototypes.elementAt(i);
@@ -587,9 +588,9 @@ public class PopGenClient extends Generator
   public static void generateCClient(Module module, Prototype prototype, int no, PrintWriter outData)
   {
     boolean hasReturn = false;
-    Vector retrievals = new Vector();
-    Vector submittals = new Vector();
-    Vector allocated = new Vector();
+    Vector<Field> retrievals = new Vector<Field>();
+    Vector<Field> submittals = new Vector<Field>();
+    Vector<String> allocated = new Vector<String>();
     if (prototype.type.reference != Type.BYVAL)
     {
       outData.println("#error Only non pointers are allowed as return values");
