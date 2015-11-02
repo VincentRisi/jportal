@@ -580,7 +580,7 @@ public class PopUbiJavaServer extends Generator
     }
   }
   public static void generateCallStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
-  {Parameter
+  {
     boolean hasReturn = buildParameterList(prototype);
     if (hasReturn == true)
       generateReturnStruct(prototype, outData);
@@ -636,7 +636,7 @@ public class PopUbiJavaServer extends Generator
   public static void generateInterfaceConsts(Module module, PrintWriter outData) throws Throwable
   {
     for (int i = 0; i < module.prototypes.size(); i++)
-    {Parameter
+    {
       Prototype prototype = (Prototype)module.prototypes.elementAt(i);
       if (prototype.codeType != Prototype.RPCCALL)
         continue;
@@ -709,7 +709,7 @@ public class PopUbiJavaServer extends Generator
     }
   }
   public static void generateAssignCall(Module module, Prototype prototype, PrintWriter outData)
-  {Parameter
+  {
     boolean hasReturn = buildParameterList(prototype);
     String comma = "";
     String work = "  public " + (hasReturn ? prototype.type.javaName() : "void") + " " + prototype.name + "(";

@@ -37,7 +37,7 @@ public class PopUbiServer extends Generator
   {
     if (pragmaVector == null || pragmaVector.size() < 1) 
     {
-      pragmaVector = new Vector();
+      pragmaVector = new Vector<Pragma>();
       pragmaVector.addElement(new Pragma("AlignForSun", false, "Ensure that all fields are on 8 byte boundaries."));
       pragmaVector.addElement(new Pragma("QualifyEnums", false, "Enums are generated qualified."));
     }
@@ -77,6 +77,7 @@ public class PopUbiServer extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -215,19 +216,6 @@ public class PopUbiServer extends Generator
       System.out.flush();
       e.printStackTrace();
     }
-  }
-  /**
-  * Sets up the writer and generates the general stuff
-  */
-  private static String nameOf(String fullName)
-  {
-    int n = fullName.lastIndexOf('/');
-    if (n > 0)
-      return fullName.substring(n+1);
-    n = fullName.lastIndexOf('\\');
-    if (n > 0)
-      return fullName.substring(n+1);
-    return fullName;
   }
   private static void generateCHeader(Module module, String output, PrintWriter outLog)
   {
@@ -733,7 +721,7 @@ public class PopUbiServer extends Generator
   }
   public PopUbiServer() {}
   private static PopUbiServer us = new PopUbiServer(); 
-  private static Vector pythonArgs;
+  private static Vector<PythonArgs> pythonArgs;
   class PythonArgs
   {
     String name;
@@ -839,7 +827,7 @@ public class PopUbiServer extends Generator
   }
   private static void generateMethodCall(Module module, Prototype prototype, PrintWriter outData)
   {
-    pythonArgs = new Vector();
+    pythonArgs = new Vector<PythonArgs>();
     boolean hasResult = false;
     int noInputs = 1;
     int noOutputs = 0;
@@ -1206,7 +1194,6 @@ public class PopUbiServer extends Generator
     try
     {
       outLog.println("Code: " + output + module.name.toLowerCase() + ".cpp");
-      File mainfile = new File(output + module.name.toLowerCase() + ".cpp");
       OutputStream outFile = new FileOutputStream(output + module.name.toLowerCase() + ".cpp");
       PrintWriter outData = new PrintWriter(outFile);
       try

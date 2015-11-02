@@ -37,7 +37,7 @@ public class PopUbiServer2 extends Generator
   {
     if (pragmaVector == null || pragmaVector.size() < 1) 
     {
-      pragmaVector = new Vector();
+      pragmaVector = new Vector<Pragma>();
       pragmaVector.addElement(new Pragma("AlignForSun", false, "Ensure that all fields are on 8 byte boundaries."));
     }
   }
@@ -71,6 +71,7 @@ public class PopUbiServer2 extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -693,7 +694,7 @@ public class PopUbiServer2 extends Generator
   }
   public PopUbiServer2() {}
   private static PopUbiServer2 us = new PopUbiServer2(); 
-  private static Vector pythonArgs;
+  private static Vector<PythonArgs> pythonArgs;
   class PythonArgs
   {
     String name;
@@ -799,7 +800,7 @@ public class PopUbiServer2 extends Generator
   }
   private static void generateMethodCall(Module module, Prototype prototype, PrintWriter outData)
   {
-    pythonArgs = new Vector();
+    pythonArgs = new Vector<PythonArgs>();
     boolean hasResult = false;
     int noInputs = 1;
     int noOutputs = 0;
@@ -1171,7 +1172,6 @@ public class PopUbiServer2 extends Generator
     try
     {
       outLog.println("Code: " + output + module.name.toLowerCase() + ".cpp");
-      File mainfile = new File(output + module.name.toLowerCase() + ".cpp");
       OutputStream outFile = new FileOutputStream(output + module.name.toLowerCase() + ".cpp");
       PrintWriter outData = new PrintWriter(outFile);
       try

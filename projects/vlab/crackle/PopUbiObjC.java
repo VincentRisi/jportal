@@ -32,9 +32,9 @@ public class PopUbiObjC extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate ... ");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
-            args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module) in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -206,8 +206,6 @@ public class PopUbiObjC extends Generator
           outData.println("    self." + name + " = 0;");
         else
         {
-          Integer int0 = (Integer)field.type.arraySizes.elementAt(0);
-          int no = int0.intValue();
           outData.println("    self." + name + " = nil; // memset of pointer is stupid");
         }
         break;
@@ -220,8 +218,6 @@ public class PopUbiObjC extends Generator
           outData.println("    self." + name + " = 0;");
         else
         {
-          Integer int0 = (Integer)field.type.arraySizes.elementAt(0);
-          int no = int0.intValue();
           outData.println("    self." + name + " = nil; // memset of pointer is stupid");
         }
         break;
@@ -530,18 +526,6 @@ public class PopUbiObjC extends Generator
       e.printStackTrace();
     }
   }
-  private static String replaceDots(String pack)
-  {
-    String result = pack;
-    for (;;) 
-    {
-      int n = result.indexOf('.');
-      if (n < 0)
-        break;
-      result = result.substring(0,n) + "/" + result.substring(n+1);
-    };
-    return result;
-  }
   private static void generateUsings(Module module, PrintWriter outData)
   {
     String usings = "";
@@ -580,11 +564,11 @@ public class PopUbiObjC extends Generator
       body = "";
     }
   }
-  private static Vector parameterList;
+  private static Vector<Parameter> parameterList;
   private static String LF = (String) System.getProperty("line.separator");
   private static GenerateCommonTuple generateCommon(Module module, Prototype prototype, int no, PrintWriter outData, String extra1)
   {
-    parameterList = new Vector();
+    parameterList = new Vector<Parameter>();
     Parameter.language = Parameter.OBJC_BASED;
     Parameter.build(parameterList, prototype, false);
     GenerateCommonTuple result = new GenerateCommonTuple();
@@ -739,8 +723,8 @@ public class PopUbiObjC extends Generator
   private static void generateCallInterface(Module module, Prototype prototype, int no, PrintWriter outData)
   {
     Parameter.language = Parameter.OBJC_BASED;
-    Parameter pd = new Parameter();
-    pd.language = Parameter.OBJC_BASED;
+    //Parameter pd = new Parameter();
+    //pd.language = Parameter.OBJC_BASED;
     GenerateCommonTuple gcTuple = generateCommon(module, prototype, no, outData, "public ");
     String star = "";
     if (gcTuple.hasTuple) star = "*";
@@ -1098,9 +1082,5 @@ public class PopUbiObjC extends Generator
     }
     if (parm.field.type.reference == Type.ARRAYED) return asType + adder + "*";
     return asType + adder + (parm.isArray ? "*" : "");
-  }
-  private static String objcType(Parameter parm)
-  {
-    return objcType(parm, false);
   }
 }

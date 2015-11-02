@@ -32,6 +32,7 @@ public class PopUbiPuffin extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -247,7 +248,7 @@ public class PopUbiPuffin extends Generator
     }
   }
   //static int listNo, listNoOutput;
-  static Vector pythonLists;
+  static Vector<PythonList> pythonLists;
   public static String pyInputParm(Field field, PrintWriter outData)
   {
     switch (field.type.typeof)
@@ -398,7 +399,7 @@ public class PopUbiPuffin extends Generator
   }
   public static void generateCClientImp(Module module, Prototype prototype, PrintWriter outData)
   {
-    pythonLists = new Vector();
+    pythonLists = new Vector<PythonList>();
     boolean hasReturn = false;
     if (prototype.type.reference == Type.BYVAL
     && prototype.type.typeof != Type.VOID)
@@ -669,10 +670,10 @@ public class PopUbiPuffin extends Generator
       return module + "_" + name;
     return name;
   }
-  private static Vector pythonArgs;
+  private static Vector<PythonArgs> pythonArgs;
   private static void generateMethodCall(Module module, Prototype prototype, PrintWriter outData, PrintWriter outLog)
   {
-    pythonArgs = new Vector();
+    pythonArgs = new Vector<PythonArgs>();
     String returnList = "";
     String resultComma = "";
     String innerComma = ", ";
@@ -799,7 +800,7 @@ public class PopUbiPuffin extends Generator
   }
   public static void generateDoxygenComment(Module module, Prototype prototype, PrintWriter outData, PrintWriter outLog)
   {
-    pythonArgs = new Vector();
+    pythonArgs = new Vector<PythonArgs>();
     String returnList = "";
     String resultComma = "";
     String callParms = "";

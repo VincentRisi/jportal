@@ -32,6 +32,7 @@ public class PopUbiPuffinModule extends Generator
         outLog.println(args[i]+": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -482,7 +483,7 @@ public class PopUbiPuffinModule extends Generator
     }
   }
   //static int listNo, listNoOutput;
-  static Vector pythonLists;
+  static Vector<PythonListPM> pythonLists;
   public static String pyInputParm(Field field, PrintWriter outData)
   {
     switch (field.type.typeof)
@@ -658,7 +659,7 @@ public class PopUbiPuffinModule extends Generator
   }
   public static void generateCClientImp(Module module, Prototype prototype, PrintWriter outData)
   {
-    pythonLists = new Vector();
+    pythonLists = new Vector<PythonListPM>();
     boolean hasReturn = false;
     if (prototype.type.reference == Type.BYVAL
     && prototype.type.typeof != Type.VOID)
@@ -923,10 +924,10 @@ public class PopUbiPuffinModule extends Generator
       return module + "_" + name;
     return name;
   }
-  private static Vector pythonArgs;
+  private static Vector<PythonArgsPM> pythonArgs;
   private static void generateMethodCall(Module module, Prototype prototype, PrintWriter outData)
   {
-    pythonArgs = new Vector();
+    pythonArgs = new Vector<PythonArgsPM>();
     String inputList = "";
     String inputComma = "";
     String returnList = "";
@@ -935,7 +936,6 @@ public class PopUbiPuffinModule extends Generator
     String innerComma = ", ";
     String returnType = "void";
     boolean hasReturn = false;
-    boolean hasOutputs = false;
     if (prototype.type.reference == Type.BYVAL
     && prototype.type.typeof != Type.VOID)
     {
@@ -983,7 +983,6 @@ public class PopUbiPuffinModule extends Generator
       }
       if (arg.isOutput)
       {
-        hasOutputs = true;
         resultList += resultComma + arg.name;
         returnList += resultComma + arg.name + ":" + typeof(arg.field.type);
         resultComma = ", ";
@@ -1054,7 +1053,7 @@ public class PopUbiPuffinModule extends Generator
   }
   private static void generateDoxygenComment(Module module, Prototype prototype, PrintWriter outData, PrintWriter outLog)
   {
-    pythonArgs = new Vector();
+    pythonArgs = new Vector<PythonArgsPM>();
     String returnList = "";
     String resultComma = "";
     String callParms = "";

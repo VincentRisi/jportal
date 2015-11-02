@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Vector;
 
 public class PopUbiPythonTree extends Generator
 {
@@ -31,6 +30,7 @@ public class PopUbiPythonTree extends Generator
         outLog.println(args[i] + ": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -40,13 +40,11 @@ public class PopUbiPythonTree extends Generator
       e.printStackTrace();
     }
   }
-  private static PrintWriter _outLog;
   /**
   * Generates
   */
   public static void generate(Module module, String output, PrintWriter outLog)
   {
-    _outLog = outLog;
     outLog.println(module.name + " version " + module.version);
     generate_tree(module, output, outLog);
   }

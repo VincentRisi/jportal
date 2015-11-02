@@ -33,7 +33,7 @@ public class PopUbiPython extends Generator
   {
     if (pragmaVector == null || pragmaVector.size() < 1)
     {
-      pragmaVector = new Vector();
+      pragmaVector = new Vector<Pragma>();
       pragmaVector.addElement(new Pragma("UseAsImport", false, "Use import instead of #use."));
     }
   }
@@ -64,6 +64,7 @@ public class PopUbiPython extends Generator
         outLog.println(args[i] + ": Generate ... ");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Module module = (Module)in.readObject();
+        in.close();
         generate(module, "", outLog);
       }
       outLog.flush();
@@ -85,10 +86,10 @@ public class PopUbiPython extends Generator
     generateStructs(module, output, outLog);
     generateStubs(module, output, outLog);
   }
-  private static Vector useList;
+  private static Vector<Usage> useList;
   public PopUbiPython()
   {}
-  private static class Usage
+  public static class Usage
   {
     public String name;
     public String module;
@@ -175,7 +176,7 @@ public class PopUbiPython extends Generator
   */
   private static void generateStructs(Module module, String output, PrintWriter outLog)
   {
-    useList = new Vector();
+    useList = new Vector<Usage>();
     try
     {
       String sourceName = "IDL_" + module.name.toUpperCase();
@@ -330,7 +331,7 @@ public class PopUbiPython extends Generator
       e.printStackTrace();
     }
   }
-  private static Vector pythonArgs;
+  private static Vector<PythonArgs> pythonArgs;
   static class PythonArgs
   {
     String name;
@@ -363,7 +364,7 @@ public class PopUbiPython extends Generator
   }
   private static void generateMethodCall(Module module, Prototype prototype, PrintWriter outData)
   {
-    pythonArgs = new Vector();
+    pythonArgs = new Vector<PythonArgs>();
     String inputList = "";
     String inputComma = "";
     String returnList = "";
