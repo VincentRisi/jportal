@@ -1,0 +1,991 @@
+PARSER_BEGIN(Pickle)
+package vlab.pickle;
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+/**
+* JDBC Application Definition Compiler and Generator
+*/
+public class Pickle
+{
+  protected static Application application;
+  protected static Table       table;
+  protected static Relation    relation;
+  protected static Validation  validation;
+  protected static Field       field;
+  protected static Enum        en;
+  protected static Value       value;
+  protected static Link        link;
+  protected static Key         key;
+  static private Pickle parser;
+  static private boolean parser_initialised = false;
+  static private boolean fieldsNullByDefault = false;
+  /**
+  * Reads input from standard input
+  */
+  public static void main(String args[])
+  {
+    try
+    {
+      PrintWriter outLog = new PrintWriter(System.out);
+      for (int i = 0; i <args.length; i++)
+      {
+        System.out.println(args[i]+": Parsing ...");
+        setFieldsNullState(false);
+        Application application = run(args[i], outLog);
+        System.out.println("Outputting "+application.name+".repository");
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(application.name+".repository"));
+        out.writeObject(application);
+        out.close();
+      }
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+  }
+  /**
+  * Reads input from supplied file
+  * @param  inFile is the input file to parse
+  * @return Table from jbdcdef package
+  */
+  public static Application run(String inFile, PrintWriter outLog)
+  {
+    try
+    {
+      FileReader reader = new FileReader(inFile);
+      return run(reader, outLog);
+    }
+    catch (FileNotFoundException e)
+    {
+      e.printStackTrace();
+      return null;
+    }
+  }
+  public static Application run(Reader reader, PrintWriter outLog)
+  {
+    try
+    {
+      if (!parser_initialised)
+      {
+        parser = new Pickle(reader);
+        parser_initialised = true;
+      }
+      else
+        parser.ReInit(reader);
+      parser.pickStart();
+      return application;
+    }
+    catch (Exception e)
+    {
+      outLog.println("ParseException ["+e.getMessage()+"]");
+      e.printStackTrace();
+      return null;
+    }
+  }
+  /**
+  * How to create tables null field state
+  */
+  public static void setFieldsNullState(boolean state)
+  {
+    fieldsNullByDefault = state;
+  }
+  public static Application loadBinFile(String inFile)
+  {
+    return application;
+  }
+  static String fixString(String s)
+  {
+    return s.substring(1, s.length()-1);
+  }
+}
+
+PARSER_END(Pickle)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| ","
+| <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">
+| <"//" (~["\n","\r"])* ("\n"|"\r\n")>
+}
+
+TOKEN[IGNORE_CASE] :          // Keywords
+{
+  <ALL:          "all">
+| <APPLICATION:  "application">
+| <BOOLEAN:      "boolean">
+| <BYTE:        ("byte"|"tinyint")>
+| <CASCADE:      "cascade">
+| <CHAR:        ("char"|"ansichar")>
+| <CHECK:        "check">
+| <DATE:         "date">
+| <DATETIME:     "datetime">
+| <DELETE:       "delete">
+| <DOUBLE:      ("float"|"double"|"money")>
+| <FLAGS:        "flags">
+| <INIT:         "__init__">
+| <INT:         ("int"|"integer"|"identity")>
+| <KEY:          "key">
+| <LINK:         "link">
+| <LONG:         "long">
+| <MONEY:        "money">
+| <NOT:          "not">
+| <NODOMAIN:     "nodomain">
+| <NULL:         "null">
+| <OPTIONS:      "options">
+| <ORDER:       ("order"|"lookup")>
+| <OTHER:        "other">
+| <OUTPUT:       "output">
+| <PASSWORD:     "password">
+| <PRIMARY:      "primary">
+| <REGISTRY:     "registry">
+| <RELATION:     "relation">
+| <SEQUENCE:     "sequence">
+| <SERVER:       "server">
+| <SHORT:       ("short"|"smallint")>
+| <SHOW:         "show">
+| <SIZES:        "sizes">
+| <SUPPLIED:     "supplied">
+| <TABLE:        "table">
+| <TIME:         "time">
+| <TIMESTAMP:    "timestamp">
+| <UNIQUE:       "unique">
+| <UPPERCASE:   ("uppercase"|"upper")>
+| <USE:          "use">
+| <USER:         "user">
+| <USERSTAMP:    "userstamp">
+| <VALIDATE:     "validate">
+| <VALUE:        "value">
+| <VERSION:      "version">
+| <VIEWONLY:     "viewonly">
+}
+
+TOKEN :          // Comments
+{
+  <COMMENT:      "**" (~["\n","\r"])* ("\n"|"\r\n")>
+}
+
+TOKEN :          // Separators
+{
+  <ATSIGN:       "@">
+| <COLON:        ":">
+| <LEFTPAREN:    "(">
+| <RIGHTPAREN:   ")">
+| <LEFTBRACE:    "{">
+| <RIGHTBRACE:   "}">
+| <SLASH:        "/">
+| <ASSIGN:       "=">
+}
+
+TOKEN :          // Literals
+{
+  <NUMBER: ["0"-"9"] (["0"-"9"])*>
+| <FLOATING: (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+             | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+             | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+             | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]>
+| <#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+>
+| <STRING: <DQUOTEDS> | <SQUOTEDS> >
+| <#DQUOTEDS:("\"" (~["\"", "\\"] | "\\" (["\\", "\"", "\'"])?)* "\"")>
+| <#SQUOTEDS:("\'" (~["\'", "\\"] | "\\" (["\\", "\"", "\'"])?)* "\'")>
+}
+
+TOKEN :          // Identifiers
+{
+  <IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)*>
+| <LIDENTIFIER: ("l"|"L") "'" <LETTER> (<LETTER>|<DIGIT>)* "'">
+| <#LETTER: ["a"-"z", "_", "A"-"Z"]>
+| <#DIGIT:  ["0"-"9", "#", "$"]>
+}
+
+SPECIAL_TOKEN[IGNORE_CASE] :
+{ <CODE : "--code--" (~["\n","\r"])* ("\n" | "\r" | "\r\n")> : CODESTATE
+}
+
+<CODESTATE> SPECIAL_TOKEN[IGNORE_CASE] :
+{ <ENDCODE : (" "|"\t")* "--endcode--" (~["\n","\r"])* ("\n" | "\r" | "\r\n")> : DEFAULT
+}
+
+<CODESTATE> TOKEN :
+{ <CODELINE: (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+}
+
+// Parser starting point
+void pickStart() :
+{
+  String s;
+}
+{
+  <APPLICATION> s = pickIdent()
+  {
+    application = new Application();
+    application.name = s;
+  }
+  (
+    s = pickString()
+    {
+      application.descr = s;
+    }
+  )?
+  ( <OUTPUT> s = pickIdentOrString()
+    {
+      application.output = s;
+    }
+  | <SERVER> s = pickIdentOrString()
+    {
+      application.server = s;
+    }
+  | <USER> s = pickIdentOrString()
+    {
+      application.user = s;
+    }
+  | <PASSWORD> s = pickIdentOrString()
+    {
+      application.password = s;
+    }
+  | <REGISTRY> s = pickIdentOrString()
+    {
+      application.registry = s;
+    }
+  | <VERSION> s = pickIdentOrString()
+    {
+      application.version = s;
+    }
+  | <FLAGS>
+    ( s = pickIdentOrString()
+      {
+        application.flags.addElement(s);
+      }
+    )+
+  )+
+  ( <SUPPLIED> pickSupplieds() )?
+  ( <SIZES> <LEFTPAREN> application.charSize = pickNumber()
+                        application.descrSize = pickNumber()
+    <RIGHTPAREN>
+  )?
+  ( pickTable()
+    {
+      if (application.hasTable(table.name))
+        System.out.println(table.name+" is already present");
+      else
+      {
+        application.checkMissing(table);
+        application.tables.addElement(table);
+      }
+    }
+  | pickRelation()
+    {
+      application.checkMissing(relation);
+      application.relations.addElement(relation);
+    }
+  | pickValidate()
+  )+
+  <EOF>
+}
+
+void pickSupplieds() :
+{
+  String s;
+}
+{
+  ( pickField()
+    {
+      if (application.hasSupplied(field.name))
+        System.out.println(field.name+" is already present");
+      else
+        application.supplieds.addElement(field);
+    }
+  )+
+}
+
+String pickIdentOrString() :
+{
+  Token t;
+  String s;
+}
+{
+  s = pickIdent()
+  {
+    return s;
+  }
+| t = <STRING>
+  {
+    s = t.image;
+    return fixString(s);
+  }
+}
+
+// Identifiers may be DEF keywords if they are escaped using L'x'
+String pickIdent() :
+{
+  Token t;
+  String s;
+}
+{
+  t = <IDENTIFIER>
+  {
+    return t.image;
+  }
+| t = <LIDENTIFIER>
+  {
+    s = t.image;
+    return s.substring(2, s.length()-1);
+  }
+}
+
+void pickValidate() :
+{
+  Token t;
+  String s;
+}
+{
+  <VALIDATE>
+  {
+    validation = new Validation();
+  }
+  (
+    <ALL>
+    {
+      application.validationAll = validation;
+    }
+  | <OTHER>   
+    {
+      application.validationOther = validation;
+    }
+  | <INIT>   
+    {
+      application.validationInit = validation;
+    }
+  | s = pickIdent()
+    {
+      Table table = application.getTable(s);
+      Relation relation = application.getRelation(s);
+      boolean added = false;
+      if (table == null)
+      {
+        if (relation == null)
+          System.out.println("Table " + s + " to validate does not exist yet");
+        application.missingValidations.addElement(new Application.ValidationTable(validation, s));
+        added = true;
+      }
+      else
+      {
+        table.validation = validation;
+      }
+      if (relation == null)
+      {
+        if (table == null)
+          System.out.println("Relation " + s + " to validate does not exist yet");
+        if (added == false)
+          application.missingValidations.addElement(new Application.ValidationTable(validation, s));
+      }
+      else
+      {
+        relation.validation = validation;
+      } 
+    }
+  )
+  (
+    t = <CODELINE>
+    {
+      validation.code.addElement(t.image);
+    }
+  )+
+}
+
+void pickTable() :
+{
+  Token t;
+  String s;
+}
+{
+  <TABLE>  s = pickIdent()
+  {
+    table = new Table();
+    table.application = application;
+    table.name = s;
+    table.descr = s;
+  }
+  ( s = pickString() { table.descr = s; } )?
+  ( s = pickAlias() { table.alias = s; } )?
+  ( <VIEWONLY>
+    {
+      table.viewOnly = true;
+    }
+  | <NODOMAIN>
+    {
+      table.noDomain = true;
+    }
+  | <NULL>
+    {
+      table.isNullable = true;
+    }
+  | <CHECK> s = pickString()
+    {
+      table.check = s;
+    }
+  )*
+  ( s = pickComment()
+    {
+      table.comments.addElement(s);
+    }
+  )*
+  (
+    <OPTIONS>
+    ( s = pickString()
+      {
+        table.options.addElement(s);
+      }
+    )+
+  )*
+  ( pickFields() | pickUse() )
+  ( pickValues(0) )*
+}
+
+void pickUse() :
+{
+}
+{
+  <USE> <LEFTPAREN>
+  (
+    <CHAR>
+    {
+      table.useChar = true;
+      field = new Field();
+      field.name = "Id";
+      field.type = field.CHAR;
+      field.length = application.charSize;
+      table.fields.addElement(field);
+      table.order.addElement(field);
+    }
+    (pickCharsize())?
+    {
+      field = new Field();
+      field.name = "Descr";
+      field.type = field.CHAR;
+      field.length = application.descrSize;
+      table.fields.addElement(field);
+    }
+  | <SEQUENCE>
+    {
+      table.useSequence = true;
+      field = new Field();
+      field.name = "Id";
+      field.type = field.SEQUENCE;
+      field.length = 4;
+      table.fields.addElement(field);
+      table.order.addElement(field);
+      field = new Field();
+      field.name = "Descr";
+      field.type = field.CHAR;
+      field.length = application.descrSize;
+      table.fields.addElement(field);
+    }
+  | <INT>
+    {
+      table.useSequence = true;
+      field = new Field();
+      field.name = "Id";
+      field.type = field.INT;
+      field.length = 4;
+      table.fields.addElement(field);
+      table.order.addElement(field);
+      field = new Field();
+      field.name = "Descr";
+      field.type = field.CHAR;
+      field.length = application.descrSize;
+      table.fields.addElement(field);
+    }
+  )
+  <RIGHTPAREN>
+}
+
+void pickFields() :
+{
+  String s;
+}
+{
+  ( pickField()
+    {
+      if (table.hasField(field.name))
+        System.out.println(field.name+" is already present");
+      else
+        table.fields.addElement(field);
+    }
+  )+
+  ( <ORDER> <LEFTPAREN>
+    ( s = pickIdent()
+      {
+        if (table.hasField(s))
+        {
+          field = table.getField(s);
+          table.order.addElement(field);
+        }
+        else
+          System.out.println(s+" is not one of the tables fields");
+      }
+      ( <SLASH>
+        {
+          table.breaks.addElement(field);
+        }
+      )?
+    )+
+    <RIGHTPAREN>
+  )?
+  ( <SHOW> <LEFTPAREN>
+    ( s = pickIdent()
+      {
+        if (table.hasField(s))
+        {
+          field = table.getField(s);
+          table.show.addElement(field);
+        }
+        else
+          System.out.println(s+" is not one of the tables fields");
+      }
+    )+
+    <RIGHTPAREN>
+  )?
+  ( <LINK> s = pickIdent()
+    {
+      link = new Link();
+      table.links.addElement(link);
+      link.table = application.getTable(s);
+      if (link.table == null)
+      {
+        System.out.println(table.name + " table link " + s + " to does not exist yet");
+        application.missingLinks.addElement(new Application.LinkTable(link, s));
+      }
+    }
+    <LEFTPAREN>
+    ( s = pickIdent()
+      {
+        if (table.hasField(s))
+          link.list.addElement(s);
+        else
+          System.out.println(s+" is not one of the tables fields");
+      }
+    )+
+    <RIGHTPAREN>
+    ( (<DELETE>)? <CASCADE>
+      {
+        link.hasCascade = true;
+      }
+    ) ?
+  | <KEY> s = pickIdent()
+    {
+      key = new Key();
+      key.name = s;
+      table.keys.addElement(key);
+    }
+    <LEFTPAREN>
+    ( s = pickIdent()
+      {
+        if (table.hasField(s))
+        {
+          field = table.getField(s);
+          key.list.addElement(field);
+        }
+        else
+          System.out.println(s+" is not one of the tables fields");
+      }
+    )+
+    <RIGHTPAREN>
+    ( <UNIQUE>
+      {
+        key.unique = true;
+      }
+    | <PRIMARY>
+      {
+        key.primary = true;
+      }
+    ) ?
+  )*
+}
+
+void pickField() :
+{
+  String s;
+//  Token t;
+}
+{
+  s = pickIdent()
+  {
+    field = new Field();
+    field.name = s;
+  }
+  ( s = pickAlias() { field.alias = s; } )?
+  pickDatatype()
+  (
+   s = pickComment()
+   {
+     field.comments.addElement(s);
+   }
+  | <NOT> <NULL>
+   {
+     field.isNull = false;
+   }
+  | <NULL>
+   {
+     field.isNull = true;
+   }
+  | <UPPERCASE>
+   {
+     field.isUppercase = true;
+   }
+  | <CHECK> s = pickString()
+   {
+     field.check = s;
+   }
+  )*
+}
+
+String pickAlias() :
+{
+  String alias;
+}
+{
+  <LEFTPAREN> alias = pickIdent() <RIGHTPAREN>
+  {
+    return alias;
+  }
+}
+
+void pickDatatype() :
+{}
+{
+  <BOOLEAN>
+  {
+    field.type = field.BOOLEAN;
+    field.length = 1;
+  }
+| <BYTE>
+  {
+    field.type = field.BYTE;
+    field.length = 1;
+  }
+  (pickEnums())?
+| <CHAR>
+  {
+    field.type = field.CHAR;
+    field.length = 1;
+  }
+  (pickCharsize())?
+  (pickCharEnums())?
+|  <SHORT>
+  {
+    field.type = field.SHORT;
+    field.length = 2;
+  }
+  (pickEnums())?
+|  <INT>
+  {
+    field.type = field.INT;
+    field.length = 4;
+  }
+  (pickEnums())?
+|  <SEQUENCE>
+  {
+    field.type = field.SEQUENCE;
+    field.length = 4;
+  }
+|  <LONG>
+  {
+    field.type = field.LONG;
+    field.length = 8;
+  }
+  (pickEnums())?
+|  <DATE>
+  {
+    field.type = field.DATE;
+    field.length = 8;
+  }
+|  <DATETIME>
+  {
+    field.type = field.DATETIME;
+    field.length = 14;
+  }
+|  <TIME>
+  {
+    field.type = field.TIME;
+    field.length = 6;
+  }
+|  <TIMESTAMP>
+  {
+    field.type = field.TIMESTAMP;
+    field.length = 14;
+  }
+|  <USERSTAMP>
+  {
+    field.type = field.USERSTAMP;
+    field.length = 8;
+  }
+| <DOUBLE>
+  {
+    field.type = field.DOUBLE;
+    field.length = 8;
+  }
+  (pickFloatsize())?
+}
+
+void pickEnums() :
+{
+  String s;
+  int n;
+}
+{
+  <LEFTPAREN>
+  (
+    s = pickIdent() <ASSIGN> n = pickNumber()
+    {
+      en = new Enum();
+      en.name = s;
+      en.value = n;
+      field.enums.addElement(en);
+    }
+  ) +
+  <RIGHTPAREN>
+}
+
+void pickCharEnums() :
+{
+  String s;
+  int n;
+}
+{
+  <LEFTBRACE>
+  (
+    s = pickIdent() <ASSIGN> n = pickNumber()
+    {
+      en = new Enum();
+      en.name = s;
+      en.value = n;
+      field.enums.addElement(en);
+    }
+  ) +
+  <RIGHTBRACE>
+}
+
+void pickFloatsize() :
+{
+  int n;
+}
+{
+  <LEFTPAREN> n = pickNumber()
+  {
+    field.precision = n;
+  }
+  n = pickNumber()
+  {
+    field.scale = n;
+  }
+  <RIGHTPAREN>
+}
+
+void pickCharsize() :
+{
+  int n;
+}
+{
+  (<LEFTPAREN> n = pickNumber()
+  {
+    field.length = n;
+  }
+  <RIGHTPAREN>)
+| n = pickNumber()
+  {
+    field.length = n;
+  }
+}
+
+int pickNumber() :
+{
+  Token t;
+  String s;
+  Integer i;
+}
+{
+  t = <NUMBER>
+  {
+    s = t.image;
+    i = new Integer(s);
+    return i.intValue();
+  }
+}
+
+void pickValues(int state) :
+{
+  String s;
+}
+{
+  ( <VALUE>
+    ( <LEFTPAREN>
+      {
+        value = new Value();
+        if (state == 0)
+          table.values.addElement(value);
+        else
+          relation.values.addElement(value);
+      }
+      pickValue() (pickValue())+
+      <RIGHTPAREN>
+    )+
+  )
+}
+
+void pickValue() :
+{
+  String s;
+}
+{
+  s = pickNIS()
+  {
+    value.list.addElement(s);
+  }
+}
+
+String pickNIS() :
+{
+  Token t;
+  String s;
+}
+{
+  t = <NUMBER>
+  {
+    s = t.image;
+    return s;
+  }
+| t = <FLOATING>
+  {
+    s = t.image;
+    return s;
+  }
+| s= pickIdentOrString()
+  {
+    return s;
+  }
+}
+
+void pickRelation() :
+{
+  String s;
+  int from=0;
+  int to=0;
+}
+{
+  <RELATION> s = pickIdent()
+  {
+    relation = new Relation();
+    relation.application = application;
+    relation.name = s;
+    relation.descr = s;
+  }
+  ( s = pickString() { relation.descr = s; } )?
+  ( s = pickAlias()
+    {
+      relation.alias = s;
+    }
+  )?
+  ( s = pickComment()
+    {
+      relation.comments.addElement(s);
+    }
+  )*
+  s = pickIdent()
+  {
+    relation.fromTable = application.getTable(s);
+    if (relation.fromTable == null)
+    {
+      System.out.println(relation.name + " from relation table " + s + " does not exist yet");
+      application.missingRelations.addElement(new Application.RelationTable(relation, s, true));
+    }
+  }
+  ( <COLON> relation.fromShort = pickIdent())?
+  <LEFTPAREN>
+  (
+    s = pickIdent()
+    {
+      relation.fromFieldNames.addElement(s);
+      System.out.println("From " + s);
+      if (relation.fromTable != null)
+      {
+        Field field = relation.fromTable.getPKField(from);
+        System.out.println("From " + field.name + ":" + from + " = " + s);
+        relation.fromFields.addElement(field);
+        from++;
+      }
+    }
+  )+
+  <RIGHTPAREN>
+  s = pickIdent()
+  {
+    relation.toTable = application.getTable(s);
+    if (relation.toTable == null)
+    {
+      System.out.println(relation.name + " to relation table " + s + " does not exist yet");
+      application.missingRelations.addElement(new Application.RelationTable(relation, s, false));
+    }
+  }
+  ( <COLON> relation.toShort = pickIdent())?
+  <LEFTPAREN>
+  (
+    s = pickIdent()
+    {
+      relation.toFieldNames.addElement(s);
+      System.out.println("To " + s);
+      if (relation.toTable != null)
+      {
+        Field field = relation.toTable.getPKField(to);
+        System.out.println("To " + field.name + ":" + to + " = " + s);
+        relation.toFields.addElement(field);
+        to++;
+      }
+    }
+  )+
+  <RIGHTPAREN>
+  ( pickValues(1) )*
+}
+
+String pickString() :
+{
+  Token t;
+  String s;
+}
+{
+  t = <STRING>
+  {
+    s = t.image;
+    return fixString(s);
+  }
+}
+
+String pickComment() :
+{
+  Token t;
+  String s;
+  int n;
+}
+{
+  t = <COMMENT>
+  {
+    s = t.image;
+    while (s.indexOf('*') == 0)
+      s = s.substring(1);
+    n = s.indexOf('\r');
+    if (n == -1)
+    {
+      n = s.indexOf('\n');
+      if (n == -1)
+        n = s.length()-1;
+    }
+    return s.substring(0, n);
+  }
+}
+
+
