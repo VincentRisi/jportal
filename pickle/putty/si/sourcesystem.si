@@ -1,0 +1,38 @@
+#  $Revision: 1.3 $
+#
+#  $Date: 2004/12/07 08:51:21 $
+#
+$PARMS 1
+$DESCR 'System for Source'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE SourceSystem
+  ID         Char(16)
+  Name       Char(256)
+  Decription Char(256)
+  Status     TinyInt  (ACTIVE=0 INACTIVE=1 MARKDELETE=2)
+  USId       Char(16)
+  TmStamp    DateTime
+
+KEY SourceSystemKey PRIMARY
+  ID
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+PROC SelectAll
+
+PROC ByName
+  INPUT
+    Name   char(256)
+  OUTPUT( SINGLE )
+    ID     char(16)
+SQLCODE
+    SELECT ID
+    FROM   SourceSystem
+    WHERE  Name = :Name
+ENDCODE
+

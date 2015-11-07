@@ -1,0 +1,113 @@
+//  $Revision: 1.6 $
+//
+//  $Date: 2002/09/26 11:35:04 $
+//
+SERVER  @orcl
+CONNECT NPUD00/CONTROL
+
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+TABLE   Routing
+  Id            Sequence
+  MessageID     int
+  MessageType   tinyint       (Message=0 Stream=1 Response=2 Reply=3)
+  Queuefrom     char (16)
+  Queueto       char (16)
+  Comments      char (256)    NULL
+  Method        tinyint       (Auto=0, Manual=1)
+  USId          char (16)
+  Tmstamp       timestamp
+
+GRANT DELETE TO PUBLIC
+GRANT INSERT TO PUBLIC
+GRANT SELECT TO PUBLIC
+GRANT UPDATE TO PUBLIC
+
+KEY     SYS_C00812
+PRIMARY
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  ID
+
+KEY KEY01
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  MessageID
+
+
+link Queue
+   QueueFrom
+
+link Queue
+   QueueTo
+
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne $PYTHON
+PROC    Exists
+PROC    DeleteAll
+PROC    SelectAll
+PROC    Count
+
+# Used By Front End
+PROC ByID
+INPUT
+  InID          int
+OUTPUT(Single)
+  Id            int
+  MessageID     int
+  MessageType   tinyint
+  Queuefrom     char (16)
+  Queueto       char (16)
+  Comments      char (256)
+  Method        tinyint
+  USId          char (16)
+  Tmstamp       timestamp
+SQL CODE
+    SELECT
+      Id
+      ,MessageID
+      ,MessageType
+      ,Queuefrom
+      ,Queueto
+      ,Comments
+      ,Method
+      ,USId
+      ,to_char(Tmstamp, 'YYYYMMDDHH24MISS')
+    FROM Routing
+    WHERE
+       Id = :InID
+ENDCODE
+
+# Used By Front End
+PROC ByMessageID
+INPUT
+  InMessageId   int
+  InMessageType tinyint
+OUTPUT(Multiple)
+  Id            int
+  MessageID     int
+  MessageType   tinyint
+  Queuefrom     char (16)
+  Queueto       char (16)
+  Comments      char (256)
+  Method        tinyint
+  USId          char (16)
+  Tmstamp       timestamp
+SQL CODE
+    SELECT
+      Id
+      ,MessageID
+      ,MessageType
+      ,Queuefrom
+      ,Queueto
+      ,Comments
+      ,Method
+      ,USId
+      ,to_char(Tmstamp, 'YYYYMMDDHH24MISS')
+    FROM Routing
+    WHERE
+       MessageId = :InMessageId
+       AND MessageType = :InMessageType
+ENDCODE
+
+

@@ -1,0 +1,164 @@
+#  $Revision: 1.9 $
+#
+#  $Date: 2002/07/11 10:30:07 $
+#
+$PARMS 1
+$LOOKUP 'FinId BranchId SwiftAddress Country Town Status'
+$NODOMAIN 1
+$DESCR 'Almanac Banks'
+$SHOW 'FinId BranchId'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE AlmanacBank
+  FinId            int
+  BranchId         int
+  BankName         Char(504) NULL
+  Town             Char(70)  NULL
+  AddressLine1     Char(70)  NULL
+  AddressLine2     Char(70)  NULL
+  AddressLine3     Char(70)  NULL
+  AddressLine4     Char(70)  NULL
+  AddressLine5     Char(70)  NULL
+  Country          Char(100) NULL
+  Telephone        Char(52)  NULL
+  Fax              Char(52)  NULL
+  Telex            Char(51)  NULL
+  SwiftAddress     Char(11)  NULL
+  NationalBankCode Char(45)  NULL
+  RBIInsertDate    DateTime
+  RBIChangeDate    DateTime
+  Status           TinyInt     (Active=0 Inactive=1 MarkForDelete=2 ConfirmDelete=3)
+  USId             Char(16)
+  TmStamp          timestamp
+
+KEY BankFileKey PRIMARY
+  FinId
+  BranchId
+
+KEY KEY01
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  BankName
+  Town
+
+KEY KEY02
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  SwiftAddress
+
+KEY KEY03
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  Country
+
+Link BankFile
+  SwiftAddress
+  DELETE CASCADE
+
+PROC Insert $PYTHON
+PROC Update $PYTHON
+PROC SelectOne $PYTHON
+PROC DeleteOne 
+PROC Exists $PYTHON
+
+# used by almanacto
+PROC UpdateAllStatus (NOIDL)
+INPUT
+  Status        tinyint
+  USId          char  (16)
+SQL CODE
+  Update
+    AlmanacBank
+  Set
+      Status = :Status
+     ,USId = :USId
+     ,TMStamp = SYSDATE
+ENDCODE
+
+#Used By Router, IDE
+PROC Get $PYTHON
+INPUT
+  FinId            int
+  BranchId         int
+OUTPUT (Single)
+  BankName         Char(504)
+  Town             Char(70)
+  Country          Char(100)
+  SwiftAddress     Char(11)
+  NationalBankCode Char(315)
+  Status           TinyInt
+SQL CODE
+  Select BankName, Town, Country, SwiftAddress, NationalBankCode, Status
+  From AlmanacBank
+  Where FinId = :FinId and BranchId = :BranchId
+ENDCODE
+
+#Used By Router, IDE
+PROC GetBankCode $PYTHON
+INPUT
+  FinId            int
+  BranchId         int
+OUTPUT (Single)
+  NationalBankCode Char(315)
+SQL CODE
+  Select NationalBankCode
+  From AlmanacBank
+  Where FinId = :FinId and BranchId = :BranchId
+ENDCODE
+
+#Used By Router, IDE
+PROC FinIdBankCodeCheck $PYTHON
+INPUT
+  FinId            int
+  NationalBankCode Char(45) // why 315
+OUTPUT (Single)
+  MatchCount       int
+SQL CODE
+  Select count(*)
+  From AlmanacBank
+  Where FinId = :FinId and NationalBankCode = :NationalBankCode
+ENDCODE
+
+#Used By Router, IDE
+PROC SwiftLookup $PYTHON
+INPUT
+  SwiftAddress     Char(11)
+  Currency         Char(4)
+OUTPUT (Multiple)
+  SwiftAddressOut  Char(11)
+SQL CODE
+select distinct corrswiftaddress from almanacbank b, almanaccorrespondent c
+ where
+  b.swiftaddress = :SwiftAddress and
+  b.branchid = 0 and
+  b.finid = c.finid and
+  c.corrcurrency = :Currency and
+  not (c.corrswiftaddress is null)
+ENDCODE
+
+#Used By Router, IDE
+PROC SwiftCountryLookup $PYTHON
+INPUT
+  SwiftAddress     Char(11)
+  Country          Char(100)
+OUTPUT (Multiple)
+  SwiftAddressOut  Char(11)
+SQL CODE
+select distinct b1.swiftaddress from almanacbank b,almanacbank b1
+ where
+  b.swiftaddress = :SwiftAddress and
+  b1.finid = b.finid and
+  b1.COUNTRY = :Country and
+  not b1.swiftaddress is null
+ENDCODE
+
+#Used By Router, IDE
+PROC FinIdLookup $PYTHON
+INPUT
+  SwiftAddress     Char(11)
+OUTPUT (Multiple)
+  FinId            int
+  BranchId         int
+SQL CODE
+  select finid,branchid from almanacbank
+    where swiftaddress = :SwiftAddress
+ENDCODE

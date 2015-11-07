@@ -1,0 +1,102 @@
+#  $Revision: 1.6 $
+#
+#  $Date: 2003/04/08 07:36:55 $
+#
+SERVER  @orcl
+CONNECT NPUD00/CONTROL
+
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+TABLE   Summary
+  ID            Sequence
+  MessageID     int
+  SummaryLen    smallint
+  SummaryData   image  (16000)
+  SummaryType   tinyint   (XML=0 Text=1)
+  USId          char (16)
+  Tmstamp       timestamp
+
+GRANT DELETE TO PUBLIC
+GRANT INSERT TO PUBLIC
+GRANT SELECT TO PUBLIC
+GRANT UPDATE TO PUBLIC
+
+# caz added this for cvs
+
+
+KEY     SYS_C00810
+PRIMARY
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  ID
+
+KEY  KEY01
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  MessageID
+
+link Message
+   MessageID
+   DELETE CASCADE
+
+PROC    Insert $PYTHON
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    Exists
+PROC    DeleteAll
+PROC    SelectAll
+PROC    Count
+
+# Used By PE Front End
+PROC ByID
+INPUT
+   InID           int
+OUTPUT(Single)
+   ID             int
+   MessageID      int
+   SummaryLen     smallint
+   SummaryData    image  (16000)
+   SummaryType    tinyint   (XML=0 Text=1)
+   USId           char (16)
+   Tmstamp        timestamp
+SQL CODE
+   SELECT
+     ID
+     ,MessageID
+     ,SummaryLen
+     ,SummaryData
+     ,SummaryType
+     ,USId
+     ,to_char(Tmstamp, 'YYYYMMDDHH24MISS')
+     FROM
+      Summary
+   WHERE
+      MessageId = :InID
+ENDCODE
+
+# Used By Router End
+PROC ByDayAndQueueId $PYTHON
+INPUT
+   InDate           char(8)
+   QueueId          char(16)
+OUTPUT(Multiple)
+   ID             int
+   MessageID      int
+   SummaryLen     smallint
+   SummaryData    image  (16000)
+   SummaryType    tinyint   (XML=0 Text=1)
+   USId           char (16)
+   Tmstamp        timestamp
+SQL CODE
+   SELECT /*+RULE*/
+     s.ID
+     ,s.MessageID
+     ,s.SummaryLen
+     ,s.SummaryData
+     ,s.SummaryType
+     ,s.USId
+     ,to_char(s.Tmstamp, 'YYYYMMDDHH24MISS')
+     FROM
+      summary s, message m 
+   WHERE
+      s.tmstamp >= to_date(:InDate,'YYYYMMDD') and s.tmstamp-1 < to_date(:InDate,'YYYYMMDD')
+      and m.id = s.messageid and m.queueid = :QueueId
+ENDCODE

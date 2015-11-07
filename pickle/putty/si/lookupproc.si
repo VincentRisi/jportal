@@ -1,0 +1,27 @@
+#  $Revision: 1.4 $
+#
+#  $Date: 2002/06/24 07:20:16 $
+#
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE Lookup
+
+## Moved to Lookup.si ##
+### used by Rutter
+##PROC Get $PYTHON
+##INPUT
+##  Name Char(256)
+##  Ref Char(256)
+##OUTPUT (single)
+##  Value Char(256)
+##SQL CODE
+##  SELECT
+##     Value
+##  FROM
+##     Lookup
+##  Where
+##     Name = :Name
+##     and Ref = :Ref
+##ENDCODE
+

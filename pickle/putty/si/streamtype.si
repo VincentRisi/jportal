@@ -1,0 +1,32 @@
+#  $Revision: 1.2 $
+#
+#  $Date: 2001/11/13 07:57:19 $
+#
+$PARMS 1
+$DESCR 'Stream Type'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE StreamType
+  Id Char(16)
+  Descr Char(65) NULL
+  USId         Char(16)
+  TmStamp      TimeStamp
+
+KEY StreamtypeKey1 PRIMARY
+  Id
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC SelectAll
+PROC DeleteOne
+
+data
+insert into StreamType  values ('SWIFT', 'SWIFT'       , 'Predefined', sysdate);
+insert into StreamType  values ('TIBOS', 'TIBOS'       , 'Predefined', sysdate);
+insert into StreamType  values ('WASTE', 'Waste stream', 'Predefined', sysdate);
+commit;
+enddata
+

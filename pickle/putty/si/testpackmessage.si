@@ -1,0 +1,26 @@
+#  $Revision: 1.2 $
+#
+#  $Date: 2001/11/13 07:57:19 $
+#
+SERVER  @orcl
+CONNECT NPUD00/CONTROL
+
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+TABLE TestPackMessage
+  MessageId     int
+  PackName      char(50)
+  USId          char(16)
+  TMStamp       timestamp
+
+KEY     SYS_C00821
+PRIMARY
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  MessageID
+  PackName
+
+//link TestPack
+//   PackName
+
+//link TestMessage
+//   MessageId
+

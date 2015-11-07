@@ -1,0 +1,98 @@
+#  $Revision: 1.8 $
+#  $Date: 2004/08/13 13:50:47 $
+$PARMS 1
+$LOOKUP "StaffId GroupId"
+$DESCR 'Staff Group Relationship'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE StaffGroup
+  StaffId      Char(16)
+  GroupId      Char(16)
+  USId         Char(16)
+  TmStamp      timestamp
+
+KEY StaffGroupKey PRIMARY
+  StaffId
+  GroupId
+
+LINK Staff 
+  StaffId
+  DELETE CASCADE
+
+LINK Grps 
+  GroupId
+  DELETE CASCADE
+
+PROC Insert $PYTHON
+PROC DeleteOne $PYTHON
+
+PROC InsertStaff $PYTHON
+INPUT
+  GroupId      Char(16)
+  USId         Char(16)
+SQL CODE
+  insert into StaffGroup
+    (select Id, :GroupId, :USId, SYSDATE
+     from Staff
+     where Id in ($StaffList(40960)))
+ENDCODE
+
+PROC DeleteStaff $PYTHON
+INPUT
+  GroupId      Char(16)
+SQL CODE
+  delete from ScriptGroup
+  where GroupId = :GroupId
+  and StaffId in ($StaffList(40960))
+ENDCODE
+
+PROC InsertGroups $PYTHON
+INPUT
+  StaffId      Char(16)
+  USId         Char(16)
+SQL CODE
+  insert into StaffGroup
+    (select :StaffId, GroupId, :USId, SYSDATE
+     from Grps
+     where GroupId in ($GroupList(40960)))
+ENDCODE
+
+PROC DeleteGroups $PYTHON
+INPUT
+  StaffId      Char(16)
+SQL CODE
+  delete from ScriptGroup
+  where GroupId in ($GroupList(40960))
+  and StaffId = :StaffId
+ENDCODE
+
+PROC List
+INPUT
+  StaffId      Char(16)
+OUTPUT (Multiple)
+  GroupId      Char(16)
+SQL CODE
+  select GroupId from StaffGroup where StaffId = :StaffId
+ENDCODE
+
+PROC ListAll $PYTHON
+OUTPUT (Multiple)
+  StaffId Char(16)
+  GroupId Char(16)
+SQL CODE
+  SELECT StaffId
+       , GroupId
+  FROM StaffGroup
+  ORDER BY StaffId
+         , GroupId
+ENDCODE
+
+
+data
+insert into StaffGroup values ('PUTTYIDE', 'INTRSYS', 'PUTTYIDE', SYSDATE);
+insert into StaffGroup (select Staff.ID, 'NEDPAYM', 'PUTTYIDE', SYSDATE);
+insert into StaffGroup (select Staff.ID, 'ZARPAYM', 'PUTTYIDE', SYSDATE);
+commit;
+enddata

@@ -1,0 +1,38 @@
+#  $Revision: 1.3 $
+#
+#  $Date: 2004/08/13 13:52:36 $
+#
+SERVER  @orcl
+CONNECT NPUD00/CONTROL
+
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+TABLE   StaffProfile
+Staffid       char(16)
+Function      char (64)
+USId          char (16)
+Tmstamp       timestamp
+
+GRANT DELETE TO PUBLIC
+GRANT INSERT TO PUBLIC
+GRANT SELECT TO PUBLIC
+GRANT UPDATE TO PUBLIC
+
+KEY     SYS_C00826
+PRIMARY
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  STAFFID
+  FUNCTION
+
+link Staff
+  Staffid
+  DELETE CASCADE
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    Exists
+PROC    DeleteAll
+PROC    SelectAll
+PROC    Count
+

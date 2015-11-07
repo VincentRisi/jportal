@@ -1,0 +1,34 @@
+#  $Revision: 1.2 $
+#
+#  $Date: 2001/11/13 07:57:19 $
+#
+$PARMS 1
+$DESCR 'Staff Queue Permissions'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE StaffQueuePerm
+  StaffId      Char(16)
+  QueueId      Char(16)
+  Status       tinyint (ViewOnly=0 ViewRoute=1)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY StaffQueuePermKey PRIMARY
+  StaffId
+  QueueId
+
+LINK Queue
+  QueueId
+  DELETE CASCADE
+
+LINK Staff
+  StaffId
+  DELETE CASCADE
+
+PROC Insert
+PROC DeleteOne
+
+
+

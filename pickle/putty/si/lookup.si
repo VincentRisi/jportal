@@ -1,0 +1,80 @@
+#  $Revision: 1.9 $
+#
+#  $Date: 2002/07/02 16:40:56 $
+#
+$PARMS 1
+$LOOKUP "Name Ref"
+$DESCR 'User Lookup Table'
+
+SERVER   @orcl_ATLAS
+CONNECT  npud00/control
+
+TABLE Lookup
+  Name         Char(255)
+  Ref(Refs)    Char(255)
+  Value        Char(255)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY LookupKey PRIMARY
+  Name
+  Ref
+
+PROC Insert
+PROC Update $PYTHON
+PROC SelectOne $PYTHON
+PROC DeleteOne $PYTHON
+PROC DeleteAll $PYTHON
+
+PROC SelectList  $PYTHON
+INPUT
+  Name         Char(255)
+OUTPUT (multiple)
+  Ref(Refs)    Char(255)
+  Value        Char(255)
+SQLCODE
+  select Ref, Value from Lookup where Name = :Name
+ENDCODE
+
+# (moved from LookupProc.si)
+# used by Rutter 
+PROC Get $PYTHON
+INPUT
+  Name Char(256)
+  Ref Char(256)
+OUTPUT (single)
+  Value Char(256)
+SQL CODE
+  SELECT
+     Value
+  FROM
+     Lookup
+  Where
+     Name = :Name
+     and Ref = :Ref
+ENDCODE
+
+PROC NameList $PYTHON
+OUTPUT (multiple)
+  Name Char(256)
+SQL CODE
+  SELECT distinct Name FROM Lookup
+ENDCODE
+
+data
+insert into lookup values ('ACCOUNT SYSTEM'  , 'CA'     , '001'  , USER, sysdate);
+insert into lookup values ('ACCOUNT SYSTEM'  , 'GL'     , '009'  , USER, sysdate);
+insert into lookup values ('ACCOUNT SYSTEM'  , 'MCA'    , '?'    , USER, sysdate);
+insert into lookup values ('ACCOUNT SYSTEM'  , 'SA'     , '002'  , USER, sysdate);
+insert into lookup values ('TRANSACTION TYPE', 'DT'     , 'YES'  , USER, sysdate);
+insert into lookup values ('TRANSACTION TYPE', 'MCT'    , 'YES'  , USER, sysdate);
+insert into lookup values ('TRANSACTION TYPE', 'OT'     , 'YES'  , USER, sysdate);
+insert into lookup values ('TRANSACTION TYPE', 'PRODCHG', 'YES'  , USER, sysdate);
+insert into lookup values ('VAT'             , 'NOVAT'  , '0.00%', USER, sysdate);
+insert into lookup values ('VAT'             , 'VAT'    , '14.00', USER, sysdate);
+insert into lookup values ('WASTE TRAN CODE' , 'DT'     , '1234' , USER, sysdate);
+insert into lookup values ('WASTE TRAN CODE' , 'OT'     , '5678' , USER, sysdate);
+insert into lookup values ('WASTE TRAN CODE' , 'RT'     , '8765' , USER, sysdate);
+commit;
+enddata
+

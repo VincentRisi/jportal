@@ -1,0 +1,41 @@
+//  $Revision: 1.6 $
+//  $Date: 2002/10/26 10:16:24 $
+
+$PARMS 1
+$DESCR 'Groups'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE Grps
+  GroupId      Char(16)
+  Name         Char(64)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY GroupKey PRIMARY
+  GroupId
+
+PROC Insert $PYTHON
+PROC Update $PYTHON
+PROC SelectAll
+PROC SelectOne
+PROC DeleteOne $PYTHON
+
+PROC ListAll $PYTHON
+OUTPUT (Multiple)
+  GroupId Char(16)
+  Name Char(64)
+SQL CODE
+  SELECT GroupId
+       , Name
+  FROM Grps
+  ORDER BY GroupId
+ENDCODE
+
+data
+insert into grps values ('INTRSYS', 'Intrinsics Scripter', 'PUTTYIDE', SYSDATE);
+insert into grps values ('NEDPAYM', 'Nedpayment Scripter', 'PUTTYIDE', SYSDATE);
+insert into grps values ('ZARPAYM', 'Zarpayment Scripter', 'PUTTYIDE', SYSDATE);
+commit;
+enddata

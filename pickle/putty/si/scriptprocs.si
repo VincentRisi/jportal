@@ -1,0 +1,280 @@
+#  $Revision: 1.7 $
+#
+#  $Date: 2002/07/02 14:14:52 $
+#
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE Scripts
+
+PROC List $PYTHON
+INPUT
+  VersionType tinyint 
+OUTPUT (Multiple)
+  Name        char(64)
+  Version     smallint
+SQL CODE
+  select Name, Version from ScriptVersion 
+  where VersionType = :VersionType 
+  order by Name, Version
+ENDCODE
+
+PROC StaffList
+INPUT
+  StaffId     char(16)
+  VersionType tinyint 
+OUTPUT (Multiple)
+  Name        char(64)
+  Version     smallint
+  AccessType  tinyint
+SQL CODE
+  select A.ScriptName, V.Version, Min(A.AccessType)
+  from ScriptVersion V
+  , (select distinct ScriptName, AccessType
+     from ScriptGroup
+     , (select distinct GroupId
+        from StaffGroup
+        where StaffId = :StaffId) G
+     where G.GroupId = ScriptGroup.GroupId) A
+  where V.Name = A.ScriptName
+  and   V.VersionType = :VersionType
+  group by A.ScriptName, V.Version
+  order by 1,2,3
+ENDCODE
+
+PROC StaffGroupList
+INPUT
+  StaffId     char(16)
+  GroupId     char(16)
+  VersionType tinyint 
+OUTPUT (Multiple)
+  Name        char(64)
+  Version     smallint
+  AccessType  tinyint
+SQL CODE
+  select SCRIPTG.ScriptName, SCRIPTV.Version, Min(SCRIPTG.AccessType)
+  from ScriptVersion SCRIPTV
+  , (select distinct ScriptName, AccessType
+     from ScriptGroup
+     , (select distinct GroupId
+        from StaffGroup
+        where StaffId = :StaffId
+        and (:GroupId = 'ALL' or GroupId = :GroupId)) STAFFG
+     where STAFFG.GroupId = ScriptGroup.GroupId) SCRIPTG
+  where SCRIPTV.Name = SCRIPTG.ScriptName
+  and   SCRIPTV.VersionType = :VersionType
+  group by SCRIPTG.ScriptName, SCRIPTV.Version
+  order by 1,2,3
+ENDCODE
+
+PROC L'Check'
+INPUT
+  Name        char(64)
+  VersionType tinyint
+OUTPUT (Single)
+  NoOf        smallint
+SQL CODE
+  select distinct 1
+  from Scripts S, ScriptVersion V
+  where S.Name = :Name
+  and   V.Name = S.Name
+  and   V.VersionType = :VersionType
+ENDCODE
+
+PROC Add
+INPUT
+  InName        char(64)
+  InVersionType tinyint
+  InUSId        char(16)
+  OutVersion    smallint
+  OutTmstamp    timestamp
+SQL CODE
+  begin
+    select to_char(sysdate, 'YYYYMMDDHH24MISS') into :OutTmStamp from dual;
+    select nvl(max(Version)+1,1) into :OutVersion from Scripts where Name = :InName;
+    delete from ScriptVersion where Name = :InName and VersionType = :InVersionType;
+    insert into ScriptVersion values (:InName, :InVersionType, :OutVersion, 0, :InUsid, to_date(:OutTmStamp, 'YYYYMMDDHH24MISS'));
+    delete from Scripts where Name = :InName and Version = :OutVersion;
+    insert into Scripts values (:InName, :InVersionType, :OutVersion, 0, 1, 1, '', :InUsId, to_date(:OutTmStamp, 'YYYYMMDDHH24MISS'));
+  end;
+ENDCODE
+
+PROC Remove
+INPUT
+  InName        char(64)
+  InVersionType tinyint
+  IOVersion     smallint
+  InUSId        char(16)
+  OutTmstamp    timestamp
+SQL CODE
+  begin
+    select to_char(sysdate, 'YYYYMMDDHH24MISS') into :OutTmStamp from dual;
+    delete from ScriptVersion where Name = :InName and VersionType = :InVersionType;
+    delete from Scripts where Name = :InName and Version = :IOVersion;
+    select nvl(max(Version),0) into :IOVersion from Scripts
+      where Name = :InName and VersionType = :InVersionType;
+    if :IOVersion <> 0 then
+      insert into ScriptVersion values (:InName, :InVersionType, :IOVersion, 0, :InUsid, to_date(:OutTmStamp, 'YYYYMMDDHH24MISS'));
+    end if;
+  end;
+ENDCODE
+
+PROC Promote
+INPUT
+  Name           char(64)
+  VersionType    tinyint
+  Version        smallint
+  USId           char(16)
+  Tmstamp        timestamp
+  NewVersion     smallint
+SQL CODE
+  begin
+    select to_char(sysdate, 'YYYYMMDDHH24MISS') into :TmStamp from dual;
+    select nvl(max(Version)+1,1) into :NewVersion from Scripts where Name = :Name;
+    insert into Scripts
+      select Name, VersionType+1, :NewVersion, StoreType, Part, OfParts, Content, :USId, to_date(:TmStamp, 'YYYYMMDDHH24MISS')
+        from Scripts where Name = :Name and Version = :Version and VersionType = :VersionType;
+    delete from ScriptVersion where Name = :Name and VersionType = :VersionType+1;
+    insert into ScriptVersion values (:Name , :VersionType+1, :NewVersion , 0, :USId , to_date(:TmStamp, 'YYYYMMDDHH24MISS'));
+  end;
+ENDCODE
+
+PROC SaveAs
+INPUT
+  Name           char(64)
+  NewName        char(64)
+  VersionType    tinyint
+  Version        smallint
+  USId           char(16)
+  Tmstamp        timestamp
+SQL CODE
+  begin
+    select to_char(sysdate, 'YYYYMMDDHH24MISS') into :TmStamp from dual;
+    insert into Scripts
+      select :NewName, VersionType, Version, StoreType, Part, OfParts, Content, :USId, to_date(:TmStamp, 'YYYYMMDDHH24MISS')
+        from Scripts where Name = :Name and Version = :Version and VersionType = :VersionType;
+    delete from ScriptVersion where Name = :NewName and VersionType = :VersionType;
+    insert into ScriptVersion values (:NewName , :VersionType, :Version , 0, :USId , to_date(:TmStamp, 'YYYYMMDDHH24MISS'));
+  end;
+ENDCODE
+
+PROC Read
+INPUT
+  Name        char(64)
+  StoreType   tinyint
+  VersionType tinyint
+  Version     smallint
+OUTPUT (Multiple)
+  Part        smallint
+  OfParts     smallint
+  Content     char(4000)
+SQL CODE
+  select Part, OfParts, Content
+  from Scripts
+  where Name = :Name
+  and StoreType = :StoreType
+  and VersionType = :VersionType
+  and Version = :Version
+  order by Part
+ENDCODE
+
+PROC Write
+INPUT
+  Name        char(64)
+  VersionType tinyint
+  Version     smallint
+  StoreType   tinyint
+  Part        smallint
+  OfParts     smallint
+  Content     char(4000)
+  USId        char(16)
+  Tmstamp     timestamp
+SQL CODE
+  begin
+    if :Part = 1 then
+      select to_char(sysdate, 'YYYYMMDDHH24MISS') into :TmStamp from dual;
+      delete from Scripts
+       where Name = :Name
+         and VersionType = :VersionType
+         and Version = Version
+         and StoreType = StoreType;
+    end if;
+    insert into Scripts values (:Name, :VersionType, :Version, :StoreType,
+                                :Part, :OfParts, :Content, :UsId, to_date(:TmStamp, 'YYYYMMDDHH24MISS'));
+  end;
+ENDCODE
+
+// Used By Router
+PROC Load
+INPUT
+  Name        char(64)
+  VersionType tinyint
+  StoreType   tinyint
+OUTPUT (Multiple)
+  Version     smallint
+  Part        smallint
+  OfParts     smallint
+  Content     char(4000)
+SQL CODE
+  select
+    S.Version
+   ,S.Part
+   ,S.OfParts
+   ,S.Content
+  from
+     Scripts S, ScriptVersion V
+  where
+     UPPER(S.Name) = UPPER(:Name)
+     and S.StoreType = :StoreType
+     and V.VersionType = :VersionType
+     and S.Name = V.Name
+     and S.Version = V.Version
+  order by Part
+ENDCODE
+
+// Used By Ide
+PROC SetLockStatus
+INPUT
+  Name        char(64)
+  VersionType tinyint
+  IDELock        smallint
+SQL CODE
+  update ScriptVersion
+   set IDELock = :IDELock
+   where
+     UPPER(Name) = UPPER(:Name) and
+     VersionType = :VersionType
+ENDCODE
+
+// Used By Ide
+PROC GetLockStatusForUpdt
+INPUT
+  Name        char(64)
+  VersionType tinyint
+OUTPUT (Single)
+  IDELock     smallint
+SQL CODE
+  select IDELock from ScriptVersion
+   where
+     UPPER(Name) = UPPER(:Name) and
+     VersionType = :VersionType
+   for update
+ENDCODE
+
+// Used By Ide
+PROC GrabTmStamps
+INPUT
+  VersionType tinyint
+OUTPUT (Multiple)
+  Name        char(64)
+  Stamp       DateTime
+SQL CODE
+   select sv.name,to_char(s.tmstamp,'YYYYMMDDHH24MISS') from Scripts s, scriptversion sv
+   where
+     s.version      = sv.version and
+     s.name      = sv.name and
+     sv.VersionType = :VersionType and
+     s.StoreType    = 0 and
+     s.part         = 1
+ENDCODE
+

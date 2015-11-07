@@ -1,0 +1,53 @@
+#  $Revision: 1.3 $
+#
+#  $Date: 2002/05/31 14:57:00 $
+#
+$PARMS 1
+$LOOKUP 'FinId RouteFinId'
+$DESCR 'Fig Correspondent Bank Routing'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE FinidCorrespondentRouting
+  FinId             int
+  Branchid          int
+  RouteFinId        int
+  RouteBranchid     int
+  Status            TinyInt  (Active=0 Inactive=1 MarkForDelete=2)
+  USId              Char(16)
+  Tmstamp           timestamp
+
+KEY CorrespondentBankKey PRIMARY
+  FinId
+
+LINK AlmanacBank
+  FinId
+  Branchid
+
+LINK AlmanacBank
+  RouteFinId
+  RouteBranchid
+
+PROC Insert     (NOIDL)
+PROC Update     (NOIDL)
+PROC SelectOne  (NOIDL)
+PROC DeleteOne  (NOIDL)
+
+
+
+#used by router,ide
+PROC Get $PYTHON
+INPUT
+  FinId             int
+OUTPUT (single)
+  RouteFinId        int
+SQL CODE
+   Select
+	RouteFinId
+   FROM
+      FinidCorrespondentRouting
+   WHERE
+	FinId    = :FinId
+ENDCODE
+

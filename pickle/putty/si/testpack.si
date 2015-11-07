@@ -1,0 +1,117 @@
+#  $Revision: 1.2 $
+#
+#  $Date: 2001/11/13 07:57:19 $
+#
+$PARMS 1
+$DESCR 'Test Packs'
+
+SERVER  @orcl
+CONNECT NPUD00/CONTROL
+
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+TABLE   TestPack
+  Name          char(50)
+  USId          char(16)
+  TMStamp       timestamp
+
+GRANT DELETE TO PUBLIC
+GRANT INSERT TO PUBLIC
+GRANT SELECT TO PUBLIC
+GRANT UPDATE TO PUBLIC
+
+KEY Key1
+PRIMARY
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  Name
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    Exists
+PROC    DeleteAll
+PROC    SelectAll
+PROC    Count
+
+PROC List
+OUTPUT (Multiple)
+  Name          char(50)
+SQLCODE
+  Select Name from TestPack Order By Name
+ENDCODE
+
+PROC ByPack
+INPUT
+  PackName        char(50)
+OUTPUT (Multiple)
+  Id            int
+  SourceSysid   char  (16)
+  Reference     char  (64)
+  QueueId       char  (16)
+  MessageType   tinyint   (XML=0 Text=1)
+  Priority      tinyint
+  Status        tinyint   (None=0 Pending=1 Complete=2 Error=3)
+  DateCreated   DateTime
+SQLCODE
+  select M.Id, M.SourceSysid, M.Reference, M.QueueID, M.MessageType, M.Priority, M.Status, M.DateCreated
+  from TestMessage M, TestPackMessage PM
+  where PM.PackName = :PackName
+  and PM.MessageId = M.Id
+  order by M.Id
+ENDCODE
+
+PROC GetData
+INPUT
+  Id           int
+OUTPUT (Single)
+  MessageType   tinyint
+  MessageLen    smallint
+  MessageData   image(16000)
+SQLCODE
+  select MessageType, MessageLen, MessageData
+  from TestMessage
+  where Id = :Id
+ENDCODE
+
+PROC FromMessage
+INPUT // Actually inputs and Outputs
+  MessageId     int
+  PackName      char(50)
+  MessageData   image(16000)
+  USId          char 16
+  TmStamp       datetime
+SQLCODE
+  DECLARE
+    WCount Number(9);
+  BEGIN
+    select to_char(sysdate, 'YYYYMMDDHH24MISS') into :TmStamp from dual;
+    select count(*) into WCount from TestMessage where Id = :MessageId;
+    if WCount = 0 then
+      insert into TestMessage
+      select Id, SourceSysid, Reference, SourceQueue, QueueID, ResponseQueue
+               , EventQueueID, StreamCount, MessageLen, :MessageData
+               , MessageType, Priority, Status, DateCreated, :USId
+               , to_date(:TmStamp,'YYYYMMDDHH24MISS')
+      from Message where Id = :MessageId;
+    end if;
+    delete from TestPackMessage where MessageId = :MessageId and PackName = :PackName;
+    insert into TestPackMessage values (:MessageId, :PackName, :USId, to_date(:TmStamp,'YYYYMMDDHH24MISS'));
+  END;
+ENDCODE
+
+PROC RemoveMessage
+INPUT // Actually inputs and Outputs
+  MessageId     int
+  PackName      char(50)
+SQLCODE
+  DECLARE
+    WCount Number(9);
+  BEGIN
+    select count(*) into WCount from TestPackMessage where MessageId = :MessageId;
+    delete from TestPackMessage where MessageId = :MessageId and PackName = :PackName;
+    if WCount < 2 then
+      delete from TestMessage where Id = :MessageId;
+    end if;
+  END;
+ENDCODE
+

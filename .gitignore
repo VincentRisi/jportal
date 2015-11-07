@@ -1,2 +1,8 @@
 build
 bin
+*.resx
+*.log
+*.suo
+Debug
+*.lnk
+*.csproj.user

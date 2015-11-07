@@ -1,0 +1,35 @@
+#  $Revision: 1.5 $
+#
+#  $Date: 2002/08/04 12:38:11 $
+#
+$PARMS 1
+$DESCR 'Account Type'
+$SHOW  'Descr'
+#  WWDF  DDASD
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE AccountType
+  Id      Char(16)
+  Descr   Char(256)
+  Status  TinyInt     (Active=0 Inactive=1 MarkForDelete=2)
+  USId    Char(16)
+  TmStamp timestamp
+
+KEY AccountTypeKey PRIMARY
+  Id
+
+PROC Insert
+PROC Update
+PROC SelectOne (NOIDL)
+PROC SelectAll
+PROC DeleteOne
+
+DATA
+INSERT INTO AccountType VALUES ('CURRENT'    , 'CURRENT'    , 0, 'PreDefined', SYSDATE);
+INSERT INTO AccountType VALUES ('NOSTRO'     , 'NOSTRO'     , 0, 'PreDefined', SYSDATE);
+INSERT INTO AccountType VALUES ('VOSTRO'     , 'VOSTRO'     , 0, 'PreDefined', SYSDATE);
+INSERT INTO AccountType VALUES ('NOSTRODRAFT', 'NOSTRODRAFT', 0, 'PreDefined', SYSDATE);
+INSERT INTO AccountType VALUES ('ZAPS'       , 'ZAPS'       , 0, 'PreDefined', SYSDATE);
+commit;
+ENDDATA

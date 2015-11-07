@@ -1,0 +1,61 @@
+#  $Revision: 1.2 $
+#
+#  $Date: 2001/11/13 07:57:19 $
+#
+SERVER  @dn29
+CONNECT NPUD00/CONTROL
+
+TABLE   StaffQueueConfig
+
+PROC AllOf
+INPUT
+  InStaffId      char(16)
+OUTPUT(Multiple)
+  Name           char(256)
+  QueueId        char(16)
+SQL CODE
+  SELECT Name, QueueId
+    FROM StaffQueueConfig
+      WHERE Staffid = :InStaffId
+ENDCODE
+
+PROC AllPerName
+INPUT
+  InStaffId      char(16)
+  InName         char(256)
+OUTPUT(Multiple)
+  QueueId        char(16)
+  Name           char(256)
+  QueueType      int
+SQL CODE
+  SELECT S.QueueId, Q.Name, Q.QueueType
+    FROM StaffQueueConfig S, Queue Q
+      WHERE S.Staffid = :InStaffId and S.Name = :InName
+        and S.QueueId = Q.Id
+	order by QueueType, QueueId
+ENDCODE
+
+#PROC AllPerName
+#INPUT
+#  InStaffId      char(16)
+#  InName         char(256)
+#OUTPUT(Multiple)
+#  QueueId        char(16)
+#SQL CODE
+#  SELECT QueueId
+#    FROM StaffQueueConfig
+#      WHERE Staffid = :InStaffId and
+#               Name = :InName
+#ENDCODE
+
+PROC DelAllPerName
+INPUT
+  InStaffId      char(16)
+  InName         char(256)
+SQL CODE
+  DELETE
+    FROM StaffQueueConfig
+      WHERE Staffid = :InStaffId and
+               Name = :InName
+ENDCODE
+

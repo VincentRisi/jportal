@@ -1,0 +1,109 @@
+//  $Revision: 1.8 $
+//
+//  $Date: 2002/09/26 11:35:05 $
+//
+$PARMS 1
+$LOOKUP 'FinId CorrCurrency CorrFinId CorrBranchId CorrSwiftAddress Status'
+$DESCR 'Almanac Correspondents'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE AlmanacCorrespondent
+  FinId            int
+  CorrCurrency     Char(4)
+  CorrFinId        int
+  CorrBranchId     int
+  CorrBankName     Char(504)  NULL
+  CorrTown         Char(70)   NULL
+  CorrCountry      Char(100)  NULL
+  CorrAccountNo    Char(50)   NULL
+  CorrSwiftAddress Char(11)   NULL
+  PreferredInd     Char(1)    NULL
+  RBIInsertDate    DateTime   NULL
+  RBIChangeDate    DateTime   NULL
+  Status           TinyInt     (Active=0 Inactive=1 MarkForDelete=2 ConfirmDelete=3)
+  USId             Char(16)
+  TmStamp          timestamp
+
+KEY BankFileKey PRIMARY
+  FinId
+  CorrCurrency
+  CorrFinId
+  CorrBranchId
+
+link Bankfile
+  CorrSwiftAddress
+  DELETE CASCADE
+
+PROC Insert $PYTHON
+PROC Update $PYTHON
+PROC SelectOne $PYTHON
+PROC DeleteOne 
+PROC Exists $PYTHON
+
+// used by almanacto
+PROC UpdateAllStatus
+INPUT
+  Status        tinyint
+  USId          char  (16)
+SQL CODE
+  Update
+    AlmanacCorrespondent
+  Set
+      Status = :Status
+     ,USId = :USId
+     ,TMStamp = SYSDATE
+ENDCODE
+
+
+//Used By Router, IDE
+PROC Get $PYTHON
+INPUT
+   FinId            int
+   CorrCurrency     Char(4)
+OUTPUT (Single)
+   CorrFinId        int
+   CorrBankName     Char(504)
+   CorrTown         Char(70)
+   CorrCountry      Char(100)
+   CorrAccountNo    Char(50)
+   CorrSwiftAddress Char(11)
+   PreferredInd     Char(1)
+   Status           TinyInt     # (Active=0 Inactive=1 MarkForDelete=2)
+SQL CODE
+  Select
+   ac.CorrFinId
+  ,ac.CorrBankName
+  ,ac.CorrTown
+  ,ac.CorrCountry
+  ,ac.CorrAccountNo
+  ,ac.CorrSwiftAddress
+  ,ac.PreferredInd
+  ,ac.Status
+  From
+     AlmanacCorrespondent ac
+  Where
+     ac.FinId = :FinId
+ and ac.CorrCurrency = :CorrCurrency
+ENDCODE
+
+//Used By Router, IDE
+PROC GetSwiftList $PYTHON
+INPUT
+   FinId            int
+   CorrCurrency     Char(4)
+OUTPUT (Multiple)
+   CorrSwiftAddress Char(11)
+   Status           TinyInt     # (Active=0 Inactive=1 MarkForDelete=2)
+SQL CODE
+  Select
+  ac.CorrSwiftAddress
+  ,ac.Status
+  From
+     AlmanacCorrespondent ac
+  Where
+     ac.FinId = :FinId
+ and ac.CorrCurrency = :CorrCurrency
+ and (not ac.CorrSwiftAddress is null)
+ENDCODE

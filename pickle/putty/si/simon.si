@@ -1,0 +1,579 @@
+SERVER  @orcl
+CONNECT NPUD00/CONTROL
+
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+TABLE Message
+  Id            Sequence
+  SourceSysid   char  (16) 
+  Reference     char  (64)
+  SourceQueue   char  (16)
+  QueueID       char  (16)
+  ResponseQueue char  (16) NULL
+  EventQueueID  char  (16) NULL
+  StreamCount   tinyint   # 
+  MessageLen    smallint
+  MessageData   image  (16000)
+  MessageType   tinyint   (XML=0 Text=1)
+  Priority      tinyint
+  Status        tinyint   (None=0 Pending=1 Complete=2 Error=3)
+  DateCreated   DateTime
+  USId          char  (16)
+  TMStamp       timestamp
+
+GRANT DELETE TO PUBLIC
+GRANT INSERT TO PUBLIC
+GRANT SELECT TO PUBLIC
+GRANT UPDATE TO PUBLIC
+
+KEY MessageKey 
+PRIMARY 
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  Id
+
+KEY KEY01
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  QueueId
+
+KEY KEY01
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  QueueId
+  Reference
+
+link Queue
+   QueueId
+
+link Queue
+   ResponseQueue
+
+link Queue
+   EventQueueId
+
+link Queue
+   SourceQueue
+
+link SourceSystem
+   SourceSysId
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    SelectOneUpd
+PROC    Exists
+PROC    SelectAll
+PROC    Count
+
+# used by Rutter
+PROC Queued
+INPUT
+  Queue         char  (16)
+  Status        tinyint
+  BackDays      int
+OUTPUT (Multiple)
+  Id            Int
+SQL CODE
+  SELECT 
+     Id
+  FROM 
+     $TableName(64)
+  Where
+     Queueid = :Queue 
+     and Status = :Status
+     and DateCreated > (sysdate - :BackDays)  and DateCreated <= sysdate 
+  ORDER BY Id
+ENDCODE
+
+# used by Rutter,tibossnd
+PROC UpdStatus
+INPUT
+  Id            int
+  StreamCount   tinyint  
+  Status        tinyint
+  USId          char  (16)
+SQL CODE
+  Update
+    Message
+  Set
+      Status = :Status
+     ,StreamCount = StreamCount + :StreamCount
+     ,USId = :USId
+     ,TMStamp = SYSDATE
+  where
+     id = :Id
+ENDCODE
+
+# used by Rutter
+#PROC RollbackToSavePoint
+#SQL CODE
+#  ROLLBACK SAVEPOINT Message_Upd
+#ENDCODE
+
+# used by Rutter
+#PROC SetSavePoint
+#SQL CODE
+#  SAVEPOINT Message_Upd
+#ENDCODE
+
+
+# used by Rutter
+PROC ForUpd
+INPUT
+  Id            int
+  QueueId       char  (16)
+  Status        tinyint
+OUTPUT (single)
+  SourceSysId   char  (16)
+  Reference     char  (64)
+  SourceQueue   char  (16)
+  ResponseQueue char  (16)
+  EventQueueId  char  (16)
+  MessageLen    smallint
+  MessageData   image  (16000)
+  MessageType   tinyint  
+  Priority      tinyint
+  DateCreated   DateTime
+SQL CODE
+   SELECT
+     SourceSysid
+    ,Reference
+    ,Sourcequeue
+    ,ResponseQueue
+    ,EventQueueID
+    ,MessageLen
+    ,MessageData
+    ,MessageType
+    ,Priority
+    ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+   FROM
+      Message
+   WHERE
+          ID = :ID
+      AND Queueid = :Queueid
+      AND Status = :Status
+      for update
+ENDCODE
+
+# Used By PE Front End
+PROC ByQueue
+INPUT
+   InQueue        char(16)
+   InStatus       tinyint
+   InDateFrom     DateTime
+   InDateTo       DateTime
+OUTPUT(Multiple)
+   Id             int 
+   SourceSysid    char(16)
+   Reference      char(64)
+   QueueId        char(16)
+   Status 	  tinyint
+SQL CODE
+   SELECT
+      Id
+      ,SourceSysid        
+      ,Reference    
+      ,QueueId      
+      ,Status
+   FROM
+      Message
+   WHERE
+          QueueId = :InQueue
+      AND Status = :InStatus    
+      AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS')
+      AND                     to_date(:InDateTo, 'YYYYMMDDHH24MISS')
+      ORDER BY Id
+ENDCODE
+
+// TEST FUNCTION FOR IDE PROTOTYPE
+PROC ModifyQueue
+INPUT
+  Id            int
+  QueueId       char  (16)
+  USId          char  (16)
+  TMStamp       timestamp
+SQL CODE
+    update Message set 
+      QueueId = :QueueId
+    , USId    = :USId
+    , TMStamp = SYSDATE
+    where Id = :Id;
+ENDCODE
+
+# Used By Router
+PROC Route
+INPUT
+  Id            int
+  QueueId       char  (16)
+  USId          char  (16)
+SQL CODE
+    update 
+       Message 
+    SET 
+        QueueId = :QueueId
+      , USId    = :USId
+      , TMStamp = SYSDATE
+    where 
+      Id = :Id
+ENDCODE
+
+// Used by front end tester
+PROC ByQueueDate
+INPUT
+  QueueId      char(16)
+  DateFrom     DateTime
+  DateTo       DateTime
+  MaxRows      int
+OUTPUT (Multiple)
+  Id           int
+  SourceSysid  char(16) 
+  Reference    char(64)
+  MessageType  tinyint
+  DateCreated  DateTime
+  Priority     tinyint
+  Status       tinyint
+SQL CODE
+  select Id,  SourceSysid, Reference,  MessageType, 
+             to_char(DateCreated, 'YYYYMMDDHH24MISS'), Priority,  Status
+  from Message
+  where QueueId = :QueUeId
+  and DateCreated  
+    between to_date(:DateFrom, 'YYYYMMDDHH24MISS') and to_date(:DateTo  , 'YYYYMMDDHH24MISS')
+  and (:MaxRows <= 0 or :MaxRows >= ROWNUM)
+ENDCODE
+
+// Used by front end tester
+PROC ByDate
+INPUT
+  DateFrom     DateTime
+  DateTo       DateTime
+  MaxRows      int
+OUTPUT (Multiple)
+  Id           int
+  QueueId      char(16)
+  SourceSysid  char(16) 
+  Reference    char(64)
+  MessageType  tinyint
+  DateCreated  DateTime
+  Priority     tinyint
+  Status       tinyint
+SQL CODE
+  select Id, QueueId, SourceSysid, Reference,  MessageType, 
+             to_char(DateCreated, 'YYYYMMDDHH24MISS'), Priority,  Status
+  from Message
+  where DateCreated  
+  between to_date(:DateFrom, 'YYYYMMDDHH24MISS') and to_date(:DateTo  , 'YYYYMMDDHH24MISS')
+  and (:MaxRows <= 0 or :MaxRows >= ROWNUM)
+ENDCODE
+
+// Used by front end tester
+PROC Queues
+INPUT
+  DateFrom     DateTime
+  DateTo       DateTime
+OUTPUT (Multiple)
+  Id Char(16)
+  Name Char(64)
+  Descr Char(256)
+  NoOf int
+SQL CODE
+  select Q.Id, Q.Name, Q.Descr, count(*) NoOf
+  from Queue Q, Message M
+  where M.DateCreated  
+    between to_date(:DateFrom, 'YYYYMMDDHH24MISS') and to_date(:DateTo  , 'YYYYMMDDHH24MISS')
+  and M.QueueId = Q.Id
+  group by Q.Id, Q.Name, Q.Descr
+ENDCODE
+
+// Used by front end tester
+PROC GetData
+INPUT
+  Id           int
+OUTPUT (Single)
+  MessageType   tinyint
+  MessageLen    smallint
+  MessageData   image(16000)
+SQL CODE
+  select MessageType, MessageLen, MessageData 
+  from Message
+  where Id = :Id
+ENDCODE
+
+PROC UpdQueue
+INPUT
+   InMsgNo     int
+   InQueueID   char(16)
+SQL CODE
+   UPDATE
+      Message
+   SET
+      QueueID = :InQueueID
+   WHERE
+      Id = :InMsgNo
+ENDCODE
+
+# Used By Front End
+PROC ByMessageID
+INPUT
+  InMessageId   int
+OUTPUT(Multiple)
+  Id            int
+  SourceSysid   char  (16) 
+  Reference     char  (64)
+  SourceQueue   char  (16)
+  QueueID       char  (16)
+  ResponseQueue char  (16) NULL
+  EventQueueID  char  (16) NULL
+  StreamCount   tinyint   # 
+  MessageLen    smallint
+  MessageType   tinyint   (XML=0 Text=1)
+  Priority      tinyint
+  Status        tinyint   (None=0 Pending=1 Complete=2 Error=3)
+  DateCreated   DateTime
+  USId          char  (16)
+  TMStamp       timestamp
+SQL CODE
+    SELECT  
+      Id           
+      ,SourceSysid  
+      ,Reference    
+      ,SourceQueue  
+      ,QueueID      
+      ,ResponseQueue
+      ,EventQueueID 
+      ,StreamCount  
+      ,MessageLen   
+      ,MessageType  
+      ,Priority     
+      ,Status       
+      ,to_char(DateCreated, 'YYYYMMDDHH24MISS')  
+      ,USId         
+      ,to_char(TMStamp, 'YYYYMMDDHH24MISS')      
+    FROM Message 
+    WHERE 
+       MessageId = :InMessageId
+ENDCODE
+
+PROC ByReference
+INPUT
+   InReference   char(64)
+   InDateFrom    datetime 
+   InDateTo      datetime
+OUTPUT(Multiple)
+   Id            int
+   SourceSysid   char  (16) 
+   Reference     char  (64)
+   SourceQueue   char  (16)
+   QueueID       char  (16)	 
+   ResponseQueue char  (16) NULL
+   EventQueueID  char  (16) NULL
+   StreamCount   tinyint   # 
+   MessageLen    smallint
+   MessageType   tinyint   (XML=0 Text=1)
+   Priority      tinyint
+   Status        tinyint   (None=0 Pending=1 Complete=2 Error=3)
+   DateCreated   DateTime
+   USId          char  (16)
+   TMStamp       timestamp
+SQL CODE
+   SELECT
+     Id           
+     ,SourceSysid  
+     ,Reference    
+     ,SourceQueue  
+     ,QueueID      
+     ,ResponseQueue
+     ,EventQueueID 
+     ,StreamCount  
+     ,MessageLen   
+     ,MessageType  
+     ,Priority     
+     ,Status       
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')  
+     ,USId         
+     ,to_char(TMStamp, 'YYYYMMDDHH24MISS')      
+   FROM
+     Message
+   WHERE
+         Reference = :InReference
+     AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS') 
+     AND                     to_date(:InDateTo  , 'YYYYMMDDHH24MISS')
+     ORDER BY Id
+ENDCODE
+
+PROC BySourceQ
+INPUT
+   InSourceQ     char(16)
+   InDateFrom    datetime 
+   InDateTo      datetime
+OUTPUT(Multiple)
+   Id            int
+   SourceSysid   char  (16) 
+   Reference     char  (64)
+   SourceQueue   char  (16)
+   QueueID       char  (16)
+   ResponseQueue char  (16) NULL
+   EventQueueID  char  (16) NULL
+   StreamCount   tinyint   # 
+   MessageLen    smallint
+   MessageType   tinyint   (XML=0 Text=1)
+   Priority      tinyint
+   Status        tinyint   (None=0 Pending=1 Complete=2 Error=3)
+   DateCreated   DateTime
+   USId          char  (16)
+   TMStamp       timestamp
+SQL CODE
+   SELECT
+     Id           
+     ,SourceSysid  
+     ,Reference    
+     ,SourceQueue  
+     ,QueueID      
+     ,ResponseQueue
+     ,EventQueueID 
+     ,StreamCount  
+     ,MessageLen   
+     ,MessageType  
+     ,Priority     
+     ,Status       
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')  
+     ,USId         
+     ,to_char(TMStamp, 'YYYYMMDDHH24MISS')      
+   FROM
+     Message
+   WHERE
+         SourceQueue = :InSourceQ
+     AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS') 
+     AND                     to_date(:InDateTo  , 'YYYYMMDDHH24MISS')
+     ORDER BY Id
+ENDCODE
+
+PROC ByRefSourceQ
+INPUT
+   InReference   char(64)
+   InSourceQueue char(16)
+   InDateFrom    datetime 
+   InDateTo      datetime
+OUTPUT(Multiple)
+   Id            int
+   SourceSysid   char  (16) 
+   Reference     char  (64)
+   SourceQueue   char  (16)
+   QueueID       char  (16)
+   ResponseQueue char  (16) NULL
+   EventQueueID  char  (16) NULL
+   StreamCount   tinyint   # 
+   MessageLen    smallint
+   MessageType   tinyint   (XML=0 Text=1)
+   Priority      tinyint
+   Status        tinyint   (None=0 Pending=1 Complete=2 Error=3)
+   DateCreated   DateTime
+   USId          char  (16)
+   TMStamp       timestamp
+SQL CODE
+   SELECT
+     Id           
+     ,SourceSysid  
+     ,Reference    
+     ,SourceQueue  
+     ,QueueID      
+     ,ResponseQueue
+     ,EventQueueID 
+     ,StreamCount  
+     ,MessageLen   
+     ,MessageType  
+     ,Priority     
+     ,Status       
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')  
+     ,USId         
+     ,to_char(TMStamp, 'YYYYMMDDHH24MISS')      
+   FROM
+     Message
+   WHERE
+         Reference = :InReference
+     AND SourceQueue = :InSourceQueue    
+     AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS') 
+     AND                     to_date(:InDateTo  , 'YYYYMMDDHH24MISS')
+     ORDER BY Id
+ENDCODE
+
+PROC StatusCount
+INPUT
+   InStatus      tinyint
+   InQueueID	 char(16)
+   InDateFrom    datetime 
+   InDateTo      datetime
+OUTPUT(Single)
+   Cnt           int
+SQL CODE
+   SELECT
+      count(*)
+   FROM
+      Message
+   WHERE
+         Status = :InStatus
+     AND QueueID = :InQueueID
+     AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS') 
+     AND                     to_date(:InDateTo  , 'YYYYMMDDHH24MISS')
+ENDCODE
+
+# Used By PE Front End
+PROC ByID
+INPUT
+   InID          int
+OUTPUT(Single)
+   Id            int
+   SourceSysid   char  (16) 
+   Reference     char  (64)
+   SourceQueue   char  (16)
+   QueueID       char  (16)
+   ResponseQueue char  (16) NULL
+   EventQueueID  char  (16) NULL
+   StreamCount   tinyint   # 
+   MessageLen    smallint
+   MessageData   image  (16000)
+   MessageType   tinyint   (XML=0 Text=1)
+   Priority      tinyint
+   Status        tinyint   (None=0 Pending=1 Complete=2 Error=3)
+   DateCreated   DateTime
+   USId          char  (16)
+   TMStamp       timestamp
+SQL CODE
+   SELECT
+     Id           
+     ,SourceSysid  
+     ,Reference    
+     ,SourceQueue  
+     ,QueueID      
+     ,ResponseQueue
+     ,EventQueueID 
+     ,StreamCount  
+     ,MessageLen   
+     ,MessageData  
+     ,MessageType  
+     ,Priority     
+     ,Status       
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')  
+     ,USId         
+     ,to_char(TMStamp, 'YYYYMMDDHH24MISS')      
+   FROM
+      Message
+   WHERE
+          Id = :InID
+ENDCODE      
+
+# Used By PE Front End
+PROC DriverPrompt
+INPUT
+   InMsgNo        int
+OUTPUT (single)
+   Id             int
+   Status         tinyint
+SQL CODE
+   SELECT
+      Id, Status
+   FROM
+      Message
+   WHERE
+      Id = :InMsgNo
+ENDCODE
+
+

@@ -1,0 +1,275 @@
+#  $Revision: 1.5 $
+#
+#  $Date: 2002/05/31 14:57:00 $
+#
+$PARMS 1
+$DESCR 'Countries'
+$SHOW  'Id'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE Country
+  Id      Char(64)
+  CodeId  Char(4)
+  CurrId  Char(4)
+  Status  TinyInt  (Active=0 Inactive=1 MarkForDelete=2)
+  USId    Char(16)
+  Tmstamp timestamp
+
+KEY CountryKey PRIMARY
+  Id
+
+KEY KEY01
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  CodeId
+
+KEY KEY02
+#TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  CurrId
+
+LINK Currency
+  CurrId
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+
+#Used By Router, IDE
+PROC Get $PYTHON
+INPUT
+  Id      Char(64)
+OUTPUT (Single)
+  CodeId  Char(4)
+  CurrId  Char(4)
+  Status  TinyInt     # (Active=0 Inactive=1 MarkForDelete=2)
+SQL CODE
+  Select CodeId, CurrId, Status
+  From Country
+  Where Id = :Id
+ENDCODE
+
+#Used By Router, IDE
+PROC GetByCurrency $PYTHON
+INPUT
+  CurrId  Char(4)
+OUTPUT (Single)
+  Id      Char(64)
+  CodeId  Char(4)
+  Status  TinyInt     # (Active=0 Inactive=1 MarkForDelete=2)
+SQL CODE
+  Select Id, CodeId, Status
+  From Country
+  Where CurrId = :CurrId
+ENDCODE
+
+
+
+DATA
+insert into Country Values('AFGHANISTAN'                                                    ,'AF'          ,'AFA' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ALBANIA'                                                        ,'AL'          ,'ALL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ALGERIA'                                                        ,'DZ'          ,'DZD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ANDORRA'                                                        ,'AD'          ,'ADP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ANGOLA'                                                         ,'AO'          ,'AON' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ARGENTINA'                                                      ,'AR'          ,'ARS' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ARUBA'                                                          ,'AW'          ,'AWG' , 0, 'Predefined', SYSDATE);
+insert into Country Values('AUSTRALIA'                                                      ,'AU'          ,'AUD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('AUSTRIA'                                                        ,'AT'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('AZERBAIJAN'                                                     ,'AZ'          ,'AZM' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BAHRAIN'                                                        ,'BH'          ,'BHD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BANGLADESH'                                                     ,'BD'          ,'BDT' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BARBADOS'                                                       ,'BB'          ,'BBD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BELGIUM'                                                        ,'BE'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BELIZE'                                                         ,'BZ'          ,'BZD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BENIN'                                                          ,'BJ'          ,'XOF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BERMUDA'                                                        ,'BM'          ,'BMD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BHUTAN'                                                         ,'BT'          ,'BTN' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BOLIVIA'                                                        ,'BO'          ,'BOB' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BOSNIA-HERZEGOVINA'                                             ,'BA'          ,'BAM' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BOTSWANA'                                                       ,'BW'          ,'BWP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BRAZIL'                                                         ,'BR'          ,'BRL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BRUNEI DARUSSALAM'                                              ,'BN'          ,'BND' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BULGARIA'                                                       ,'BG'          ,'BGL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BURKINA FASO'                                                   ,'BF'          ,'XOF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('BURUNDI'                                                        ,'BI'          ,'BIF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CAMBODIA'                                                       ,'KH'          ,'KHR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CANADA'                                                         ,'CA'          ,'CAD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CAPE VERDE ISLANDS'                                             ,'CV'          ,'CVE' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CAYMAN ISLANDS'                                                 ,'KY'          ,'KYD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CENTRAL AFRICAN REPUBLIC'                                       ,'CF'          ,'XAF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CHAD'                                                           ,'TD'          ,'XAF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CHANNEL ISLANDS'                                                ,'JE'          ,'GBP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CHILE'                                                          ,'CL'          ,'CLF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('COLOMBIA'                                                       ,'CO'          ,'COP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('COMMONWEALTH OF THE BAHAMAS'                                    ,'BS'          ,'BSD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('COMORES ARCHIPELAGO'                                            ,'KM'          ,'KMF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CONGO (DEMOCRATIC REPUBLIC OF)'                                 ,'CD'          ,'CDF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('COOK ISLANDS'                                                   ,'CK'          ,'NZD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('COSTA RICA'                                                     ,'CR'          ,'CRC' , 0, 'Predefined', SYSDATE);
+insert into Country Values('COTE DIVOIRE'                                                   ,'CI'          ,'XOF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CROATIA'                                                        ,'HR'          ,'HRK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CUBA'                                                           ,'CU'          ,'CUP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CYPRUS'                                                         ,'CY'          ,'CYP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('CZECH REPUBLIC'                                                 ,'CZ'          ,'CZK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('DEMOCRATIC PEOPLES REPUBLIC OF KOREA'                           ,'KP'          ,'KPW' , 0, 'Predefined', SYSDATE);
+insert into Country Values('DENMARK'                                                        ,'DK'          ,'DKK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('DOMINICAN REPUBLIC'                                             ,'DO'          ,'DOP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ECUADOR'                                                        ,'EC'          ,'ECS' , 0, 'Predefined', SYSDATE);
+insert into Country Values('EGYPT'                                                          ,'EG'          ,'EGP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('EQUATORIAL GUINEA'                                              ,'GQ'          ,'XAF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ERITREA'                                                        ,'ER'          ,'ERN' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ESTONIA'                                                        ,'EE'          ,'EEK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ETHIOPIA'                                                       ,'ET'          ,'ETB' , 0, 'Predefined', SYSDATE);
+insert into Country Values('FALKLAND ISLANDS'                                               ,'FK'          ,'FKP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('FAROE ISLANDS'                                                  ,'FO'          ,'DKK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('FIJI'                                                           ,'FJ'          ,'FJD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('FINLAND'                                                        ,'FI'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('FRANCE'                                                         ,'FR'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('FRENCH GUIANA'                                                  ,'GF'          ,'FRF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('FRENCH POLYNESIA'                                               ,'PF'          ,'XPF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('GABON'                                                          ,'GA'          ,'XAF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('GERMANY'                                                        ,'DE'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('GHANA'                                                          ,'GH'          ,'GHC' , 0, 'Predefined', SYSDATE);
+insert into Country Values('GIBRALTAR'                                                      ,'GI'          ,'GIP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('GREECE'                                                         ,'GR'          ,'GRD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('GREENLAND'                                                      ,'GL'          ,'DKK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('GUATEMALA'                                                      ,'GT'          ,'GTQ' , 0, 'Predefined', SYSDATE);
+insert into Country Values('GUYANA'                                                         ,'GY'          ,'GYD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('HAITI'                                                          ,'HT'          ,'HTG' , 0, 'Predefined', SYSDATE);
+insert into Country Values('HONDURAS'                                                       ,'HN'          ,'HNL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('HONG KONG'                                                      ,'HK'          ,'HKD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ICELAND'                                                        ,'IS'          ,'ISK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('INDIA'                                                          ,'IN'          ,'INR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('INDONESIA'                                                      ,'ID'          ,'IDR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('IRAN'                                                           ,'IR'          ,'IRR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('IRAQ'                                                           ,'IQ'          ,'IQD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ISLE OF MAN'                                                    ,'IM'          ,'GBP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ISRAEL'                                                         ,'IL'          ,'ILS' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ITALY'                                                          ,'IT'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('JAMAICA'                                                        ,'JM'          ,'JMD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('JAPAN'                                                          ,'JP'          ,'JPY' , 0, 'Predefined', SYSDATE);
+insert into Country Values('JORDAN'                                                         ,'JO'          ,'JOD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('KAZAKHSTAN'                                                     ,'KZ'          ,'KZT' , 0, 'Predefined', SYSDATE);
+insert into Country Values('KENYA'                                                          ,'KE'          ,'KES' , 0, 'Predefined', SYSDATE);
+insert into Country Values('KIRIBATI REPUBLIC'                                              ,'KI'          ,'AUD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('KUWAIT'                                                         ,'KW'          ,'KWD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('KYRGYZSTAN'                                                     ,'KG'          ,'KGS' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LAOS'                                                           ,'LA'          ,'LAK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LATVIA'                                                         ,'LV'          ,'LVL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LEBANON'                                                        ,'LB'          ,'LBP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LESOTHO'                                                        ,'LS'          ,'LSL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LIBERIA'                                                        ,'LR'          ,'LRD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LIBYA'                                                          ,'LY'          ,'LYD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LIECHTENSTEIN'                                                  ,'LI'          ,'CHF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LITHUANIA'                                                      ,'LT'          ,'LTL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('LUXEMBOURG'                                                     ,'LU'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MACAU'                                                          ,'MO'          ,'MOP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MACEDONIA'                                                      ,'MK'          ,'MKD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MADAGASCAR'                                                     ,'MG'          ,'MGF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MALAYSIA'                                                       ,'MY'          ,'MYR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MALDIVE ISLANDS'                                                ,'MV'          ,'MVR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MALTA'                                                          ,'MT'          ,'MTL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MAURITANIA'                                                     ,'MR'          ,'MRO' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MAURITIUS'                                                      ,'MU'          ,'MUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MAYOTTE ISLAND'                                                 ,'YT'          ,'FRF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MEXICO'                                                         ,'MX'          ,'MXN' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MONACO'                                                         ,'MC'          ,'FRF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MONGOLIA'                                                       ,'MN'          ,'MNT' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MOROCCO'                                                        ,'MA'          ,'MAD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MOZAMBIQUE'                                                     ,'MZ'          ,'MZM' , 0, 'Predefined', SYSDATE);
+insert into Country Values('MYANMAR'                                                        ,'MM'          ,'MMK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NAMIBIA'                                                        ,'NA'          ,'NAD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NAURU'                                                          ,'NR'          ,'AUD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NEPAL'                                                          ,'NP'          ,'NPR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NETHERLANDS ANTILLES'                                           ,'AN'          ,'ANG' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NETHERLANDS'                                                    ,'NL'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NEW CALEDONIA'                                                  ,'NC'          ,'XPF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NEW ZEALAND'                                                    ,'NZ'          ,'NZD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NICARAGUA'                                                      ,'NI'          ,'NIO' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NIGER'                                                          ,'NE'          ,'XOF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('NORWAY'                                                         ,'NO'          ,'NOK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('PAKISTAN'                                                       ,'PK'          ,'PKR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('PANAMA'                                                         ,'PA'          ,'PAB' , 0, 'Predefined', SYSDATE);
+insert into Country Values('PAPUA NEW GUINEA'                                               ,'PG'          ,'PGK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('PARAGUAY'                                                       ,'PY'          ,'PYG' , 0, 'Predefined', SYSDATE);
+insert into Country Values('PEOPLES REPUBLIC OF CHINA'                                      ,'CN'          ,'CNY' , 0, 'Predefined', SYSDATE);
+insert into Country Values('PERU'                                                           ,'PE'          ,'PEN' , 0, 'Predefined', SYSDATE);
+insert into Country Values('POLAND'                                                         ,'PL'          ,'PLN' , 0, 'Predefined', SYSDATE);
+insert into Country Values('PORTUGAL'                                                       ,'PT'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('PUERTO RICO'                                                    ,'PR'          ,'USD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('QATAR'                                                          ,'QA'          ,'QAR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF ARMENIA'                                            ,'AM'          ,'AMD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF BELARUS'                                            ,'BY'          ,'BYB' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF CAMEROON'                                           ,'CM'          ,'XAF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF DJIBOUTI'                                           ,'DJ'          ,'DJF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF EL SALVADOR'                                        ,'SV'          ,'SVC' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF GEORGIA'                                            ,'GE'          ,'GEL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF GUINEA'                                             ,'GN'          ,'GNF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF GUINEA-BISSAU'                                      ,'GW'          ,'XOF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF HUNGARY'                                            ,'HU'          ,'HUF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF IRELAND'                                            ,'IE'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF KOREA'                                              ,'KR'          ,'KRW' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF MALAWI'                                             ,'MW'          ,'MWK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF MALI'                                               ,'ML'          ,'XOF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF MOLDOVA'                                            ,'MD'          ,'MDL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF NIGERIA'                                            ,'NG'          ,'NGN' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF SAO TOME AND PRINCIPE'                              ,'ST'          ,'STD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF SUDAN'                                              ,'SD'          ,'SDD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF THE CONGO-BRAZZAVILLE'                              ,'CG'          ,'XAF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF THE PHILIPPINES'                                    ,'PH'          ,'PHP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF TOGO'                                               ,'TG'          ,'XOF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF TRINIDAD AND TOBAGO'                                ,'TT'          ,'TTD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REPUBLIC OF YEMEN'                                              ,'YE'          ,'YER' , 0, 'Predefined', SYSDATE);
+insert into Country Values('REUNION ISLAND'                                                 ,'RE'          ,'FRF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ROMANIA'                                                        ,'RO'          ,'ROL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('RUSSIAN FEDERATION'                                             ,'RU'          ,'RUB' , 0, 'Predefined', SYSDATE);
+insert into Country Values('RWANDA'                                                         ,'RW'          ,'RWF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SAMOA'                                                          ,'WS'          ,'WST' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SAN MARINO'                                                     ,'SM'          ,'ITL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SAUDI ARABIA'                                                   ,'SA'          ,'SAR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SENEGAL'                                                        ,'SN'          ,'XOF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SEYCHELLES'                                                     ,'SC'          ,'SCR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SIERRA LEONE'                                                   ,'SL'          ,'SLL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SINGAPORE'                                                      ,'SG'          ,'SGD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SLOVAKIA'                                                       ,'SK'          ,'SKK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SLOVENIA'                                                       ,'SI'          ,'SIT' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SOCIALIST REPUBLIC OF VIETNAM'                                  ,'VN'          ,'VND' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SOLOMON ISLANDS'                                                ,'SB'          ,'SBD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SOMALI REPUBLIC'                                                ,'SO'          ,'SOS' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SOUTH AFRICA'                                                   ,'ZA'          ,'ZAR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SPAIN'                                                          ,'ES'          ,'EUR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SRI LANKA'                                                      ,'LK'          ,'LKR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SULTANATE OF OMAN'                                              ,'OM'          ,'OMR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SURINAME'                                                       ,'SR'          ,'SRC' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SWAZILAND'                                                      ,'SZ'          ,'SZL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SWEDEN'                                                         ,'SE'          ,'SEK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SWITZERLAND'                                                    ,'CH'          ,'CHF' , 0, 'Predefined', SYSDATE);
+insert into Country Values('SYRIA'                                                          ,'SY'          ,'SYP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TAIWAN'                                                         ,'TW'          ,'TWD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TAJIKISTAN'                                                     ,'TJ'          ,'TJR' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TANZANIA'                                                       ,'TZ'          ,'TZS' , 0, 'Predefined', SYSDATE);
+insert into Country Values('THAILAND'                                                       ,'TH'          ,'THB' , 0, 'Predefined', SYSDATE);
+insert into Country Values('THE GAMBIA'                                                     ,'GM'          ,'GMD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TONGA'                                                          ,'TO'          ,'TOP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TUNISIA'                                                        ,'TN'          ,'TND' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TURKEY'                                                         ,'TR'          ,'TRL' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TURKMENISTAN'                                                   ,'TM'          ,'TMM' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TURKS AND CAICOS ISLANDS'                                       ,'TC'          ,'USD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('TUVALU'                                                         ,'TV'          ,'AUD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('UGANDA'                                                         ,'UG'          ,'UGX' , 0, 'Predefined', SYSDATE);
+insert into Country Values('UKRAINE'                                                        ,'UA'          ,'UAH' , 0, 'Predefined', SYSDATE);
+insert into Country Values('UNITED ARAB EMIRATES'                                           ,'AE'          ,'AED' , 0, 'Predefined', SYSDATE);
+insert into Country Values('UNITED KINGDOM'                                                 ,'GB'          ,'GBP' , 0, 'Predefined', SYSDATE);
+insert into Country Values('UNITED STATES OF AMERICA'                                       ,'US'          ,'USD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('URUGUAY'                                                        ,'UY'          ,'UYO' , 0, 'Predefined', SYSDATE);
+insert into Country Values('US DEPENDENCIES'                                                ,'UM'          ,'USD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('UZBEKISTAN'                                                     ,'UZ'          ,'UZS' , 0, 'Predefined', SYSDATE);
+insert into Country Values('VANUATU'                                                        ,'VU'          ,'VUV' , 0, 'Predefined', SYSDATE);
+insert into Country Values('VENEZUELA'                                                      ,'VE'          ,'VEB' , 0, 'Predefined', SYSDATE);
+insert into Country Values('VIRGIN ISLANDS (BRITISH)'                                       ,'VI'          ,'USD' , 0, 'Predefined', SYSDATE);
+insert into Country Values('YUGOSLAVIA'                                                     ,'YU'          ,'YUM' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ZAMBIA'                                                         ,'ZM'          ,'ZMK' , 0, 'Predefined', SYSDATE);
+insert into Country Values('ZIMBABWE'                                                       ,'ZW'          ,'ZWD' , 0, 'Predefined', SYSDATE);
+commit;
+ENDDATA

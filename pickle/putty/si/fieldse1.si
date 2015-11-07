@@ -1,0 +1,28 @@
+#  $Revision: 1.2 $
+#
+#  $Date: 2001/11/13 07:57:18 $
+#
+$PARMS 1
+$LOOKUP 'Tag'
+
+SERVER   @DN29
+CONNECT  NPUD00/CONTROL
+
+TABLE FieldSearchDef
+  Id Char(16)
+  Tag Char(256)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY FieldSearchDefKey1 PRIMARY
+  Id
+
+KEY FieldSearchDefKey2 UNIQUE
+  Tag
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+PROC SelectAll
+

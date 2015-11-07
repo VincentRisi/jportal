@@ -1,0 +1,24 @@
+#  $Revision: 1.2 $
+#
+#  $Date: 2001/11/13 07:57:19 $
+#
+$PARMS 1
+$DESCR 'Stream Message Format'
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE StreamMessageFormat
+  Id Char(16)
+  Format Char(256) NULL
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY StreamMessageFormatKey PRIMARY
+  Id
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+

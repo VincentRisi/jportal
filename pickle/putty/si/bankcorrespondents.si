@@ -1,0 +1,58 @@
+#  $Revision: 1.6 $
+#
+#  $Date: 2002/06/13 14:40:17 $
+#
+$PARMS 1
+$LOOKUP "SwiftAddress CurrId Correspondent"
+$DESCR 'Bank Correspondent '
+
+SERVER   @orcl
+CONNECT  npud00/control
+
+TABLE BankCorrespondents
+  SwiftAddress  Char(11)
+  CurrId        Char(4)
+  Correspondent Char(11)
+  CreateDate    Date
+  USId          Char(16)
+  TmStamp       DateTime
+
+KEY BankCorrespondentsKey PRIMARY
+  SwiftAddress
+  CurrId
+  Correspondent
+
+LINK BankFile
+  SwiftAddress
+  DELETE CASCADE
+
+LINK Currency
+  CurrId
+  DELETE CASCADE
+
+LINK BankFile
+  Correspondent
+  DELETE CASCADE
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+
+# used by Router,IDE
+PROC Get $PYTHON
+INPUT
+  SwiftAddress  Char(11)
+  CurrId        Char(4)
+OUTPUT (Multiple)
+  Correspondent Char(11)
+SQL CODE
+  SELECT
+     Correspondent
+  FROM
+     BankCorrespondents
+  Where
+     SwiftAddress = :SwiftAddress
+     and CurrId = :CurrId
+ENDCODE
+
