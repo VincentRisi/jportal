@@ -1,3 +1,16 @@
+/// ------------------------------------------------------------------
+/// Copyright (c) from 1996 Vincent Risi
+/// All rights reserved.
+/// This program and the accompanying materials are made available
+/// under the terms of the Common Public License v1.0
+/// which accompanies this distribution and is available at
+/// http://www.eclipse.org/legal/cpl-v10.html
+/// Contributors:
+///    Vincent Risi
+/// ------------------------------------------------------------------
+/// System : JPortal
+/// ------------------------------------------------------------------
+
 using System;
 using System.Data;
 using System.IO;
@@ -6,7 +19,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace Bbd.Utility
+namespace vlab.utility
 {
   /// <summary>
   /// A class is to assist in the conversion of arrays of class records to a standard 

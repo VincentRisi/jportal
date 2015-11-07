@@ -1,11 +1,24 @@
+/// ------------------------------------------------------------------
+/// Copyright (c) from 1996 Vincent Risi
+/// All rights reserved.
+/// This program and the accompanying materials are made available
+/// under the terms of the Common Public License v1.0
+/// which accompanies this distribution and is available at
+/// http://www.eclipse.org/legal/cpl-v10.html
+/// Contributors:
+///    Vincent Risi
+/// ------------------------------------------------------------------
+/// System : JPortal
+/// ------------------------------------------------------------------
+
 using System;
 using System.Net.Sockets;
 using System.Text;
-using Bbd.Idl2;
-using Bbd.Idl2.Rpc;
-using Bbd.Utility;
+using vlab.idl2;
+using vlab.idl2.rpc;
+using vlab.utility;
 
-namespace Bbd.Idl2.Rpc.Ubi
+namespace vlab.idl2.rpc.ubi
 {
   public class Header : Bbd.Idl2.Rpc.Header
   {

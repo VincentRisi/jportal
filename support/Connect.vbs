@@ -1,6 +1,5 @@
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-<!-- Copyright (c) 1996, 2004 Vincent Risi in Association              -->
-<!--                          with Barone Budge and Dominick           -->
+<!-- Copyright (c) from 1996 Vincent Risi                              -->
 <!-- All rights reserved.                                              -->
 <!-- This program and the accompanying materials are made available    -->
 <!-- under the terms of the Common Public License v1.0                 -->
@@ -10,8 +9,6 @@
 <!--    Vincent Risi                                                   -->
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 <!-- System : JPortal                                                  -->
-<!-- $Date: 2004/10/18 13:48:10 $                                      -->
-<!-- $Revision: 411.1 $ // YMM.Revision                                -->
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 <!--#includes file="adoenums.vbs"-->
 <%

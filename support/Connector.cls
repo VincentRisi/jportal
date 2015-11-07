@@ -10,8 +10,7 @@ Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "SavedWithClassBuilder" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 ''' ------------------------------------------------------------------
-''' Copyright (c) 1996, 2004 Vincent Risi in Association
-'''                          with Barone Budge and Dominick
+''' Copyright (c) from 1996 Vincent Risi
 ''' All rights reserved.
 ''' This program and the accompanying materials are made available
 ''' under the terms of the Common Public License v1.0
@@ -21,8 +20,6 @@ Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 '''    Vincent Risi
 ''' ------------------------------------------------------------------
 ''' System : JPortal
-''' $Date: 2004/10/18 13:48:10 $
-''' $Revision: 411.1 $ // YMM.Revision
 ''' ------------------------------------------------------------------
 Option Explicit
 ' General Connect Class used for all JPortal ODBCDirect Access

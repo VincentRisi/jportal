@@ -4,11 +4,11 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Collections;
-using bbd.idl2.bdcserver;
-using bbd.idl2.anydb;
-using bbd.sars.idlclient.servers;
-using bbd.idl2.rpc;
-using Bbd.Idl2.AnyDB;
+using vlab.idl2.bdcserver;
+using vlab.idl2.anydb;
+using vlab.idlclient.servers;
+using vlab.idl2.rpc;
+using vlab.idl2.AnyDB;
 using IronPython.Hosting;
 using IronPython.Modules;
 
@@ -272,9 +272,9 @@ namespace Bbd.Idl2.PuffinAgent
     private PuffinPython()
     {
       if (srcDir == null || srcDir.Length == 0)
-        srcDir = @"c:\sars\python\source";
+        srcDir = @"c:\vlab\python\source";
       if (runDir == null || runDir.Length == 0)
-        runDir = @"c:\sars\python\runtime";
+        runDir = @"c:\vlab\python\runtime";
       engine = new PythonEngine();
       sbout = new MemoryStream();
       sberr = new MemoryStream();

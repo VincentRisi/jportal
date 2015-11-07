@@ -1,7 +1,20 @@
-using System;
-using Bbd.Idl2;
+/// ------------------------------------------------------------------
+/// Copyright (c) from 1996 Vincent Risi
+/// All rights reserved.
+/// This program and the accompanying materials are made available
+/// under the terms of the Common Public License v1.0
+/// which accompanies this distribution and is available at
+/// http://www.eclipse.org/legal/cpl-v10.html
+/// Contributors:
+///    Vincent Risi
+/// ------------------------------------------------------------------
+/// System : JPortal
+/// ------------------------------------------------------------------
 
-namespace Bbd.Idl2.Rpc
+using System;
+using vlab.idl2;
+
+namespace vlab.idl2.rpc
 {
   /// <summary>
   /// $Revision: 401.4 $ $Date: 2004/03/08 08:01:47 $
