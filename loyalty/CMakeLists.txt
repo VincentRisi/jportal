@@ -1,19 +1,16 @@
-project (projects_loyalty)
+project (loyalty)
 
-set (source_dir ${LOYALTY_SOURCE_DIR}/src)
-set (binary_dir ${LOYALTY_SOURCE_DIR}/src/build)
-
-pathed (javaDir  ${binary_dir}/loyalty/xyz)
-pathed (java1Dir ${binary_dir}/java1)
-pathed (java2Dir ${binary_dir}/java2)
-pathed (java3Dir ${binary_dir}/java3)
-#pathed (idljDir  ${binary_dir}/idlj)
-#pathed (idlDir   ${binary_dir}/idl)
-pathed (jidlDir  ${binary_dir}/jidl)
-pathed (jtreeDir ${binary_dir}/jtree)
+pathed (javaDir  ${LOYALTY_BINARY_DIR}/loyalty/xyz)
+pathed (java1Dir ${LOYALTY_BINARY_DIR}/java1)
+pathed (java2Dir ${LOYALTY_BINARY_DIR}/java2)
+pathed (java3Dir ${LOYALTY_BINARY_DIR}/java3)
+pathed (idljDir  ${LOYALTY_BINARY_DIR}/idlj)
+pathed (idlDir   ${LOYALTY_BINARY_DIR}/idl)
+pathed (jidlDir  ${LOYALTY_BINARY_DIR}/jidl)
+pathed (jtreeDir ${LOYALTY_BINARY_DIR}/jtree)
 
 set (si_files
-  ${source_dir}/loyalty_code_lookup.si
+  ${LOYALTY_SOURCE_DIR}/loyalty_code_lookup.si
 )
 
 set (switches 
