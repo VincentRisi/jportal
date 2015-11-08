@@ -1,0 +1,17 @@
+module Loyalty
+version "15.11"
+
+message
+{
+  DB_ERROR                         "DB Error."
+  NOT_YET_DONE                     "This has not yet been done."
+}
+
+int ping(int no)
+{
+input
+  no;
+code
+  return no+1;
+endcode
+}

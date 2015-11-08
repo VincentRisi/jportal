@@ -24,3 +24,15 @@ set (switches
 
 jportal (loyalty_jportal "${si_files}" ${switches})
 
+pathed (jserv    ${LOYALTY_BINARY_DIR}/jserv)
+pathed (idlDir   ${LOYALTY_BINARY_DIR}/idl2)
+
+set (im_file ${LOYALTY_SOURCE_DIR}/loyalty.im)
+set (ib_dir  ${LOYALTY_SOURCE_DIR}/ib)
+
+set (switches 
+  "-o" "${jserv}" "PopUbiJavaServer"
+)
+
+crackle (loyalty_crackle ${im_file} ${idlDir} ${jidlDir} ${ib_dir} ${switches})
+
