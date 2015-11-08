@@ -85,11 +85,11 @@ public class DBPyCode extends Generator
         {
           outData.println("# This code was generated, do not modify it, modify it at source and regenerate it.");
           outData.println();
-          outData.println("def load(idl2, procs):");
-          outData.println("  Proc = idl2.Proc");
-          outData.println("  SINGLE   = idl2.SINGLE");
-          outData.println("  MULTIPLE = idl2.MULTIPLE");
-          outData.println("  ACTION   = idl2.ACTION");
+          outData.println("def load(crackle, procs):");
+          outData.println("  Proc = crackle.Proc");
+          outData.println("  SINGLE   = crackle.SINGLE");
+          outData.println("  MULTIPLE = crackle.MULTIPLE");
+          outData.println("  ACTION   = crackle.ACTION");
           for (int i = 0; i < table.procs.size(); i++)
           {
             Proc proc = (Proc)table.procs.elementAt(i);

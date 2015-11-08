@@ -992,7 +992,7 @@ public class JavaCode extends Generator
         outData.println("import java.sql.*;");
         outData.println("import vlab.jportal.*;");
         outData.println("import vlab.jportal.util.*;");
-        outData.println("import bbd.idl2.util.*;");
+        outData.println("import vlab.crackle.util.*;");
         outData.println();
         outData.println("/**");
         for (int i = 0; i < table.comments.size(); i++)
@@ -1094,7 +1094,7 @@ public class JavaCode extends Generator
         outData.println("import java.sql.*;");
         outData.println("import vlab.jportal.*;");
         outData.println("import vlab.jportal.util.*;");
-        outData.println("import bbd.idl2.util.*;");
+        outData.println("import vlab.crackle.util.*;");
         outData.println();
         outData.println("/**");
         for (int j = 0; j < proc.comments.size(); j++)

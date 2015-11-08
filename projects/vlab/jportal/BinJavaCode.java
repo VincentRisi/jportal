@@ -153,7 +153,7 @@ public class BinJavaCode extends Generator
           outData.println("// ###############################################################");
           outData.println("package " + table.database.packageName + ";");
           outData.println("");
-          outData.println("import bbd.clibinu.*;");
+          outData.println("import vlab.clibinu.*;");
           outData.println("");
           outData.println("public class " + table.useName());
           outData.println("{");

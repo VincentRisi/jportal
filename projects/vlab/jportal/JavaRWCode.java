@@ -360,8 +360,8 @@ public class JavaRWCode extends Generator
       outData.println("package " + table.database.packageName.toLowerCase() + ";");
     outData.println("import vlab.jportal.*;");
     outData.println("import vlab.jportal.util.*;");
-    outData.println("import bbd.idl2.util.*;");
-    outData.println("import bbd.idl2.rw.*;");
+    outData.println("import vlab.crackle.util.*;");
+    outData.println("import vlab.crackle.rw.*;");
     outData.println("import java.sql.*;");
     outData.println("import java.util.ArrayList;");
     outData.println("/**");
@@ -1154,8 +1154,8 @@ public class JavaRWCode extends Generator
         outData.println("import java.sql.*;");
         outData.println("import vlab.jportal.*;");
         outData.println("import vlab.jportal.util.*;");
-        outData.println("import bbd.idl2.util.*;");
-        outData.println("import bbd.idl2.rw.*;");
+        outData.println("import vlab.crackle.util.*;");
+        outData.println("import vlab.crackle.rw.*;");
         outData.println();
         outData.println("/**");
         for (int i = 0; i < table.comments.size(); i++)
@@ -1255,8 +1255,8 @@ public class JavaRWCode extends Generator
         outData.println("import java.sql.*;");
         outData.println("import vlab.jportal.*;");
         outData.println("import vlab.jportal.util.*;");
-        outData.println("import bbd.idl2.util.*;");
-        outData.println("import bbd.idl2.rw.*;");
+        outData.println("import vlab.crackle.util.*;");
+        outData.println("import vlab.crackle.rw.*;");
         outData.println();
         outData.println("/**");
         for (int j = 0; j < proc.comments.size(); j++)

@@ -1,3 +1,15 @@
+/// ------------------------------------------------------------------
+/// Copyright (c) from 1996 Vincent Risi 
+///                           
+/// All rights reserved. 
+/// This program and the accompanying materials are made available 
+/// under the terms of the Common Public License v1.0 
+/// which accompanies this distribution and is available at 
+/// http://www.eclipse.org/legal/cpl-v10.html 
+/// Contributors:
+///    Vincent Risi
+/// ------------------------------------------------------------------
+
 package vlab.crackle;
 
 import java.io.FileInputStream;
@@ -94,7 +106,7 @@ public class PopBinuJavaServer extends Generator
   {
     if (module.packageName.length() > 0)
       return module.packageName;
-    return "bbd." + module.name.toLowerCase() + ".idl2";
+    return "vlab." + module.name.toLowerCase() + ".crackle";
   }
 
   private static void primeUsings(Module module)
@@ -305,11 +317,11 @@ public class PopBinuJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import bbd.idl2.rdc.RpcSocket;");
-      outData.println("import bbd.idl2.rdc.Header;");
-      outData.println("import bbd.idl2.rdc.Reader;");
-      outData.println("import bbd.idl2.rdc.Handler;");
-      outData.println("import bbd.jportal.util.Connector;");
+      outData.println("import vlab.crackle.rdc.RpcSocket;");
+      outData.println("import vlab.crackle.rdc.Header;");
+      outData.println("import vlab.crackle.rdc.Reader;");
+      outData.println("import vlab.crackle.rdc.Handler;");
+      outData.println("import vlab.jportal.util.Connector;");
       outData.println("import org.apache.log4j.Logger;");
       primeUsings(module);
       generateUsings(module, outData);
@@ -614,7 +626,7 @@ public class PopBinuJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import bbd.idl2.rdc.Writer;");
+      outData.println("import vlab.crackle.rdc.Writer;");
       primeUsings(module);
       generateUsingsNoTables(module, outData);
       outData.println();
@@ -765,7 +777,7 @@ public class PopBinuJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import bbd.jportal.util.Connector;");
+      outData.println("import vlab.jportal.util.Connector;");
       primeUsings(module);
       generateUsings(module, outData);
       outData.println();

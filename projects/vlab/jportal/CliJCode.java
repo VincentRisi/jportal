@@ -308,8 +308,8 @@ public class CliJCode extends Generator
           outData.println("package " + table.database.packageName.toLowerCase() + ";");
           outData.println();
         }
-        outData.println("import bbd.idl2.rdc.*;");
-        outData.println("import bbd.idl2.util.*;");
+        outData.println("import vlab.crackle.rdc.*;");
+        outData.println("import vlab.crackle.util.*;");
         outData.println();
         if (table.comments.size() > 0)
         {

@@ -1,3 +1,15 @@
+/// ------------------------------------------------------------------
+/// Copyright (c) from 1996 Vincent Risi 
+///                           
+/// All rights reserved. 
+/// This program and the accompanying materials are made available 
+/// under the terms of the Common Public License v1.0 
+/// which accompanies this distribution and is available at 
+/// http://www.eclipse.org/legal/cpl-v10.html 
+/// Contributors:
+///    Vincent Risi
+/// ------------------------------------------------------------------
+
 package vlab.crackle;
 
 /**
@@ -161,7 +173,7 @@ public class PopRWCSharpClient extends Generator
         outData.println();
         outData.println("using System;");
         outData.println("using System.IO;");
-        outData.println("using bbd.idl2.rw;");
+        outData.println("using vlab.crackle.rw;");
         generateUsings(module, outData);
         outData.println();
         outData.println(makeNameSpace(module));
@@ -542,7 +554,7 @@ public class PopRWCSharpClient extends Generator
         outData.println("// 1: Mutilation, Spindlization and Bending will result in goto 1");
         outData.println();
         outData.println("using System;");
-        outData.println("using bbd.idl2.rw;");
+        outData.println("using vlab.crackle.rw;");
         generateUsings(module, outData);
         outData.println();
         outData.println(makeNameSpace(module));

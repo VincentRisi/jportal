@@ -1,3 +1,15 @@
+/// ------------------------------------------------------------------
+/// Copyright (c) from 1996 Vincent Risi 
+///                           
+/// All rights reserved. 
+/// This program and the accompanying materials are made available 
+/// under the terms of the Common Public License v1.0 
+/// which accompanies this distribution and is available at 
+/// http://www.eclipse.org/legal/cpl-v10.html 
+/// Contributors:
+///    Vincent Risi
+/// ------------------------------------------------------------------
+
 package vlab.crackle;
 
 /**
@@ -228,7 +240,7 @@ public class PopUbiJavaClient extends Generator
             .println("// 1: Mutilation, Spindlization and Bending will result in goto 1");
         outData.println(makeNameSpace(module));
         outData.println();
-        outData.println("import bbd.idl2.rdc.*;");
+        outData.println("import vlab.crackle.rdc.*;");
         outData.println();
         outData.println("public class " + module.name + "Structs");
         outData.println("{");
@@ -257,7 +269,7 @@ public class PopUbiJavaClient extends Generator
   private static String getPackageName(Module module)
   {
     if (module.packageName.length() == 0)
-      return "bbd.idl2." + module.name.toLowerCase();
+      return "vlab.crackle." + module.name.toLowerCase();
     return module.packageName;
   }
   private static String makeNameSpace(Module module)
@@ -285,7 +297,7 @@ public class PopUbiJavaClient extends Generator
             .println("// Mutilation, Spindlization and Bending will result in ...");
         outData.println(makeNameSpace(module));
         outData.println();
-        outData.println("import bbd.idl2.rdc.*;");
+        outData.println("import vlab.crackle.rdc.*;");
         generateUsings(module, outData);
         outData.println();
         outData.println("public class " + module.name + " extends Client");

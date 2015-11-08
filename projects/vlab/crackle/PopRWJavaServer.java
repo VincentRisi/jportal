@@ -216,8 +216,8 @@ public class PopRWJavaServer extends Generator
       outData.println("package " + packageName(module) + ";");
       outData.println();
       outData.println("import java.io.Serializable;");
-      outData.println("import bbd.idl2.rw.Reader;");
-      outData.println("import bbd.idl2.rw.Writer;");
+      outData.println("import vlab.crackle.rw.Reader;");
+      outData.println("import vlab.crackle.rw.Writer;");
       primeUsings(module);
       generateUsingsNoTables(module, outData);
       outData.println();
@@ -271,12 +271,12 @@ public class PopRWJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import bbd.idl2.rw.RpcSocket;");
-      outData.println("import bbd.idl2.rw.Header;");
-      outData.println("import bbd.idl2.rw.Reader;");
-      outData.println("import bbd.idl2.rw.Writer;");
-      outData.println("import bbd.idl2.rw.Handler;");
-      outData.println("import bbd.jportal.util.Connector;");
+      outData.println("import vlab.crackle.rw.RpcSocket;");
+      outData.println("import vlab.crackle.rw.Header;");
+      outData.println("import vlab.crackle.rw.Reader;");
+      outData.println("import vlab.crackle.rw.Writer;");
+      outData.println("import vlab.crackle.rw.Handler;");
+      outData.println("import vlab.jportal.util.Connector;");
       outData.println("import org.apache.log4j.Logger;");
       primeUsings(module);
       generateUsings(module, outData);
@@ -401,7 +401,7 @@ public class PopRWJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import bbd.jportal.util.Connector;");
+      outData.println("import vlab.jportal.util.Connector;");
       primeUsings(module);
       generateUsings(module, outData);
       outData.println();
@@ -760,7 +760,7 @@ public class PopRWJavaServer extends Generator
   {
     if (module.packageName.length() > 0)
       return module.packageName;
-    return "bbd." + module.name.toLowerCase() + ".idl2";
+    return "vlab." + module.name.toLowerCase() + ".crackle";
   }
   private static String padded(int size)
   {

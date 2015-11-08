@@ -78,7 +78,7 @@ public class IdlObjCCode extends Generator
           outData.println("// This code was generated, do not modify it, modify it at source and regenerate it.");
           outData.println("// 1: Mutilation, Spindlization and Bending will result in goto 1");
           outData.println();
-          outData.println("#import \"idl2rdc.h\"");
+          outData.println("#import \"cracklerdc.h\"");
           outData.println();
           generateInterfaceStructs(table, outData);
         }

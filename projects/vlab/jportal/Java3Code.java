@@ -32,7 +32,7 @@ public class Java3Code
       PrintWriter outLog = new PrintWriter(System.out);
       for (int i = 0; i <args.length; i++)
       {
-        outLog.println(args[i]+": generate Java code for jdbc and idl2 consumption");
+        outLog.println(args[i]+": generate Java code for jdbc and crackle consumption");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
         in.close();
@@ -50,11 +50,11 @@ public class Java3Code
    */
   public static String description()
   {
-    return "generate Java code for jdbc and idl2 consumption";
+    return "generate Java code for jdbc and crackle consumption";
   }
   public static String documentation()
   {
-    return "generate Java code for jdbc and idl2 consumption";
+    return "generate Java code for jdbc and crackle consumption";
   }
   public static void generate(Database database, String output, PrintWriter outLog)
   {

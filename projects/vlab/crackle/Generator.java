@@ -1,10 +1,14 @@
-///
-/// System : Crackle
-/// $Source: /main/nedcor/cvsroot/eclipse/workspace/crackle/bbd/crackle/Generator.java,v $
-/// $Author: vince $
-/// $Date: 2004/08/02 10:10:07 $
-/// $Revision: 401.2 $
-///
+/// ------------------------------------------------------------------
+/// Copyright (c) from 1996 Vincent Risi 
+///                           
+/// All rights reserved. 
+/// This program and the accompanying materials are made available 
+/// under the terms of the Common Public License v1.0 
+/// which accompanies this distribution and is available at 
+/// http://www.eclipse.org/legal/cpl-v10.html 
+/// Contributors:
+///    Vincent Risi
+/// ------------------------------------------------------------------
 
 package vlab.crackle;
 import java.io.PrintWriter;

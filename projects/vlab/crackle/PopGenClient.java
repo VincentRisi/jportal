@@ -97,7 +97,7 @@ public class PopGenClient extends Generator
         outData.println("INCS = -I..;$(BCB)\\include");
         outData.println();
         outData.println("LIBS = \\");
-        outData.println("\t$(BBDLIBS)\\libidl2_$(ORANO)b \\");
+        outData.println("\t$(BBDLIBS)\\libcrackle_$(ORANO)b \\");
         outData.println("\t$(BBDLIBS)\\libsec_$(ORANO)b \\");
         outData.println("\t$(BBDLIBS)\\librpc_$(ORANO)b \\");
         outData.println("\t$(BBDLIBS)\\libtib \\");

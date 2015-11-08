@@ -62,7 +62,7 @@ public class PopUbiObjC extends Generator
         outData.println("// This code was generated, do not modify it, modify it at source and regenerate it.");
         outData.println("// 1: Mutilation, Spindlization and Bending will result in having to program this language in hell - goto 1");
         outData.println();
-        outData.println("#import \"idl2rdc.h\"");
+        outData.println("#import \"cracklerdc.h\"");
         outData.println();
         generateEnumsInterface(module, outData);
         generateStructsInterface(module, outData);
@@ -456,7 +456,7 @@ public class PopUbiObjC extends Generator
       {
         outData.println("// This code was generated, do not modify it, modify it at source and regenerate it.");
         outData.println("// Mutilation, Spindlization and Bending will result in ...");
-        outData.println("#import \"idl2rdc.h\"");
+        outData.println("#import \"cracklerdc.h\"");
         generateUsings(module, outData);
         outData.println();
         generateCallsTupleInterface(module, outData);

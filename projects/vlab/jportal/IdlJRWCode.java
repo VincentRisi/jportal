@@ -205,7 +205,7 @@ public class IdlJRWCode extends Generator
         try
         {
           outData.println("using System;");
-          outData.println("using bbd.idl2.rw;");
+          outData.println("using vlab.crackle.rw;");
           outData.println();
           outData.println("namespace " + namespace);
           outData.println("{");
