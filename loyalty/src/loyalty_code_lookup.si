@@ -1,4 +1,6 @@
 DATABASE Loyalty
+PACKAGE loyalty.xyz
+OUTPUT LoyaltyCodeLookup
 SERVER ca_vitality
   
 TABLE LoyaltyCodeLookup
@@ -40,6 +42,38 @@ SQLCODE
                                 'CALC_WS_ERR_TO_RETRY',
                                 'GEN_CALC_CUTOFF_DATE',
                                 'PNTS_BASED_PRTNR_ENT')
+    AND  DELETED = 0
+    AND  trunc(sysdate, 'dd') BETWEEN EFF_FROM AND EFF_TO
+    AND  LOYALTY_INSTANCE_NO = :loyaltyInstanceNo
+    AND  LOYALTY_PROGRAM_NO  = :loyaltyProgramNo
+  )
+  SELECT LOYALTY_INSTANCE_NO, LOYALTY_PROGRAM_NO, SUB_PROGRAM_NO,
+         LOYALTY_CODE, LOYALTY_CODE_TYPE, DESCRIPTION, CODE_EXTRA_INFO
+  FROM   CODE_LOOKUP
+  WHERE SUB_PROGRAM_NO = :subProgramNo
+  ORDER BY LOYALTY_CODE_TYPE
+ENDCODE
+
+PROC ConfigForGenericDynamic
+INPUT
+  loyaltyInstanceNo short
+  loyaltyProgramNo  short
+  subProgramNo      short
+OUTPUT
+  loyaltyInstanceNo short
+  loyaltyProgramNo  short
+  subProgramNo      short
+  loyaltyCode       char(10)
+  loyaltyCodeType   char(20)
+  description       char(256)
+  codeExtraInfo     char(10)
+SQLCODE  
+  WITH CODE_LOOKUP AS 
+  (
+    SELECT LOYALTY_INSTANCE_NO, LOYALTY_PROGRAM_NO, nvl(SUB_PROGRAM_NO, 0) SUB_PROGRAM_NO,
+           LOYALTY_CODE, LOYALTY_CODE_TYPE, DESCRIPTION, CODE_EXTRA_INFO
+    FROM  DLR.LOYALTY_CODE_LOOKUP
+    WHERE LOYALTY_CODE_TYPE in (&typeList)
     AND  DELETED = 0
     AND  trunc(sysdate, 'dd') BETWEEN EFF_FROM AND EFF_TO
     AND  LOYALTY_INSTANCE_NO = :loyaltyInstanceNo
