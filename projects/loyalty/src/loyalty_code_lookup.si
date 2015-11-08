@@ -1,0 +1,54 @@
+DATABASE Loyalty
+SERVER ca_vitality
+  
+TABLE LoyaltyCodeLookup
+  
+PROC ConfigForGenericCalc
+INPUT
+  loyaltyInstanceNo short
+  loyaltyProgramNo  short
+  subProgramNo      short
+OUTPUT
+  loyaltyInstanceNo short
+  loyaltyProgramNo  short
+  subProgramNo      short
+  loyaltyCode       char(10)
+  loyaltyCodeType   char(20)
+  description       char(256)
+  codeExtraInfo     char(10)
+SQLCODE  
+  WITH CODE_LOOKUP AS 
+  (
+    SELECT LOYALTY_INSTANCE_NO, LOYALTY_PROGRAM_NO, nvl(SUB_PROGRAM_NO, 0) SUB_PROGRAM_NO,
+           LOYALTY_CODE, LOYALTY_CODE_TYPE, DESCRIPTION, CODE_EXTRA_INFO
+    FROM  DLR.LOYALTY_CODE_LOOKUP
+    WHERE LOYALTY_CODE_TYPE in ('MAX_LOYALTY_CALCS', 
+                                'PARTNER_SUB_PROGRAM', 
+                                'COMPO_TO_ACTIVITY',
+                                'USER_AUTH', 
+                                'GEN_CALC_RUN_WEEKDAY', 
+                                'CALC_DTL_REC_EXTRACT', 
+                                'CALC_PRV_CALCED_RECS', 
+                                'GEN_CALC_BREAK_LEVEL',
+                                'BILL_DATE_DEFAULT',
+                                'GENCALC_ACTIVITY_PTS',
+                                'VIT_YTD_PNTS_EXTRACT',
+                                'PRVCALC_SRT_FUNCTION',
+                                'PRVCALC_DAYSTOGOBACK',
+                                'CALC_MEM_LNK_EXTRACT',
+                                'GEN_CALC_WS_RETRIES',
+                                'CALC_WS_ERR_TO_RETRY',
+                                'GEN_CALC_CUTOFF_DATE',
+                                'PNTS_BASED_PRTNR_ENT')
+    AND  DELETED = 0
+    AND  trunc(sysdate, 'dd') BETWEEN EFF_FROM AND EFF_TO
+    AND  LOYALTY_INSTANCE_NO = :loyaltyInstanceNo
+    AND  LOYALTY_PROGRAM_NO  = :loyaltyProgramNo
+  )
+  SELECT LOYALTY_INSTANCE_NO, LOYALTY_PROGRAM_NO, SUB_PROGRAM_NO,
+         LOYALTY_CODE, LOYALTY_CODE_TYPE, DESCRIPTION, CODE_EXTRA_INFO
+  FROM   CODE_LOOKUP
+  WHERE SUB_PROGRAM_NO = :subProgramNo
+  ORDER BY LOYALTY_CODE_TYPE
+ENDCODE
+

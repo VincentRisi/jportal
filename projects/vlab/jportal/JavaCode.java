@@ -131,7 +131,7 @@ public class JavaCode extends Generator
       outData.println("package " + table.database.packageName.toLowerCase() + ";");
     outData.println("import vlab.jportal.*;");
     outData.println("import vlab.jportal.util.*;");
-    outData.println("import bbd.idl2.util.*;");
+    outData.println("import vlab.crackle.util.*;");
     outData.println("import java.sql.*;");
     outData.println("import java.util.Vector;");
     outData.println("/**");
