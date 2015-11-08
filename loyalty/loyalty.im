@@ -1,5 +1,5 @@
 module Loyalty
-version "15.11"
+version "1511"
 
 message
 {
@@ -9,6 +9,7 @@ message
 
 int ping(int no)
 {
+message: #
 input
   no;
 code
