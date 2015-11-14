@@ -14,7 +14,7 @@ copyright = '''\
 /// ------------------------------------------------------------------
 '''.splitlines()
 
-for file_name in glob.glob('/main/jportal/generators/vlab/crackle/*.java'):
+for file_name in glob.glob('/main/jportal/generators/vlab/crackle/util/*.java'):
     in_file = open(file_name, 'rt')
     lines = in_file.readlines()
     in_file.close()
