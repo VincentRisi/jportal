@@ -1,6 +1,6 @@
 /// ------------------------------------------------------------------
-/// Copyright (c) 1996, 2007 Vincent Risi in Association
-///                          
+/// Copyright (c) from 1996 Vincent Risi
+/// 
 /// All rights reserved.
 /// This program and the accompanying materials are made available
 /// under the terms of the Common Public License v1.0
@@ -9,7 +9,6 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-
 package vlab.jportal;
 
 import java.io.FileInputStream;
