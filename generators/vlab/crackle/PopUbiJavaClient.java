@@ -36,6 +36,7 @@ public class PopUbiJavaClient extends Generator
     return "Generates Java Client Code for C++ Server Code";
   }
   public static PrintWriter errLog;
+
   public static class Pragmas
   {
     private static Vector<String> selected;
@@ -60,10 +61,12 @@ public class PopUbiJavaClient extends Generator
       String value = mapping.substring(n + 1, mapping.length() - 1);
       packages.put(key, value);
     }
-    public static void putImport(PrintWriter outData, String defaultUsing, String name, String lookup)
+    public static void putImport(PrintWriter outData, String defaultUsing,
+        String name, String lookup)
     {
       if (packages.containsKey(lookup) == true)
-        outData.println("import " + (String) packages.get(lookup) + "." + name + ".*;");
+        outData.println("import " + (String) packages.get(lookup) + "." + name
+            + ".*;");
       else
         outData.println(defaultUsing + "." + name + ".*;");
     }
@@ -138,7 +141,8 @@ public class PopUbiJavaClient extends Generator
       for (int i = 0; i < args.length; i++)
       {
         outLog.println(args[i] + ": Generate ... ");
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(
+            args[i]));
         Module module = (Module) in.readObject();
         in.close();
         generate(module, "", outLog);
@@ -163,27 +167,27 @@ public class PopUbiJavaClient extends Generator
   }
   private static String[] seperate(String value, String delim)
   {
-  	int n = 0, p = 0;
-  	for (;;)
-  	{
-  	  n++;
+    int n = 0, p = 0;
+    for (;;)
+    {
+      n++;
       int q = value.indexOf(delim, p);
-  	  if (q < 0) 
+      if (q < 0)
         break;
       p = q + 1;
-  	}
-  	String[] result = new String[n];
-  	p = 0;
-  	for (int i=0; i<n; i++)
-  	{
-  	  int q = value.indexOf(delim, p);
-  	  if (q < 0)
-  	    result[i] = value.substring(p);
-  	  else
-  	    result[i] = value.substring(p, q);
-  	  p = q+1;
-  	}	
-  	return result;
+    }
+    String[] result = new String[n];
+    p = 0;
+    for (int i = 0; i < n; i++)
+    {
+      int q = value.indexOf(delim, p);
+      if (q < 0)
+        result[i] = value.substring(p);
+      else
+        result[i] = value.substring(p, q);
+      p = q + 1;
+    }
+    return result;
   }
   private static String outputDir(Module module, String output)
   {
@@ -193,22 +197,25 @@ public class PopUbiJavaClient extends Generator
       delim = "\\";
     String[] mp = seperate(module.packageName, ".");
     String[] op = seperate(output, delim);
-    int n = op.length-1;
-    int b = 1;
-    if (op[0].charAt(1) == ':')
-      b++;
-    for (int oi = op.length-1; oi >= b; oi--)
+    if (op.length > 0)
     {
-      if (mp[0].compareTo(op[oi]) == 0)
+      int n = op.length - 1;
+      int b = 1;
+      if (op[0].length() > 1 && op[0].charAt(1) == ':')
+        b++;
+      for (int oi = op.length - 1; oi >= b; oi--)
       {
-        n = oi;
-        break;
+        if (mp[0].compareTo(op[oi]) == 0)
+        {
+          n = oi;
+          break;
+        }
       }
-    }
-    for (int oi = 0; oi < n; oi++)
-    {
-      result.append(op[oi]);
-      result.append(delim);
+      for (int oi = 0; oi < n; oi++)
+      {
+        result.append(op[oi]);
+        result.append(delim);
+      }
     }
     for (int mi = 0; mi < mp.length; mi++)
     {
@@ -451,10 +458,11 @@ public class PopUbiJavaClient extends Generator
         continue;
       if (structure.header.indexOf(".sh\"") > 0)
       {
-        String lookup = structure.header.substring(1, structure.header.length()-4);
+        String lookup = structure.header.substring(1,
+            structure.header.length() - 4);
         if (usings.indexOf(structure.header) == -1)
         {
-          String name = structure.name.substring(1, lookup.length()+1);
+          String name = structure.name.substring(1, lookup.length() + 1);
           usings += structure.header;
           Pragmas.putImport(outData, mainUsing, name, lookup);
         }
@@ -480,9 +488,9 @@ public class PopUbiJavaClient extends Generator
           outData.println("writer.filler(" + n + ");");
         else
           outData.println();
-      }
-      else
-        outData.println("      writer.putShort(" + name + ");writer.filler(6);");
+      } else
+        outData
+            .println("      writer.putShort(" + name + ");writer.filler(6);");
       break;
     case Type.SHORT:
       outData.println("      writer.putShort(" + name + ");writer.filler(6);");
@@ -620,6 +628,7 @@ public class PopUbiJavaClient extends Generator
     }
   }
   private static Vector<Parameter> parameterList;
+
   private static final class GenerateCommonTuple
   {
     public boolean hasReturn;
@@ -841,16 +850,14 @@ public class PopUbiJavaClient extends Generator
           && (pd.field.type.arraySizes.size() > 0 || pd.field.type.reference == Type.BYPTR))
         outData.println("      " + var + " = reader.getString(" + sizeName
             + ");");
-      else if (pd != null
-          && pd.hasOutputSize == true)
+      else if (pd != null && pd.hasOutputSize == true)
         outData.println("      " + var + " = reader.getBytes(" + sizeName
             + ");");
       else
         outData.println("      " + var + " = reader.getShort();");
       break;
     case Type.STRING:
-      outData.println("      " + var + " = reader.getString(" + sizeName
-          + ")");
+      outData.println("      " + var + " = reader.getString(" + sizeName + ")");
       break;
     case Type.SHORT:
       outData.println("      " + var + " = reader.getShort();");
