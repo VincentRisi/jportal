@@ -117,6 +117,7 @@ def crackle(name, switches):
   os.remove(fname)
 
 switches = {}
+
 def makeSwitches(project):
   dir = ''
   skips = ':%s:' % options.skip 
@@ -239,10 +240,12 @@ def expand(line):
       result += args[arg]
   return result
 
-def parse(sourceFile):
+def parse_anydb(sourceFile):
   ifile = open(sourceFile, 'r')
   lines = ifile.readlines()
   ifile.close()
+  project = None
+  state = 0;JPORTAL=1;CRACKLE=2;SOURCE=3;IDL=4
   for line in lines:
     line=expand(remove_comment(line.strip()))
     if len(line) == 0:
@@ -250,8 +253,57 @@ def parse(sourceFile):
     fields=line.split('=')
     if len(fields) == 2:
       args[fields[0]] = fields[1]
-    print line
-  return None      
+      continue
+    fields=line.split()
+    if fields[0] == 'project' and len(fields) > 1:
+      project = Project()
+      project.name = fixname(fields[1])
+      project.switches = []
+      project.sources = []
+      project.masks = {}
+      project.idlname = None
+      project.idlbits = [] 
+      continue
+    if project == None:
+      print 'expecting project name'
+      return None
+    switches['crackle'] = ''
+    switches['jportal'] = ''
+    if fields[0] == 'jportal':
+      state = JPORTAL
+      continue
+    if fields[0] == 'crackle':
+      state = CRACKLE
+      continue
+    if fields[0] == 'source':
+      state = SOURCE
+      continue
+    if fields[0] == 'idl':
+      state = IDL
+      if len(fields) > 1:
+        project.idlname = fields[1]
+      continue
+    if state == JPORTAL or state == CRACKLE:
+      sname = 'jportal' if state == JPORTAL else 'crackle'
+      if len(fields) > 1:
+        dir = fixname(fields[1])
+        makedirs(dir)
+        switches[sname] += '-o %s %s ' % (dir, fields[0])
+      else:
+        dir = ''  
+        switches[sname] += '%s ' % (fields[0])
+      if len(fields) > 2:
+        if not project.masks.has_key(dir):
+          project.masks[dir] = []
+        for mask in fields[2:]:
+          project.masks[dir].append(mask)
+      continue
+    if state == SOURCE:
+      project.sources.append(fields[0])
+      continue
+    if state == IDL:
+      project.idlbits.append(fields[0])
+  return project
 
 _, ext = os.path.splitext(sourceFile)
 if ext == '.prj':
@@ -262,7 +314,7 @@ if ext == '.prj':
   project = handler.project
   makeSwitches(project)
 else:
-  project = parse(sourceFile)
+  project = parse_anydb(sourceFile)
   exit(0)
 clean(project)
 projmod = lastmod(sourceFile)
