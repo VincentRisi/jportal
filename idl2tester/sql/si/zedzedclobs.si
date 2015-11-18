@@ -1,0 +1,21 @@
+DATABASE SARS FLAGS "pymod=idl2tester" "dont qualify" "utf-8"
+PACKAGE  sars.puffin
+OUTPUT   zedzedclobs
+SERVER   ssmd00
+SCHEMA   ssmd00
+
+TABLE ZedZedClobs
+  Key1     char
+  Key2     int
+  clob4    bigxml
+  Diddly   timestamp
+
+KEY kee3 PRIMARY Key1 Key2
+
+proc Insert options "BL"
+proc SelectOne
+proc SelectAll
+proc Merge options "BL"
+
+  
+  

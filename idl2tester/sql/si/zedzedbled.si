@@ -1,0 +1,43 @@
+DATABASE SARS FLAGS "pymod=idl2tester" "dont qualify" "utf-8"
+PACKAGE  sars.puffin
+OUTPUT   zedzedbled
+SERVER   ssmd00
+SCHEMA   ssmd00
+
+TABLE ZedZedBled
+  PidNo     sequence
+  Xavier    int
+  
+key x primary PidNo
+
+proc BulkInsert options "BL"
+proc Insert options "BL"
+
+proc l'Merge' options "BL"
+input
+  PidNo    =
+  Xavier   =
+sqlcode
+  merge into ZedZedBled
+  using table
+        (
+          values
+          (
+            cast(:PidNo as integer)
+          , cast(:Xavier as integer)
+          )
+        )
+        temp
+        (
+          PidNo
+        , Xavier
+        )
+  on ZedZedBled.PidNo = temp.PidNo
+  when matched then 
+    update set ZedZedBled.Xavier = temp.Xavier
+  when not matched then
+    insert (PidNo, Xavier) values (temp.PidNo, temp.Xavier)
+endcode  
+
+  
+  

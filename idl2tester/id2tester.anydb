@@ -1,0 +1,49 @@
+#------------------------------------------
+#   IDL2 TESTER - with ZEDZED
+#------------------------------------------
+
+project idl2tester
+
+source_dir=/main/jportal/idl2tester
+binary_dir=${source_dir}/build
+
+jportal
+  AdoCSCode          ${binary_dir}/sql/adocs       %i.cs
+  BinCode            ${binary_dir}/sql/bin     
+  BinCppCode         ${binary_dir}/sql/bin/c       %n.h
+  BinCSCode          ${binary_dir}/sql/bin/cs      %i.cs
+  BinJavaCode        ${binary_dir}/sql/bin/java  
+  CliCCode           ${binary_dir}/sql/inclcpp     %n.cpp
+  Db2DDLddl          ${binary_dir}/sql/ddl         %n.sql
+  IdlBinUCode        ${binary_dir}/sql/binu        
+  IdlCode            ${binary_dir}/sql/ii          %n.ii
+  MSSqlDDL           ${binary_dir}/sql/mssql       %n.sql
+  OciCCode           ${binary_dir}/sql/OciCCode    %n.cpp
+  PythonCliCode      ${binary_dir}/sql/python      DB_%N.py
+  PythonTreeCode     ${binary_dir}/sql/pythontree  %n.py
+
+crackle  
+  PopGenClient       ${binary_dir}/idl/pgc         %nclient.cpp
+  PopGenServer       ${binary_dir}/idl/pgs         %nserver.cpp
+  PopGenVB           ${binary_dir}/idl/pgvb        %n.bas
+  PopUbiCCIdl        ${binary_dir}/idl/ic          %n.ic
+  PopUbiCSharp       ${binary_dir}/idl/inclcs      %i.cs
+  PopUbiPuffinModule ${binary_dir}/idl/pymod       %nPython.cpp
+  PopUbiPython       ${binary_dir}/idl/python      %N_CODE.py
+  PopUbiPythonTree   ${binary_dir}/idl/pythontree  %n_tree.py
+  PopUbiServer       ${binary_dir}/idl/server      %nserver.cpp
+
+source
+  ${source_dir}/sql/si/zedzed.si
+  ${source_dir}/sql/si/zedzedbiz.si
+  ${source_dir}/sql/si/zedzedbled.si
+  ${source_dir}/sql/si/zedzedclobs.si
+  ${source_dir}/sql/si/zhedisdhed.si
+
+idl ${binary_dir}/idl/idl2tester.idl
+  ${source_dir}/idl/idl2tester.im
+  ${source_dir}/idl/wallap.ib
+  ${build_dir}/idl/expose/orchserver/orchserver.ic
+  ${build_dir}/idl/expose/tracking/tracking.ic
+  ${build_dir}/idl/expose/uttm/uttm.ic
+

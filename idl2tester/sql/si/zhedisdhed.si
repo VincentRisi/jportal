@@ -1,0 +1,40 @@
+DATABASE SARS FLAGS "pymod=idl2tester" "dont qualify" "latin1"
+PACKAGE  sars.puffin
+OUTPUT   zhedisdhed
+SERVER   ssmd00
+SCHEMA   ssmd00
+
+Table ZhedIsDhed
+  Xavier    bigsequence
+  ZedZedID  integer
+  Snitch    char(4096)
+  
+KEY Kee2 Primary Xavier
+LINK ZedZed ZedZedID 
+
+proc Insert returning options "BL" 
+proc SelectOne
+proc Update options "BL"
+proc DeleteOne
+
+view ZedZed
+//output a b c d e f g h i j k l m
+sqlcode
+select a.Xavier
+     , a.Ay
+     , a.Bee
+     , a.Cee
+     , a.Toppers
+     , a.Dee
+     , a.Epic
+     , a.Efyou
+     , a.Gee
+     , a.DOB
+     , a.Aitch
+     , a.Spatch
+     , a.Snitch aSnitch
+     , b.Snitch bSnitch
+ from ZedZed a, ZhedIsDhed b
+ where b.ZedZedID = a.Xavier
+endcode
+

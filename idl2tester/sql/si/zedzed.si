@@ -1,0 +1,218 @@
+DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8"
+PACKAGE  vlab.sample
+OUTPUT   zedzed
+SERVER   ssm
+SCHEMA   ssmd00
+
+// ** A simple test table with no application significance  **
+TABLE ZedZed
+  Xavier    sequence
+  Ay        double(15,2)
+  Bee       double(16,4)
+  Cee       money
+  Toppers   double
+  Dee       long
+  Epic      int      {Any Many Minee Moe}
+  Efyou     short
+  Gee       byte (eggs=1 why=2)
+  DOB       date NULL
+  Aitch     char(34) {Simon Dogma Diddly Squat}
+  Spatch    char(10000)  NULL
+  Snitch    char(4096)    NULL
+  tmStamp   timestamp
+  
+KEY KeeItInMindPlease PRIMARY Xavier  
+Key Roger Xavier Ay Bee
+
+proc Insert returning options "BL"
+proc BulkInsert options "BL"
+proc SelectOne
+proc SelectOne update
+proc SelectAll
+proc DeleteOne options "BL"
+proc DeleteAll
+proc Update    options "BL"
+
+proc AtomTest
+input
+  Xavier =
+sqlcode
+begin atomic
+  update ZedZed set A y = 5.4321  where Xavier = :Xavier;
+  update ZedZed set Bee = 54.321  where Xavier = :Xavier;
+  update ZedZed set Cee = '12.00' where Xavier = :Xavier;
+end  
+endcode  
+
+proc EpicUpdate
+input
+  Epic =
+  Efyou =
+sqlcode
+  update ZedZed set Ay = 0.12345 where Epic = :Epic 
+  or Epic = :Epic and Efyou > :Efyou + :Epic
+endcode  
+
+proc MOD117 (standard)
+output (100) 
+sqlcode
+ select Xavier
+  , Ay
+  , Bee
+  , Cee
+  , Toppers
+  , Dee
+  , Epic
+  , Efyou
+  , Gee
+  , DOB
+  , Aitch
+  , Spatch
+  , Snitch
+  , tmStamp
+  from ssmd00.zedzed where 
+endcode
+
+proc MODGiven (standard)
+input
+  Xavier integer
+output (50)  
+sqlcode
+ select Xavier
+  , Ay
+  , Bee
+  , Cee
+  , Toppers
+  , Dee
+  , Epic
+  , Efyou
+  , Gee
+  , DOB
+  , Aitch
+  , Spatch
+  , Snitch
+  , tmStamp
+  from ssmd00.zedzed where MOD(Xavier, :Xavier) = 0
+endcode
+
+proc ABigUnion (standard)
+output (100)
+sqlcode
+with a as (select xavier from ssmd00.zedzed where MOD(Xavier, 117) = 0)
+   , b as (select xavier from ssmd00.zedzed where MOD(Xavier, 97) = 0)
+   , c as (select xavier from ssmd00.zedzed where MOD(Xavier, 87) = 0)
+   , d as (select xavier from ssmd00.zedzed where MOD(Xavier, 79) = 0)
+   , e as (select xavier from ssmd00.zedzed where MOD(Xavier, 2) = 0)
+   , f as (select xavier from ssmd00.zedzed where MOD(Xavier, 3) = 0)
+select * from ssmd00.zedzed z,a where z.xavier = a.xavier
+union
+select * from ssmd00.zedzed x,b where x.xavier = b.xavier
+union
+select * from ssmd00.zedzed y,c where y.xavier = c.xavier
+union
+select * from ssmd00.zedzed v,d where v.xavier = d.xavier
+union
+select * from ssmd00.zedzed w,e where w.xavier = e.xavier
+union
+select * from ssmd00.zedzed u,f where u.xavier = f.xavier
+endcode
+
+proc Simple
+sqlcode
+  &sqlcode(8192)
+endcode  
+
+proc UpdateField
+input
+  Xavier =
+  value char 256
+sqlcode
+  update ZedZed
+  set &field = :value
+  where Xavier = :Xavier
+endcode  
+
+proc Doff
+input
+  Bee =
+output
+  Cee =
+sqlcode
+  select Cee from zedzed where Bee = :Bee
+endcode  
+
+proc Stats
+output (single)
+  noof   int 
+  mints  char(32) 
+  maxts  char(32)
+  duration double 
+sqlcode
+select count(*) noof, min(tmstamp) mints, max(tmstamp) maxts, max(tmstamp) - min(tmstamp) duration from ssmd00.zedzed
+endcode
+
+proc LastOne (standard)
+output (single)
+sqlcode
+  select * from zedzed where Xavier = (select max(Xavier) from zedzed)
+endcode
+
+proc Dicks (standard)
+input
+  Extra1 int
+output 
+  Extra2 int
+sqlcode
+  select Xavier
+       , Ay
+       , Bee
+       , Cee
+       , Toppers
+       , Dee
+       , Epic
+       , Efyou
+       , Gee
+       , DOB
+       , Aitch
+       , Spatch
+       , Snitch
+       , tmStamp
+       , 123
+ from ZedZed
+ where Xavier = :Extra1 
+endcode  
+
+proc NextXavier
+output (single)
+  Xavier  int
+sqlcode
+  with single as (select xavier from zedzed where xavier > 0 order by xavier fetch first 1 rows only)
+  select xavier from old table (delete from zedzed where xavier = (select xavier from single))
+endcode
+
+TABLE ZedBled
+  PidNo     int
+  Xavier    int
+
+proc BulkInsert options "BL"
+
+// ** A simple test duplicate table with no application significance  **
+TABLE ZedZedB
+  Xavier    sequence
+  Ay        double(15,2)
+  Bee       double(16,4)
+  Cee       money
+  Toppers   double
+  Dee       long
+  Epic      int      {Any Many Minee Moe}
+  Efyou     short
+  Gee       byte (eggs=1 why=2)
+  DOB       date NULL
+  Aitch     char(34) {Simon Dogma Diddly Squat}
+  Spatch    char(10000)  NULL
+  Snitch    char(4096)    NULL
+  tmStamp   timestamp
+  
+KEY Kee  PRIMARY Xavier
+
+proc Insert options "BL"

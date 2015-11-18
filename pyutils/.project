@@ -14,4 +14,16 @@
 	<natures>
 		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>anydbMake.py</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/tools/anydbMake.py</locationURI>
+		</link>
+		<link>
+			<name>idl2Make.py</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/tools/idl2Make.py</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
