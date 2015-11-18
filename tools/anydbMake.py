@@ -281,7 +281,9 @@ def parse_anydb(sourceFile):
     if fields[0] == 'idl':
       state = IDL
       if len(fields) > 1:
-        project.idlname = fields[1]
+        source = Source()
+        source.name = fixname(fields[1])
+        project.idl = source
       continue
     if state == JPORTAL or state == CRACKLE:
       sname = 'jportal' if state == JPORTAL else 'crackle'
@@ -299,11 +301,37 @@ def parse_anydb(sourceFile):
           project.masks[dir].append(mask)
       continue
     if state == SOURCE:
-      project.sources.append(fields[0])
+      source = Source()
+      source.targets = []
+      source.name = fixname(fields[0])
+      project.sources.append(source)
       continue
     if state == IDL:
-      project.idlbits.append(fields[0])
+      source = Source()
+      source.name = fixname(fields[0])
+      project.idlbits.append(source)
   return project
+
+def get_targets(source, name, mask, project):
+  masks = project.masks[mask]
+  for wildcard in masks:
+    check_it = False
+    if wildcard.find('%n') >= 0:
+      wildcard = wildcard.replace('%n', name.lower())
+    elif wildcard.find('%N') >= 0:
+      wildcard = wildcard.replace('%N', name.upper())
+    elif wildcard.find('%i') >= 0:
+      check_it = True
+      wildcard = wildcard.replace('%i', '?'*len(name))
+    print glob.glob('%s/%s' % (mask, wildcard))
+
+def derive_targets(project):
+  mask_keys = sorted(project.masks)
+  for source in project.sources:
+    _, base = os.path.split(source.name)
+    name, _ = os.path.splitext(base)
+    for mask in mask_keys:
+      get_targets(source, name, mask, project)
 
 _, ext = os.path.splitext(sourceFile)
 if ext == '.prj':
@@ -313,10 +341,11 @@ if ext == '.prj':
   a.parse(sourceFile)
   project = handler.project
   makeSwitches(project)
+  clean(project)
 else:
   project = parse_anydb(sourceFile)
+  derive_targets(project)
   exit(0)
-clean(project)
 projmod = lastmod(sourceFile)
 jportalJarMod = lastmod(jportalJar)
 crackleJarMod = lastmod(crackleJar)
