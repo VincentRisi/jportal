@@ -246,6 +246,8 @@ def parse_anydb(sourceFile):
   ifile.close()
   project = None
   state = 0;JPORTAL=1;CRACKLE=2;SOURCE=3;IDL=4
+  switches['crackle'] = ''
+  switches['jportal'] = ''
   for line in lines:
     line=expand(remove_comment(line.strip()))
     if len(line) == 0:
@@ -262,13 +264,11 @@ def parse_anydb(sourceFile):
       project.sources = []
       project.masks = {}
       project.idlname = None
-      project.idlbits = [] 
+      project.idls = [] 
       continue
     if project == None:
       print 'expecting project name'
       return None
-    switches['crackle'] = ''
-    switches['jportal'] = ''
     if fields[0] == 'jportal':
       state = JPORTAL
       continue
@@ -304,13 +304,22 @@ def parse_anydb(sourceFile):
       source = Source()
       source.targets = []
       source.name = fixname(fields[0])
+      source.noTargets = 0
+      source.lastmod = lastmod(source.name)
       project.sources.append(source)
       continue
     if state == IDL:
       source = Source()
       source.name = fixname(fields[0])
-      project.idlbits.append(source)
+      project.idls.append(source)
   return project
+
+def add_target(source, file):
+  target = Target()
+  target.name = fixname(file)
+  target.lastmod = lastmod(target.name)
+  source.targets.append(target)
+  source.noTargets = len(source.targets)
 
 def get_targets(source, name, mask, project):
   masks = project.masks[mask]
@@ -322,8 +331,23 @@ def get_targets(source, name, mask, project):
       wildcard = wildcard.replace('%N', name.upper())
     elif wildcard.find('%i') >= 0:
       check_it = True
+      empty = wildcard.replace('%N', name.upper())
       wildcard = wildcard.replace('%i', '?'*len(name))
-    print glob.glob('%s/%s' % (mask, wildcard))
+    files = glob.glob('%s/%s' % (mask, wildcard))
+    if len(files) == 0:
+      if check_it == True:
+        file = '%s/%s' % (mask, empty)
+      else:
+        file = '%s/%s' % (mask, wildcard)
+      add_target(source, file)
+      continue
+    for file in files:
+      if check_it == True:
+        _, base = os.path.split(file)
+        fname, _ = os.path.splitext(base)
+        if fname.upper() != name.upper():
+          continue
+      add_target(source, file)
 
 def derive_targets(project):
   mask_keys = sorted(project.masks)
@@ -345,7 +369,7 @@ if ext == '.prj':
 else:
   project = parse_anydb(sourceFile)
   derive_targets(project)
-  exit(0)
+  #exit(0)
 projmod = lastmod(sourceFile)
 jportalJarMod = lastmod(jportalJar)
 crackleJarMod = lastmod(crackleJar)

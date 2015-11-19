@@ -1,5 +1,5 @@
 DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8"
-PACKAGE  vlab.sample
+PACKAGE  vlab
 OUTPUT   zedzed
 SERVER   ssm
 SCHEMA   ssmd00
@@ -21,7 +21,7 @@ TABLE ZedZed
   Snitch    char(4096)    NULL
   tmStamp   timestamp
   
-KEY KeeItInMindPlease PRIMARY Xavier  
+KEY KeeItInO PRIMARY Xavier  
 Key Roger Xavier Ay Bee
 
 proc Insert returning options "BL"

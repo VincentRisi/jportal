@@ -1,5 +1,5 @@
 DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify"
-PACKAGE  sars.puffin
+PACKAGE  vlab
 OUTPUT   zedzedbiz
 SERVER   ssm
 SCHEMA   ssmd00

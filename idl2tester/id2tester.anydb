@@ -9,14 +9,15 @@ binary_dir=${source_dir}/build
 
 jportal
   AdoCSCode          ${binary_dir}/sql/adocs       %i.cs
-  BinCode            ${binary_dir}/sql/bin     
+  BinCode            ${binary_dir}/sql/bin         %n.code
   BinCppCode         ${binary_dir}/sql/bin/c       %n.h
   BinCSCode          ${binary_dir}/sql/bin/cs      %i.cs
-  BinJavaCode        ${binary_dir}/sql/bin/java  
+  BinJavaCode        ${binary_dir}/sql/bin/java    vlab/%i.java
   CliCCode           ${binary_dir}/sql/inclcpp     %n.cpp
-  Db2DDLddl          ${binary_dir}/sql/ddl         %n.sql
-  IdlBinUCode        ${binary_dir}/sql/binu        
-  IdlCode            ${binary_dir}/sql/ii          %n.ii
+  Db2DDL             ${binary_dir}/sql/ddl         %n.sql
+  IdlBinUCode        ${binary_dir}/sql/binu        U%i.bin
+  IdlCode            ${binary_dir}/sql/ii          %n.ii %i.cs
+  Java1Code          ${binary_dir}/sql/j1          %i.java
   MSSqlDDL           ${binary_dir}/sql/mssql       %n.sql
   OciCCode           ${binary_dir}/sql/OciCCode    %n.cpp
   PythonCliCode      ${binary_dir}/sql/python      DB_%N.py
@@ -40,10 +41,11 @@ source
   ${source_dir}/sql/si/zedzedclobs.si
   ${source_dir}/sql/si/zhedisdhed.si
 
-idl ${binary_dir}/idl/idl2tester.idl
-  ${source_dir}/idl/idl2tester.im
-  ${source_dir}/idl/wallap.ib
-  ${build_dir}/idl/expose/orchserver/orchserver.ic
-  ${build_dir}/idl/expose/tracking/tracking.ic
-  ${build_dir}/idl/expose/uttm/uttm.ic
+idl
+  target   ${binary_dir}/idl/idl2tester.idl
+  module   ${source_dir}/idl/idl2tester.im
+  business ${source_dir}/idl/wallap.ib
+  client   ${source_dir}/idl/expose/orchserver/orchserver.ic
+  client   ${source_dir}/idl/expose/tracking/tracking.ic
+  client   ${source_dir}/idl/expose/uttm/uttm.ic
 

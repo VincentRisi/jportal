@@ -1,7 +1,7 @@
-DATABASE SARS FLAGS "pymod=idl2tester" "dont qualify" "latin1"
-PACKAGE  sars.puffin
+DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify" "latin1"
+PACKAGE  vlab
 OUTPUT   zhedisdhed
-SERVER   ssmd00
+SERVER   ssm
 SCHEMA   ssmd00
 
 Table ZhedIsDhed
