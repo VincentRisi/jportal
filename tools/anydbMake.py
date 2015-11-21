@@ -311,10 +311,21 @@ def parse_anydb(sourceFile):
       continue
     if state == IDL:
       source = Source()
+      idl_list = ('idlfile', 'imfile', 'ibfile', 'icfile')
+      idl_type = fields[0]
+      if (not idl_type in idl_list):
+        print '%s - not a valid - not in %s' % (idl_type, repr(idl_list))
+        continue
       source.name = fixname(fields[1])
-      if not project.idls.has_key(fields[0]):
-        project.idls[fields[0]]=[]
-      project.idls[fields[0]].append(source)
+      if idl_type == 'idlfile':
+        switches['idlTarget'] = source.name
+        continue
+      if idl_type == 'imfile':
+        switches['idlModule'] = source.name
+        continue
+      if not project.idls.has_key(idl_type):
+        project.idls[idl_type] = []
+      project.idls[idl_type].append(source)
   return project
 
 def add_target(source, file):
@@ -374,14 +385,16 @@ if ext == '.prj':
 else:
   project = parse_anydb(sourceFile)
   derive_targets(project)
-  #exit(0)
+
 projmod = lastmod(sourceFile)
 jportalJarMod = lastmod(jportalJar)
 crackleJarMod = lastmod(crackleJar)
 sourceList = []
 reasons = {}
-iiFiles = []
-ibFiles = [] 
+project.idls['iifile'] = iiFiles = []
+if not project.idls.has_key('ibfile'):
+  project.idls['ibfile'] = []
+ibFiles = project.idls['ibfile']
 for source in project.sources:
   if source.noTargets == 0:
     reasons[source.name] = 'no targets'

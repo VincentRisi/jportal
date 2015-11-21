@@ -15,7 +15,7 @@ jportal
   BinCppCode         ${binary_dir}/sql/bin/c       %l.h
   BinCSCode          ${binary_dir}/sql/bin/cs      %i.cs
   BinJavaCode        ${binary_dir}/sql/bin/java    vlab/%a.java
-  CliCCode           ${binary_dir}/sql/cilc        %l.cpp %l.sh
+  CliCCode           ${binary_dir}/sql/clic        %l.cpp %l.sh
   Db2DDL             ${binary_dir}/sql/ddl         %a.sql
   IdlBinUCode        ${binary_dir}/sql/binu        U%a.bin
   IdlCode            ${binary_dir}/sql/ii          %l.ii %a.cs
@@ -23,7 +23,7 @@ jportal
   MSSqlDDL           ${binary_dir}/sql/mssql       %a.sql
   OciCCode           ${binary_dir}/sql/ocic        %l.cpp %l.sh
   PythonCliCode      ${binary_dir}/sql/python      DB_%u.py
-  PythonTreeCode     ${binary_dir}/sql/pythontree  %l.py
+  PythonTreeCode     ${binary_dir}/sql/pythontree  %a.py
 
 crackle  
   PopGenClient       ${binary_dir}/idl/pgc         %lclient.cpp
@@ -47,7 +47,7 @@ idl
   idlfile  ${binary_dir}/idl/idl2tester.idl
   imfile   ${source_dir}/idl/idl2tester.im
   ibfile   ${source_dir}/idl/wallap.ib
-  icfile   ${source_dir}/idl/expose/orchserver/orchserver.ic
-  icfile   ${source_dir}/idl/expose/tracking/tracking.ic
-  icfile   ${source_dir}/idl/expose/uttm/uttm.ic
+  #icfile   ${source_dir}/idl/expose/orchserver/orchserver.ic
+  #icfile   ${source_dir}/idl/expose/tracking/tracking.ic
+  #icfile   ${source_dir}/idl/expose/uttm/uttm.ic
 
