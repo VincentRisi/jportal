@@ -77,10 +77,10 @@ class Switch(object): pass
 class Source(object): pass
 class Target(object): pass
 
-def lastmod(name):
+def lastmod(name,try_lower=True):
   if os.path.exists(name) == True:
     return os.stat(name)[stat.ST_MTIME]
-  elif os.path.exists(name.lower()) == True:
+  elif try_lower == True and os.path.exists(name.lower()) == True:
     return os.stat(name)[stat.ST_MTIME]
   else:
     return 0
@@ -263,8 +263,10 @@ def parse_anydb(sourceFile):
       project.switches = []
       project.sources = []
       project.masks = {}
+      project.masks['jportal'] = {}
+      project.masks['crackle'] = {}
       project.idlname = None
-      project.idls = [] 
+      project.idls = {} 
       continue
     if project == None:
       print 'expecting project name'
@@ -280,13 +282,12 @@ def parse_anydb(sourceFile):
       continue
     if fields[0] == 'idl':
       state = IDL
-      if len(fields) > 1:
-        source = Source()
-        source.name = fixname(fields[1])
-        project.idl = source
       continue
     if state == JPORTAL or state == CRACKLE:
-      sname = 'jportal' if state == JPORTAL else 'crackle'
+      if state == JPORTAL: 
+        sname = 'jportal'  
+      else:
+        sname = 'crackle'
       if len(fields) > 1:
         dir = fixname(fields[1])
         makedirs(dir)
@@ -296,9 +297,9 @@ def parse_anydb(sourceFile):
         switches[sname] += '%s ' % (fields[0])
       if len(fields) > 2:
         if not project.masks.has_key(dir):
-          project.masks[dir] = []
+          project.masks[sname][dir] = []
         for mask in fields[2:]:
-          project.masks[dir].append(mask)
+          project.masks[sname][dir].append(mask)
       continue
     if state == SOURCE:
       source = Source()
@@ -310,28 +311,32 @@ def parse_anydb(sourceFile):
       continue
     if state == IDL:
       source = Source()
-      source.name = fixname(fields[0])
-      project.idls.append(source)
+      source.name = fixname(fields[1])
+      if not project.idls.has_key(fields[0]):
+        project.idls[fields[0]]=[]
+      project.idls[fields[0]].append(source)
   return project
 
 def add_target(source, file):
   target = Target()
   target.name = fixname(file)
-  target.lastmod = lastmod(target.name)
+  target.lastmod = lastmod(target.name, False)
   source.targets.append(target)
   source.noTargets = len(source.targets)
 
 def get_targets(source, name, mask, project):
-  masks = project.masks[mask]
+  masks = project.masks['jportal'][mask]
   for wildcard in masks:
     check_it = False
-    if wildcard.find('%n') >= 0:
-      wildcard = wildcard.replace('%n', name.lower())
-    elif wildcard.find('%N') >= 0:
-      wildcard = wildcard.replace('%N', name.upper())
+    if wildcard.find('%l') >= 0:
+      wildcard = wildcard.replace('%l', name.lower())
+    elif wildcard.find('%u') >= 0:
+      wildcard = wildcard.replace('%u', name.upper())
+    elif wildcard.find('%a') >= 0:
+      wildcard = wildcard.replace('%a', name)
     elif wildcard.find('%i') >= 0:
       check_it = True
-      empty = wildcard.replace('%N', name.upper())
+      empty = wildcard.replace('%i', name.upper())
       wildcard = wildcard.replace('%i', '?'*len(name))
     files = glob.glob('%s/%s' % (mask, wildcard))
     if len(files) == 0:
@@ -350,7 +355,7 @@ def get_targets(source, name, mask, project):
       add_target(source, file)
 
 def derive_targets(project):
-  mask_keys = sorted(project.masks)
+  mask_keys = sorted(project.masks['jportal'])
   for source in project.sources:
     _, base = os.path.split(source.name)
     name, _ = os.path.splitext(base)
