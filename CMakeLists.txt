@@ -28,4 +28,5 @@ add_subdirectory(generators)
 add_subdirectory(loyalty)
 add_subdirectory(idl2tester)
 add_subdirectory(binuc)
+add_subdirectory(binuj)
  

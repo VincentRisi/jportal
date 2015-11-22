@@ -8,7 +8,7 @@ source_dir=/main/jportal/binuj
 binary_dir=${source_dir}/build
 
 crackle  
-  PopBinuJavaServer  ${binary_dir}/idl/server %lserver.cpp
+  PopBinuJavaServer  ${binary_dir}/idl/vlab/binu %lserver.cpp
 
 idl        
   idlfile  ${source_dir}/idl/binuj.idl

@@ -112,7 +112,7 @@ TJConnector* binu_connects(TBinu *binu, Config &config)
 
 endcode
 
-public struct Binu
+public struct BinuC
 {
   bstring logFileName;
   bstring logLevel;
