@@ -1,0 +1,137 @@
+module Binu
+package bbd.binu
+version "1.0.0.0"
+
+message
+{
+  SCRIPT_ERROR       "SCRIPT ERROR"
+  UNHANDLED_ERROR    "UNHANDLED ERROR"
+}
+
+struct tjAction "import bbd.binu.parser.TJAction;"
+struct Idl2Thread "import bbd.binu.Idl2Thread;"
+
+public struct Binu
+{
+  Idl2Thread thread;
+  TJAction tjAction;
+}
+
+protected void setParent(Idl2Thread thread)
+{
+code
+  this.thread = thread;
+  tjAction = new TJAction(thread); 
+endcode
+}
+
+int Ping(int no)
+{
+message:#
+input: no;
+code
+  _tx._rc = no + 1;
+  return;
+endcode
+}
+
+void Action(int32 querySize, char* queryCode, int32 bufferSize, char* buffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+  bufferSize;
+  buffer size(bufferSize);
+code
+  tjAction.action(queryCode, buffer);
+endcode
+}
+
+void ActionOnly(int32 querySize, char* queryCode)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+code
+  tjAction.actionOnly(queryCode);
+endcode
+}
+
+void BulkAction(int32 querySize, char* queryCode, int32 noRecs, int32 bufferSize, char* buffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize);
+  noRecs;
+  bufferSize;
+  buffer size(bufferSize);
+code
+  tjAction.bulkAction(queryCode, noRecs, buffer);
+endcode
+}
+
+int32 Single(int32 querySize, char* queryCode, int32 bufferSize, char* buffer, int32* outBufferSize, char*& outBuffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+  bufferSize;
+  buffer size(bufferSize);
+output:
+  outBufferSize;
+  outBuffer size(outBufferSize);
+code
+  tjAction.single(_tx, queryCode, buffer);
+endcode
+}
+
+int32 SingleOnly(int32 querySize, char* queryCode, int32* outBufferSize, char*& outBuffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+output:
+  outBufferSize;
+  outBuffer size(outBufferSize);
+code
+  tjAction.singleOnly(_tx, queryCode);
+endcode
+}
+
+void Multiple(int32 querySize, char* queryCode, int32 bufferSize, char* buffer, int32* noRecs, int32* outBufferSize, char*& outBuffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+  bufferSize;
+  buffer size(bufferSize);
+output:
+  noRecs;
+  outBufferSize;
+  outBuffer size(outBufferSize);
+code
+  tjAction.multiple(_tx, queryCode, buffer);
+endcode
+}
+
+void MultipleOnly(int32 querySize, char* queryCode, int32* noRecs, int32* outBufferSize, char*& outBuffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+output:
+  noRecs;
+  outBufferSize;
+  outBuffer size(outBufferSize);
+code
+  tjAction.multipleOnly(_tx, queryCode);
+endcode
+}
+

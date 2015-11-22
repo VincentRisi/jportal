@@ -10,30 +10,16 @@ source_dir=/main/jportal/idl2tester
 binary_dir=${source_dir}/build
 
 jportal
-  AdoCSCode          ${binary_dir}/sql/adocs       %a.cs
-  BinCode            ${binary_dir}/sql/bin         %l.code
-  BinCppCode         ${binary_dir}/sql/bin/c       %l.h
-  BinCSCode          ${binary_dir}/sql/bin/cs      %i.cs
-  BinJavaCode        ${binary_dir}/sql/bin/java    vlab/%a.java
-  CliCCode           ${binary_dir}/sql/clic        %l.cpp %l.sh
-  Db2DDL             ${binary_dir}/sql/ddl         %a.sql
-  IdlBinUCode        ${binary_dir}/sql/binu        U%a.bin
+  CliCCode           ${binary_dir}/sql/c           %l.cpp %l.sh
+  Db2DDL             ${binary_dir}/sql/db2         %a.sql
   IdlCode            ${binary_dir}/sql/ii          %l.ii %a.cs
-  Java1Code          ${binary_dir}/sql/j1          %a.java
-  MSSqlDDL           ${binary_dir}/sql/mssql       %a.sql
-  OciCCode           ${binary_dir}/sql/ocic        %l.cpp %l.sh
   PythonCliCode      ${binary_dir}/sql/python      DB_%u.py
-  PythonTreeCode     ${binary_dir}/sql/pythontree  %a.py
 
 crackle  
-  PopGenClient       ${binary_dir}/idl/pgc         %lclient.cpp
-  PopGenServer       ${binary_dir}/idl/pgs         %lserver.cpp
-  PopGenVB           ${binary_dir}/idl/pgvb        %l.bas
   PopUbiCCIdl        ${binary_dir}/idl/ic          %l.ic
   PopUbiCSharp       ${binary_dir}/idl/inclcs      %i.cs
   PopUbiPuffinModule ${binary_dir}/idl/pymod       %lPython.cpp
   PopUbiPython       ${binary_dir}/idl/python      %u_CODE.py
-  PopUbiPythonTree   ${binary_dir}/idl/pythontree  %l_tree.py
   PopUbiServer       ${binary_dir}/idl/server      %lserver.cpp
 
 source
@@ -47,7 +33,4 @@ idl
   idlfile  ${binary_dir}/idl/idl2tester.idl
   imfile   ${source_dir}/idl/idl2tester.im
   ibfile   ${source_dir}/idl/wallap.ib
-  #icfile   ${source_dir}/idl/expose/orchserver/orchserver.ic
-  #icfile   ${source_dir}/idl/expose/tracking/tracking.ic
-  #icfile   ${source_dir}/idl/expose/uttm/uttm.ic
 

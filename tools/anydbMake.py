@@ -118,34 +118,6 @@ def crackle(name, switches):
 
 switches = {}
 
-def makeSwitches(project):
-  dir = ''
-  skips = ':%s:' % options.skip 
-  switches['crackle'] = ''
-  switches['jportal'] = ''
-  for switch in project.switches:
-    if switch.name in ['idlModule', 'idlTarget', 'idlBusLogicPath', 
-                       'cmakeBuild', 'cmakeInclude', 'cmakeSource']:
-      switches[switch.name] = switch.value
-      continue
-    if skips.find(':%s:' % switch.name[:-9]) >= 0:
-      continue 
-    if switch.name[0:3] == 'Pop':
-      switchName = "crackle"
-    else:  
-      switchName = "jportal"
-    n = switch.name[:-9]
-    b = switch.name[-9:]
-    if b == 'Directory':
-      dir = fixname(switch.value)
-      makedirs(dir)
-    elif b == 'Generator' and switch.value == "True":
-      if dir == '':
-        switches[switchName] += '%s ' % (n)
-      else:
-        switches[switchName] += '-o %s %s ' % (dir, n)
-      dir = ''
-
 def clean(project):
   global dirsep
   dirLists = {}
@@ -180,39 +152,7 @@ def make_ib_files(pathlist):
     for file in files:
       ibFiles.append(file)  
   return ibFiles
-            
-class Handler(xml.sax.ContentHandler):
-  def startElement(self, name, attrs):
-    if name == 'Project':
-      project = Project()
-      project.name = fixname(attrs.getValue('Name'))
-      project.noSwitches = attrs.getValue('Switches')
-      project.noSources = attrs.getValue('Sources')
-      project.switches = []
-      project.sources = []
-      self.project = project
-    elif name == 'Switch':
-      switch = Switch()
-      switch.name = attrs.getValue('Name')
-      switch.value = attrs.getValue('Value')
-      self.project.switches.append(switch)
-    elif name == 'Source':
-      source = Source()
-      source.targets = []
-      source.noTargets = attrs.getValue('Targets')
-      source.exists = attrs.getValue('Exists')
-      source.name = fixname(attrs.getValue('Name'))
-      if source.name == 'Idl':
-        self.project.idl = source
-      else:  
-        source.lastmod = lastmod(source.name)
-        self.project.sources.append(source)
-      self.source = source
-    elif name == 'Target':
-      target = Target()
-      target.name = fixname(attrs.getValue('Name'))
-      target.lastmod = lastmod(target.name)
-      self.source.targets.append(target)
+
 args = {}
 
 def remove_comment(line):
@@ -317,6 +257,7 @@ def parse_anydb(sourceFile):
         print '%s - not a valid - not in %s' % (idl_type, repr(idl_list))
         continue
       source.name = fixname(fields[1])
+      source.lastmod = lastmod(source.name)
       if idl_type == 'idlfile':
         switches['idlTarget'] = source.name
         continue
@@ -373,18 +314,8 @@ def derive_targets(project):
     for mask in mask_keys:
       get_targets(source, name, mask, project)
 
-_, ext = os.path.splitext(sourceFile)
-if ext == '.prj':
-  a = xml.sax.make_parser()
-  handler = Handler()
-  a.setContentHandler(handler)
-  a.parse(sourceFile)
-  project = handler.project
-  makeSwitches(project)
-  clean(project)
-else:
-  project = parse_anydb(sourceFile)
-  derive_targets(project)
+project = parse_anydb(sourceFile)
+derive_targets(project)
 
 projmod = lastmod(sourceFile)
 jportalJarMod = lastmod(jportalJar)
@@ -394,7 +325,10 @@ reasons = {}
 project.idls['iifile'] = iiFiles = []
 if not project.idls.has_key('ibfile'):
   project.idls['ibfile'] = []
+if not project.idls.has_key('icfile'):
+  project.idls['icfile'] = []
 ibFiles = project.idls['ibfile']
+icFiles = project.idls['icfile']
 for source in project.sources:
   if source.noTargets == 0:
     reasons[source.name] = 'no targets'
@@ -437,8 +371,8 @@ if len(sourceList) > 0:
   os.close(fd)
   iiFiles = jportal('-f %s' % (fname), switches['jportal'], iiFiles)
   os.remove(fname)
+compile = False
 if 'idlModule' in switches and 'idlTarget' in switches:
-  compile = False
   idlTarget = Source()
   idlTarget.name = fixname(switches['idlTarget'])
   idlTarget.lastmod = lastmod(idlTarget.name)
@@ -449,32 +383,32 @@ if 'idlModule' in switches and 'idlTarget' in switches:
     compile = True
   if crackleJarMod > idlTarget.lastmod:
     compile = True
-  if 'idlBusLogicPath' in switches:
-    ibFileNames = make_ib_files(switches['idlBusLogicPath'])
-    for name in ibFileNames:
-      ibFile = Source()
-      ibFile.name = fixname(name)
-      ibFile.lastmod = lastmod(ibFile.name)
-      ibFiles.append(ibFile)
-      if ibFile.lastmod > idlTarget.lastmod:
-        compile = True
   for iiFile in iiFiles:
     if iiFile.lastmod > idlTarget.lastmod:
       compile = True
-if compile == True:
-  outfile = open(idlTarget.name, 'wt')
-  ifile = open(idlModule.name, 'rt')
-  outfile.write(ifile.read())
-  ifile.close() 
-  for iiFile in iiFiles:
-    outfile.write('// *** %s\n' % (iiFile.name))
-    ifile = open(iiFile.name, 'rt')
-    outfile.write(ifile.read())
-    ifile.close()
   for ibFile in ibFiles:
-    outfile.write('// *** %s\n' % (ibFile.name))
-    ifile = open(ibFile.name, 'rt')
+    if ibFile.lastmod > idlTarget.lastmod:
+      compile = True
+  for icFile in icFiles:
+    if icFile.lastmod > idlTarget.lastmod:
+      compile = True
+  if compile == True:
+    outfile = open(idlTarget.name, 'wt')
+    ifile = open(idlModule.name, 'rt')
     outfile.write(ifile.read())
-    ifile.close()
-  outfile.close()
+    ifile.close() 
+    for iiFile in iiFiles:
+      outfile.write('// *** %s\n' % (iiFile.name))
+      ifile = open(iiFile.name, 'rt')
+      outfile.write(ifile.read())
+      ifile.close()
+    for ibFile in ibFiles:
+      outfile.write('// *** %s\n' % (ibFile.name))
+      ifile = open(ibFile.name, 'rt')
+      outfile.write(ifile.read())
+      ifile.close()
+    outfile.close()
+elif 'idlTarget' in switches:
+  compile = True
+if compile == True:
   crackle(idlTarget.name, switches['crackle'])

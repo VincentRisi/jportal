@@ -142,7 +142,7 @@ public class CliCCode extends Generator
           outData.println("#ifndef _" + table.useName().toUpperCase() + "_SNIPS_H_");
           outData.println("#define _" + table.useName().toUpperCase() + "_SNIPS_H_");
           outData.println();
-          outData.println("#include \"list.h\"");
+          outData.println("#include \"sniplist.h\"");
           outData.println("#include \"" + table.useName().toLowerCase() + ".sh\"");
           outData.println();
           for (int i = 0; i < table.procs.size(); i++)
@@ -150,7 +150,6 @@ public class CliCCode extends Generator
             Proc proc = (Proc)table.procs.elementAt(i);
             if (proc.isData)
               continue;
-            //outData.println("#ifdef USE_" + table.useName().toUpperCase() + "_" + proc.name.toUpperCase());
             if (proc.isMultipleInput)
               generateSnipsBulkAction(table, proc, outData);
             else if (proc.isInsert && proc.hasReturning)
@@ -162,7 +161,6 @@ public class CliCCode extends Generator
                 generateSnipsMultiple(table, proc, outData);
             else
               generateSnipsAction(table, proc, outData);
-            //outData.println("#endif");
             outData.println();
           }
           outData.println("#endif");

@@ -1,0 +1,505 @@
+module Binu
+version "1.0.0.0"
+
+code
+#include "machine.h"
+#include "bstring.h"
+#include "config.h"
+#include "logfile.h"
+
+HEADER:extern bool binu_is_idl2_server;
+bool binu_is_idl2_server = false;
+endcode
+
+message
+{
+  SCRIPT_ERROR       "SCRIPT ERROR"
+  UNHANDLED_ERROR    "UNHANDLED ERROR"
+}
+
+pragma DontQualify
+
+code
+CODE:#include "clibinu.h"
+CODE:#include "addlist.h"
+CODE:#include "Parser.h"
+CODE:#include "Scanner.h"
+
+static bool _compile(TJProc &proc, const unsigned char* code)
+{
+  Scanner scanner(code, strlen((const char *)code));
+  Parser parser(&scanner);
+  parser.proc = &proc;
+  parser.Parse();
+  return true;
+}
+
+struct autoCode
+{
+  unsigned char *data;
+  autoCode(int32 querySize, const char* queryCode)
+  {
+    data = new unsigned char [querySize+1];
+    for (int i=0; i<querySize; i++)
+      data[i] = (unsigned char) queryCode[i];
+    data[querySize] = 0;  
+  }
+  autoCode(int32 size)
+  {
+    data = new unsigned char [size];
+  }
+  ~autoCode()
+  {
+    delete [] data;
+  }
+};
+
+HEADER:TJConnector*  binu_connects(TBinu *binu, Config &config);
+CODE:#include "xstring.h"
+static void _add_connect(const char* database, const char* connectStr)
+{
+  char user[256];
+  char server[256];
+  char schema[256];
+  char *p = (char*) connectStr;
+  char *q = strchr(p, ':');
+  if (q == 0)
+    return;
+  strncpyz(server, p, min((int)(q-p),255));
+  p = q+1;
+  q = strchr(p, ':');
+  if (q == 0)
+    return;
+  strncpyz(schema, p, min((int)(q-p),255));
+  p = q+1;
+  q = strchr(p, ':');
+  if (q == 0)
+    return;
+  strncpyz(user, p, min((int)(q-p),255));
+  p = q+1;
+  TJConnector *conn = TJConnector::Coordinated();
+  conn->Logon(user, p, server, schema);
+  TJProc::addconnect(database, conn, connectStr);
+}
+
+static const char* VALID_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+static const char* BINU_QUERY = "binu_query";
+
+TJConnector* binu_connects(TBinu *binu, Config &config)
+{
+  bstring databases;
+  config.Get("database", databases);
+  const char* p=databases.c_str();
+  while (*p != 0)
+  {
+    size_t n = strspn(p, VALID_CHARS);
+    if (n > 0 && n <= 240)
+    {
+      char database[256];
+      bstring connectStr;
+      strncpy(database, p, n);
+      database[n]=0;
+      config.Get(database, connectStr);
+      _add_connect(database, connectStr.c_str());
+    }
+    p = p + n;
+    n = strcspn(p, VALID_CHARS);
+    if (n > 0)
+      p = p + n;
+  }
+  return TJProc::getConnect();
+}
+
+endcode
+
+public struct Binu
+{
+  bstring logFileName;
+  bstring logLevel;
+  bool logDisplay;
+  char customString[32];
+  bstring python;
+  bstring datadir;
+  bstring pythonpath;
+  bstring script;
+code
+  connect=0;
+  Config config;
+  config.Get("LogFile", logFileName);
+  config.Get("logLevel", logLevel);
+  config.Get("logDisplay", logDisplay);
+  config.Get("python", python);
+  config.Get("datadir", datadir);
+  config.Get("pythonpath", pythonpath);
+  config.Get("script", script);
+  SingletonLogFile::Initialize(logFileName.c_str(), logLevel.c_str(), logDisplay);
+  logFile = SingletonLogFile::LogFile();
+  connect = binu_connects(this, config);
+  binu_is_idl2_server = true;
+endcode
+}
+
+int Ping(int no)
+{
+message:#
+input: no;
+code
+  return no+1;
+endcode
+}
+
+void Action(int32 querySize, char* queryCode, int32 bufferSize, char* buffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+  bufferSize;
+  buffer size(bufferSize);
+code
+  TJProc::setAutoSave(binu_is_idl2_server);
+  TJProc proc;
+  autoCode code(querySize, queryCode);
+  _compile(proc, code.data);
+  proc.action(connect, bufferSize, buffer);
+endcode
+}
+
+void ActionOnly(int32 querySize, char* queryCode)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+code
+  TJProc::setAutoSave(binu_is_idl2_server);
+  TJProc proc;
+  autoCode code(querySize, queryCode);
+  _compile(proc, code.data);
+  proc.actionOnly(connect);
+endcode
+}
+
+void BulkAction(int32 querySize, char* queryCode, int32 noRecs, int32 bufferSize, char* buffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize);
+  noRecs;
+  bufferSize;
+  buffer size(bufferSize);
+code
+  TJProc::setAutoSave(binu_is_idl2_server);
+  TJProc proc;
+  autoCode code(querySize, queryCode);
+  _compile(proc, code.data);
+  proc.bulkaction(connect, noRecs, (void*)buffer);
+endcode
+}
+
+int32 Single(int32 querySize, char* queryCode, int32 bufferSize, char* buffer, int32* outBufferSize, char*& outBuffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+  bufferSize;
+  buffer size(bufferSize);
+output:
+  outBufferSize;
+  outBuffer size(outBufferSize);
+code
+  TJProc::setAutoSave(binu_is_idl2_server);
+  TJProc proc;
+  autoCode code(querySize, queryCode);
+  _compile(proc, code.data);
+  bool rc = proc.single(connect, bufferSize, buffer, outBufferSize, (void*&)outBuffer);
+  return rc ? 1 : 0;
+endcode
+}
+
+int32 SingleOnly(int32 querySize, char* queryCode, int32* outBufferSize, char*& outBuffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+output:
+  outBufferSize;
+  outBuffer size(outBufferSize);
+code
+  TJProc::setAutoSave(binu_is_idl2_server);
+  TJProc proc;
+  autoCode code(querySize, queryCode);
+  _compile(proc, code.data);
+  bool rc = proc.singleOnly(connect, outBufferSize, (void*&)outBuffer);
+  return rc ? 1 : 0;
+endcode
+}
+
+void Multiple(int32 querySize, char* queryCode, int32 bufferSize, char* buffer, int32* noRecs, int32* outBufferSize, char*& outBuffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+  bufferSize;
+  buffer size(bufferSize);
+output:
+  noRecs;
+  outBufferSize;
+  outBuffer size(outBufferSize);
+code
+  TJProc::setAutoSave(binu_is_idl2_server);
+  TJProc proc;
+  autoCode code(querySize, queryCode);
+  _compile(proc, code.data);
+  proc.multiple(connect, bufferSize, buffer, noRecs, outBufferSize, (void *&)outBuffer);
+endcode
+}
+
+void MultipleOnly(int32 querySize, char* queryCode, int32* noRecs, int32* outBufferSize, char*& outBuffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+output:
+  noRecs;
+  outBufferSize;
+  outBuffer size(outBufferSize);
+code
+  TJProc::setAutoSave(binu_is_idl2_server);
+  TJProc proc;
+  autoCode code(querySize, queryCode);
+  _compile(proc, code.data);
+  proc.multipleOnly(connect, noRecs, outBufferSize, (void *&)outBuffer);
+endcode
+}
+
+void Commit()
+{
+message:#
+code
+  connect->Commit();
+endcode
+}
+
+void Rollback()
+{
+message:#
+code
+  connect->Rollback();
+endcode
+}
+
+code
+
+static int write_query(const char* dataDir, int procId,
+                        int querySize, const char* queryCode, 
+                        int bufferSize, const char* buffer)
+{
+  char filename[256];
+  snprintf(filename, 256, "%s/proc_%d.qry", dataDir, procId);
+  FILE* qry = fopen(filename, "wb");
+  if (qry == 0)
+  {
+    SLOG->lprintf(eLogError, "File: %s - failed to open(%d)", filename, errno);
+    return errno;
+  }
+  int size = querySize;
+  SwapBytes(size);
+  fwrite(&size, sizeof(size), 1, qry);
+  fwrite(queryCode, querySize, 1, qry);
+  size = bufferSize;
+  SwapBytes(size);
+  fwrite(&size, sizeof(size), 1, qry);
+  fwrite(buffer, bufferSize, 1, qry);
+  fclose(qry);
+  return 0;
+}
+
+static char* get_connectStr(char* connectStr, int size, const char* queryCode)
+{
+  if ((strncmp(queryCode, "conn", 4)) == 0)
+  {
+    const char* p = queryCode+4;
+    int start = strcspn(p, VALID_CHARS);
+    int end = strspn(p+start, VALID_CHARS);
+    char database[256];
+    strncpy(database, p+start, end);
+    database[end] = 0;
+    memset(connectStr, 0, size);
+    for (int i=0; i<TJProc::conns.getCount(); i++)
+    {
+      if (strcmp(TJProc::conns[i].database, database) == 0)
+      {
+        strncpy(connectStr, TJProc::conns[i].connectStr, size-1);
+        break;
+      }
+    }
+  }
+  return connectStr;
+}
+
+CODE:#if defined(M_AIX) || defined(M_GNU)
+CODE:#include <unistd.h>
+CODE:#include <sys/resource.h>
+CODE:#include <sys/wait.h>
+
+static int do_exec(const char* python, 
+                   const char* scriptname,
+                   const char* logFilename,
+                   const char* datadir, 
+                   const char* pythonpath, 
+                   const char* script,
+                   int querySize, const char* queryCode, 
+                   int bufferSize, const char* buffer)
+{
+  pid_t procId = getpid();
+  int rc = write_query(datadir, procId, querySize, queryCode, bufferSize, buffer);
+  if (rc != 0) return rc;
+  char cswitch[256]
+     , dswitch[256]
+     , iswitch[256]
+     , lswitch[256]
+     , pswitch[256]
+     , sswitch[256]
+     , connectStr[252];
+  get_connectStr(connectStr, 252, queryCode); 
+  snprintf(cswitch, 256, "-c %s", connectStr);
+  snprintf(dswitch, 256, "-d %s", datadir);
+  snprintf(iswitch, 256, "-i %d", (int) procId);
+  snprintf(lswitch, 256, "-l %s", logFilename);
+  snprintf(pswitch, 256, "-p %s", pythonpath);
+  snprintf(sswitch, 256, "-s %s", script);
+  rc = execl(python, python, scriptname, 
+             cswitch, dswitch, iswitch, lswitch, pswitch, sswitch, (char*)0);
+  if (rc != 0)
+  {
+    SLOG->lprintf(eLogError, "Failed to run %s %s %s %s %d %s %s %s", 
+                  python, 
+                  scriptname, 
+                  cswitch, 
+                  dswitch, 
+                  iswitch, 
+                  lswitch, 
+                  pswitch, 
+                  sswitch);
+    return errno;
+  }
+  return 0;
+}
+
+CODE:#else
+CODE:#include <process.h>
+static int pseudoProcId = 0;
+static int do_exec(const char* python, 
+                   const char* scriptname,
+                   const char* logFilename,
+                   const char* datadir, 
+                   const char* pythonpath, 
+                   const char* script,
+                   int querySize, const char* queryCode, 
+                   int bufferSize, const char* buffer)
+{
+  int procId = ++pseudoProcId;
+  write_query(datadir, procId, querySize, queryCode, bufferSize, buffer);
+  char cswitch[256]
+     , dswitch[256]
+     , iswitch[256]
+     , lswitch[256]
+     , pswitch[256]
+     , sswitch[256]
+     , connectStr[252];
+  get_connectStr(connectStr, 252, queryCode); 
+  snprintf(cswitch, 256, "-c %s", connectStr);
+  snprintf(dswitch, 256, "-d %s", datadir);
+  snprintf(iswitch, 256, "-i %d", (int) procId);
+  snprintf(lswitch, 256, "-l %s", logFilename);
+  snprintf(pswitch, 256, "-p %s", pythonpath);
+  snprintf(sswitch, 256, "-s %s", script);
+  _spawnl(_P_NOWAIT, python, python, scriptname, 
+             cswitch, dswitch, iswitch, lswitch, pswitch, sswitch, (char*)0);
+  return (int) procId;
+}
+
+CODE:#endif
+endcode
+
+int StartQuery(int32 querySize, char* queryCode, int32 bufferSize, char* buffer)
+{
+message:#
+input:
+  querySize;
+  queryCode size(querySize); 
+  bufferSize;
+  buffer size(bufferSize);
+code
+  #if defined(M_AIX) || defined(M_GNU)
+    pid_t procId = fork();
+    if (procId == 0)
+      return do_exec(python.c_str(), 
+                     script.c_str(),
+                     logFileName.c_str(),
+                     datadir.c_str(), 
+                     pythonpath.c_str(), 
+                     BINU_QUERY,
+                     querySize, queryCode, bufferSize, buffer);
+    else if (procId == -1)
+      return -1;
+    else
+      return (int) procId;
+  #else
+    return do_exec(python.c_str(), 
+                   script.c_str(), 
+                   logFileName.c_str(),
+                   datadir.c_str(), 
+                   pythonpath.c_str(), 
+                   BINU_QUERY,
+                   querySize, queryCode, bufferSize, buffer);
+  #endif
+endcode
+}
+
+int QueryResult(int procId, int32* noRecs, int32* bufferSize, char*& outBuffer)
+{
+message:#
+input:
+  procId;
+output:
+  noRecs;
+  bufferSize;
+  outBuffer size(bufferSize);
+code
+  char filename[256];
+  snprintf(filename, 256, "%s/proc_%d.data", datadir.c_str(), procId);
+  int exists = access(filename, 0);
+  if (exists == 0)
+  {
+    FILE* datafile = fopen(filename, "rb");
+    fseek(datafile, 0, SEEK_END);
+    int len = (int)ftell(datafile);
+    fseek(datafile, 0, SEEK_SET);
+    if (len > 0)
+    {
+      fread(noRecs, sizeof(int32), 1, datafile);SwapBytes(*noRecs);
+      fread(bufferSize, sizeof(int32), 1, datafile);SwapBytes(*bufferSize);
+      outBuffer = (char*)calloc((size_t)bufferSize, 1);
+      fread(outBuffer, (size_t)bufferSize, 1, datafile);
+    }
+    fclose(datafile);
+    unlink(filename);
+    return 0;
+  }
+  snprintf(filename, 256, "%s/proc_%d.qry", datadir.c_str(), procId);
+  exists = access(filename, 0);
+  if (exists == 0)
+  {
+    unlink(filename);
+    throw TCliApiException(998, "", "", "Python query was not run", __FILE__, __LINE__);
+  }
+  return -1;
+endcode
+}

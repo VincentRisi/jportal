@@ -1,0 +1,14 @@
+#------------------------------------------
+#   BINU CPP SERVER
+#------------------------------------------
+
+project binuc
+
+source_dir=/main/jportal/binuc
+binary_dir=${source_dir}/build
+
+crackle  
+  PopUbiServer ${binary_dir}/idl/server %lserver.cpp
+
+idl        
+  idlfile  ${source_dir}/idl/binuc.idl
