@@ -1,4 +1,4 @@
-project (loyalty)
+project (jportal_loyalty)
 
 pathed (javaDir  ${LOYALTY_BINARY_DIR}/loyalty/xyz)
 pathed (java1Dir ${LOYALTY_BINARY_DIR}/java1)
@@ -38,3 +38,5 @@ set (switches
 
 crackle (loyalty_crackle ${im_file} ${idlDir} ${jidlDir} ${ib_dir} ${switches})
 
+add_dependencies(loyalty_jportal target_jportal_jar)
+add_dependencies(loyalty_crackle target_crackle_jar)

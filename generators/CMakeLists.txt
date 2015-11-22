@@ -1,4 +1,4 @@
-project (jportal_projects)
+project (jportal_generators)
 
 set (class_bin_dir ${GENERATORS_SOURCE_DIR}/bin)
 

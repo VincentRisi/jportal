@@ -409,6 +409,9 @@ if 'idlModule' in switches and 'idlTarget' in switches:
       ifile.close()
     outfile.close()
 elif 'idlTarget' in switches:
+  idlTarget = Source()
+  idlTarget.name = fixname(switches['idlTarget'])
+  idlTarget.lastmod = lastmod(idlTarget.name)
   compile = True
 if compile == True:
   crackle(idlTarget.name, switches['crackle'])

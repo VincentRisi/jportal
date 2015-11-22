@@ -1,4 +1,4 @@
-module Binu
+module BinuC
 version "1.0.0.0"
 
 code

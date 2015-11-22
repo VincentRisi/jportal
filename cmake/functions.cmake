@@ -1,5 +1,7 @@
 set (jportalJar ${GENERATORS_SOURCE_DIR}/bin/jportal.jar)
 set (crackleJar ${GENERATORS_SOURCE_DIR}/bin/crackle.jar)
+set (anydbMake ${TOOLS_DIR}/anydbMake.py)
+set (pythonExe /usr/bin/python)
 
 function (pathed result ext_dir)
   foreach (arg ${ARGN})
@@ -63,3 +65,16 @@ function (crackle projectName imFile idlDir iiDir ibDir)
     SOURCES ${imFile} ${ibFiles} ${iiFiles} ${idlFile}
   )
 endfunction()
+
+function (anydbMake projectName anydbMakeFile targetFiles)
+  add_custom_command(
+    OUTPUT ${targetFiles}
+    COMMAND ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -v ${anydbMakeFile}
+    DEPENDS ${anydbMakeFile}
+    VERBATIM
+  )
+  add_custom_target (${projectName} ALL
+    DEPENDS ${targetFiles} 
+    SOURCES ${anydbMakeFile}
+  )
+endfunction ()
