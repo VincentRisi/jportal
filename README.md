@@ -25,31 +25,31 @@ JPortal
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
 the structure below a database consists of various String properties and Vector lists.
 
-class Database
+#class Database
 
 * String name, output, server, schema, userid, password, packageName
 * Vector Table tables, String flags, Sequence sequences, View views, String imports
 
 
-class Table
+#class Table
 
 * Database database
 * String name, alias, check
 * Vector Field fields, Key keys, Link links, Grant grants, View views, Proc procs, String comments, String options, String allUsers, Parameter parameters, Const consts
 * boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute, hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, asSequenceReturning, hasBigXML, isStoredProc  
   
-class Sequence
+#class Sequence
 
 * String  name
 * int minValue, maxValue, increment, startWith
 * boolean cycleFlag, orderFlag  
 
-class View
+#class View
 
 * String name
 * Vector String aliases, String lines, String users  
 
-class Field
+#class Field
 
 * String name, alias, defaultValue, checkValue
 * byte type
@@ -91,3 +91,8 @@ class Field
 * static final int DEFAULT_XML = 4096
 * static final int DEFAULT_BIG_XML = 4194304
 
+#class Link
+
+* String name, linkName
+* Vector String fields, String linkFields, String options
+* boolean isDeleteCascade
