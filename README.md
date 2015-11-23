@@ -25,68 +25,69 @@ JPortal
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
 the structure below a database consists of various String properties and Vector<> lists.
 
-`class Database`
-` String name`
-` String output`
-` String server`
-` String schema`
-` String userid`
-` String password`
-` String packageName`
-` Vector<Table> tables`
-` Vector<String> flags`
-` Vector<Sequence> sequences`
-` Vector<View> views`
-` Vector<String> imports`
-
-
-`class Table`
-` Database database`
-` String name`
-` String alias`
-` String check`
-` Vector<Field> fields`
-` Vector<Key> keys`
-` Vector<Link> links`
-` Vector<Grant> grants`
-` Vector<View> views`
-` Vector<Proc> procs`
-` Vector<String> comments`
-` Vector<String> options`
-` Vector<String> allUsers`
-` Vector<Parameter> parameters`
-` Vector<Const> consts`
-` boolean hasPrimaryKey`
-` boolean hasSequence`
-` boolean hasTimeStamp`
-` boolean hasAutoTimeStamp`
-` boolean hasUserStamp`
-` boolean hasExecute`
-` boolean hasSelect`
-` boolean hasInsert`
-` boolean hasDelete`
-` boolean hasUpdate`
-` boolean hasStdProcs`
-` boolean hasIdentity`
-` boolean hasSequenceReturning`
-` boolean hasBigXML`
-` boolean isStoredProc`
-
-
-`class Sequence`
-` String  name`
-` int     minValue`
-` int     maxValue`
-` int     increment`
-` boolean cycleFlag`
-` boolean orderFlag`
-` int     startWith`
-` int     start`
-
- 
-`class View`
-` String name`
-` Vector<String> aliases`
-` Vector<String> lines`
-` Vector<String> users`
-
+`class Database`    
+` String name`  
+` String output`  
+` String server`  
+` String schema`  
+` String userid`  
+` String password`  
+` String packageName`  
+` Vector<Table> tables`  
+` Vector<String> flags`  
+` Vector<Sequence> sequences`  
+` Vector<View> views`  
+` Vector<String> imports`  
+  
+  
+`class Table`  
+` Database database`  
+` String name`  
+` String alias`  
+` String check`  
+` Vector<Field> fields`  
+` Vector<Key> keys`  
+` Vector<Link> links`  
+` Vector<Grant> grants`  
+` Vector<View> views`  
+` Vector<Proc> procs`  
+` Vector<String> comments`  
+` Vector<String> options`  
+` Vector<String> allUsers`  
+` Vector<Parameter> parameters`  
+` Vector<Const> consts`  
+` boolean hasPrimaryKey`  
+` boolean hasSequence`  
+` boolean hasTimeStamp`  
+` boolean hasAutoTimeStamp`  
+` boolean hasUserStamp`  
+` boolean hasExecute`  
+` boolean hasSelect`  
+` boolean hasInsert`  
+` boolean hasDelete`  
+` boolean hasUpdate`  
+` boolean hasStdProcs`  
+` boolean hasIdentity`  
+` boolean hasSequenceReturning`  
+` boolean hasBigXML`  
+` boolean isStoredProc`  
+  
+  
+`class Sequence`  
+` String  name`  
+` int     minValue`  
+` int     maxValue`  
+` int     increment`  
+` boolean cycleFlag`  
+` boolean orderFlag`  
+` int     startWith`  
+` int     start`  
+  
+   
+`class View`  
+` String name`  
+` Vector<String> aliases`  
+` Vector<String> lines`  
+` Vector<String> users`  
+  
+  
