@@ -23,26 +23,28 @@ JPortal
 -------
 
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
-the structure below a database consists of various String properties and Vector<> lists.
+the structure below a database consists of various String properties and Vector lists.
 
-**class Database**
-* String name, output, server, schema, userid, password, packageName  
-* Vector<Table> tables, <String> flags, <Sequence> sequences, <View> views, <String> imports   
+class Database
 
-**class Table**
+* String name, output, server, schema, userid, password, packageName
+* Vector Table tables, String flags, Sequence sequences, View views, String imports
+
+
+class Table
+
 * Database database
 * String name, alias, check
-* <Field> fields, <Key> keys, <Link> links, <Grant> grants, <View> views, <Proc> procs,
-<String> comments, <String> options, <String> allUsers, <Parameter> parameters, <Const> consts
-boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute,
-boolean hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, hasSequenceReturning,
-boolean hasBigXML, isStoredProc  
+* Vector Field fields, Key keys, Link links, Grant grants, View views, Proc procs, String comments, String options, String allUsers, Parameter parameters, Const consts
+boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute, hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, asSequenceReturning, hasBigXML, isStoredProc  
   
-**class Sequence**
+class Sequence
+
 * String  name
 * int minValue, maxValue, increment, startWith
 * boolean cycleFlag, orderFlag  
 
-**class View**
+class View
+
 * String name
-* <String> aliases, <String> lines, <String> users  
+* Vector String aliases, String lines, String users  
