@@ -28,56 +28,21 @@ the structure below a database consists of various String properties and Vector<
 ### class Database
 * String name, output, server, schema, userid, password, packageName  
 * Vector<Table> tables, <String> flags, <Sequence> sequences, <View> views, <String> imports
+
+### class Table
+* Database database
+* String name, alias, check
+* <Field> fields, <Key> keys, <Link> links, <Grant> grants, <View> views, <Proc> procs
+* <String> comments, <String> options, <String> allUsers, <Parameter> parameters, <Const> consts
+* boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute
+* boolean hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, hasSequenceReturning
+* boolean hasBigXML, isStoredProc
   
-  
-`class Table`  
-` Database database`  
-` String name`  
-` String alias`  
-` String check`  
-` Vector<Field> fields`  
-` Vector<Key> keys`  
-` Vector<Link> links`  
-` Vector<Grant> grants`  
-` Vector<View> views`  
-` Vector<Proc> procs`  
-` Vector<String> comments`  
-` Vector<String> options`  
-` Vector<String> allUsers`  
-` Vector<Parameter> parameters`  
-` Vector<Const> consts`  
-` boolean hasPrimaryKey`  
-` boolean hasSequence`  
-` boolean hasTimeStamp`  
-` boolean hasAutoTimeStamp`  
-` boolean hasUserStamp`  
-` boolean hasExecute`  
-` boolean hasSelect`  
-` boolean hasInsert`  
-` boolean hasDelete`  
-` boolean hasUpdate`  
-` boolean hasStdProcs`  
-` boolean hasIdentity`  
-` boolean hasSequenceReturning`  
-` boolean hasBigXML`  
-` boolean isStoredProc`  
-  
-  
-`class Sequence`  
-` String  name`  
-` int     minValue`  
-` int     maxValue`  
-` int     increment`  
-` boolean cycleFlag`  
-` boolean orderFlag`  
-` int     startWith`  
-` int     start`  
-  
-   
-`class View`  
-` String name`  
-` Vector<String> aliases`  
-` Vector<String> lines`  
-` Vector<String> users`  
-  
-  
+### class Sequence
+* String  name
+* int minValue, maxValue, increment, startWith
+* boolean cycleFlag, orderFlag
+
+### class View
+* String name
+* <String> aliases, <String> lines, <String> users
