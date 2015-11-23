@@ -25,11 +25,11 @@ JPortal
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
 the structure below a database consists of various String properties and Vector<> lists.
 
-### class Database
+**class Database**
 * String name, output, server, schema, userid, password, packageName  
-* Vector<Table> tables, <String> flags, <Sequence> sequences, <View> views, <String> imports
+* Vector<Table> tables, <String> flags, <Sequence> sequences, <View> views, <String> imports  
 
-### class Table
+**class Table**
 * Database database
 * String name, alias, check
 * <Field> fields, <Key> keys, <Link> links, <Grant> grants, <View> views, <Proc> procs
@@ -38,11 +38,11 @@ the structure below a database consists of various String properties and Vector<
 * boolean hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, hasSequenceReturning
 * boolean hasBigXML, isStoredProc
   
-### class Sequence
+**class Sequence**
 * String  name
 * int minValue, maxValue, increment, startWith
 * boolean cycleFlag, orderFlag
 
-### class View
+**class View**
 * String name
 * <String> aliases, <String> lines, <String> users
