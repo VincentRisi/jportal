@@ -27,22 +27,22 @@ the structure below a database consists of various String properties and Vector<
 
 **class Database**
 * String name, output, server, schema, userid, password, packageName  
-* Vector<Table> tables, <String> flags, <Sequence> sequences, <View> views, <String> imports  
+* Vector<Table> tables, <String> flags, <Sequence> sequences, <View> views, <String> imports   
 
 **class Table**
 * Database database
 * String name, alias, check
-* <Field> fields, <Key> keys, <Link> links, <Grant> grants, <View> views, <Proc> procs
-* <String> comments, <String> options, <String> allUsers, <Parameter> parameters, <Const> consts
-* boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute
-* boolean hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, hasSequenceReturning
-* boolean hasBigXML, isStoredProc
+* <Field> fields, <Key> keys, <Link> links, <Grant> grants, <View> views, <Proc> procs,
+<String> comments, <String> options, <String> allUsers, <Parameter> parameters, <Const> consts
+boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute,
+boolean hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, hasSequenceReturning,
+boolean hasBigXML, isStoredProc  
   
 **class Sequence**
 * String  name
 * int minValue, maxValue, increment, startWith
-* boolean cycleFlag, orderFlag
+* boolean cycleFlag, orderFlag  
 
 **class View**
 * String name
-* <String> aliases, <String> lines, <String> users
+* <String> aliases, <String> lines, <String> users  
