@@ -36,7 +36,7 @@ class Table
 * Database database
 * String name, alias, check
 * Vector Field fields, Key keys, Link links, Grant grants, View views, Proc procs, String comments, String options, String allUsers, Parameter parameters, Const consts
-boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute, hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, asSequenceReturning, hasBigXML, isStoredProc  
+* boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute, hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, asSequenceReturning, hasBigXML, isStoredProc  
   
 class Sequence
 
@@ -48,3 +48,46 @@ class View
 
 * String name
 * Vector String aliases, String lines, String users  
+
+class Field
+
+* String name, alias, defaultValue, checkValue
+* byte type
+* int length, precision, scale, bindPos, definePos
+* Vector String comments, Enum enums, String valueList
+* String enumLink
+* boolean isPrimaryKey, isSequence, isNull, isIn, isOut,
+* static final byte
+  - BLOB       = 1
+  - BOOLEAN    = 2
+  - BYTE       = 3
+  - CHAR       = 4
+  - DATE       = 5
+  - DATETIME   = 6
+  - DOUBLE     = 7
+  - DYNAMIC    = 8
+  - FLOAT      = 9
+  - IDENTITY   = 10
+  - INT        = 11
+  - LONG       = 12
+  - MONEY      = 13
+  - SEQUENCE   = 14
+  - SHORT      = 15
+  - STATUS     = 16
+  - TIME       = 17
+  - TIMESTAMP  = 18
+  - TLOB       = 19
+  - USERSTAMP  = 20
+  - ANSICHAR   = 21
+  - UID        = 22
+  - XML        = 23
+  - BIGSEQUENCE = 24
+  - BIGIDENTITY = 25
+  - AUTOTIMESTAMP = 26
+  - WCHAR      = 27
+  - WANSICHAR  = 28
+  - UTF8       = 29   
+  - BIGXML     = 30
+* static final int DEFAULT_XML = 4096
+* static final int DEFAULT_BIG_XML = 4194304
+
