@@ -25,74 +25,84 @@ JPortal
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
 the structure below a database consists of various String properties and Vector lists.
 
-#class Database
+*class Database*
 
 * String name, output, server, schema, userid, password, packageName
 * Vector Table tables, String flags, Sequence sequences, View views, String imports
 
 
-#class Table
+*class Table*
 
 * Database database
 * String name, alias, check
 * Vector Field fields, Key keys, Link links, Grant grants, View views, Proc procs, String comments, String options, String allUsers, Parameter parameters, Const consts
 * boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute, hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, asSequenceReturning, hasBigXML, isStoredProc  
+
+*class Proc*
+
+ * Table   table
+ * String  name
+ * int     noRows
+ * Vector Field inputs, Field outputs, String dynamics, Integer, dynamicSizes, Boolean dynamicStrung, String placeHolders, Line lines, String comments, String options
+ * boolean isProc, isSProc, isData, isIdlCode, isSql, isSingle, isAction, isStd, useStd, extendsStd, useKey, hasImage, isMultipleInput, isInsert, hasReturning, hasUpdates
   
-#class Sequence
+*class Sequence*
 
 * String  name
 * int minValue, maxValue, increment, startWith
 * boolean cycleFlag, orderFlag  
 
-#class View
+*class View*
 
 * String name
 * Vector String aliases, String lines, String users  
 
-#class Field
+*class Field*
 
 * String name, alias, defaultValue, checkValue
 * byte type
 * int length, precision, scale, bindPos, definePos
 * Vector String comments, Enum enums, String valueList
 * String enumLink
-* boolean isPrimaryKey, isSequence, isNull, isIn, isOut,
+* boolean isPrimaryKey, isSequence, isNull, isIn, isOut
 * static final byte
-  - BLOB       = 1
-  - BOOLEAN    = 2
-  - BYTE       = 3
-  - CHAR       = 4
-  - DATE       = 5
-  - DATETIME   = 6
-  - DOUBLE     = 7
-  - DYNAMIC    = 8
-  - FLOAT      = 9
-  - IDENTITY   = 10
-  - INT        = 11
-  - LONG       = 12
-  - MONEY      = 13
-  - SEQUENCE   = 14
-  - SHORT      = 15
-  - STATUS     = 16
-  - TIME       = 17
-  - TIMESTAMP  = 18
-  - TLOB       = 19
-  - USERSTAMP  = 20
-  - ANSICHAR   = 21
-  - UID        = 22
-  - XML        = 23
-  - BIGSEQUENCE = 24
-  - BIGIDENTITY = 25
-  - AUTOTIMESTAMP = 26
-  - WCHAR      = 27
-  - WANSICHAR  = 28
-  - UTF8       = 29   
-  - BIGXML     = 30
+  - BLOB = 1, BOOLEAN = 2, BYTE = 3, CHAR = 4, DATE = 5, DATETIME = 6, DOUBLE = 7, DYNAMIC  = 8, FLOAT = 9, IDENTITY = 10, INT = 11, LONG = 12, MONEY = 13 SEQUENCE = 14, SHORT = 15, STATUS = 16, TIME = 17, TIMESTAMP = 18, TLOB = 19, USERSTAMP = 20, ANSICHAR = 21, UID = 22, XML = 23, BIGSEQUENCE = 24, BIGIDENTITY = 25, AUTOTIMESTAMP = 26, WCHAR = 27, WANSICHAR = 28, UTF8 = 29, BIGXML = 30
 * static final int DEFAULT_XML = 4096
 * static final int DEFAULT_BIG_XML = 4194304
 
-#class Link
+*class Key*
+ 
+* String name;
+* Vector fields, String options
+* boolean isPrimary, isUnique
+
+*class Link*
 
 * String name, linkName
 * Vector String fields, String linkFields, String options
 * boolean isDeleteCascade
+
+*class Flag*
+
+* String name
+* Object value
+* String description
+
+*class Enum*
+
+* String name
+* int value
+
+*class Grant* 
+
+* Vector String perms, String users
+
+*class Const*
+
+* String name
+* Vector Value values
+
+*class Value*
+
+* String key, value
+
