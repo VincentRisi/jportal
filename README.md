@@ -198,8 +198,57 @@ the structure below a database consists of various properties and Vector lists.
   - Relation relation
   - String name
   - boolean from
-  
+
 * String name, descr, version, output, server, user, password, registry
 * Vector Table tables, Relation relations, String flags, LinkTable missingLinks, RelationTable missingRelations, ValidationTable missingValidations, Field supplieds
-* Validation validationInit, validationAll, validationOther;
-* int charSize, descrSize;
+* Validation validationInit, validationAll, validationOther
+* int charSize, descrSize
+
+**class Table**
+
+* Application application
+* String name, descr, alias, check
+* Vector Field fields, String comments, String options, Field order, Field show, Field breaks, Value values, Link links, Key keys
+* Validation  validation
+* boolean useSequence, useChar, noDomain, viewOnly, isNullable
+
+**class Field**
+
+* String name, alias, check, type
+* int length, precision, scale
+* boolean isNull, isUppercase
+* Vector String comments, Enum enums
+* static final byte BOOLEAN=4, BYTE=8, CHAR=12, DATE=16, DATETIME=20, DOUBLE=24, INT=28, LONG=32, SEQUENCE=36, SHORT=40, TIME=44, TIMESTAMP=48, USERSTAMP=52
+
+**class Relation**
+
+* Application application
+* String name, descr, alias, fromShort, toShort
+* Table fromTable, toTable
+* Vector Field fromFields, Field toFields, String fromFieldNames, String> toFieldNames, String comments, Value values
+* Validation validation
+
+**class Validation**
+
+* Vector String code
+
+**class Value**
+
+* Vector String list
+
+**class Enum**
+
+* String  name
+* int value
+
+**class Link**
+
+* Table table
+* Vector String list
+* boolean hasCascade
+
+**class Key**
+
+* String name
+* Vector Field list
+* boolean primary, unique
