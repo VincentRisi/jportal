@@ -1,7 +1,7 @@
 # jportal
 
-Database code generators for varying platforms and vendors.
-===========================================================
+Database, Server and Parameter Control code generators for varying platforms, vendors and languages.
+====================================================================================================
 
 There are three code generator types written using the same mechanism.
 This mechanism or paradigm follow the same coding pattern. There is a
@@ -19,26 +19,26 @@ projects and applications over the last 20 years, very successfully. It used to 
 based as there were ide's written in C# to maintain code. Dropping the ide usage and the
 need for J# has freed up this restriction.
 
-JPortal
--------
+JPortal RDBMS code generator
+----------------------------
 
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
 the structure below a database consists of various String properties and Vector lists.
 
-*class Database*
+**class Database**
 
 * String name, output, server, schema, userid, password, packageName
 * Vector Table tables, String flags, Sequence sequences, View views, String imports
 
 
-*class Table*
+**class Table**
 
 * Database database
 * String name, alias, check
 * Vector Field fields, Key keys, Link links, Grant grants, View views, Proc procs, String comments, String options, String allUsers, Parameter parameters, Const consts
 * boolean hasPrimaryKey, hasSequence, hasTimeStamp, hasAutoTimeStamp, hasUserStamp, hasExecute, hasSelect, hasInsert, hasDelete, hasUpdate, hasStdProcs, hasIdentity, asSequenceReturning, hasBigXML, isStoredProc  
 
-*class Proc*
+**class Proc**
 
  * Table   table
  * String  name
@@ -46,18 +46,18 @@ the structure below a database consists of various String properties and Vector 
  * Vector Field inputs, Field outputs, String dynamics, Integer, dynamicSizes, Boolean dynamicStrung, String placeHolders, Line lines, String comments, String options
  * boolean isProc, isSProc, isData, isIdlCode, isSql, isSingle, isAction, isStd, useStd, extendsStd, useKey, hasImage, isMultipleInput, isInsert, hasReturning, hasUpdates
   
-*class Sequence*
+**class Sequence**
 
 * String  name
 * int minValue, maxValue, increment, startWith
 * boolean cycleFlag, orderFlag  
 
-*class View*
+**class View**
 
 * String name
 * Vector String aliases, String lines, String users  
 
-*class Field*
+**class Field**
 
 * String name, alias, defaultValue, checkValue
 * byte type
@@ -70,39 +70,39 @@ the structure below a database consists of various String properties and Vector 
 * static final int DEFAULT_XML = 4096
 * static final int DEFAULT_BIG_XML = 4194304
 
-*class Key*
+**class Key**
  
 * String name;
 * Vector fields, String options
 * boolean isPrimary, isUnique
 
-*class Link*
+**class Link**
 
 * String name, linkName
 * Vector String fields, String linkFields, String options
 * boolean isDeleteCascade
 
-*class Flag*
+**class Flag**
 
 * String name
 * Object value
 * String description
 
-*class Enum*
+**class Enum**
 
 * String name
 * int value
 
-*class Grant* 
+**class Grant**
 
 * Vector String perms, String users
 
-*class Const*
+**class Const**
 
 * String name
 * Vector Value values
 
-*class Value*
+**class Value**
 
 * String key, value
 
