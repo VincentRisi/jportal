@@ -65,8 +65,7 @@ the structure below a database consists of various String properties and Vector 
 * Vector String comments, Enum enums, String valueList
 * String enumLink
 * boolean isPrimaryKey, isSequence, isNull, isIn, isOut
-* static final byte
-  - BLOB = 1, BOOLEAN = 2, BYTE = 3, CHAR = 4, DATE = 5, DATETIME = 6, DOUBLE = 7, DYNAMIC  = 8, FLOAT = 9, IDENTITY = 10, INT = 11, LONG = 12, MONEY = 13 SEQUENCE = 14, SHORT = 15, STATUS = 16, TIME = 17, TIMESTAMP = 18, TLOB = 19, USERSTAMP = 20, ANSICHAR = 21, UID = 22, XML = 23, BIGSEQUENCE = 24, BIGIDENTITY = 25, AUTOTIMESTAMP = 26, WCHAR = 27, WANSICHAR = 28, UTF8 = 29, BIGXML = 30
+* static final byte BLOB=1, BOOLEAN=2, BYTE=3, CHAR=4, DATE=5, DATETIME=6, DOUBLE=7, DYNAMIC=8, FLOAT=9, IDENTITY=10, INT=11, LONG=12, MONEY=13 SEQUENCE=14, SHORT=15, STATUS=16, TIME=17, TIMESTAMP=18, TLOB=19, USERSTAMP=20, ANSICHAR=21, UID=22, XML=23, BIGSEQUENCE=24, BIGIDENTITY=25, AUTOTIMESTAMP=26, WCHAR=27, WANSICHAR=28, UTF8=29, BIGXML=30
 * static final int DEFAULT_XML = 4096
 * static final int DEFAULT_BIG_XML = 4194304
 
@@ -130,7 +129,7 @@ the structure below a database consists of various String properties and Vector 
 
 **class Structure**
 
-* static final byte NORMAL = 0, PUBLIC = 1, PRIVATE = 2, PROTECTED = 3
+* static final byte NORMAL=0, PUBLIC=1, PRIVATE=2, PROTECTED=3
 * String name, header
 * Vector String categories, Field fields
 * byte codeType
@@ -143,7 +142,7 @@ the structure below a database consists of various String properties and Vector 
 
 **class Prototype**
 
-* static final byte RPCCALL = 0, PUBLIC = 1, PRIVATE = 2, PROTECTED = 3
+* static final byte RPCCALL=0, PUBLIC=1, PRIVATE=2, PROTECTED=3
 * String name, message
 * Type type
 * Vector Field parameters, Action inputs, Action outputs, String categories
@@ -172,7 +171,7 @@ the structure below a database consists of various String properties and Vector 
 
 **class Type**
 
-* static final byte USERTYPE = 0, BOOLEAN = 1, CHAR = 2, SHORT = 3, LONG = 4, FLOAT = 5, DOUBLE = 6, VOID = 7, BYTE = 8, INT = 9, STRING = 10, WCHAR = 11, BYVAL =  1, BYPTR = 2, BYREF = 3, BYPTRPTR = 4, BYREFPTR = 5, ARRAYED = 6
+* static final byte USERTYPE=0, BOOLEAN=1, CHAR=2, SHORT=3, LONG=4, FLOAT=5, DOUBLE=6, VOID=7, BYTE=8, INT=9, STRING=10, WCHAR=11, BYVAL=1, BYPTR=2, BYREF=3, BYPTRPTR=4, BYREFPTR=5, ARRAYED=6
 * String  name
 * byte typeof, reference
 * boolean isUnsigned
