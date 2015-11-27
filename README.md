@@ -1,7 +1,7 @@
 # jportal
 
-Database, Server and Parameter Control code generators for varying platforms, vendors and languages.
-====================================================================================================
+Database, Module and Application code generators for varying platforms, vendors and languages.
+==============================================================================================
 
 There are three code generator types written using the same mechanism.
 This mechanism or paradigm follow the same coding pattern. There is a
@@ -23,13 +23,12 @@ JPortal RDBMS code generator
 ----------------------------
 
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
-the structure below a database consists of various String properties and Vector lists.
+the structure below a database consists of various properties and Vector lists.
 
 **class Database**
 
 * String name, output, server, schema, userid, password, packageName
 * Vector Table tables, String flags, Sequence sequences, View views, String imports
-
 
 **class Table**
 
@@ -66,8 +65,8 @@ the structure below a database consists of various String properties and Vector 
 * String enumLink
 * boolean isPrimaryKey, isSequence, isNull, isIn, isOut
 * static final byte BLOB=1, BOOLEAN=2, BYTE=3, CHAR=4, DATE=5, DATETIME=6, DOUBLE=7, DYNAMIC=8, FLOAT=9, IDENTITY=10, INT=11, LONG=12, MONEY=13 SEQUENCE=14, SHORT=15, STATUS=16, TIME=17, TIMESTAMP=18, TLOB=19, USERSTAMP=20, ANSICHAR=21, UID=22, XML=23, BIGSEQUENCE=24, BIGIDENTITY=25, AUTOTIMESTAMP=26, WCHAR=27, WANSICHAR=28, UTF8=29, BIGXML=30
-* static final int DEFAULT_XML = 4096
-* static final int DEFAULT_BIG_XML = 4194304
+* static final int DEFAULT_XML=4096
+* static final int DEFAULT_BIG_XML=4194304
 
 **class Key**
  
@@ -105,12 +104,11 @@ the structure below a database consists of various String properties and Vector 
 
 * String key, value
 
-
 Crackle Module code generator
 -----------------------------
 
 The class tree for *Crackle* starts with a single Module instance. As can be seen from
-the structure below a database consists of various String properties and Vector lists.
+the structure below a database consists of various properties and Vector lists.
 
 **class Module**
 
@@ -156,7 +154,7 @@ the structure below a database consists of various String properties and Vector 
 
 **class Operation**
 
-* static final byte SIZE = 1, DYNAMIC = 2
+* static final byte SIZE=1, DYNAMIC=2
 * String name
 * byte code
 * boolean isConstant
@@ -177,3 +175,31 @@ the structure below a database consists of various String properties and Vector 
 * boolean isUnsigned
 * Vector Integer arraySizes
 
+Pickle Application code generator
+---------------------------------
+
+The class tree for *Pickle* starts with a single Application instance. As can be seen from
+the structure below a database consists of various properties and Vector lists.
+
+**class Application**
+
+* **class LinkTable**
+
+  - Link link
+  - String name
+
+* **class ValidationTable**
+
+  - Validation validation
+  - String name
+
+* **class RelationTable**
+
+  - Relation relation
+  - String name
+  - boolean from
+  
+* String name, descr, version, output, server, user, password, registry
+* Vector Table tables, Relation relations, String flags, LinkTable missingLinks, RelationTable missingRelations, ValidationTable missingValidations, Field supplieds
+* Validation validationInit, validationAll, validationOther;
+* int charSize, descrSize;
