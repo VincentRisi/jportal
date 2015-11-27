@@ -106,3 +106,75 @@ the structure below a database consists of various String properties and Vector 
 
 * String key, value
 
+
+Crackle Module code generator
+-----------------------------
+
+The class tree for *Crackle* starts with a single Module instance. As can be seen from
+the structure below a database consists of various String properties and Vector lists.
+
+**class Module**
+
+* String sourceName, name, version, packageName
+* int signature, countOfHashes, messageBase
+* Message messages, Table tables, Structure structures, Enumerator enumerators, Prototype prototypes, String pragmas, String code, String imports
+
+**class Message**
+
+* String name, value
+
+**class Table**
+
+* String name;
+* Vector Message messages
+
+**class Structure**
+
+* static final byte NORMAL = 0, PUBLIC = 1, PRIVATE = 2, PROTECTED = 3
+* String name, header
+* Vector String categories, Field fields
+* byte codeType
+* Vector String code;
+
+**class Enumerator**
+ 
+* String name
+* Vector String elements
+
+**class Prototype**
+
+* static final byte RPCCALL = 0, PUBLIC = 1, PRIVATE = 2, PROTECTED = 3
+* String name, message
+* Type type
+* Vector Field parameters, Action inputs, Action outputs, String categories
+* byte codeType
+* Vector String code
+
+**class Action**
+
+* String name
+* Vector Operation operations
+
+**class Operation**
+
+* static final byte SIZE = 1, DYNAMIC = 2
+* String name
+* byte code
+* boolean isConstant
+* Field field
+
+**class Field**
+
+* String name
+* Type type
+* Action input, output
+* boolean isInput, isOutput, hasSize
+
+**class Type**
+
+* static final byte USERTYPE = 0, BOOLEAN = 1, CHAR = 2, SHORT = 3, LONG = 4, FLOAT = 5, DOUBLE = 6, VOID = 7, BYTE = 8, INT = 9, STRING = 10, WCHAR = 11, BYVAL =  1, BYPTR = 2, BYREF = 3, BYPTRPTR = 4, BYREFPTR = 5, ARRAYED = 6
+* String  name
+* byte typeof, reference
+* boolean isUnsigned
+* Vector Integer arraySizes
+
