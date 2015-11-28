@@ -1,9 +1,9 @@
-package bbd.binu;
+package vlab.binu;
 
 import org.apache.log4j.Logger;
-import bbd.idl2.rdc.RpcSocket;
-import bbd.jportal.util.Connector;
-import bbd.jportal.util.ConnectorDB2;
+import vlab.crackle.rdc.RpcSocket;
+import vlab.jportal.util.Connector;
+import vlab.jportal.util.ConnectorDB2;
 
 public class Idl2Thread extends Thread
 {

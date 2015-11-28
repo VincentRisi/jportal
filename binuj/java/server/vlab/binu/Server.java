@@ -1,4 +1,4 @@
-package bbd.binu;
+package vlab.binu;
 
 import java.io.FileInputStream;
 import java.util.Enumeration;

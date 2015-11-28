@@ -3,16 +3,16 @@
 //# author: Vince Risi
 //#------------------------------------------------
 
-package bbd.binu.parser;
+package vlab.binu.parser;
 
 import java.sql.PreparedStatement;
 import org.apache.log4j.Logger;
-import bbd.binu.BinuStructs.MultipleOnlyReturn;
-import bbd.binu.BinuStructs.MultipleReturn;
-import bbd.binu.BinuStructs.SingleOnlyReturn;
-import bbd.binu.BinuStructs.SingleReturn;
-import bbd.binu.Idl2Thread;
-import bbd.jportal.util.Connector;
+import vlab.binu.BinuStructs.MultipleOnlyReturn;
+import vlab.binu.BinuStructs.MultipleReturn;
+import vlab.binu.BinuStructs.SingleOnlyReturn;
+import vlab.binu.BinuStructs.SingleReturn;
+import vlab.binu.Idl2Thread;
+import vlab.jportal.util.Connector;
 
 public class TJAction
 {

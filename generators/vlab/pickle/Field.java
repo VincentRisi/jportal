@@ -24,7 +24,7 @@ public class Field implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = -4803546822591706167L;
-public String  name;
+  public String  name;
   public String  alias;
   public String  check;
   public byte    type;

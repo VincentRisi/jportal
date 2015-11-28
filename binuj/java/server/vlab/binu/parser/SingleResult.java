@@ -4,7 +4,7 @@
  * 1: Mutilation, Spindling and Bending will result in goto 1
  */
 
-package bbd.binu.parser;
+package vlab.binu.parser;
 
 public class SingleResult
 {
