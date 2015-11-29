@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="server"/>
-	<classpathentry kind="lib" path="coco/Coco.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jportal"/>
 	<classpathentry kind="lib" path="/main/jportal/support/log4j-1.2.17.jar"/>

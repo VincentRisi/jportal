@@ -1,4 +1,4 @@
-package bbd.binu.parser;
+package vlab.binu.parser;
 
 public class TJField
 {

@@ -1,4 +1,4 @@
-package bbd.binu.parser;
+package vlab.binu.parser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,10 +11,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Time;
 import java.sql.Timestamp;
-import bbd.jportal.util.Connector;
-import bbd.jportal.util.JPBlob;
-import bbd.jportal.util.ByteArrayBlob;
-import bbd.jportal.util.DataHandler;
+import vlab.jportal.util.Connector;
+import vlab.jportal.util.JPBlob;
+import vlab.jportal.util.ByteArrayBlob;
+import vlab.jportal.util.DataHandler;
 
 public class TJProc
 {

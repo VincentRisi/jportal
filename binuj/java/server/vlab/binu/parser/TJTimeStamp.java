@@ -1,4 +1,4 @@
-package bbd.binu.parser;
+package vlab.binu.parser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

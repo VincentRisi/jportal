@@ -1,4 +1,4 @@
-# jportal
+# JPortal (or AnyDB)
 
 Database, Module and Application code generators for varying platforms, vendors and languages.
 ==============================================================================================
@@ -18,6 +18,8 @@ used by any computer language, current or future. This system has been used for 
 projects and applications over the last 20 years, very successfully. It used to be Java 1.1
 based as there were ide's written in C# to maintain code. Dropping the ide usage and the
 need for J# has freed up this restriction.
+
+See *Building JPortal* below.
 
 JPortal RDBMS code generator
 ----------------------------
@@ -252,3 +254,18 @@ the structure below a database consists of various properties and Vector lists.
 * String name
 * Vector Field list
 * boolean primary, unique
+
+
+Building JPortal
+================
+
+**The tools used to build this are**
+
+* cmake   - minimum 2.8
+* eclipse - Version: Mars.1 Release (4.5.1)
+* javacc  - SF JavaCC Eclipse Plug-in feature  1.5.32  sf.eclipse.javacc.feature.feature.group Rémi Koutcherawy
+* pydev   - PyDev for Eclipse 4.4.0.201510052309  org.python.pydev.feature.feature.group  Fabio Zadrozny
+* pydev   - Pydev Mylyn Integration  0.6.0 org.python.pydev.mylyn.feature.feature.group  Fabio Zadrozny
+* CocoR   - Compiler Generator Coco/R, Copyright (c) 1990, 2004 Hanspeter Moessenboeck, University of Linz extended by M. Loeberbauer & A. Woess, Univ. of Linz ported from C# to Java by Wolfgang Ahorner with improvements by Pat Terry, Rhodes University
+* log4j   - Apache log4j-1.2.17.jar
+

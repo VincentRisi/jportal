@@ -1,8 +1,3 @@
-//#------------------------------------------------
-//# CocoR - binu jdbc sql procedure parameters
-//# author: Vince Risi
-//#------------------------------------------------
-
 package vlab.binu.parser;
 
 import java.sql.PreparedStatement;
