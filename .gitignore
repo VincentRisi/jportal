@@ -5,4 +5,5 @@ bin
 *.suo
 Debug
 *.lnk
+*.bak
 *.csproj.user

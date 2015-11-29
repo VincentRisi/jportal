@@ -7,7 +7,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import bbd.idl2.rdc.RpcSocket;
+import vlab.crackle.rdc.RpcSocket;
 
 public class Server
 {
