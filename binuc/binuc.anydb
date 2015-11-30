@@ -9,6 +9,7 @@ binary_dir=${source_dir}/build
 
 crackle  
   PopUbiServer ${binary_dir}/idl/server %lserver.cpp
+  PopUbiPuffinModule ${binary_dir}/idl/module %lPython.cpp
 
 idl        
   idlfile  ${source_dir}/idl/binuc.idl

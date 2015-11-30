@@ -1,0 +1,83 @@
+database utdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8"
+package  vlab.puffin
+output   pongo
+server   uttm
+schema   uttm
+
+table Pongo
+
+proc SearchForParty
+output
+  PartyID          long
+  BusinessNatureID int
+  PartyAreaCode    char(10)
+  PartyStatusID    int
+  ProdType         int
+  ProdStatusID     int
+  ProdRefNo        char(10)
+  ITRefNo          char(10)
+  VatRefNo         char(10)
+  PayeRefNo        char(10)
+  UifRefNo         char(10)
+  SdlRefNo         char(10)
+  CustomsRefNo     char(10)
+  PayeUifRefNo     char(10)
+  PayeSdlRefNo     char(10)
+  Restricted       char(1)
+  Vip              char(1)
+  Lbc              char(1)
+  Hnwi             char(1)
+  Parliamentarian  char(1)
+  Diplomat         char(1)
+  IndIDNo          char(20)
+  IndPassportNo    char(13)
+  IndInitials      char(10)
+  IndFirstNames    char(90)
+  IndSurname       char(100)
+  IndDOB           date
+  EntRegNo         char(20)
+  EntRegName       char(120)
+  EntTradingName   char(120)
+sqlcode
+  &WithCondition(3071)
+  select distinct
+    party.party_id,
+    party.business_nature_id,
+    cd_area.cd_short_name,
+    party.party_status_id,
+    product_registration.product_id,
+    product_registration.status_id,
+    product_registration.reference_no,
+    case when product_registration.product_id in (1)   then product_registration.reference_no else null end,
+    case when product_registration.product_id in (3)   then product_registration.reference_no else null end,
+    case when product_registration.product_id in (2)   then product_registration.reference_no else null end,
+    case when product_registration.product_id in (5)   then product_registration.reference_no else null end,
+    case when product_registration.product_id in (6)   then product_registration.reference_no else null end,
+    case when product_registration.product_id in (4,7) then product_registration.reference_no else null end,
+    paye_registration.uif_reference_no,
+    paye_registration.sdl_reference_no,
+    product_registration.restricted,
+    product_registration.vip,
+    product_registration.lbc,
+    product_registration.hnwi,
+    product_registration.parliamentarian,
+    party.diplomat_ind,
+    individual.id_no,
+    individual.passport_no,
+    individual.initials,
+    individual.first_names,
+    individual.surname,
+    individual.date_of_birth,
+    enterprise.registration_number,
+    enterprise.registered_name,
+    enterprise.trading_name
+  from uttm.party party
+  inner join withresults                                         on party.party_id = withresults.party_id
+  left outer join uttm.individual           individual           on party.party_id = individual.party_id
+  left outer join uttm.enterprise           enterprise           on party.party_id = enterprise.party_id
+  left outer join uttm.product_registration product_registration on party.party_id = product_registration.party_id
+  left outer join uttm.cd_area              cd_area              on party.area_id  = cd_area.cd_id
+  left outer join uttm.paye_registration    paye_registration    on party.party_id = paye_registration.party_id
+  &WhereCondition(3071)
+  with ur
+endcode

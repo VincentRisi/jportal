@@ -1,0 +1,34 @@
+<config>
+  <!--
+    <common>
+      <IntervalTime>5</IntervalTime>
+      <MaxNumServer>6</MaxNumServer>
+      <NumServer>2</NumServer>
+      <StartProcThreshold>70</StartProcThreshold>
+      <connectMinutes>10</connectMinutes>
+      <maxRestarts>10</maxRestarts>
+      <maxSendSize>0</maxSendSize>
+      <restartCommand>echo</restartCommand>
+      <statsCheckSeconds>15</statsCheckSeconds>
+    </common>
+    server_debug="" command_args="-c C:\vlab\source\binu\server\config.xml" 
+  -->
+  <specific>
+    <binuserver>
+      <database>smdb itdb utdb</database>
+      <smdb>smdev7:ssmd00:devsm:devpassword</smdb>
+      <itdb>itdev7:ssmd00:devsm:devpassword</itdb>
+      <utdb>utdev7:uttm:devsm:devpassword</utdb>
+      <Debug>0</Debug>
+      <rotateLog>1</rotateLog>
+      <LogFile>binuserver.log</LogFile>
+      <logLevel>debug</logLevel>
+      <logDisplay>1</logDisplay>
+      <Service>23456</Service>
+      <python>c:\python25\python.exe</python>
+      <datadir>c:\vlab\build\binu\temp</datadir>
+      <pythonpath>c:\vlab\build\lib;c:\vlab\build\lib\binu.zip</pythonpath>
+      <script>c:\vlab\source\binu\python\binu_start.py</script>
+    </binuserver>
+  </specific>
+</config>

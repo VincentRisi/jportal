@@ -1,0 +1,288 @@
+#include "clibinu.h"
+#include "wchar.h"
+#include "Scanner.h"
+
+struct auto_char
+{
+  char* data;
+  auto_char(const wchar_t* token)
+  {
+    int dataLen = wcslen(token);
+    data = TJAlloc::newChar(dataLen + 1);
+    for (int i=0; i<dataLen; i++)
+      data[i] = token[i]%256;
+    data[dataLen] = 0;
+  }
+  ~auto_char()
+  {
+    TJAlloc::deleteChar(data);
+  }
+  int number()
+  {
+    return atoi(data);
+  }
+};
+
+COMPILER CliBin
+
+  TJProc    *proc;
+  TJField   *field;
+  int bindIndex, inpIndex, outIndex, dynIndex, lineIndex;
+  TJDynamic *dyn; 
+                          
+CHARACTERS
+  letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_".
+  digit = "0123456789".
+  cr = '\r'.
+  lf = '\n'.
+  tab = '\t'.
+  butGrave = ANY - '`'.
+
+TOKENS
+  ident  = letter {letter | digit}.
+  number = digit {digit}.
+  line   = '`' { butGrave } '`'.
+
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO lf
+
+IGNORE cr + lf + tab
+
+PRODUCTIONS
+  CliBin = Conn Proc { Outs } {Inps } { Dyns } { Binds } { Line }
+  .
+    
+  Conn =
+    "conn" 
+    ident
+    (. 
+      auto_char database(t->val);
+      proc->database = dupChar(database.data); 
+     .)
+    [  ident
+       (. 
+         auto_char server(t->val);
+         proc->server = dupChar(server.data); 
+        .)
+       ident
+       (. 
+         auto_char schema(t->val);
+         proc->schema = dupChar(schema.data); 
+        .)    
+       [  ident
+         (. 
+           auto_char user(t->val);
+           proc->user = dupChar(user.data); 
+          .)    
+         ident
+         (. 
+           auto_char password(t->val);
+           proc->password = dupChar(password.data); 
+          .)    
+       ]
+    ]
+  .
+
+  Proc =
+    "proc" ident  
+    (. 
+      auto_char table(t->val);
+      proc->table = dupChar(table.data); 
+     .)
+    ident
+    (. 
+      auto_char name(t->val);
+      proc->name = dupChar(name.data); 
+     .)
+    "(" number    
+    (. 
+      auto_char noRows(t->val);
+      proc->noRows  = noRows.number(); 
+     .)
+    number        
+    (. 
+      auto_char noLines(t->val);
+      proc->noLines = noLines.number(); 
+      proc->lines = new TJLine [proc->noLines];
+      lineIndex = 0;
+     .)
+    number        
+    (. 
+      auto_char noBinds(t->val);
+      proc->noBinds = noBinds.number(); 
+      proc->binds = new int [proc->noBinds];
+      bindIndex = 0;
+     .)
+    number        
+    (. 
+      auto_char noOuts(t->val);
+      proc->noOuts = noOuts.number(); 
+      proc->outs = new TJField [proc->noOuts];
+      outIndex = 0;
+     .)
+    number        
+    (. 
+      auto_char noInps(t->val);
+      proc->noInps = noInps.number(); 
+      proc->inps = new TJField [proc->noInps];
+      inpIndex = 0;
+     .)
+    number        
+    (. 
+      auto_char noDyns(t->val);
+      proc->noDyns = noDyns.number(); 
+      proc->dyns = new TJDynamic [proc->noDyns];
+      dynIndex = 0;
+     .)
+    number        
+    (. 
+      auto_char recSize(t->val);
+      proc->recSize = recSize.number(); 
+     .)
+    "["           
+    (. 
+      proc->options = 0;         
+     .)
+    { ProcOptions }
+    "]" ")"
+  .
+
+  ProcOptions =  
+      "PRC"       (. proc->options |= TJProc::IS_PROC;        .)
+    | "SPR"       (. proc->options |= TJProc::IS_SPROC;       .)
+    | "DAT"       (. proc->options |= TJProc::IS_DATA;        .) 
+    | "IDL"       (. proc->options |= TJProc::IS_IDL_CODE;    .) 
+    | "SQL"       (. proc->options |= TJProc::IS_SQL;         .) 
+    | "SNG"       (. proc->options |= TJProc::IS_SINGLE;      .) 
+    | "ACT"       (. proc->options |= TJProc::IS_ACTION;      .) 
+    | "STD"       (. proc->options |= TJProc::IS_STD;         .) 
+    | "USE"       (. proc->options |= TJProc::USE_STD;        .) 
+    | "EXT"       (. proc->options |= TJProc::EXTENDS_STD;    .) 
+    | "KEY"       (. proc->options |= TJProc::USE_KEY;        .) 
+    | "IMG"       (. proc->options |= TJProc::HAS_IMAGE;      .) 
+    | "MUL"       (. proc->options |= TJProc::IS_MULTIPLE_INP;.) 
+    | "INS"       (. proc->options |= TJProc::IS_INSERT;      .) 
+    | "RET"       (. proc->options |= TJProc::HAS_RETURNING;  .) 
+  .
+
+  Line =   
+    line          
+    (.
+      auto_char work(t->val);
+      int i = lineIndex++; 
+      int no = 1;
+      int len = strlen(work.data)-1;
+      work.data[len] = 0;
+      proc->lines[i].isVar = false;
+      if (work.data[no] == '&')
+        proc->lines[i].isVar = true; 
+      if (proc->lines[i].isVar == true)
+        no++;
+      proc->lines[i].line = dupChar(work.data+no);
+     .)
+  .
+    
+  Binds =
+    "binds" "(" { Bind } ")"
+  .
+
+  Bind =
+    number        
+    (. 
+      auto_char bind(t->val);
+      proc->binds[bindIndex++] = bind.number();        
+     .)
+  .  
+    
+  Outs =
+    "out" ident   
+    (. 
+      field = &proc->outs[outIndex++]; 
+      auto_char name(t->val);
+      field->name = dupChar(name.data); 
+     .)
+    Field
+  .  
+    
+  Inps =
+    "inp" ident
+    (. 
+      field = &proc->inps[inpIndex++]; 
+      auto_char name(t->val);
+      field->name = dupChar(name.data); 
+     .)
+    Field
+  .  
+    
+  Dyns =
+    "dyn" ident   
+    (.
+      dyn = &proc->dyns[dynIndex++];     
+      auto_char name(t->val);
+      dyn->name = dupChar(name.data); 
+     .)
+    "("
+    number        
+    (.                
+      auto_char length(t->val);
+      dyn->length = length.number();        
+     .)
+    number        
+    (. 
+      auto_char offset(t->val);
+      dyn->offset = offset.number();
+     .)
+    ")"
+  .  
+    
+  Field =
+    "("
+    number
+    (. 
+      auto_char type(t->val);
+      field->type  = type.number(); 
+     .)
+    number
+    (. 
+      auto_char length(t->val);
+      field->length  = length.number(); 
+     .)
+    number
+    (. 
+      auto_char precision(t->val);
+      field->precision  = precision.number(); 
+     .)
+    number  
+    (. 
+      auto_char scale(t->val);
+      field->scale  = scale.number(); 
+     .)
+    number
+    (. 
+      auto_char offset(t->val);
+      field->offset  = offset.number(); 
+     .)
+    number
+    (. 
+      auto_char size(t->val);
+      field->size  = size.number(); 
+     .)
+    "["           
+    (.
+      field->options  = 0;  
+     .)
+    { FieldOptions }
+    "]"
+    ")"
+  .  
+
+  FieldOptions =
+      "PK"        (. field->options |= TJField::IS_PRIMARY_KEY; .)
+    | "SEQ"       (. field->options |= TJField::IS_SEQUENCE;    .)
+    | "NULL"      (. field->options |= TJField::IS_NULL;        .)
+    | "IN"        (. field->options |= TJField::IS_IN;          .)
+    | "OUT"       (. field->options |= TJField::IS_OUT;         .)
+  .
+    
+END CliBin.
+

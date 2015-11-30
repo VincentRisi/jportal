@@ -1,0 +1,35 @@
+DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify"
+PACKAGE  vlab.puffin
+OUTPUT   zedzedbiz
+SERVER   ssm
+SCHEMA   ssmd00
+
+// ** A simple test table with no application significance **
+
+TABLE ZedZedBiz
+  Xavier    sequence
+  Ay        double(15,2) null
+  Bee       double(16,4) null
+  Cee       money null
+  Toppers   double null
+  Dee       long null
+  Epic      int null
+  Efyou     short null
+  Gee       byte null
+  DOB       date NULL
+  DOBT      datetime NULL
+  DOT       time NULL
+  Aitch     char(34) NULL
+  Spatch    char(1000) NULL
+  Snitch    char(4096) NULL
+  newSnoops blob(10000) //null
+  newPatch  ansichar(1)
+  pitch     ansichar(1) null
+  Bobby     userstamp
+  Diddly    timestamp
+  
+KEY Kee2 PRIMARY Xavier
+
+proc Insert returning
+proc SelectOne
+
