@@ -375,16 +375,20 @@ for source in project.sources:
     log('%s %s' % (source.name, reasons[source.name]))
     sourceList.append(source.name)
     continue
-  compile=False  
-  for target in source.targets:
-    if source.lastmod > target.lastmod:
-      reasons[source.name] = 'source newer than target %s' % (target.name)
-      compile=True
-      break
-    if jportalJarMod > target.lastmod:
-      reasons[source.name] = 'jar newer than target %s' % (target.name)
-      compile=True
-      break
+  if options.build == True:
+    reasons[source.name] = 'option always build'
+    compile=True
+  else:
+    compile=False
+    for target in source.targets:
+      if source.lastmod > target.lastmod:
+        reasons[source.name] = 'source newer than target %s' % (target.name)
+        compile=True
+        break
+      if jportalJarMod > target.lastmod:
+        reasons[source.name] = 'jar newer than target %s' % (target.name)
+        compile=True
+        break
   if compile == True:
     log('%s %s' % (source.name, reasons[source.name]))
     sourceList.append(source.name)
@@ -455,6 +459,6 @@ elif 'idlTarget' in switches:
   idlTarget.lastmod = lastmod(idlTarget.name)
   compile = True
 if compile == True:
-  crackle(idlTarget.name, switches['crackle'])
+  crackle(idlTarget.name, switches[CRACKLE])
 #----------------------------------------------------------------
 ## TBD Pickling

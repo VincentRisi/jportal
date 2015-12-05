@@ -23,6 +23,7 @@ jportal
   Java1Code         ${binary_dir}/sql/Java1       %a.java
   MSSqlDDL          ${binary_dir}/sql/MSSql       %a.sql
   OciCCode          ${binary_dir}/sql/OciC        %l.cpp %l.sh
+  ParmCode          ${binary_dir}/sql/Parm        %a.pi
   PythonCliCode     ${binary_dir}/sql/PythonCli   DB_%u.py
   PythonTreeCode    ${binary_dir}/sql/PythonTree  %a.py
 

@@ -5,7 +5,7 @@ SERVER   ssm
 SCHEMA   ssmd00
 
 // ** A simple test table with no application significance  **
-TABLE ZedZed
+TABLE ZedZed options "viewonly" "descr=fred is dead" "nodomain"
   Xavier    sequence
   Ay        double(15,2)
   Bee       double(16,4)
@@ -21,8 +21,8 @@ TABLE ZedZed
   Snitch    char(4096)    NULL
   tmStamp   timestamp
   
-KEY KeeItInO PRIMARY Xavier  
-Key Roger Xavier Ay Bee
+KEY prime PRIMARY Xavier  
+Key roger Xavier Ay Bee
 
 proc Insert returning options "BL"
 proc BulkInsert options "BL"

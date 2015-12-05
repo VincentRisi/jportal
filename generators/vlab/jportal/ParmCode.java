@@ -1,3 +1,15 @@
+/// ------------------------------------------------------------------
+/// Copyright (c) from 1996 Vincent Risi 
+///                           
+/// All rights reserved. 
+/// This program and the accompanying materials are made available 
+/// under the terms of the Common Public License v1.0 
+/// which accompanies this distribution and is available at 
+/// http://www.eclipse.org/legal/cpl-v10.html 
+/// Contributors:
+///    Vincent Risi
+/// ------------------------------------------------------------------
+
 package vlab.jportal;
 
 import java.io.FileInputStream;
@@ -10,26 +22,141 @@ import java.io.PrintWriter;
 public class ParmCode extends Generator
 {
 
-	public static void main(String[] args) 
-	{
-	  try
-	  {
-	    PrintWriter outLog = new PrintWriter(System.out);
-	    for (int i = 0; i < args.length; i++)
-	    {
-	      outLog.println(args[i] + ": generate Parm application code");
-	      ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
-	      Database database = (Database)in.readObject();
-	      in.close();
-	      generate(database, "", outLog);
-	    }
-	    outLog.flush();
-	  }
-	  catch (Exception e)
-	  {
-	    e.printStackTrace();
-	  }
-	}
+	private static class ParmOptions
+  {
+    public String descr;
+    public String lookup;
+    public String show;
+    public boolean viewOnly;
+    public boolean domain;
+    public boolean nullEnabled;
+    public ParmOptions()
+    {
+      descr = "";
+      lookup= "";
+      show="";
+      viewOnly = false;
+      domain = true;
+      nullEnabled=false;
+    }
+  }
+  static final String reservedWords=":"
+      +"all:" 
+      +"ansi:"
+      +"ansichar:"
+      +"autotimestamp:"
+      +"bigidentity:"
+      +"bigsequence:"
+      +"bigxml:"
+      +"bit:"
+      +"blob:"
+      +"boolean:"
+      +"bulkinsert:"
+      +"bulkupdate:"
+      +"byte:"
+      +"cascade:"
+      +"char:"
+      +"check:"
+      +"clob:"
+      +"const:"
+      +"constant:"
+      +"count:"
+      +"cursor:"
+      +"database:"
+      +"date:"
+      +"datetime:"
+      +"declare:"
+      +"default:"
+      +"delete:"
+      +"deleteall:"
+      +"deleteone:"
+      +"double:"
+      +"dynamic:"
+      +"execute:"
+      +"exists:"
+      +"flags:"
+      +"float:"
+      +"for:"
+      +"grant:"
+      +"identity:"
+      +"import:"
+      +"in:"
+      +"inout:"
+      +"input:"
+      +"insert:"
+      +"int:"
+      +"integer:"
+      +"key:"
+      +"link:"
+      +"long:"
+      +"merge:"
+      +"money:"
+      +"multiple:"
+      +"names:"
+      +"not:"
+      +"null:"
+      +"options:"
+      +"order:"
+      +"output:"
+      +"package:"
+      +"password:"
+      +"primary:"
+      +"proc:"
+      +"readonly:"
+      +"returning:"
+      +"schema:"
+      +"select:"
+      +"selectall:"
+      +"selectone:"
+      +"sequence:"
+      +"server:"
+      +"short:"
+      +"single:"
+      +"sorted:"
+      +"sproc:"
+      +"sql:"
+      +"storedproc:"
+      +"table:"
+      +"time:"
+      +"timestamp:"
+      +"tlob:"
+      +"to:"
+      +"uid:"
+      +"unique:"
+      +"update:"
+      +"userid:"
+      +"userstamp:"
+      +"utf8:"
+      +"view:"
+      +"wansi:"
+      +"wansichar:"
+      +"wchar:"
+      +"xml:";
+  private static String checkReserved(String name)
+  {
+    String work=String.format(":%s:", name.toLowerCase());
+    if (reservedWords.indexOf(work) != -1)
+      return String.format("L'%s'", name);
+    return name;
+  }
+  private static String commentOf(Field field)
+  {
+    return "  ";
+  }
+  private static int countOf(Table table)
+  {
+    int result = 0;
+    for (int i=0; i<table.fields.size(); i++)
+    {
+      Field field = table.fields.get(i);
+      if (field.name.equalsIgnoreCase("USId") == true)
+        continue;
+      if (field.type == Field.TIMESTAMP)
+        continue;
+      result++;
+    }
+    return result;
+  }
   public static String description()
   {
     return "generate Parm application code";
@@ -47,50 +174,62 @@ public class ParmCode extends Generator
       generateTable(table, output, outLog);
     }
   }
-  private static void generateTable(Table table, String output, PrintWriter outLog)
+  private static void generateKeys(Table table, ParmOptions opts, PrintWriter outData, PrintWriter outLog)
   {
-    try
+    for (Key key : table.keys)
     {
-      outLog.println("Code: " + output + table.useName() + ".pi");
-      OutputStream outFile = new FileOutputStream(output + table.useName() + ".pi");
-      try
-      {
-        PrintWriter outData = new PrintWriter(outFile);
-        generateTable(table, outData, outLog);
-        outData.flush();
-      }
-      finally
-      {
-        outFile.close();
-      }
-    }
-    catch (IOException e1)
-    {
-      outLog.println("Generate Procs IO Error");
+      outData.print(String.format("KEY %s", checkReserved(key.name)));
+      for (String field : key.fields)
+        outData.print(String.format(" %s", checkReserved(field)));
+      if (key.isPrimary)
+        outData.print(" PRIMARY");
+      else if (key.isUnique)
+        outData.print(" UNIQUE");
+      outData.println();
     }
   }
-  private static class ParmOptions
+  private static void generateLinks(Table table, ParmOptions opts, PrintWriter outData, PrintWriter outLog)
   {
-    public boolean viewOnly;
-    public String descr;
-    public boolean domain;
-    public boolean nullEnabled;
-    public ParmOptions()
+    for (Link link : table.links)
     {
-      viewOnly = false;
-      descr = "";
-      domain = true;
-      nullEnabled=false;
+      outData.print(String.format("LINK %s", checkReserved(link.name)));
+      for (String field : link.fields)
+        outData.print(String.format(" %s", checkReserved(field)));
+      outData.println();
     }
+  }
+  private static void generateRelation(Table table, ParmOptions opts, PrintWriter outData, PrintWriter outLog)
+  {
+    outData.print(String.format("RELATION %s", table.name));
+    if (opts.descr.length() > 0)
+      outData.print(String.format(" %s", opts.descr));
+    outData.println();
+    Link link0 = table.links.get(0);
+    Link link1 = table.links.get(1);
+    outData.print(String.format("  %s", link0.linkName));
+    for (int i=0; i < link0.fields.size(); i++)
+    {
+      String field = link0.fields.get(i);
+      outData.print(String.format("%s%s", i==0?"(":" ", field));
+    }
+    outData.println(")");
+    outData.print(String.format("  %s", link1.linkName));
+    for (int i=0; i < link1.fields.size(); i++)
+    {
+      String field = link1.fields.get(i);
+      outData.print(String.format("%s%s", i==0?"(":" ", field));
+    }
+    outData.println(")");
+    outData.println();
   }
   private static void generateTable(Table table, PrintWriter outData, PrintWriter outLog)
   {
     ParmOptions opts = loadOptions(table);
     if (table.links.size() > 0)
     {
-      if (genUses(table, opts, outData, outLog) == true)
+      if (generateUses(table, opts, outData, outLog) == true)
       {
-        genRelation(table, opts, outData, outLog);
+        generateRelation(table, opts, outData, outLog);
         opts.viewOnly = true;
       }
     }
@@ -122,6 +261,132 @@ public class ParmCode extends Generator
           , checker
           ));
     }
+    if (opts.lookup.length() > 0)
+      outData.println(String.format("LOOKUP(%s)", opts.lookup));
+    else
+    {
+      for (Key key : table.keys)
+      {
+        if (key.isPrimary)
+        {
+          String lookup = "", colon = "";
+          for (String field : key.fields)
+          {
+            lookup = String.format("%s%s%s", lookup, colon, field);
+            colon = ":";
+          }
+          outData.println(String.format("LOOKUP(%s)", lookup));
+          break;
+        }
+      }
+    }
+    if (opts.show.length() > 0)
+      outData.println(String.format("SHOW(%s)", opts.show));
+    if (table.keys.size() > 0)
+      generateKeys(table, opts, outData, outLog);
+    if (table.links.size() > 0)
+      generateLinks(table, opts, outData, outLog);
+  }
+  private static void generateTable(Table table, String output, PrintWriter outLog)
+  {
+    try
+    {
+      outLog.println("Code: " + output + table.useName() + ".pi");
+      OutputStream outFile = new FileOutputStream(output + table.useName() + ".pi");
+      try
+      {
+        PrintWriter outData = new PrintWriter(outFile);
+        generateTable(table, outData, outLog);
+        outData.flush();
+      }
+      finally
+      {
+        outFile.close();
+      }
+    }
+    catch (IOException e1)
+    {
+      outLog.println("Generate Procs IO Error");
+    }
+  }
+  private static boolean generateUses(Table table, ParmOptions opts, PrintWriter outData, PrintWriter outLog)
+  {
+    outData.print("//USES:");
+    int n = table.links.size();
+    for (int i=0; i<n; i++)
+    {
+      Link link = table.links.get(i);
+      outData.print(link.name+":");
+    }
+    outData.println();
+    outData.println();
+    if (n != 2)
+      return false;
+    Link link0 = table.links.get(0);
+    Link link1 = table.links.get(1);
+    if (link0.name.equalsIgnoreCase(link1.name) == true)
+      return false;
+    n = link0.linkFields.size()+link1.linkFields.size();
+    if (n != countOf(table))
+      return false;
+    for (int i=0; i<link0.fields.size(); i++)
+    {
+      String field0 = link0.fields.get(i);
+      for (int j=0; j<link1.fields.size(); j++)
+      {
+        String field1 = link1.fields.get(j);
+        if (field0.equalsIgnoreCase(field1) == true)
+          return false;
+      }
+    }
+    return true;
+  }
+  private static ParmOptions loadOptions(Table table)
+  {
+    ParmOptions opts = new ParmOptions();
+    for (String option : table.options)
+    {
+      if (option.toLowerCase().indexOf("descr=") == 0)
+        opts.descr = option.substring(6).trim();
+      else if (option.equalsIgnoreCase("nodomain") == true)
+        opts.domain = false;
+      else if (option.equalsIgnoreCase("viewonly") == true)
+        opts.viewOnly = true;
+      else if (option.equalsIgnoreCase("null") == true)
+        opts.nullEnabled = true;
+      else if (option.toLowerCase().indexOf("lookup=") == 0)
+        opts.lookup = option.substring(7).trim();
+      else if (option.toLowerCase().indexOf("show=") == 0)
+        opts.show = option.substring(5).trim();
+    }
+    return opts;
+  }
+  public static void main(String[] args) 
+	{
+	  try
+	  {
+	    PrintWriter outLog = new PrintWriter(System.out);
+	    for (int i = 0; i < args.length; i++)
+	    {
+	      outLog.println(args[i] + ": generate Parm application code");
+	      ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
+	      Database database = (Database)in.readObject();
+	      in.close();
+	      generate(database, "", outLog);
+	    }
+	    outLog.flush();
+	  }
+	  catch (Exception e)
+	  {
+	    e.printStackTrace();
+	  }
+	}
+  private static String nameOf(Field field)
+  {
+    String result = field.name;
+    if (field.alias.length() > 0)
+      result = String.format("%s (%s)", field.name, field.alias);
+    return result;
   }
   private static String typeOf(Field field)
   {
@@ -150,6 +415,10 @@ public class ParmCode extends Generator
     case Field.DATETIME:
       return "datetime";
     case Field.DOUBLE:
+      if (field.precision == 0 && field.scale == 0)
+        return String.format("double");
+      else if (field.scale == 0)
+        return String.format("double(%d", field.precision);
       return String.format("double(%d, %d)", field.precision, field.scale);
     case Field.DYNAMIC:
       return "dynamic";
@@ -189,161 +458,5 @@ public class ParmCode extends Generator
       return String.format("xml(%s)", field.length);
     }
     return "?typeOf?";
-  }
-  private static String nameOf(Field field)
-  {
-    String result = field.name;
-    if (field.alias.length() > 0)
-      result = String.format("%s (%s)", field.name, field.alias);
-    return result;
-  }
-  private static String commentOf(Field field)
-  {
-    return "  ";
-  }
-  static final String reservedWords=":"
-      +"all:"
-      +"ansichar:"
-      +"application:"
-      +"boolean:"
-      +"byte:"
-      +"cascade:"
-      +"char:"
-      +"check:"
-      +"date:"
-      +"datetime:"
-      +"delete:"
-      +"float:"
-      +"double:"
-      +"money:"
-      +"flags:"
-      +"int:"
-      +"integer:"
-      +"identity:"
-      +"key:"
-      +"link:"
-      +"long:"
-      +"lookup:"
-      +"money:"
-      +"nodomain:"
-      +"not:"
-      +"null:"
-      +"options:"
-      +"order:"
-      +"output:"
-      +"password:"
-      +"primary:"
-      +"registry:"
-      +"relation:"
-      +"sequence:"
-      +"server:"
-      +"short:"
-      +"show:"
-      +"smallint:"
-      +"sizes:"
-      +"table:"
-      +"time:"
-      +"timestamp:"
-      +"tinyint:"
-      +"unique:"
-      +"upper:"
-      +"uppercase:"
-      +"use:"
-      +"user:"
-      +"userstamp:"
-      +"value:"
-      +"viewonly:";
-  private static String checkReserved(String name)
-  {
-    String work=String.format(":%s:", name.toLowerCase());
-    if (reservedWords.indexOf(work) != -1)
-      return String.format("L'%s'", name);
-    return name;
-  }
-  private static void genRelation(Table table, ParmOptions opts, PrintWriter outData, PrintWriter outLog)
-  {
-    outData.print(String.format("RELATION %s", table.name));
-    if (opts.descr.length() > 0)
-      outData.print(String.format(" %s", opts.descr));
-    outData.println();
-    Link link0 = table.links.get(0);
-    Link link1 = table.links.get(1);
-    outData.print(String.format("  %s", link0.linkName));
-    for (int i=0; i < link0.fields.size(); i++)
-    {
-      String field = link0.fields.get(i);
-      outData.print(String.format("%s%s", i==0?"(":" ", field));
-    }
-    outData.println(")");
-    outData.print(String.format("  %s", link1.linkName));
-    for (int i=0; i < link1.fields.size(); i++)
-    {
-      String field = link1.fields.get(i);
-      outData.print(String.format("%s%s", i==0?"(":" ", field));
-    }
-    outData.println(")");
-    outData.println();
-  }
-  private static int countOf(Table table)
-  {
-    int result = 0;
-    for (int i=0; i<table.fields.size(); i++)
-    {
-      Field field = table.fields.get(i);
-      if (field.name.equalsIgnoreCase("USId") == true)
-        continue;
-      if (field.type == Field.TIMESTAMP)
-        continue;
-      result++;
-    }
-    return result;
-  }
-  private static boolean genUses(Table table, ParmOptions opts, PrintWriter outData, PrintWriter outLog)
-  {
-    outData.print("//USES:");
-    int n = table.links.size();
-    for (int i=0; i<n; i++)
-    {
-      Link link = table.links.get(i);
-      outData.print(link.name+":");
-    }
-    outData.println();
-    outData.println();
-    if (n != 2)
-      return false;
-    Link link0 = table.links.get(0);
-    Link link1 = table.links.get(1);
-    if (link0.name.equalsIgnoreCase(link1.name) == true)
-      return false;
-    n = link0.linkFields.size()+link1.linkFields.size();
-    if (n != countOf(table))
-      return false;
-    for (int i=0; i<link0.fields.size(); i++)
-    {
-      String field0 = link0.fields.get(i);
-      for (int j=0; j<link1.fields.size(); j++)
-      {
-        String field1 = link1.fields.get(j);
-        if (field0.equalsIgnoreCase(field1) == true)
-          return false;
-      }
-    }
-    return true;
-  }
-  private static ParmOptions loadOptions(Table table)
-  {
-    ParmOptions opts = new ParmOptions();
-    for (int i=0; i < table.options.size(); i++)
-    {
-      String option = table.options.get(i);
-      if (option.toLowerCase().indexOf("descr=") == 0)
-        opts.descr = option.substring(6).trim();
-      else if (option.equalsIgnoreCase("nodomain") == true)
-        opts.domain = false;
-      else if (option.equalsIgnoreCase("null") == true)
-        opts.nullEnabled = true;
-      
-    }
-    return opts;
   }
 }
