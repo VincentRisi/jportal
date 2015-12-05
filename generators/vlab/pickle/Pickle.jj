@@ -127,7 +127,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <DATE:         "date">
 | <DATETIME:     "datetime">
 | <DELETE:       "delete">
-| <DOUBLE:      ("float"|"double"|"money")>
+| <DOUBLE:      ("float"|"double")>
 | <FLAGS:        "flags">
 | <INIT:         "__init__">
 | <INT:         ("int"|"integer"|"identity")>

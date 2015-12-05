@@ -14,6 +14,7 @@ parser.add_option("-b", "--build",      dest="build",      default=False, action
 parser.add_option("-c", "--crackle",    dest="crackle",    default='crackle.jar')
 parser.add_option("-j", "--jportal",    dest="jportal",    default='jportal.jar')
 parser.add_option("-l", "--local",      dest="local",      default="/vlab")
+parser.add_option("-p", "--pickle",     dest="pickle",     default='pickle.jar')
 parser.add_option("-r", "--root",       dest="root",       default="")
 parser.add_option("-s", "--skip",       dest="skip",       default="", help=':CSIdl2Code:... colon switch list')
 parser.add_option("-v", "--verbose",    dest="verbose",    default=False, action="store_true", help="verbose")
@@ -63,6 +64,7 @@ def log(*line):
 
 jportalJar = fixname(options.jportal);log('jportal jar:', jportalJar) 
 crackleJar = fixname(options.crackle);log('crackle jar:', crackleJar)
+pickleJar  = fixname(options.pickle); log('pickle jar:',  pickleJar)
 
 if len(args) < 1:
   print "usage :-\> anydbMake.py [options] sourcefile"
@@ -109,6 +111,17 @@ def crackle(name, switches):
   fd, fname = tempfile.mkstemp('.~tmp')
   os.close(fd)
   command = r'java -jar %s -l %s %s %s' %(crackleJar, fname, name, switches)
+  print command
+  os.system(command)
+  for line in open(fname):
+    line = line[:-1] 
+    print line
+  os.remove(fname)
+
+def pickle(name, switches):
+  fd, fname = tempfile.mkstemp('.~tmp')
+  os.close(fd)
+  command = r'java -jar %s -l %s %s %s' %(pickleJar, fname, name, switches)
   print command
   os.system(command)
   for line in open(fname):
@@ -180,14 +193,15 @@ def expand(line):
       result += args[arg]
   return result
 
+state = 0;JPORTAL=1;CRACKLE=2;PICKLE=3;SOURCE=4;IDL=5;APP=8
 def parse_anydb(sourceFile):
   ifile = open(sourceFile, 'r')
   lines = ifile.readlines()
   ifile.close()
   project = None
-  state = 0;JPORTAL=1;CRACKLE=2;SOURCE=3;IDL=4
-  switches['crackle'] = ''
-  switches['jportal'] = ''
+  switches[CRACKLE] = ''
+  switches[JPORTAL] = ''
+  switches[PICKLE] = ''
   for line in lines:
     line=expand(remove_comment(line.strip()))
     if len(line) == 0:
@@ -202,11 +216,14 @@ def parse_anydb(sourceFile):
       project.name = fixname(fields[1])
       project.switches = []
       project.sources = []
+      project.ptables = []
       project.masks = {}
-      project.masks['jportal'] = {}
-      project.masks['crackle'] = {}
+      project.masks[JPORTAL] = {}
+      project.masks[CRACKLE] = {}
+      project.masks[PICKLE] = {}
       project.idlname = None
-      project.idls = {} 
+      project.idls = {}
+      project.apps = {}
       continue
     if project == None:
       print 'expecting project name'
@@ -217,29 +234,31 @@ def parse_anydb(sourceFile):
     if fields[0] == 'crackle':
       state = CRACKLE
       continue
+    if fields[0] == 'pickle':
+      state = PICKLE
+      continue
     if fields[0] == 'source':
       state = SOURCE
       continue
     if fields[0] == 'idl':
       state = IDL
       continue
-    if state == JPORTAL or state == CRACKLE:
-      if state == JPORTAL: 
-        sname = 'jportal'  
-      else:
-        sname = 'crackle'
+    if fields[0] == 'app':
+      state = APP
+      continue
+    if state in [JPORTAL, CRACKLE, PICKLE]:
       if len(fields) > 1:
         dir = fixname(fields[1])
         makedirs(dir)
-        switches[sname] += '-o %s %s ' % (dir, fields[0])
+        switches[state] += '-o %s %s ' % (dir, fields[0])
       else:
         dir = ''  
-        switches[sname] += '%s ' % (fields[0])
+        switches[state] += '%s ' % (fields[0])
       if len(fields) > 2:
         if not project.masks.has_key(dir):
-          project.masks[sname][dir] = []
+          project.masks[state][dir] = []
         for mask in fields[2:]:
-          project.masks[sname][dir].append(mask)
+          project.masks[state][dir].append(mask)
       continue
     if state == SOURCE:
       source = Source()
@@ -248,6 +267,25 @@ def parse_anydb(sourceFile):
       source.noTargets = 0
       source.lastmod = lastmod(source.name)
       project.sources.append(source)
+      continue
+    if state == APP:
+      source = Source()
+      app_list = ('appfile', 'pmfile', 'pifile', 'sifile')
+      app_type = fields[0]
+      if (not app_type in app_list):
+        print '%s - not a valid - not in %s' % (app_type, repr(app_list))
+        continue
+      source.name = fixname(fields[1])
+      source.lastmod = lastmod(source.name)
+      if idl_type == 'appfile':
+        switches['appTarget'] = source.name
+        continue
+      if idl_type == 'pmfile':
+        switches['appModule'] = source.name
+        continue
+      if not project.apps.has_key(app_type):
+        project.apps[app_type] = []
+      project.apps[app_type].append(source)
       continue
     if state == IDL:
       source = Source()
@@ -267,6 +305,7 @@ def parse_anydb(sourceFile):
       if not project.idls.has_key(idl_type):
         project.idls[idl_type] = []
       project.idls[idl_type].append(source)
+      continue
   return project
 
 def add_target(source, file):
@@ -277,7 +316,7 @@ def add_target(source, file):
   source.noTargets = len(source.targets)
 
 def get_targets(source, name, mask, project):
-  masks = project.masks['jportal'][mask]
+  masks = project.masks[JPORTAL][mask]
   for wildcard in masks:
     check_it = False
     if wildcard.find('%l') >= 0:
@@ -307,7 +346,7 @@ def get_targets(source, name, mask, project):
       add_target(source, file)
 
 def derive_targets(project):
-  mask_keys = sorted(project.masks['jportal'])
+  mask_keys = sorted(project.masks[JPORTAL])
   for source in project.sources:
     _, base = os.path.split(source.name)
     name, _ = os.path.splitext(base)
@@ -316,10 +355,10 @@ def derive_targets(project):
 
 project = parse_anydb(sourceFile)
 derive_targets(project)
-
 projmod = lastmod(sourceFile)
 jportalJarMod = lastmod(jportalJar)
 crackleJarMod = lastmod(crackleJar)
+pickleJarMod = lastmod(pickleJar)
 sourceList = []
 reasons = {}
 project.idls['iifile'] = iiFiles = []
@@ -329,6 +368,7 @@ if not project.idls.has_key('icfile'):
   project.idls['icfile'] = []
 ibFiles = project.idls['ibfile']
 icFiles = project.idls['icfile']
+#-------------------------------------------------------
 for source in project.sources:
   if source.noTargets == 0:
     reasons[source.name] = 'no targets'
@@ -369,8 +409,9 @@ if len(sourceList) > 0:
       print '%s --- %s' % (source, reasons[source])
     os.write(fd, '%s\n' % (source))
   os.close(fd)
-  iiFiles = jportal('-f %s' % (fname), switches['jportal'], iiFiles)
+  iiFiles = jportal('-f %s' % (fname), switches[JPORTAL], iiFiles)
   os.remove(fname)
+#------------------------------------------------------------------
 compile = False
 if 'idlModule' in switches and 'idlTarget' in switches:
   idlTarget = Source()
@@ -415,3 +456,5 @@ elif 'idlTarget' in switches:
   compile = True
 if compile == True:
   crackle(idlTarget.name, switches['crackle'])
+#----------------------------------------------------------------
+## TBD Pickling
