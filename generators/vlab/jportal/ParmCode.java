@@ -141,7 +141,14 @@ public class ParmCode extends Generator
   }
   private static String commentOf(Field field)
   {
-    return "  ";
+    String result = "  ";
+    switch (field.type)
+    {
+    case Field.BLOB:
+      result = "//";
+      break;
+    }
+    return result;
   }
   private static int countOf(Table table)
   {
