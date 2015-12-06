@@ -87,7 +87,7 @@ def lastmod(name,try_lower=True):
   else:
     return 0
 
-def jportal(name, switches, iiFiles):
+def jportal(name, switches, iiFiles, piFiles):
   fd, fname = tempfile.mkstemp('.~tmp')
   os.close(fd)
   command = r'java -jar %s -l %s %s %s' %(jportalJar, fname, name, switches)
@@ -104,8 +104,13 @@ def jportal(name, switches, iiFiles):
         iiFile.name = fixname(line[6:])
         iiFile.lastmod = lastmod(iiFile.name)
         iiFiles.append(iiFile)
+      elif ext == '.pi':
+        piFile = Source()
+        piFile.name = fixname(line[6:])
+        piFile.lastmod = lastmod(piFile.name)
+        piFiles.append(piFile)
   os.remove(fname)
-  return iiFiles
+  return
 
 def crackle(name, switches):
   fd, fname = tempfile.mkstemp('.~tmp')
@@ -224,6 +229,8 @@ def parse_anydb(sourceFile):
       project.idlname = None
       project.idls = {}
       project.apps = {}
+      project.idls['iifile'] = iiFiles = []
+      project.apps['pifile'] = piFiles = []
       continue
     if project == None:
       print 'expecting project name'
@@ -270,7 +277,7 @@ def parse_anydb(sourceFile):
       continue
     if state == APP:
       source = Source()
-      app_list = ('appfile', 'pmfile', 'pifile', 'sifile')
+      app_list = ('appfile', 'pmfile', 'prfile', 'pifile')
       app_type = fields[0]
       if (not app_type in app_list):
         print '%s - not a valid - not in %s' % (app_type, repr(app_list))
@@ -289,7 +296,7 @@ def parse_anydb(sourceFile):
       continue
     if state == IDL:
       source = Source()
-      idl_list = ('idlfile', 'imfile', 'ibfile', 'icfile')
+      idl_list = ('idlfile', 'imfile', 'ibfile', 'icfile', 'iifile')
       idl_type = fields[0]
       if (not idl_type in idl_list):
         print '%s - not a valid - not in %s' % (idl_type, repr(idl_list))
@@ -361,13 +368,19 @@ crackleJarMod = lastmod(crackleJar)
 pickleJarMod = lastmod(pickleJar)
 sourceList = []
 reasons = {}
-project.idls['iifile'] = iiFiles = []
 if not project.idls.has_key('ibfile'):
   project.idls['ibfile'] = []
 if not project.idls.has_key('icfile'):
   project.idls['icfile'] = []
 ibFiles = project.idls['ibfile']
 icFiles = project.idls['icfile']
+iiFiles = project.idls['iifile']
+if not project.apps.has_key('prfile'):
+  project.apps['prfile'] = []
+#if not project.apps.has_key('pifile'):
+#  project.apps['pifile'] = []
+prFiles = project.apps['prfile']
+piFiles = project.apps['pifile']
 #-------------------------------------------------------
 for source in project.sources:
   if source.noTargets == 0:
@@ -413,7 +426,7 @@ if len(sourceList) > 0:
       print '%s --- %s' % (source, reasons[source])
     os.write(fd, '%s\n' % (source))
   os.close(fd)
-  iiFiles = jportal('-f %s' % (fname), switches[JPORTAL], iiFiles)
+  jportal('-f %s' % (fname), switches[JPORTAL], iiFiles, piFiles)
   os.remove(fname)
 #------------------------------------------------------------------
 compile = False
@@ -461,4 +474,44 @@ elif 'idlTarget' in switches:
 if compile == True:
   crackle(idlTarget.name, switches[CRACKLE])
 #----------------------------------------------------------------
-## TBD Pickling
+compile = False
+if 'appModule' in switches and 'appTarget' in switches:
+  appTarget = Source()
+  appTarget.name = fixname(switches['appTarget'])
+  appTarget.lastmod = lastmod(appTarget.name)
+  appModule = Source()
+  appModule.name = fixname(switches['appModule'])
+  appModule.lastmod = lastmod(appModule.name)
+  if appModule.lastmod > appTarget.lastmod:
+    compile = True
+  if pickleJarMod > appTarget.lastmod:
+    compile = True
+  for piFile in piFiles:
+    if piFile.lastmod > appTarget.lastmod:
+      compile = True
+  for prFile in prFiles:
+    if prFile.lastmod > idlTarget.lastmod:
+      compile = True
+  if compile == True:
+    outfile = open(appTarget.name, 'wt')
+    ifile = open(appModule.name, 'rt')
+    outfile.write(ifile.read())
+    ifile.close() 
+    for prFile in prFiles:
+      outfile.write('// *** %s\n' % (prFile.name))
+      ifile = open(prFile.name, 'rt')
+      outfile.write(ifile.read())
+      ifile.close()
+    for piFile in piFiles:
+      outfile.write('// *** %s\n' % (piFile.name))
+      ifile = open(piFile.name, 'rt')
+      outfile.write(ifile.read())
+      ifile.close()
+    outfile.close()
+elif 'appTarget' in switches:
+  appTarget = Source()
+  appTarget.name = fixname(switches['appTarget'])
+  appTarget.lastmod = lastmod(appTarget.name)
+  compile = True
+if compile == True:
+  pickle(appTarget.name, switches[PICKLE])
