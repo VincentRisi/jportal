@@ -1,6 +1,5 @@
 /// ------------------------------------------------------------------
-/// Copyright (c) 1996, 2004 Vincent Risi in Association
-///                          with Barone Budge and Dominick
+/// Copyright (c) from 1996 Vincent Risi
 /// All rights reserved.
 /// This program and the accompanying materials are made available
 /// under the terms of the Common Public License v1.0
@@ -8,10 +7,6 @@
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
 ///    Vincent Risi
-/// ------------------------------------------------------------------
-/// System : JPortal
-/// $Date: 2004/11/17 09:13:57 $
-/// $Revision: 411.2 $ // YMM.Revision
 /// ------------------------------------------------------------------
 
 using System;
