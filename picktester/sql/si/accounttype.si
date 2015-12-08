@@ -16,11 +16,11 @@ KEY ATK PRIMARY
 
 PROC Insert
 PROC Update
-PROC SelectOne (NOIDL)
+PROC SelectOne
 PROC SelectAll
 PROC DeleteOne
 
-DATA
+SQLDATA
 INSERT INTO AccountType VALUES ('CURRENT'    , 'CURRENT'    , 0, 'PreDefined', SYSDATE);
 INSERT INTO AccountType VALUES ('NOSTRO'     , 'NOSTRO'     , 0, 'PreDefined', SYSDATE);
 INSERT INTO AccountType VALUES ('VOSTRO'     , 'VOSTRO'     , 0, 'PreDefined', SYSDATE);

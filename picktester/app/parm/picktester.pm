@@ -1,8 +1,7 @@
-APPLICATION ParamControl 'Putty Parameter Control Application'
+APPLICATION ParamControl 'PickTester Parameter Control Application'
 SERVER   '10.3.1.20/orcl'
-//SERVER   '192.168.117.7/orcl'
-USER     'npu'
+USER     'vlab'
 PASSWORD 'password'
-REGISTRY 'Nedcor\ParamControl\Putty'
-VERSION  '4.0'
+REGISTRY 'VLab\ParamControl\PickTester'
+VERSION  '1.0'
 

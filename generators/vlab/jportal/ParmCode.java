@@ -186,8 +186,13 @@ public class ParmCode extends Generator
     for (Key key : table.keys)
     {
       outData.print(String.format("KEY %s", checkReserved(key.name)));
+      String param="(";
       for (String field : key.fields)
-        outData.print(String.format(" %s", checkReserved(field)));
+      {
+        outData.print(String.format("%s%s", param, checkReserved(field)));
+        param=" ";
+      }
+      outData.print(")");
       if (key.isPrimary)
         outData.print(" PRIMARY");
       else if (key.isUnique)
@@ -200,9 +205,13 @@ public class ParmCode extends Generator
     for (Link link : table.links)
     {
       outData.print(String.format("LINK %s", checkReserved(link.name)));
+      String param="(";
       for (String field : link.fields)
-        outData.print(String.format(" %s", checkReserved(field)));
-      outData.println();
+      {
+        outData.print(String.format("%s%s", param, checkReserved(field)));
+        param=" ";
+      }
+      outData.println(")");
     }
   }
   private static void generateRelation(Table table, ParmOptions opts, PrintWriter outData, PrintWriter outLog)
@@ -276,12 +285,9 @@ public class ParmCode extends Generator
       {
         if (key.isPrimary)
         {
-          String lookup = "", colon = "";
+          String lookup = "";
           for (String field : key.fields)
-          {
-            lookup = String.format("%s%s%s", lookup, colon, field);
-            colon = ":";
-          }
+            lookup = String.format("%s %s", lookup, field);
           outData.println(String.format("LOOKUP(%s)", lookup));
           break;
         }

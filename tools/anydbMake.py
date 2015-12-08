@@ -284,10 +284,10 @@ def parse_anydb(sourceFile):
         continue
       source.name = fixname(fields[1])
       source.lastmod = lastmod(source.name)
-      if idl_type == 'appfile':
+      if app_type == 'appfile':
         switches['appTarget'] = source.name
         continue
-      if idl_type == 'pmfile':
+      if app_type == 'pmfile':
         switches['appModule'] = source.name
         continue
       if not project.apps.has_key(app_type):
@@ -490,7 +490,7 @@ if 'appModule' in switches and 'appTarget' in switches:
     if piFile.lastmod > appTarget.lastmod:
       compile = True
   for prFile in prFiles:
-    if prFile.lastmod > idlTarget.lastmod:
+    if prFile.lastmod > appTarget.lastmod:
       compile = True
   if compile == True:
     outfile = open(appTarget.name, 'wt')
