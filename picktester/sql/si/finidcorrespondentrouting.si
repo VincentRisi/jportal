@@ -1,0 +1,45 @@
+DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
+PACKAGE  vlab
+OUTPUT   FinidCorrespondentRouting
+SERVER   npu
+SCHEMA   npud00
+
+TABLE FinidCorrespondentRouting
+    OPTIONS "lookup='FinId RouteFinId'" "descr='Fig Correspondent Bank Routing'"
+  FinId             int
+  Branchid          int
+  RouteFinId        int
+  RouteBranchid     int
+  Status            byte  (Active=0 Inactive=1 MarkForDelete=2)
+  USId              Char(16)
+  Tmstamp           timestamp
+
+KEY CorrespondentBankKey PRIMARY
+  FinId
+
+LINK AlmanacBank
+  FinId
+  Branchid
+
+LINK AlmanacBank
+  RouteFinId
+  RouteBranchid
+
+PROC Insert     PROC Update     PROC SelectOne  PROC DeleteOne  
+
+
+//used by router,ide
+PROC Get 
+INPUT
+  FinId             int
+OUTPUT (single)
+  RouteFinId        int
+sqlcode
+   Select
+	RouteFinId
+   FROM
+      FinidCorrespondentRouting
+   WHERE
+	FinId    = :FinId
+endcode
+

@@ -1,0 +1,28 @@
+DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
+PACKAGE  vlab
+OUTPUT   CountryCurrency
+SERVER   npu
+SCHEMA   npud00
+
+TABLE CountryCurrency
+    OPTIONS "descr='Country Currency Relationship'"
+  CountryId   Char(64)
+  CurrencyId  Char(4)
+  USId        Char(16)
+  Tmstamp     timestamp
+
+KEY CountryKey PRIMARY
+  CountryId
+  CurrencyId
+
+LINK Country
+  CountryId
+
+LINK Currency
+  CurrencyId
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+
