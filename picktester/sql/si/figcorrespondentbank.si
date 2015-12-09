@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE FigCorrespondentBank
-    OPTIONS "lookup='Country CurrId RankType Rank SwiftAddress'" "descr='Fig Correspondent Banks'"
+    OPTIONS "lookup=Country CurrId RankType Rank SwiftAddress" "descr=Fig Correspondent Banks"
   Country      Char(64)
   CurrId       Char(4)
   RankType     Char(1)

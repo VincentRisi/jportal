@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE StaffQueuePerm
-    OPTIONS "descr='Staff Queue Permissions'"
+    OPTIONS "descr=Staff Queue Permissions"
   StaffId      Char(16)
   QueueId      Char(16)
   Status       byte (ViewOnly=0 ViewRoute=1)

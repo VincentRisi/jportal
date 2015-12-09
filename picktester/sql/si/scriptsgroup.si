@@ -5,10 +5,10 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE ScriptGroup
-    OPTIONS "lookup='ScriptName GroupId'" "descr='ScriptGroup'"
+    OPTIONS "lookup=ScriptName GroupId" "descr=ScriptGroup"
   ScriptName   char(64)
   GroupId      Char(16)
-  AccessType   byte (ReadWrite=0 ReadOnly=1 None=2)
+  AccessType   byte (l'ReadWrite'=0 l'ReadOnly'=1 l'None'=2)
   USId         Char(16)
   TmStamp      DateTime
 
@@ -25,7 +25,7 @@ PROC SelectOne
 PROC DeleteOne 
 
 PROC ListAll 
-OUTPUT le)
+OUTPUT 
   ScriptName Char(64)
   GroupId Char(16)
   AccessType byte

@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE BankAccount
-    OPTIONS "lookup='SwiftAddress CurrId AccountTypeId AccountNo'" "descr='Bank Accounts for Swift Currency and Type'"
+    OPTIONS "lookup=SwiftAddress CurrId AccountTypeId AccountNo" "descr=Bank Accounts for Swift Currency and Type"
   SwiftAddress  Char(11)
   CurrId        Char(4)
   AccountTypeId Char(16)

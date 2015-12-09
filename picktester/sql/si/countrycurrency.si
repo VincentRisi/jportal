@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE CountryCurrency
-    OPTIONS "descr='Country Currency Relationship'"
+    OPTIONS "descr=Country Currency Relationship"
   CountryId   Char(64)
   CurrencyId  Char(4)
   USId        Char(16)

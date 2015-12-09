@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE StreamFieldsDef
-    OPTIONS "descr='Stream Fields'"
+    OPTIONS "descr=Stream Fields"
   Id           Char(16)
   Name         Char(64)
   Descr        Char(256) NULL

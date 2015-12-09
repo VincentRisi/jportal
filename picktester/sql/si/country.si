@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE Country
-    OPTIONS "descr='Countries'" "show='Id'"
+    OPTIONS "descr=Countries" "show=Id"
   Id      Char(64)
   CodeId  Char(4)
   CurrId  Char(4)

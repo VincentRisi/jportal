@@ -4,8 +4,7 @@ OUTPUT   StreamType
 SERVER   npu
 SCHEMA   npud00
 
-TABLE StreamType
-    OPTIONS "descr='Stream Type'"
+TABLE StreamType OPTIONS "descr=Stream Type"
   Id Char(16)
   Descr Char(65) NULL
   USId         Char(16)

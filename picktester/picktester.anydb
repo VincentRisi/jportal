@@ -19,6 +19,33 @@ source
   ${source_dir}/sql/si/accounttype.si
   ${source_dir}/sql/si/almanacbank.si
   ${source_dir}/sql/si/almanaccorrespondent.si
+  ${source_dir}/sql/si/audits.si
+  ${source_dir}/sql/si/bankaccount.si
+  ${source_dir}/sql/si/bankcorrespondents.si
+  ${source_dir}/sql/si/bankfile.si
+  ${source_dir}/sql/si/country.si
+  ${source_dir}/sql/si/countrycurrency.si
+  ${source_dir}/sql/si/currency.si
+  ${source_dir}/sql/si/dates.si
+  ${source_dir}/sql/si/drivers.si
+  ${source_dir}/sql/si/fieldse1.si
+  ${source_dir}/sql/si/fieldsearchdef.si
+  ${source_dir}/sql/si/figcorrespondentbank.si
+  ${source_dir}/sql/si/finidcorrespondentrouting.si
+  ${source_dir}/sql/si/group.si
+  ${source_dir}/sql/si/lookup.si
+  ${source_dir}/sql/si/queue.si
+  ${source_dir}/sql/si/queuetype.si
+  ${source_dir}/sql/si/scriptsgroup.si
+  ${source_dir}/sql/si/sourcesystem.si
+  ${source_dir}/sql/si/staff.si
+  ${source_dir}/sql/si/staffgroup.si
+  ${source_dir}/sql/si/staffqueueperm.si
+  ${source_dir}/sql/si/streamfieldmsgrel.si
+  ${source_dir}/sql/si/streamfieldsdef.si
+  ${source_dir}/sql/si/streammessageformat.si
+  ${source_dir}/sql/si/streamtype.si
+  ${source_dir}/sql/si/testpack.si
 
 app        
   appfile  ${binary_dir}/app/parm/picktester.app

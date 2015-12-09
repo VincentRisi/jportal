@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE Drivers
-    OPTIONS "descr='Input and Output Putty Drivers'" "show='Descr'"
+    OPTIONS "descr=Input and Output Putty Drivers" "show=Descr"
   Id      Char(16)
   Descr   Char(256)
   Status  byte    (Active=0 Inactive=1 MarkForDelete=2)

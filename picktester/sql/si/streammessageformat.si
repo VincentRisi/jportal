@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE StreamMessageFormat
-    OPTIONS "descr='Stream Message Format'"
+    OPTIONS "descr=Stream Message Format"
   Id Char(16)
   Format Char(256) NULL
   USId         Char(16)

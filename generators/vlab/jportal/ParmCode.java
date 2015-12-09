@@ -89,6 +89,7 @@ public class ParmCode extends Generator
       +"key:"
       +"link:"
       +"long:"
+      +"lookup:"
       +"merge:"
       +"money:"
       +"multiple:"
@@ -127,6 +128,7 @@ public class ParmCode extends Generator
       +"userid:"
       +"userstamp:"
       +"utf8:"
+      +"value:"
       +"view:"
       +"wansi:"
       +"wansichar:"
@@ -396,9 +398,9 @@ public class ParmCode extends Generator
 	}
   private static String nameOf(Field field)
   {
-    String result = field.name;
+    String result = checkReserved(field.name);
     if (field.alias.length() > 0)
-      result = String.format("%s (%s)", field.name, field.alias);
+      result = String.format("%s (%s)", checkReserved(field.name), checkReserved(field.alias));
     return result;
   }
   private static String typeOf(Field field)

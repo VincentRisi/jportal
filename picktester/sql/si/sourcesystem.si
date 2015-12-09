@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE SourceSystem
-    OPTIONS "descr='System for Source'"
+    OPTIONS "descr=System for Source"
   ID         Char(16)
   Name       Char(256)
   Decription Char(256)

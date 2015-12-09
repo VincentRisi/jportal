@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE FinidCorrespondentRouting
-    OPTIONS "lookup='FinId RouteFinId'" "descr='Fig Correspondent Bank Routing'"
+    OPTIONS "lookup=FinId RouteFinId" "descr=Fig Correspondent Bank Routing"
   FinId             int
   Branchid          int
   RouteFinId        int
@@ -25,7 +25,11 @@ LINK AlmanacBank
   RouteFinId
   RouteBranchid
 
-PROC Insert     PROC Update     PROC SelectOne  PROC DeleteOne  
+PROC Insert     
+PROC Update     
+PROC SelectOne  
+PROC DeleteOne  
+
 
 
 //used by router,ide

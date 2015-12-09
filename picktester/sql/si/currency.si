@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE Currency
-    OPTIONS "descr='Currencies'" "show='Id'"
+    OPTIONS "descr=Currencies" "show=Id"
   Id       Char(4)
   Descr    Char(64)
   Comments Char(256)

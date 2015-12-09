@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE Staff
-    OPTIONS "descr='Staff'" "show='Name'"
+    OPTIONS "descr=Staff" "show=Name"
   Id           Char(16)
   Name         Char(64)
   Description  Char(256)
@@ -22,7 +22,7 @@ PROC SelectOne
 PROC DeleteOne 
 
 PROC ListAll 
-OUTPUT le)
+OUTPUT 
   Id Char(16)
   Name Char(64)
   Description Char(256)

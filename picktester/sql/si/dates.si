@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 table Dates
-    OPTIONS "descr='Dates'"
+    OPTIONS "descr=Dates"
 
 DateType     byte (RunDate=0 ReleaseDate=1)
 Description  char(50)

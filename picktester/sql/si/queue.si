@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE Queue
-    OPTIONS "descr='Queues'" "show='Name'"
+    OPTIONS "descr=Queues" "show=Name"
   Id           Char(16)
   Name         Char(64)
   Descr        Char(256)

@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE BankFile
-    OPTIONS "lookup='SwiftAddress BankName BankTown BankType PhysicalCountry Status'" "nodomain" "descr='Bank File'" "show='BankName BankTown BankType'"
+    OPTIONS "lookup=SwiftAddress BankName BankTown BankType PhysicalCountry Status" "nodomain" "descr=Bank File" "show=BankName BankTown BankType"
   SwiftAddress     Char(11)
   BankName         Char(105)
   BankTown         Char(35)
@@ -76,7 +76,7 @@ INPUT
    PostalAddr3       Char (35)
    PostalAddr4       Char (35)
    PostalCountry     Char (35)
-   Status            smallint
+   Status            short
    USId         Char(16)
 sqlcode
    UPDATE

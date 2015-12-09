@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE Grps
-    OPTIONS "descr='Groups'"
+    OPTIONS "descr=Groups"
   GroupId      Char(16)
   Name         Char(64)
   USId         Char(16)
@@ -21,7 +21,7 @@ PROC SelectOne
 PROC DeleteOne 
 
 PROC ListAll 
-OUTPUT le)
+OUTPUT 
   GroupId Char(16)
   Name Char(64)
 sqlcode

@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE FieldSearchDef
-    OPTIONS "lookup='Tag'"
+    OPTIONS "lookup=Tag"
   Id Char(16)
   Tag Char(256)
   USId         Char(16)

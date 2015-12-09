@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE QueueType
-    OPTIONS "descr='Queue Types'" "show='Name'"
+    OPTIONS "descr=Queue Types" "show=Name"
   Id           int        (Message=0 Stream=1 Response=2 Reply=3)
   Name         Char(64)
   Descr        Char(256)

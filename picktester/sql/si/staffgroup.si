@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE StaffGroup
-    OPTIONS "lookup='StaffId GroupId'" "descr='Staff Group Relationship'"
+    OPTIONS "lookup=StaffId GroupId" "descr=Staff Group Relationship"
   StaffId      Char(16)
   GroupId      Char(16)
   USId         Char(16)
@@ -69,14 +69,14 @@ endcode
 PROC List
 INPUT
   StaffId      Char(16)
-OUTPUT le)
+OUTPUT 
   GroupId      Char(16)
 sqlcode
   select GroupId from StaffGroup where StaffId = :StaffId
 endcode
 
 PROC ListAll 
-OUTPUT le)
+OUTPUT 
   StaffId Char(16)
   GroupId Char(16)
 sqlcode

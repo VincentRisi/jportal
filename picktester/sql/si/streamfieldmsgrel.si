@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE StreamFieldMsgRel
-    OPTIONS "descr='Stream Message Field Relations'"
+    OPTIONS "descr=Stream Message Field Relations"
   FieldId     Char(16)
   StreamId    Char(16)
   USId        Char(16)

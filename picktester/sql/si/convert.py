@@ -89,15 +89,18 @@ for file in sorted(glob.glob('../../si/*.si')):
       p = line.upper().find('TINYINT')  
       if p > 0:
         line = '%sbyte%s' % (line[:p], line[p+7:])
+      p = line.upper().find('SMALLINT')  
+      if p > 0:
+        line = '%sshort%s' % (line[:p], line[p+8:])
       p = line.upper().find('$PYTHON')  
       if p > 0:
         line = '%s%s' % (line[:p], line[p+7:])
       p = line.upper().find('(NOIDL)')  
       if p > 0:
-        line = '%s%s' % (line[:p], line[p+10:])
+        line = '%s%s' % (line[:p], line[p+7:])
       p = line.upper().find('(MULTIPLE)')  
       if p > 0:
-        line = '%s%s' % (line[:p], line[p+7:])
+        line = '%s%s' % (line[:p], line[p+10:])
       p = line.upper().find('DELETE CASCADE')  
       if p >= 0:
         ofile.write('// %s' % (line))

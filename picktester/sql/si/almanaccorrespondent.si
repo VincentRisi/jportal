@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE AlmanacCorrespondent
-    OPTIONS "lookup='FinId CorrCurrency CorrFinId CorrBranchId CorrSwiftAddress Status'" "descr='Almanac Correspondents'"
+    OPTIONS "lookup=FinId CorrCurrency CorrFinId CorrBranchId CorrSwiftAddress Status" "descr=Almanac Correspondents"
   FinId            int
   CorrCurrency     Char(4)
   CorrFinId        int
@@ -89,7 +89,7 @@ PROC GetSwiftList
 INPUT
    FinId            int
    CorrCurrency     Char(4)
-OUTPUT le)
+OUTPUT 
    CorrSwiftAddress Char(11)
    Status           byte     // (Active=0 Inactive=1 MarkForDelete=2)
 sqlcode

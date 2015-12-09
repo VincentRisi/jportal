@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE Lookup
-    OPTIONS "lookup='Name Ref'" "descr='User Lookup Table'"
+    OPTIONS "lookup=Name Ref" "descr=User Lookup Table"
   Name         Char(255)
   Ref(Refs)    Char(255)
   Value        Char(255)
@@ -25,7 +25,7 @@ PROC DeleteAll
 PROC SelectList  
 INPUT
   Name         Char(255)
-OUTPUT le)
+OUTPUT 
   Ref(Refs)    Char(255)
   Value        Char(255)
 sqlcode
@@ -51,7 +51,7 @@ sqlcode
 endcode
 
 PROC NameList 
-OUTPUT le)
+OUTPUT 
   Name Char(256)
 sqlcode
   SELECT distinct Name FROM Lookup

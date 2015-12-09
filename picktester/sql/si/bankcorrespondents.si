@@ -5,7 +5,7 @@ SERVER   npu
 SCHEMA   npud00
 
 TABLE BankCorrespondents
-    OPTIONS "lookup='SwiftAddress CurrId Correspondent'" "descr='Bank Correspondent '"
+    OPTIONS "lookup=SwiftAddress CurrId Correspondent" "descr=Bank Correspondent "
   SwiftAddress  Char(11)
   CurrId        Char(4)
   Correspondent Char(11)
@@ -40,7 +40,7 @@ PROC Get
 INPUT
   SwiftAddress  Char(11)
   CurrId        Char(4)
-OUTPUT le)
+OUTPUT 
   Correspondent Char(11)
 sqlcode
   SELECT
