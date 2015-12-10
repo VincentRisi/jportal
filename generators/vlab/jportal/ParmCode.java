@@ -130,6 +130,7 @@ public class ParmCode extends Generator
       +"utf8:"
       +"value:"
       +"view:"
+      +"viewonly:"
       +"wansi:"
       +"wansichar:"
       +"wchar:"
@@ -271,10 +272,12 @@ public class ParmCode extends Generator
       String checker="";
       if (field.checkValue.length() > 0)
         checker = String.format(" CHECK \"%s\"", field.checkValue);
+      
       outData.println(String.format("%s%-28s %s%s%s"
           , commentOf(field)
           , nameOf(field)
           , typeOf(field)
+          , enumListOf(field)
           , field.isNull ? " NULL" : ""
           , checker
           ));
@@ -301,6 +304,41 @@ public class ParmCode extends Generator
       generateKeys(table, opts, outData, outLog);
     if (table.links.size() > 0)
       generateLinks(table, opts, outData, outLog);
+  }
+  private static String enumListOf(Field field)
+  {
+    String result = "";
+    String d1="(", d2=")";
+    if (field.type == Field.CHAR)
+    {
+      d1="{"; 
+      d2="}";
+    }
+    if (field.enums.size() > 0)
+    {
+      for (int i=0; i<field.enums.size(); i++)
+      {
+        Enum en = field.enums.get(i);
+        result = String.format("%s%s%s=%d", result, i==0?d1:", ", checkReserved(en.name), en.value);
+      }
+      result += d2;
+    }
+    else if (field.valueList.size() > 0)
+    {
+      for (int i=0; i<field.valueList.size(); i++)
+      {
+        String en = field.valueList.get(i);
+        String comma = d1;
+        String[] ens = en.split("=");
+        if (ens.length == 2)
+        {
+          result = String.format("%s%s%s=%s", result, comma, checkReserved(ens[0]), ens[1]);
+          comma = ", ";
+        }
+      }
+      result += d2;
+    }
+    return result;
   }
   private static void generateTable(Table table, String output, PrintWriter outLog)
   {
