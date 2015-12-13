@@ -1,17 +1,18 @@
 project (jportal_picktester)
 
 anydbMake(jportal_picktester ${PICKTESTER_SOURCE_DIR}/picktester.anydb "${PICKTESTER_BINARY_DIR}/parm/picktester.bin")
-anydbMake(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb "${PICKTESTER_BINARY_DIR}/sql")
 
-set (psql_list #in build order
+anydbMake(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb "${PICKTESTER_BINARY_DIR}/sql/pgDDl/FieldSearch.sql")
+
+set (psql_list
   QueueType Drivers SourceSystem StreamFieldsDef StreamMessageFormat Staff
-  Currency BankFile AccountType Grps StreamType FieldSearchDef BlobData Domain
+  Currency BankFile AccountType Grps StreamType FieldSearchDef BlobData
   StreamFieldMsgRel StaffQueuePerm FileOutput FileInput StaffQueueConfig Message
   CountryCurrency Audits BankAccount QueueRecovery ScriptGroup StaffConfigName
   ScriptVersion Comments Lookup Routing FinidCorrespondentRouting Reply
   TestMessage StaffGroup BankCorrespondents AlmanacBank AlmanacCorrespondent
   FigCorrespondentBank StaffProfile TestPackMessage TestpackPayment TestPayment
-  Scripts TestPack Response Dates StreamFields Country BCurcy Persistent Summary
+  Scripts TestPack Response Dates StreamFields Country Persistent Summary
   Queue Streams Audittrail Fields FieldSearch
 )
 

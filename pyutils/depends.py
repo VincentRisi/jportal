@@ -35,8 +35,9 @@ def process(line, in_filename):
         return
     if words[0] == 'table':
         tableName = words[1]
-        tableList[tableName] = [in_filename, outputName]
-        print in_filename, outputName
+        if outputName != 'Domain':
+            tableList[tableName] = [in_filename, outputName]
+            print in_filename, outputName
     elif words[0] == 'link':
         linkName = words[1]
         if tableName != linkName:

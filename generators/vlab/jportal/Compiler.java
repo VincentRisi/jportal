@@ -24,11 +24,14 @@ import java.lang.reflect.Method;
 
 public class Compiler
 {
-  private static PrintWriter outLog;
-  private static String inputs;
-  private static String nubDir;
-private static BufferedReader bufferedReader;
-  public static int compile(String source, String args[], PrintWriter outLog) throws FileNotFoundException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException
+  private static PrintWriter    outLog;
+  private static String         inputs;
+  private static String         nubDir;
+  private static BufferedReader bufferedReader;
+
+  public static int compile(String source, String args[], PrintWriter outLog)
+      throws FileNotFoundException, ClassNotFoundException, SecurityException, NoSuchMethodException,
+      IllegalArgumentException, IllegalAccessException, InvocationTargetException
   {
     String[] pieces = source.split("\\+");
     Database database = null;
@@ -47,11 +50,11 @@ private static BufferedReader bufferedReader;
         database = db;
       else
       {
-        for (int t=0; t<db.tables.size(); t++)
+        for (int t = 0; t < db.tables.size(); t++)
           database.tables.addElement(db.tables.elementAt(t));
-        for (int s=0; s<db.sequences.size(); s++)
+        for (int s = 0; s < db.sequences.size(); s++)
           database.sequences.addElement(db.sequences.elementAt(s));
-        for (int v=0; v<db.views.size(); v++)
+        for (int v = 0; v < db.views.size(); v++)
           database.views.addElement(db.views.elementAt(v));
       }
     }
@@ -59,25 +62,24 @@ private static BufferedReader bufferedReader;
       return 1;
     outLog.flush();
     String output = "";
-    for (int i=0; i<args.length; i++)
+    for (int i = 0; i < args.length; i++)
     {
       if (args[i].equals("-o"))
       {
-        if (i+1 < args.length)
+        if (i + 1 < args.length)
         {
           output = args[++i];
           char term = '\\';
           if (output.indexOf('/') != -1)
             term = '/';
-          char ch = output.charAt(output.length()-1);
+          char ch = output.charAt(output.length() - 1);
           if (ch != term)
             output = output + term;
         }
         continue;
-      }
-      else if (args[i].equals("-l"))
+      } else if (args[i].equals("-l"))
       {
-        if (i+1 < args.length)
+        if (i + 1 < args.length)
         {
           String log = args[++i];
           OutputStream outFile = new FileOutputStream(log);
@@ -85,10 +87,9 @@ private static BufferedReader bufferedReader;
           outLog = new PrintWriter(outFile);
         }
         continue;
-      }
-      else if (args[i].equals("-f"))
+      } else if (args[i].equals("-f"))
       {
-        if (i+1 < args.length)
+        if (i + 1 < args.length)
         {
           String flag = args[++i];
           database.flags.addElement(flag);
@@ -96,15 +97,16 @@ private static BufferedReader bufferedReader;
         continue;
       }
       outLog.println(args[i]);
-      Class<?> c = Class.forName("vlab.jportal."+args[i]);
-      Class<?> d[] = {database.getClass(), output.getClass(), outLog.getClass()};
+      Class<?> c = Class.forName("vlab.jportal." + args[i]);
+      Class<?> d[] = { database.getClass(), output.getClass(), outLog.getClass() };
       Method m = c.getMethod("generate", d);
-      Object o[] = {database, output, outLog};
+      Object o[] = { database, output, outLog };
       m.invoke(database, o);
     }
     outLog.flush();
     return 0;
   }
+
   private static String[] frontSwitches(String[] args) throws IOException
   {
     String log = "";
@@ -132,7 +134,7 @@ private static BufferedReader bufferedReader;
       }
       if (args.length > i && args[i].equals("-f"))
       {
-        if (i+1 < args.length)
+        if (i + 1 < args.length)
         {
           String fileName = args[++i];
           FileReader fileReader = new FileReader(fileName);
@@ -146,8 +148,7 @@ private static BufferedReader bufferedReader;
               inputs = inputs + semicolon + line;
               semicolon = ";";
             }
-          }
-          catch (NullPointerException e2)
+          } catch (NullPointerException e2)
           {
           }
         }
@@ -158,23 +159,25 @@ private static BufferedReader bufferedReader;
     }
     if (args.length > i && inputs.length() == 0)
     {
-      inputs = args[i]; 
+      inputs = args[i];
       i++;
     }
-    String[] newargs = new String[args.length-i];
+    String[] newargs = new String[args.length - i];
     System.arraycopy(args, i, newargs, 0, newargs.length);
     return newargs;
   }
+
   private static String abbreviate(String inputs)
   {
     String[] sources = inputs.split(";");
     if (sources.length > 5)
-      return sources[0] + " ... " + sources[sources.length-1];
+      return sources[0] + " ... " + sources[sources.length - 1];
     return inputs;
   }
+
   /**
-  * Reads input from stored repository
-  */
+   * Reads input from stored repository
+   */
   public static void main(String args[])
   {
     try
@@ -184,19 +187,20 @@ private static BufferedReader bufferedReader;
       nubDir = "";
       args = frontSwitches(args);
       System.out.println(abbreviate(inputs));
-      if (args.length < 2)
+      if (args.length < 1)
       {
         outLog.println("usage java jportal.Compiler -l log -n nubDir (- f inputs | infile) (generators)+");
         outLog.println("for example to create DDL for Sql Server and Java, VB and Delphi code");
         outLog.println();
-        outLog.println("java jportal.Compiler airline.si -o ./dir1 MSSqlDDL -o ./dir2 JavaCode -o ./dir3 VBCode -o ./dir4 DelphiCode");
+        outLog.println(
+            "java jportal.Compiler airline.si -o ./dir1 MSSqlDDL -o ./dir2 JavaCode -o ./dir3 VBCode -o ./dir4 DelphiCode");
         outLog.flush();
         System.exit(1);
       }
       outLog.println(inputs);
       outLog.flush();
       String[] sources = inputs.split(";");
-      for (int f=0; f<sources.length; f++)
+      for (int f = 0; f < sources.length; f++)
       {
         int rc = compile(sources[f], args, outLog);
         outLog.flush();
@@ -204,11 +208,10 @@ private static BufferedReader bufferedReader;
           System.exit(1);
       }
       System.exit(0);
-    }
-    catch (Throwable e)
+    } catch (Throwable e)
     {
       e.printStackTrace();
-      outLog.println("Error: "+e);
+      outLog.println("Error: " + e);
       outLog.flush();
       System.exit(1);
     }

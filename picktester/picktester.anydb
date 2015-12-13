@@ -12,6 +12,7 @@ binary_dir=/main/jportal/build/picktester
 jportal
   ParmCode   ${binary_dir}/sql/parm  %a.pi
   PostgreDDL ${binary_dir}/sql/pgDDL %a.sql
+  MSSqlDDL   ${binary_dir}/sql/msDDL %a.sql
   AdoCSCode  ${binary_dir}/sql/cs    %i.cs
   JavaCode   ${binary_dir}/sql/java  %iRec.java
 

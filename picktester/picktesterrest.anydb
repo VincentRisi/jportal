@@ -11,25 +11,20 @@ binary_dir=/main/jportal/build/picktester
 
 jportal
   PostgreDDL ${binary_dir}/sql/pgDDL %a.sql
+  MSSqlDDL   ${binary_dir}/sql/msDDL %a.sql
   AdoCSCode  ${binary_dir}/sql/cs    %i.cs
   JavaCode   ${binary_dir}/sql/java  %iRec.java
 
 source
   ${source_dir}/sql/si/audittrail.si
-  ${source_dir}/sql/si/bankaccproc.si
-  ${source_dir}/sql/si/bankfileproc.si
-  ${source_dir}/sql/si/bcurcy.si
   ${source_dir}/sql/si/blobdata.si
   ${source_dir}/sql/si/comments.si
-  ${source_dir}/sql/si/commentsproc.si
   ${source_dir}/sql/si/domain.si
   ${source_dir}/sql/si/fields.si
   ${source_dir}/sql/si/fieldse1.si
   ${source_dir}/sql/si/fieldsearch.si
-  ${source_dir}/sql/si/figcorrbankproc.si
   ${source_dir}/sql/si/fileinput.si
   ${source_dir}/sql/si/fileoutput.si
-  ${source_dir}/sql/si/lookupproc.si
   ${source_dir}/sql/si/message.si
   ${source_dir}/sql/si/persistent.si
   ${source_dir}/sql/si/queuerecovery.si
@@ -40,12 +35,9 @@ source
   ${source_dir}/sql/si/scripts.si
   ${source_dir}/sql/si/scriptversion.si
   ${source_dir}/sql/si/staffconfigname.si
-  ${source_dir}/sql/si/staffconfignameproc.si
   ${source_dir}/sql/si/staffprofile.si
   ${source_dir}/sql/si/staffqueueconfig.si
-  ${source_dir}/sql/si/staffqueueconfigproc.si
   ${source_dir}/sql/si/staffqueueperm.si
-  ${source_dir}/sql/si/staffqueuepermproc.si
   ${source_dir}/sql/si/streamfields.si
   ${source_dir}/sql/si/streams.si
   ${source_dir}/sql/si/summary.si
