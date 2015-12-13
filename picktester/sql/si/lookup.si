@@ -58,19 +58,19 @@ sqlcode
 endcode
 
 sqldata
-insert into lookup values ('ACCOUNT SYSTEM'  , 'CA'     , '001'  , USER, current_timestamp);
-insert into lookup values ('ACCOUNT SYSTEM'  , 'GL'     , '009'  , USER, current_timestamp);
-insert into lookup values ('ACCOUNT SYSTEM'  , 'MCA'    , '?'    , USER, current_timestamp);
-insert into lookup values ('ACCOUNT SYSTEM'  , 'SA'     , '002'  , USER, current_timestamp);
-insert into lookup values ('TRANSACTION TYPE', 'DT'     , 'YES'  , USER, current_timestamp);
-insert into lookup values ('TRANSACTION TYPE', 'MCT'    , 'YES'  , USER, current_timestamp);
-insert into lookup values ('TRANSACTION TYPE', 'OT'     , 'YES'  , USER, current_timestamp);
-insert into lookup values ('TRANSACTION TYPE', 'PRODCHG', 'YES'  , USER, current_timestamp);
-insert into lookup values ('VAT'             , 'NOVAT'  , '0.00%', USER, current_timestamp);
-insert into lookup values ('VAT'             , 'VAT'    , '14.00', USER, current_timestamp);
-insert into lookup values ('WASTE TRAN CODE' , 'DT'     , '1234' , USER, current_timestamp);
-insert into lookup values ('WASTE TRAN CODE' , 'OT'     , '5678' , USER, current_timestamp);
-insert into lookup values ('WASTE TRAN CODE' , 'RT'     , '8765' , USER, current_timestamp);
+insert into vlab.lookup values ('ACCOUNT SYSTEM'  , 'CA'     , '001'  , USER, current_timestamp);
+insert into vlab.lookup values ('ACCOUNT SYSTEM'  , 'GL'     , '009'  , USER, current_timestamp);
+insert into vlab.lookup values ('ACCOUNT SYSTEM'  , 'MCA'    , '?'    , USER, current_timestamp);
+insert into vlab.lookup values ('ACCOUNT SYSTEM'  , 'SA'     , '002'  , USER, current_timestamp);
+insert into vlab.lookup values ('TRANSACTION TYPE', 'DT'     , 'YES'  , USER, current_timestamp);
+insert into vlab.lookup values ('TRANSACTION TYPE', 'MCT'    , 'YES'  , USER, current_timestamp);
+insert into vlab.lookup values ('TRANSACTION TYPE', 'OT'     , 'YES'  , USER, current_timestamp);
+insert into vlab.lookup values ('TRANSACTION TYPE', 'PRODCHG', 'YES'  , USER, current_timestamp);
+insert into vlab.lookup values ('VAT'             , 'NOVAT'  , '0.00%', USER, current_timestamp);
+insert into vlab.lookup values ('VAT'             , 'VAT'    , '14.00', USER, current_timestamp);
+insert into vlab.lookup values ('WASTE TRAN CODE' , 'DT'     , '1234' , USER, current_timestamp);
+insert into vlab.lookup values ('WASTE TRAN CODE' , 'OT'     , '5678' , USER, current_timestamp);
+insert into vlab.lookup values ('WASTE TRAN CODE' , 'RT'     , '8765' , USER, current_timestamp);
 commit;
 enddata
 

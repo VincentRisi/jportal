@@ -32,8 +32,8 @@ sqlcode
 endcode
 
 sqldata
-insert into grps values ('INTRSYS', 'Intrinsics Scripter', 'PUTTYIDE', current_timestamp);
-insert into grps values ('NEDPAYM', 'Nedpayment Scripter', 'PUTTYIDE', current_timestamp);
-insert into grps values ('ZARPAYM', 'Zarpayment Scripter', 'PUTTYIDE', current_timestamp);
+insert into vlab.grps values ('INTRSYS', 'Intrinsics Scripter', 'PUTTYIDE', current_timestamp);
+insert into vlab.grps values ('NEDPAYM', 'Nedpayment Scripter', 'PUTTYIDE', current_timestamp);
+insert into vlab.grps values ('ZARPAYM', 'Zarpayment Scripter', 'PUTTYIDE', current_timestamp);
 commit;
 enddata

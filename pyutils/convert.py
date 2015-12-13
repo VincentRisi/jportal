@@ -1,4 +1,11 @@
 import glob, os.path, os
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("-b", "--buildPath",  dest="buildPath",  default="/main/jportal/picktester/sql")
+parser.add_option("-s", "--sourcePath", dest="sourcePath", default="/main/jportal/picktester")
+parser.add_option("-p", "--parmCheck",  dest="parmCheck",  default=False, action="store_true")
+(options, args) = parser.parse_args()
 
 top = '''\
 DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
@@ -8,13 +15,14 @@ SERVER   npu
 SCHEMA   vlab
 '''
 
-for file in sorted(glob.glob('../../si/*.si')):
-  print file
-  infile = open(file, 'r')
+for in_filename in sorted(glob.glob('%s/si/*.si' % (options.sourcePath))):
+  print in_filename
+  infile = open(in_filename, 'r')
   lines = infile.readlines()
   infile.close()
-  path, basename = os.path.split(file)
-  if os.path.exists(basename):
+  path, basename = os.path.split(in_filename)
+  out_filename = '%s/si/%s' % (options.buildPath, basename)
+  if os.path.exists(out_filename):
     continue
   state = START = 1;TABLE = 2;SQLCODE = 3
   parm = False
@@ -22,6 +30,10 @@ for file in sorted(glob.glob('../../si/*.si')):
   nodomain = None
   descr = None
   show = None
+  ofile = None
+  if options.parmCheck == False:
+    parm = True
+    ofile = open(out_filename, 'w')
   has_option = False
   for line in lines:
     line = line.replace('#', '//').replace('\r','')
@@ -31,9 +43,9 @@ for file in sorted(glob.glob('../../si/*.si')):
         ofile.write(line)
       continue
     kw = fields[0].upper()
-    if kw == '$PARMS':
+    if parm == False and kw == '$PARMS':
       parm = True
-      ofile = open(basename, 'w')
+      ofile = open(out_filename, 'w')
       continue
     if kw == 'TABLE':
       if parm == False:
@@ -111,5 +123,5 @@ for file in sorted(glob.glob('../../si/*.si')):
         continue
       ofile.write(line)  
   if parm == True:    
-     ofile.close()      
+    ofile.close()
   #break

@@ -55,8 +55,6 @@ sqlcode
       SwiftAddress = :SwiftAddress
 endcode
 
-//  INSERT INTO BankFile VALUES('ATS', 'ATS', ' ', 1, 'DEFINED', current_timestamp);
-
 // Used By : iBicAddress
 PROC Upd
 INPUT

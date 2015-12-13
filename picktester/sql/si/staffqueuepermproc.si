@@ -1,0 +1,36 @@
+DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
+PACKAGE  vlab
+OUTPUT   StaffQueuePerm
+SERVER   npu
+SCHEMA   vlab
+
+TABLE StaffQueuePerm
+
+Proc GetAll
+INPUT
+  InStaffId     char(16)
+OUTPUT
+  QueueId       char(16)
+  Status        byte
+sqlcode
+   Select QueueId
+	 ,Status
+   From StaffQueuePerm
+   Where StaffId = :InStaffId
+endcode
+
+PROC UpdStatus
+INPUT
+   InStaffId   char(16)
+   InQueueId     char(16)
+   InStatus    byte
+sqlcode
+   UPDATE
+     StaffQueuePerm
+   Set
+     Status = :InStatus
+   Where	
+     StaffId = :InStaffId and
+     QueueId = :InQueueId
+endcode
+

@@ -103,20 +103,20 @@ sqlcode
 endcode
 
 sqldata
-  insert into ScriptGroup 
-    (select unique name, 'INTRSYS', 0, 'PUTTYIDE', current_timestamp 
-     from ScriptVersion 
+  insert into vlab.ScriptGroup 
+    (select distinct name, 'INTRSYS', 0, 'PUTTYIDE', current_timestamp 
+     from vlab.ScriptVersion 
      where name like 'DB_%' 
      or name like 'SYS_%');
-  insert into ScriptGroup 
-    (select unique name, 'NEDPAYM', 0, 'PUTTYIDE', current_timestamp 
-     from ScriptVersion 
+  insert into vlab.ScriptGroup 
+    (select distinct name, 'NEDPAYM', 0, 'PUTTYIDE', current_timestamp 
+     from vlab.ScriptVersion 
      where name not like 'DB_%' 
      and name not like 'SYS_%'
      and name not like 'ZAR_%');
-  insert into ScriptGroup 
-    (select unique name, 'ZARPAYM', 0, 'PUTTYIDE', current_timestamp 
-     from ScriptVersion 
+  insert into vlab.ScriptGroup 
+    (select distinct name, 'ZARPAYM', 0, 'PUTTYIDE', current_timestamp 
+     from vlab.ScriptVersion 
      where name like 'ZAR_%');
   commit;
 enddata

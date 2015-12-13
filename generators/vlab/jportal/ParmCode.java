@@ -344,8 +344,8 @@ public class ParmCode extends Generator
   {
     try
     {
-      outLog.println("Code: " + output + table.useName() + ".pi");
-      OutputStream outFile = new FileOutputStream(output + table.useName() + ".pi");
+      outLog.println("Code: " + output + table.useName().toLowerCase() + ".pi");
+      OutputStream outFile = new FileOutputStream(output + table.useName().toLowerCase() + ".pi");
       try
       {
         PrintWriter outData = new PrintWriter(outFile);

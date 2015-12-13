@@ -21,11 +21,11 @@ PROC SelectOne
 PROC DeleteOne
 
 sqldata
-INSERT INTO Drivers VALUES ('TCPIN'   , 'TCPIN'   , 0, 'PreDefined', current_timestamp);
-INSERT INTO Drivers VALUES ('NONE'   , 'NONE'   , 0, 'PreDefined', current_timestamp);
-INSERT INTO Drivers VALUES ('TCPOUT'  , 'TCPOUT'  , 0, 'PreDefined', current_timestamp);
-INSERT INTO Drivers VALUES ('ROUTER'  , 'ROUTER'  , 0, 'PreDefined', current_timestamp);
-INSERT INTO Drivers VALUES ('SAFFYSND', 'SAFFYSND', 0, 'PreDefined', current_timestamp);
-INSERT INTO Drivers VALUES ('SAFFYRCV', 'SAFFYRCV', 0, 'PreDefined', current_timestamp);
-INSERT INTO Drivers VALUES ('TIBOSSND', 'TIBOSSND', 0, 'PreDefined', current_timestamp);
+INSERT INTO vlab.Drivers VALUES ('TCPIN'   , 'TCPIN'   , 0, 'PreDefined', current_timestamp);
+INSERT INTO vlab.Drivers VALUES ('NONE'   , 'NONE'   , 0, 'PreDefined', current_timestamp);
+INSERT INTO vlab.Drivers VALUES ('TCPOUT'  , 'TCPOUT'  , 0, 'PreDefined', current_timestamp);
+INSERT INTO vlab.Drivers VALUES ('ROUTER'  , 'ROUTER'  , 0, 'PreDefined', current_timestamp);
+INSERT INTO vlab.Drivers VALUES ('SAFFYSND', 'SAFFYSND', 0, 'PreDefined', current_timestamp);
+INSERT INTO vlab.Drivers VALUES ('SAFFYRCV', 'SAFFYRCV', 0, 'PreDefined', current_timestamp);
+INSERT INTO vlab.Drivers VALUES ('TIBOSSND', 'TIBOSSND', 0, 'PreDefined', current_timestamp);
 enddata

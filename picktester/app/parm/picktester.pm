@@ -1,7 +1,7 @@
 APPLICATION ParamControl 'PickTester Parameter Control Application'
-SERVER   '10.3.1.20/orcl'
-USER     'vlab'
-PASSWORD 'password'
+SERVER   'localhost/postgres'
+USER     'postgres'
+PASSWORD 'postgres'
 REGISTRY 'VLab\ParamControl\PickTester'
 VERSION  '1.0'
 

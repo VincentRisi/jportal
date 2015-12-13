@@ -23,7 +23,7 @@ tableName  = ''
 linkName   = ''
 skip       = False
 
-def process(line, filename):
+def process(line, in_filename):
     global tableName, outputName, linkName, skip
     if skip == True:
         return
@@ -35,8 +35,8 @@ def process(line, filename):
         return
     if words[0] == 'table':
         tableName = words[1]
-        tableList[tableName] = [filename, outputName]
-        print filename, outputName
+        tableList[tableName] = [in_filename, outputName]
+        print in_filename, outputName
     elif words[0] == 'link':
         linkName = words[1]
         if tableName != linkName:
@@ -48,7 +48,7 @@ def process(line, filename):
                 linksFrom[linkName] = []
             if linksFrom[linkName].__contains__(tableName) == False:
                 linksFrom[linkName].append(tableName)
-            tableLink[tableName] = filename
+            tableLink[tableName] = in_filename
 
 opts = {}
 opts['host']=options.hostName
@@ -96,10 +96,10 @@ droporder  = open('%s/droporder.lst'  % (options.buildPath), 'wt')
 allsi = []
 for si_file in glob.glob(options.wildCard):
     allsi.append(si_file)
-for filename in allsi:
-    head, tail = os.path.split(filename)
+for in_filename in allsi:
+    head, tail = os.path.split(in_filename)
     skip = False
-    infile = open(filename, 'rt')
+    infile = open(in_filename, 'rt')
     for line in infile:
         process(line, tail)
     infile.close()
