@@ -1,0 +1,28 @@
+DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
+PACKAGE  vlab
+OUTPUT   StreamFieldMsgRel
+SERVER   npu
+SCHEMA   vlab
+
+TABLE StreamFieldMsgRel
+    OPTIONS "descr=Stream Message Field Relations"
+  FieldId     Char(16)
+  StreamId    Char(16)
+  USId        Char(16)
+  TmStamp     TimeStamp
+
+KEY StreamFieldMsgRelKey PRIMARY
+  FieldId
+  StreamId
+
+LINK StreamFieldsDef
+  FieldId
+//   DELETE CASCADE
+
+LINK StreamMessageFormat
+  StreamId
+//   DELETE CASCADE
+
+PROC Insert
+PROC DeleteOne
+
