@@ -2,7 +2,7 @@ DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
 PACKAGE  vlab
 OUTPUT   BankFile
 SERVER   npu
-SCHEMA   npud00
+SCHEMA   vlab
 
 TABLE BankFile
     OPTIONS "lookup=SwiftAddress BankName BankTown BankType PhysicalCountry Status" "nodomain" "descr=Bank File" "show=BankName BankTown BankType"
@@ -55,7 +55,7 @@ sqlcode
       SwiftAddress = :SwiftAddress
 endcode
 
-//  INSERT INTO BankFile VALUES('ATS', 'ATS', ' ', 1, 'DEFINED', SYSDATE);
+//  INSERT INTO BankFile VALUES('ATS', 'ATS', ' ', 1, 'DEFINED', current_timestamp);
 
 // Used By : iBicAddress
 PROC Upd
@@ -99,7 +99,7 @@ sqlcode
       ,PostalCountry   = :PostalCountry  
       ,Status = :Status
       ,USId = :USId
-      ,TMstamp = SYSDATE
+      ,TMstamp = current_timestamp
    WHERE
       SwiftAddress = :SwiftAddress
 endcode

@@ -5,7 +5,7 @@
 project binuc
 
 source_dir=/main/jportal/binuc
-binary_dir=${source_dir}/build
+binary_dir=/main/jportal/build/binuc
 
 crackle  
   PopUbiServer ${binary_dir}/idl/server %lserver.cpp

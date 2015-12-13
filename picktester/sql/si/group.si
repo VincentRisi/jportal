@@ -2,7 +2,7 @@ DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
 PACKAGE  vlab
 OUTPUT   Grps
 SERVER   npu
-SCHEMA   npud00
+SCHEMA   vlab
 
 TABLE Grps
     OPTIONS "descr=Groups"
@@ -32,8 +32,8 @@ sqlcode
 endcode
 
 sqldata
-insert into grps values ('INTRSYS', 'Intrinsics Scripter', 'PUTTYIDE', SYSDATE);
-insert into grps values ('NEDPAYM', 'Nedpayment Scripter', 'PUTTYIDE', SYSDATE);
-insert into grps values ('ZARPAYM', 'Zarpayment Scripter', 'PUTTYIDE', SYSDATE);
+insert into grps values ('INTRSYS', 'Intrinsics Scripter', 'PUTTYIDE', current_timestamp);
+insert into grps values ('NEDPAYM', 'Nedpayment Scripter', 'PUTTYIDE', current_timestamp);
+insert into grps values ('ZARPAYM', 'Zarpayment Scripter', 'PUTTYIDE', current_timestamp);
 commit;
 enddata

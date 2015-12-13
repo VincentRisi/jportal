@@ -2,7 +2,7 @@ DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
 PACKAGE  vlab
 OUTPUT   TestPack
 SERVER   npu
-SCHEMA   npud00
+SCHEMA   vlab
 
 TABLE   TestPack
     OPTIONS "descr=Test Packs"
@@ -80,7 +80,7 @@ PROC    Count
 //  DECLARE
 //    WCount Number(9);
 //  BEGIN
-//    select to_char(sysdate, 'YYYYMMDDHH24MISS') into :TmStamp from dual;
+//    select to_char(current_timestamp, 'YYYYMMDDHH24MISS') into :TmStamp from dual;
 //    select count(*) into WCount from TestMessage where Id = :MessageId;
 //    if WCount = 0 then
 //      insert into TestMessage

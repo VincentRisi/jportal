@@ -7,7 +7,7 @@
 project idl2tester
 
 source_dir=/main/jportal/idl2tester
-binary_dir=${source_dir}/build
+binary_dir=/main/jportal/build/idl2tester
 
 jportal
   CliCCode           ${binary_dir}/sql/c           %l.cpp %l.sh

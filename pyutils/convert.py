@@ -5,7 +5,7 @@ DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
 PACKAGE  vlab
 OUTPUT   %s
 SERVER   npu
-SCHEMA   npud00
+SCHEMA   vlab
 '''
 
 for file in sorted(glob.glob('../../si/*.si')):

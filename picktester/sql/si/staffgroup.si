@@ -2,7 +2,7 @@ DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
 PACKAGE  vlab
 OUTPUT   StaffGroup
 SERVER   npu
-SCHEMA   npud00
+SCHEMA   vlab
 
 TABLE StaffGroup
     OPTIONS "lookup=StaffId GroupId" "descr=Staff Group Relationship"
@@ -32,7 +32,7 @@ INPUT
   USId         Char(16)
 sqlcode
   insert into StaffGroup
-    (select Id, :GroupId, :USId, SYSDATE
+    (select Id, :GroupId, :USId, current_timestamp
      from Staff
      where Id in ($StaffList(40960)))
 endcode
@@ -52,7 +52,7 @@ INPUT
   USId         Char(16)
 sqlcode
   insert into StaffGroup
-    (select :StaffId, GroupId, :USId, SYSDATE
+    (select :StaffId, GroupId, :USId, current_timestamp
      from Grps
      where GroupId in ($GroupList(40960)))
 endcode
@@ -89,8 +89,8 @@ endcode
 
 
 sqldata
-insert into StaffGroup values ('PUTTYIDE', 'INTRSYS', 'PUTTYIDE', SYSDATE);
-insert into StaffGroup (select Staff.ID, 'NEDPAYM', 'PUTTYIDE', SYSDATE);
-insert into StaffGroup (select Staff.ID, 'ZARPAYM', 'PUTTYIDE', SYSDATE);
+insert into StaffGroup values ('PUTTYIDE', 'INTRSYS', 'PUTTYIDE', current_timestamp);
+insert into StaffGroup (select Staff.ID, 'NEDPAYM', 'PUTTYIDE', current_timestamp);
+insert into StaffGroup (select Staff.ID, 'ZARPAYM', 'PUTTYIDE', current_timestamp);
 commit;
 enddata

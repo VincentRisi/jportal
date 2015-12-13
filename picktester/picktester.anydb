@@ -7,10 +7,13 @@
 project picktester
 
 source_dir=/main/jportal/picktester
-binary_dir=${source_dir}/build
+binary_dir=/main/jportal/build/picktester
 
 jportal
-  ParmCode ${binary_dir}/sql/parm %a.pi
+  ParmCode   ${binary_dir}/sql/parm  %a.pi
+  PostgreDDL ${binary_dir}/sql/pgDDL %a.sql
+  AdoCSCode  ${binary_dir}/sql/cs    %a.cs
+  JavaCode   ${binary_dir}/sql/java  %a.java
 
 pickle
   GenFrontEndBin ${binary_dir}/app/parm %a.bin

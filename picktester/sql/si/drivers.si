@@ -2,7 +2,7 @@ DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
 PACKAGE  vlab
 OUTPUT   Drivers
 SERVER   npu
-SCHEMA   npud00
+SCHEMA   vlab
 
 TABLE Drivers
     OPTIONS "descr=Input and Output Putty Drivers" "show=Descr"
@@ -21,11 +21,11 @@ PROC SelectOne
 PROC DeleteOne
 
 sqldata
-INSERT INTO Drivers VALUES ('TCPIN'   , 'TCPIN'   , 0, 'PreDefined', SYSDATE);
-INSERT INTO Drivers VALUES ('NONE'   , 'NONE'   , 0, 'PreDefined', SYSDATE);
-INSERT INTO Drivers VALUES ('TCPOUT'  , 'TCPOUT'  , 0, 'PreDefined', SYSDATE);
-INSERT INTO Drivers VALUES ('ROUTER'  , 'ROUTER'  , 0, 'PreDefined', SYSDATE);
-INSERT INTO Drivers VALUES ('SAFFYSND', 'SAFFYSND', 0, 'PreDefined', SYSDATE);
-INSERT INTO Drivers VALUES ('SAFFYRCV', 'SAFFYRCV', 0, 'PreDefined', SYSDATE);
-INSERT INTO Drivers VALUES ('TIBOSSND', 'TIBOSSND', 0, 'PreDefined', SYSDATE);
+INSERT INTO Drivers VALUES ('TCPIN'   , 'TCPIN'   , 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('NONE'   , 'NONE'   , 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('TCPOUT'  , 'TCPOUT'  , 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('ROUTER'  , 'ROUTER'  , 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('SAFFYSND', 'SAFFYSND', 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('SAFFYRCV', 'SAFFYRCV', 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('TIBOSSND', 'TIBOSSND', 0, 'PreDefined', current_timestamp);
 enddata

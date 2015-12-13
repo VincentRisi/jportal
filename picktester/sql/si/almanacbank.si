@@ -2,7 +2,7 @@ DATABASE putty FLAGS 'user=USId' 'when=TmStamp'
 PACKAGE  vlab
 OUTPUT   AlmanacBank
 SERVER   npu
-SCHEMA   npud00
+SCHEMA   vlab
 
 TABLE AlmanacBank options 'descr=Almanac Bank'
   FinId            int
@@ -60,7 +60,7 @@ SQLCODE
   Set
       Status = :Status
      ,USId = :USId
-     ,TMStamp = SYSDATE
+     ,TMStamp = current_timestamp
 ENDCODE
 
 // Used By Router, IDE
