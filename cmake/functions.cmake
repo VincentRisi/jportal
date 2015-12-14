@@ -1,5 +1,6 @@
 set (jportalJar ${GENERATORS_SOURCE_DIR}/bin/jportal.jar)
 set (crackleJar ${GENERATORS_SOURCE_DIR}/bin/crackle.jar)
+set (pickleJar  ${GENERATORS_SOURCE_DIR}/bin/pickle.jar)
 set (anydbMake ${TOOLS_DIR}/anydbMake.py)
 set (pythonExe /usr/bin/python)
 
@@ -69,7 +70,7 @@ endfunction()
 function (anydbMake projectName anydbMakeFile targetFiles)
   add_custom_command(
     OUTPUT ${targetFiles}
-    COMMAND ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -v ${anydbMakeFile}
+    COMMAND ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -p ${pickleJar} -v ${anydbMakeFile}
     DEPENDS ${anydbMakeFile}
     VERBATIM
   )

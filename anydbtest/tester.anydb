@@ -7,7 +7,7 @@
 project tester
 
 source_dir=/main/jportal/idl2tester
-binary_dir=/main/jportal/anydbtest/build
+binary_dir=/main/jportal/build/anydbtest
 
 jportal
   AdoCSCode         ${binary_dir}/sql/AdoCS       %a.cs

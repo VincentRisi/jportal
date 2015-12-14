@@ -18,32 +18,38 @@
 		<link>
 			<name>server/vlab/binu/BinuDispatch.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/vlab/binu/BinuDispatch.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/vlab/binu/BinuDispatch.java</locationURI>
 		</link>
 		<link>
 			<name>server/vlab/binu/BinuIFace.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/vlab/binu/BinuIFace.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/vlab/binu/BinuIFace.java</locationURI>
 		</link>
 		<link>
 			<name>server/vlab/binu/BinuImpl.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/vlab/binu/BinuImpl.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/vlab/binu/BinuImpl.java</locationURI>
 		</link>
 		<link>
 			<name>server/vlab/binu/BinuStructs.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/vlab/binu/BinuStructs.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/vlab/binu/BinuStructs.java</locationURI>
 		</link>
 		<link>
 			<name>server/vlab/binu/parser/Parser.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/vlab/binu/parser/Parser.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/vlab/binu/parser/Parser.java</locationURI>
 		</link>
 		<link>
 			<name>server/vlab/binu/parser/Scanner.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/vlab/binu/parser/Scanner.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/vlab/binu/parser/Scanner.java</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>BINUJ_BUILD_LOC</name>
+			<value>file:/main/jportal/build/binuj</value>
+		</variable>
+	</variableList>
 </projectDescription>

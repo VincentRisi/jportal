@@ -46,7 +46,7 @@ public class Decompile
         outLog.println("for example to re(verse)engineer Oracle");
         outLog.println();
         outLog.println("java jportal.Decompile Oracle \"UFAD00/control@orcl\" -o sql OracleDDL");
-        outLog.println("This would expect <decompiler> of jportal.decopilers.Oracle");
+        outLog.println("This would expect <decompiler> of jportal.decompiler.Oracle");
         outLog.println("                  <keyinfo> of UFAD00 with password control at OracleSID of orcl");
         outLog.flush();
         return;

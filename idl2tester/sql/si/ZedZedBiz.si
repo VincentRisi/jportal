@@ -6,7 +6,7 @@ SCHEMA   ssmd00
 
 // ** A simple test table with no application significance **
 
-TABLE ZedZedBiz
+TABLE ZedZedBiz options "descr=Take a Pill to 903"
   Xavier    sequence
   Ay        double(15,2) null
   Bee       double(16,4) null

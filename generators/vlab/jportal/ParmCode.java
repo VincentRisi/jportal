@@ -89,6 +89,7 @@ public class ParmCode extends Generator
       +"key:"
       +"link:"
       +"long:"
+      +"lookup:"
       +"merge:"
       +"money:"
       +"multiple:"
@@ -127,7 +128,9 @@ public class ParmCode extends Generator
       +"userid:"
       +"userstamp:"
       +"utf8:"
+      +"value:"
       +"view:"
+      +"viewonly:"
       +"wansi:"
       +"wansichar:"
       +"wchar:"
@@ -141,7 +144,14 @@ public class ParmCode extends Generator
   }
   private static String commentOf(Field field)
   {
-    return "  ";
+    String result = "  ";
+    switch (field.type)
+    {
+    case Field.BLOB:
+      result = "//";
+      break;
+    }
+    return result;
   }
   private static int countOf(Table table)
   {
@@ -179,8 +189,13 @@ public class ParmCode extends Generator
     for (Key key : table.keys)
     {
       outData.print(String.format("KEY %s", checkReserved(key.name)));
+      String param="(";
       for (String field : key.fields)
-        outData.print(String.format(" %s", checkReserved(field)));
+      {
+        outData.print(String.format("%s%s", param, checkReserved(field)));
+        param=" ";
+      }
+      outData.print(")");
       if (key.isPrimary)
         outData.print(" PRIMARY");
       else if (key.isUnique)
@@ -193,9 +208,13 @@ public class ParmCode extends Generator
     for (Link link : table.links)
     {
       outData.print(String.format("LINK %s", checkReserved(link.name)));
+      String param="(";
       for (String field : link.fields)
-        outData.print(String.format(" %s", checkReserved(field)));
-      outData.println();
+      {
+        outData.print(String.format("%s%s", param, checkReserved(field)));
+        param=" ";
+      }
+      outData.println(")");
     }
   }
   private static void generateRelation(Table table, ParmOptions opts, PrintWriter outData, PrintWriter outLog)
@@ -253,10 +272,12 @@ public class ParmCode extends Generator
       String checker="";
       if (field.checkValue.length() > 0)
         checker = String.format(" CHECK \"%s\"", field.checkValue);
+      
       outData.println(String.format("%s%-28s %s%s%s"
           , commentOf(field)
           , nameOf(field)
           , typeOf(field)
+          , enumListOf(field)
           , field.isNull ? " NULL" : ""
           , checker
           ));
@@ -269,12 +290,9 @@ public class ParmCode extends Generator
       {
         if (key.isPrimary)
         {
-          String lookup = "", colon = "";
+          String lookup = "";
           for (String field : key.fields)
-          {
-            lookup = String.format("%s%s%s", lookup, colon, field);
-            colon = ":";
-          }
+            lookup = String.format("%s %s", lookup, field);
           outData.println(String.format("LOOKUP(%s)", lookup));
           break;
         }
@@ -287,12 +305,47 @@ public class ParmCode extends Generator
     if (table.links.size() > 0)
       generateLinks(table, opts, outData, outLog);
   }
+  private static String enumListOf(Field field)
+  {
+    String result = "";
+    String d1="(", d2=")";
+    if (field.type == Field.CHAR)
+    {
+      d1="{"; 
+      d2="}";
+    }
+    if (field.enums.size() > 0)
+    {
+      for (int i=0; i<field.enums.size(); i++)
+      {
+        Enum en = field.enums.get(i);
+        result = String.format("%s%s%s=%d", result, i==0?d1:", ", checkReserved(en.name), en.value);
+      }
+      result += d2;
+    }
+    else if (field.valueList.size() > 0)
+    {
+      for (int i=0; i<field.valueList.size(); i++)
+      {
+        String en = field.valueList.get(i);
+        String comma = d1;
+        String[] ens = en.split("=");
+        if (ens.length == 2)
+        {
+          result = String.format("%s%s%s=%s", result, comma, checkReserved(ens[0]), ens[1]);
+          comma = ", ";
+        }
+      }
+      result += d2;
+    }
+    return result;
+  }
   private static void generateTable(Table table, String output, PrintWriter outLog)
   {
     try
     {
-      outLog.println("Code: " + output + table.useName() + ".pi");
-      OutputStream outFile = new FileOutputStream(output + table.useName() + ".pi");
+      outLog.println("Code: " + output + table.useName().toLowerCase() + ".pi");
+      OutputStream outFile = new FileOutputStream(output + table.useName().toLowerCase() + ".pi");
       try
       {
         PrintWriter outData = new PrintWriter(outFile);
@@ -383,9 +436,9 @@ public class ParmCode extends Generator
 	}
   private static String nameOf(Field field)
   {
-    String result = field.name;
+    String result = checkReserved(field.name);
     if (field.alias.length() > 0)
-      result = String.format("%s (%s)", field.name, field.alias);
+      result = String.format("%s (%s)", checkReserved(field.name), checkReserved(field.alias));
     return result;
   }
   private static String typeOf(Field field)
