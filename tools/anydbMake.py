@@ -16,20 +16,22 @@ parser.add_option("-v", "--verbose",    dest="verbose",    default=False, action
 
 (options, args) = parser.parse_args()
 
+def log(*line):
+  if (options.verbose == True):
+    print '%s ' * len(line) % line
+
 def fixname(name):
   result = name
   if len(result) > 2 and result[1] == ':':
     result = result[2:]
-  return result.replace('\\','/')
+  result = result.replace('\\','/')
+  log(result)
+  return result
 
 def makedirs(path):
   if os.path.exists(path) == False:
     os.makedirs(path)
   return path  
-
-def log(*line):
-  if (options.verbose == True):
-    print '%s ' * len(line) % line
 
 jportalJar = fixname(options.jportal);log('jportal jar:', jportalJar) 
 crackleJar = fixname(options.crackle);log('crackle jar:', crackleJar)
