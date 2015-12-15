@@ -37,7 +37,7 @@ PROC SelectAll
 PROC Count
 
 sqldata
-
+start transaction;
 insert into vlab.Queue values ('EXCEPTION', 'EXCEPTION'    , 'EXCEPTION', 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
 insert into vlab.Queue values ('SAFFY-TP' , 'SAFFY-TP'     , 'SAFFY-TP' , 'SAFFYRCV', 'NONE'    , 2, 17, 0, 'PREDEFINED', current_timestamp);
 insert into vlab.Queue values ('SAFFY-FP' , 'SAFFY-FP'     , 'SAFFY-FP' , 'NONE'    , 'SAFFYSND', 1, 17, 1, 'PREDEFINED', current_timestamp);

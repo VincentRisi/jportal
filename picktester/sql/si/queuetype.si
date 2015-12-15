@@ -25,6 +25,7 @@ PROC SelectAll
 PROC Count
 
 sqldata
+start transaction;
 insert into vlab.QueueType values (0, 'Message' , 'Message' , 0, 'PreDefined', current_timestamp);
 insert into vlab.QueueType values (1, 'Stream'  , 'Stream'  , 0, 'PreDefined', current_timestamp);
 insert into vlab.QueueType values (2, 'Response', 'Response', 0, 'PreDefined', current_timestamp);

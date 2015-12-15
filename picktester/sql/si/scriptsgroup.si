@@ -103,6 +103,7 @@ sqlcode
 endcode
 
 sqldata
+  start transaction;
   insert into vlab.ScriptGroup 
     (select distinct name, 'INTRSYS', 0, 'PUTTYIDE', current_timestamp 
      from vlab.ScriptVersion 

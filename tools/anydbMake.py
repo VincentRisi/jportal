@@ -8,49 +8,16 @@ import glob
 from optparse import OptionParser
 
 parser = OptionParser()
-parser.add_option("-B", "--buildPath",  dest="buildPath",  default="/vlab/build")
-parser.add_option("-S", "--sourcePath", dest="sourcePath", default="/vlab/source")
 parser.add_option("-b", "--build",      dest="build",      default=False, action="store_true", help='build all anyway')
 parser.add_option("-c", "--crackle",    dest="crackle",    default='crackle.jar')
 parser.add_option("-j", "--jportal",    dest="jportal",    default='jportal.jar')
-parser.add_option("-l", "--local",      dest="local",      default="/vlab")
 parser.add_option("-p", "--pickle",     dest="pickle",     default='pickle.jar')
-parser.add_option("-r", "--root",       dest="root",       default="")
-parser.add_option("-s", "--skip",       dest="skip",       default="", help=':CSIdl2Code:... colon switch list')
 parser.add_option("-v", "--verbose",    dest="verbose",    default=False, action="store_true", help="verbose")
 
 (options, args) = parser.parse_args()
 
-rootPath = options.root
-localPath = options.local
-buildPath = options.buildPath
-sourcePath = options.sourcePath
-
-def front(a,b):
-  n = min(len(a), len(b))
-  if n == 0: return ''
-  for i in range(n):
-    if a[i] != b[i]: 
-      return a[:i]
-  return a
-
-if sys.platform == 'win32':
-  dirsep = '\\'
-else:
-  dirsep = '/'
-  if len(rootPath) == 0 and len(sourcePath)> 2 and sourcePath[1] != ':' and '/' in sourcePath:
-    rootPath = front(sourcePath, buildPath)  
-
 def fixname(name):
   result = name
-  if sys.platform != 'win32':
-    if result[:len(localPath)].lower() == localPath.lower():
-      result = rootPath + result[len(localPath):]
-      result = result.replace('\\','/')
-      head, tail = os.path.split(result)
-      result = head.lower() + '/' + tail
-      if os.path.exists(result.lower()) == True:
-        result = result.lower()
   return result
 
 def makedirs(path):

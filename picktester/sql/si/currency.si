@@ -22,8 +22,6 @@ PROC SelectOne
 PROC DeleteOne
 PROC SelectAll
 
-TABLE BCurcy
-
 PROC Curcy
 OUTPUT 
   Id Char(4)

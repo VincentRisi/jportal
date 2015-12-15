@@ -57,6 +57,7 @@ sqlcode
 endcode
 
 sqldata
+start transaction;
 insert into vlab.lookup values ('ACCOUNT SYSTEM'  , 'CA'     , '001'  , USER, current_timestamp);
 insert into vlab.lookup values ('ACCOUNT SYSTEM'  , 'GL'     , '009'  , USER, current_timestamp);
 insert into vlab.lookup values ('ACCOUNT SYSTEM'  , 'MCA'    , '?'    , USER, current_timestamp);

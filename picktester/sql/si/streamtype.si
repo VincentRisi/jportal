@@ -20,6 +20,7 @@ PROC SelectAll
 PROC DeleteOne
 
 sqldata
+start transaction;
 insert into vlab.StreamType  values ('SWIFT', 'SWIFT'       , 'Predefined', current_timestamp);
 insert into vlab.StreamType  values ('TIBOS', 'TIBOS'       , 'Predefined', current_timestamp);
 insert into vlab.StreamType  values ('WASTE', 'Waste stream', 'Predefined', current_timestamp);

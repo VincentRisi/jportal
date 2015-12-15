@@ -23,16 +23,14 @@ KEY FigCorrespondentBankKey PRIMARY
   RankType
   SwiftAddress
 
-LINK Country
-  Country
+//LINK Country
+//  Country
+
+//LINK BankFile
+//  SwiftAddress
+
+//LINK Currency
 //  CurrId
-
-LINK BankFile
-  SwiftAddress
-//   DELETE CASCADE
-
-LINK Currency
-  CurrId
 
 PROC Insert
 PROC Update
@@ -91,6 +89,7 @@ sqlcode
 endcode
 
 sqldata
+start transaction;
 INSERT INTO vlab.figcorrespondentbank VALUES('CANADA',            'CAD', 'P', 0,  'ROYCCAT2',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('CANADA',            'CAD', 'S', 0,  'BOFMCAT2',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('HONG KONG',         'HKD', 'P', 0,  'HASEHKHH',   0, 0, 0,  'DEFINED', current_timestamp);

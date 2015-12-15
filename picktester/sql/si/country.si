@@ -63,6 +63,7 @@ endcode
 
 
 sqldata
+start transaction;
 insert into vlab.Country Values('AFGHANISTAN'                                                    ,'AF'          ,'AFA' , 0, 'Predefined', current_timestamp);
 insert into vlab.Country Values('ALBANIA'                                                        ,'AL'          ,'ALL' , 0, 'Predefined', current_timestamp);
 insert into vlab.Country Values('ALGERIA'                                                        ,'DZ'          ,'DZD' , 0, 'Predefined', current_timestamp);
