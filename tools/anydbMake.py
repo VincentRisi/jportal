@@ -18,7 +18,9 @@ parser.add_option("-v", "--verbose",    dest="verbose",    default=False, action
 
 def fixname(name):
   result = name
-  return result
+  if len(result) > 2 and result[1] == ':':
+    result = result[2:]
+  return result.replace('\\','/')
 
 def makedirs(path):
   if os.path.exists(path) == False:
