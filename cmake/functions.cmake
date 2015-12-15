@@ -2,7 +2,12 @@ set (jportalJar ${GENERATORS_SOURCE_DIR}/bin/jportal.jar)
 set (crackleJar ${GENERATORS_SOURCE_DIR}/bin/crackle.jar)
 set (pickleJar  ${GENERATORS_SOURCE_DIR}/bin/pickle.jar)
 set (anydbMake ${TOOLS_DIR}/anydbMake.py)
-set (pythonExe /usr/bin/python)
+
+if (WIN32)
+  set (python c:/pthon22/python.exe)
+else ()
+  set (pythonExe /usr/bin/python)
+endif ()
 
 function (pathed result ext_dir)
   foreach (arg ${ARGN})
