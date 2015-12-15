@@ -19,7 +19,7 @@ set (source
 
 add_custom_command (
   OUTPUT  ${generated}
-  COMMAND java -jar ${cocoJar} ${BINUJ_SOURCE_DIR}/clibin.atg -o ${parser_dir}
+  COMMAND ${javaExe} -jar ${cocoJar} ${BINUJ_SOURCE_DIR}/clibin.atg -o ${parser_dir}
   DEPENDS ${source}
 )
 

@@ -3,10 +3,16 @@ set (crackleJar ${GENERATORS_SOURCE_DIR}/bin/crackle.jar)
 set (pickleJar  ${GENERATORS_SOURCE_DIR}/bin/pickle.jar)
 set (anydbMake ${TOOLS_DIR}/anydbMake.py)
 
-if (WIN32)
-  set (python c:/pthon22/python.exe)
+if (WIN32) #TBD - use cmake to find them
+  set (pythonExe c:/python27/python.exe)
+  set (psqlExe "c:/Progam Files (x86)/PostgeSQL/9.5/bin/psql.exe")
+  set (javaExe "C:/Program Files (x86)/Java/jdk1.8.0_65/bin/java.exe")
+  set (jarExe "C:/Program Files (x86)/Java/jdk1.8.0_65/bin/jar.exe")
 else ()
   set (pythonExe /usr/bin/python)
+  set (psqlExe /usr/bin/psql)
+  set (javaExe /usr/bin/java)
+  set (jarExe /usr/bin/jar)
 endif ()
 
 function (pathed result ext_dir)
@@ -38,7 +44,7 @@ function (jportal projectName siFiles)
     list (APPEND sqlFiles ${sqlFile})
     add_custom_command (
       OUTPUT  ${sqlFile}
-      COMMAND java -jar ${jportalJar} ${siFile} ${switches}
+      COMMAND ${javaExe} -jar ${jportalJar} ${siFile} ${switches}
       DEPENDS ${siFile}
       VERBATIM
     )
@@ -62,7 +68,7 @@ function (crackle projectName imFile idlDir iiDir ibDir)
   file (GLOB iiFiles ${iiDir}/*.ii)
   add_custom_command(
     OUTPUT ${idlFile}
-    COMMAND java -jar ${crackleJar} -i ${iiDir} -b ${ibDir} -f ${idlFile} ${imFile} ${switches}
+    COMMAND ${javaExe} -jar ${crackleJar} -i ${iiDir} -b ${ibDir} -f ${idlFile} ${imFile} ${switches}
     DEPENDS ${imFile} ${ibFiles} ${iiFiles}
     VERBATIM
   )

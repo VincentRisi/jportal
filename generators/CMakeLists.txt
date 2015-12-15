@@ -9,9 +9,9 @@ set (wild_card
 )
 set (jportal_jar    ${class_bin_dir}/jportal.jar)
 set (manifest_file  ${GENERATORS_SOURCE_DIR}/vlab/jportal/Manifest.txt)
-message (STATUS "COMMAND jar vcfm ${jportal_jar} ${manifest_file} ${wild_card}")
+message (STATUS "COMMAND ${jarExe} vcfm ${jportal_jar} ${manifest_file} ${wild_card}")
 add_custom_target (target_jportal_jar ALL
-  jar vcfm ${jportal_jar} ${manifest_file} ${wild_card}
+  ${jarExe} vcfm ${jportal_jar} ${manifest_file} ${wild_card}
   WORKING_DIRECTORY ${class_bin_dir}
 )
 
@@ -24,17 +24,17 @@ set (wild_card
 )
 set (crackle_jar ${class_bin_dir}/crackle.jar)
 set (manifest_file  ${GENERATORS_SOURCE_DIR}/vlab/crackle/Manifest.txt)
-message (STATUS "COMMAND jar vcfm ${crackle_jar} ${manifest_file} ${wild_card}")
+message (STATUS "COMMAND ${jarExe} vcfm ${crackle_jar} ${manifest_file} ${wild_card}")
 add_custom_target (target_crackle_jar ALL
-  jar vcfm ${crackle_jar} ${manifest_file} ${wild_card}
+  ${jarExe} vcfm ${crackle_jar} ${manifest_file} ${wild_card}
   WORKING_DIRECTORY ${class_bin_dir}
 )
 
 set (wild_card vlab/pickle/*.class)
 set (pickle_jar ${class_bin_dir}/pickle.jar)
 set (manifest_file  ${GENERATORS_SOURCE_DIR}/vlab/pickle/Manifest.txt)
-message (STATUS "COMMAND jar vcfm ${pickle_jar} ${manifest_file} ${wild_card}")
+message (STATUS "COMMAND ${jarExe} vcfm ${pickle_jar} ${manifest_file} ${wild_card}")
 add_custom_target (target_pickle_jar ALL
-  jar vcfm ${pickle_jar} ${manifest_file} ${wild_card}
+  ${jarExe} vcfm ${pickle_jar} ${manifest_file} ${wild_card}
   WORKING_DIRECTORY ${class_bin_dir}
 )

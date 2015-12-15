@@ -16,13 +16,14 @@ set (psql_list
   Queue Streams Audittrail Fields FieldSearch
 )
 
+message (STATUS "COMMAND ${psqlExe} -h localhost -d postgres -U vince -a -e -f ... -o ...")
 foreach (name ${psql_list})
   set (logFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.log)
   set (srcFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.sql)
   add_custom_command(
     OUTPUT  ${logFile}
     DEPENDS ${srcFile}
-    COMMAND psql -h localhost -d postgres -U vince -a -e -f ${srcFile} -o ${logFile} >> ${logFile}
+    COMMAND ${psqlExe} -h localhost -d postgres -U vince -a -e -f ${srcFile} -o ${logFile} >> ${logFile}
   )
   add_custom_target(
     psql_${name}_build ALL  
