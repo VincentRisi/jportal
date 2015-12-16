@@ -49,17 +49,17 @@ Coco/R itself) does not fall under the GNU General Public License.
 
 using namespace Coco;
 
-#ifdef _WIN32
-int wmain(int argc, wchar_t *argv[]) {
-#elif defined __GNUC__
+//#ifdef _WIN32
+//int wmain(int argc, wchar_t *argv[]) {
+//#elif defined __GNUC__
 int main(int argc, char *argv_[]) {
 	wchar_t ** argv = new wchar_t*[argc];
 	for (int i = 0; i < argc; ++i) {
 		argv[i] = coco_string_create(argv_[i]);
 	}
-#else
-#error unknown compiler!
-#endif
+//#else
+//#error unknown compiler!
+//#endif
 
 	wprintf(L"Coco/R (Jan 02, 2012)\n");
 
