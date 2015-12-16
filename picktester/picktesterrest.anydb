@@ -10,10 +10,11 @@ source_dir=/main/jportal/picktester
 binary_dir=/main/jportal/build/picktester
 
 jportal
-  PostgreDDL ${binary_dir}/sql/pgDDL %a.sql
-  MSSqlDDL   ${binary_dir}/sql/msDDL %a.sql
-  AdoCSCode  ${binary_dir}/sql/cs    %i.cs
-  JavaCode   ${binary_dir}/sql/java  %iRec.java
+  PostgreDDL ${binary_dir}/sql/pgDDL  %a.sql
+  MSSqlDDL   ${binary_dir}/sql/msDDL  %a.sql
+  OracleDDL  ${binary_dir}/sql/oraDDL %a.sql
+  AdoCSCode  ${binary_dir}/sql/cs     %i.cs
+  JavaCode   ${binary_dir}/sql/java   %iRec.java
 
 source
   ${source_dir}/sql/si/audittrail.si

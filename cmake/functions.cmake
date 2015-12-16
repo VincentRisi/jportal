@@ -8,7 +8,7 @@ if (WIN32) #TBD - use cmake to find them
   set (pythonExe c:/python27/python.exe)
   set (psqlExe "c:/PostgeSQL/bin/psql.exe")
   set (javaExe "c:/JavaJDK/bin/java.exe")
-  set (jarExe "c:/JavaJDK/bin/jar.exe")
+  set (jarExe  "c:/JavaJDK/bin/jar.exe")
 else ()
   set (pythonExe /usr/bin/python)
   set (psqlExe /usr/bin/psql)
