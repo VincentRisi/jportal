@@ -188,7 +188,7 @@ public class AdoCSCode extends Generator
     outFile = new FileOutputStream(outFileName);
     return outFile;
   }
-  public static void generateStructPairs(Vector<Field> fields, Vector<?> dynamics, String mainName, PrintWriter outData)
+  public static void generateStructPairs(Vector<Field> fields, Vector<String> dynamics, String mainName, PrintWriter outData)
   {
     outData.println("  [Serializable()]");
     outData.println("  public partial class " + mainName + "Rec");
@@ -315,7 +315,7 @@ public class AdoCSCode extends Generator
     }
   }
   static PlaceHolder placeHolder;
-  static void generateStoredProc(Proc proc, String storedProcName, Vector<?> lines)
+  static void generateStoredProc(Proc proc, String storedProcName, Vector<String> lines)
   {
     procData.println("if exists (select * from sysobjects where id = object_id('dbo." + storedProcName + "') and sysstat & 0xf = 4)");
     procData.println("drop procedure dbo." + storedProcName);
@@ -350,7 +350,7 @@ public class AdoCSCode extends Generator
     String upperFirst = proc.upperFirst();
     placeHolder = new PlaceHolder(proc, PlaceHolder.AT, "");
     String storedProcName = proc.table.useName() + upperFirst;
-    Vector<?> lines = placeHolder.getLines();
+    Vector<String> lines = placeHolder.getLines();
     generateStoredProc(proc, storedProcName, lines);
     outData.println("    public string Command" + upperFirst + "()");
     outData.println("    {");
@@ -380,7 +380,7 @@ public class AdoCSCode extends Generator
       placeHolder = new PlaceHolder(proc, PlaceHolder.CURLY, "Rec.");
       outData.println("    public string Command" + upperFirst + "()");
     }
-    Vector<?> lines = placeHolder.getLines();
+    Vector<String> lines = placeHolder.getLines();
     outData.println("    {");
     if (proc.hasReturning)
       outData.println("      Returning _ret = new Returning(connect.TypeOfVendor, aTable, aField);");

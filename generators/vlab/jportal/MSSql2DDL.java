@@ -20,7 +20,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Vector;
 
-public class MSSqlDDL extends Generator
+public class MSSql2DDL extends Generator
 {
   /**
   * Reads input from stored repository
@@ -157,10 +157,7 @@ public class MSSqlDDL extends Generator
       try
       {
         PrintWriter outData = new PrintWriter(outFile);
-        if (database.schema.length() > 0)
-          outData.println("use " + database.schema);
-        else
-          outData.println("use " + database.name);
+        outData.println("USE " + database.name);
         outData.println();
         for (int i=0; i<database.tables.size(); i++)
           generate((Table) database.tables.elementAt(i), outData);
@@ -181,89 +178,95 @@ public class MSSqlDDL extends Generator
   static void generateAuditTable(Table table, PrintWriter outData)
   {
     String tableName = tableOwner + table.name;
-    outData.println("drop table " + tableName + "Audit");
-    outData.println("go");
+    outData.println("IF OBJECT_ID('" + tableName + "Audit','U') IS NOT NULL");
+    outData.println("    DROP TABLE " + tableName + "Audit");
+    outData.println("GO");
     outData.println();
-    outData.println("create table "+tableName+"Audit");
+    outData.println("CREATE TABLE " + tableName + "Audit");
     outData.println("(");
-    outData.println("  auditId integer IDENTITY(1,1) NOT NULL PRIMARY KEY");
-    outData.println(", auditAction integer NOT NULL -- 1 = insert, 2 = delete, 3 = update");
-    outData.println(", auditWhen datetime NOT NULL");
+    outData.println("  AuditId INTEGER IDENTITY(1,1) NOT NULL PRIMARY KEY");
+    outData.println(", AuditAction INTEGER NOT NULL -- 1 = INSERT, 2 = DELETE, 3 = UPDATE");
+    outData.println(", AuditWhen DATETIME NOT NULL");
     for (int i = 0; i < table.fields.size(); i++)
     {
       Field field = (Field) table.fields.elementAt(i);
       outData.println(", "+varType(field, true, false)+" NULL");
     }
     outData.println(")");
-    outData.println("go");
+    outData.println("GO");
     outData.println();
   }
   static void generateAuditTrigger(Table table, PrintWriter outData)
   {
     String tableName = tableOwner + table.name;
-    outData.println("drop trigger " + tableName + "AuditTrigger");
-    outData.println("go");
+    outData.println("IF OBJECT_ID('" + tableName + "AuditTrigger','TR') IS NOT NULL");
+    outData.println("    DROP TRIGGER " + tableName + "AuditTrigger");
+    outData.println("GO");
     outData.println();
-    outData.println("create trigger " + tableName + "AuditTrigger on " + tableName); 
-    outData.println("for insert, delete, update as");
-    outData.println("begin");
-    outData.println("  declare @insert int, @delete int, @action int;");
-    outData.println("  select @insert = count(*) from inserted;");
-    outData.println("  select @delete = count(*) from deleted;");
-    outData.println("  if @insert > 0 select @action = 1 else select @action = 0;");
-    outData.println("  if @delete > 0 select @action = @action + 2;");
-    outData.println("  -- 1 = insert, 2 = delete, 3 = update");
-    outData.println("  if @action = 2 begin");
-    outData.println("    insert into " + tableName + "Audit");
-    outData.println("    select @action");
-    outData.println("         , current_timestamp");
+    outData.println("CREATE TRIGGER " + tableName + "AuditTrigger ON " + tableName); 
+    outData.println("FOR INSERT, DELETE, UPDATE AS");
+    outData.println("BEGIN");
+    outData.println("  DECLARE @INSERT INT, @DELETE INT, @ACTION INT;");
+    outData.println("  SELECT @INSERT = COUNT(*) FROM INSERTED;");
+    outData.println("  SELECT @DELETE = COUNT(*) FROM DELETED;");
+    outData.println("  IF @INSERT > 0 SELECT @ACTION = 1 ELSE SELECT @ACTION = 0;");
+    outData.println("  IF @DELETE > 0 SELECT @ACTION = @ACTION + 2;");
+    outData.println("  -- 1 = INSERT, 2 = DELETE, 3 = UPDATE");
+    outData.println("  IF @ACTION = 2 BEGIN");
+    outData.println("    INSERT INTO " + tableName + "Audit");
+    outData.println("    SELECT @ACTION");
+    outData.println("         , GETDATE()");
     for (int i = 0; i < table.fields.size(); i++)
     {
       Field field = (Field)table.fields.elementAt(i);
       outData.println("          , " + field.name);
     }
-    outData.println("    from deleted;");
-    outData.println("  end else");
-    outData.println("  begin");
-    outData.println("    insert into " + tableName + "Audit");
-    outData.println("    select @action");
-    outData.println("         , current_timestamp");
+    outData.println("    FROM DELETED;");
+    outData.println("  END ELSE");
+    outData.println("  BEGIN");
+    outData.println("    INSERT INTO " + tableName + "Audit");
+    outData.println("    SELECT @ACTION");
+    outData.println("         , GETDATE()");
     for (int i = 0; i < table.fields.size(); i++)
     {
       Field field = (Field)table.fields.elementAt(i);
       outData.println("         , " + field.name);
     }
-    outData.println("    from inserted;");
-    outData.println("  end");
-    outData.println("end");
-    outData.println("go");
+    outData.println("    FROM INSERTED;");
+    outData.println("  END");
+    outData.println("END");
+    outData.println("GO");
     outData.println();
   }
   static void generate(Table table, PrintWriter outData)
   {
     String tableName = tableOwner + table.name;
     String comma = "  ";
-    outData.println("drop table "+tableName);
-    outData.println("go");
+    outData.println("IF OBJECT_ID('"+tableName+"','U') IS NOT NULL");
+    outData.println("    DROP TABLE "+tableName);
+    outData.println("GO");
     outData.println();
-    outData.println("create table "+tableName);
+    outData.println("CREATE TABLE "+tableName);
     outData.println("(");
     for (int i = 0; i < table.fields.size(); i++, comma = ", ")
     {
       Field field = (Field) table.fields.elementAt(i);
       outData.print(comma+varType(field, false, table.hasSequenceReturning));
+	  if (field.defaultValue.length() > 0)
+		  outData.print(" CONSTRAINT  DF_" + tableName + "_" + field.name + " DEFAULT " + field.defaultValue);
       if (!field.isNull)
-        outData.println(" not null");
+        outData.println(" NOT NULL");
       else
-        outData.println(" null");
+        outData.println(" NULL");
+	  
     }
     if (internalStamps)
     {
-      outData.println(comma+"UpdateWhen  DateTime Default CURRENT_TIMESTAMP NULL");
-      outData.println(comma+"UpdateByWho Char(8)  Default USER NULL ");
+      outData.println(comma+"UpdateWhen  DATETIME DEFAULT CURRENT_TIMESTAMP NULL");
+      outData.println(comma+"UpdateByWho CHAR(8)  DEFAULT USER NULL ");
     }
     if (addTimestamp)
-      outData.println(comma+"timestamp");
+      outData.println(comma+"TIMESTAMP");
     if (!generate42)
     {
       for (int i=0; i < table.keys.size(); i++)
@@ -283,7 +286,7 @@ public class MSSqlDDL extends Generator
 //        generateEnumLinks(table, outData);
     }
     outData.println(")");
-    outData.println("go");
+    outData.println("GO");
     outData.println();
     for (int i=0; i < table.keys.size(); i++)
     {
@@ -308,93 +311,92 @@ public class MSSqlDDL extends Generator
     {
       if (table.hasSequence || table.hasUserStamp || table.hasTimeStamp)
       {
-        outData.println("drop trigger "+tableName+"InsertTrigger");
-        outData.println("go");
+        outData.println("IF OBJECT_ID('"+tableName+"InsertTrigger','TR') IS NOT NULL");
+        outData.println("    DROP TRIGGER "+tableName+"InsertTrigger");
+        outData.println("GO");
         outData.println();
-        outData.println("create trigger "+tableName+"InsertTrigger on "+tableName+" for insert as");
+        outData.println("CREATE TRIGGER "+tableName+"InsertTrigger ON "+tableName+" FOR INSERT AS");
         for (int i=0; i < table.fields.size(); i++)
         {
           Field field = (Field) table.fields.elementAt(i);
           if (field.type == Field.SEQUENCE)
           {
-            outData.println("update "+tableName+" set "+field.name+"="+field.name+"+0");
-            outData.println("where "+field.name+"=(select max("+field.name+") from "+tableName+")");
+            outData.println("UPDATE "+tableName+" SET "+field.name+"="+field.name+"+0");
+            outData.println("WHERE "+field.name+"=(SELECT MAX("+field.name+") FROM "+tableName+")");
           }
         }
-        outData.println("update "+tableName);
-        outData.println("set");
+        outData.println("UPDATE "+tableName);
+        outData.println("SET");
         comma = "  ";
         for (int i=0; i < table.fields.size(); i++)
         {
           Field field = (Field) table.fields.elementAt(i);
           if (field.type == Field.SEQUENCE)
           {
-            outData.println(comma+field.name+" = (select max("+field.name+") from "+tableName+")+1");
+            outData.println(comma+field.name+" = (SELECT MAX("+field.name+") FROM "+tableName+")+1");
             comma = ", ";
           }
           else if (field.type == Field.USERSTAMP)
           {
-            outData.println(comma+field.name+" = user_name()");
+            outData.println(comma+field.name+" = USER_NAME()");
             comma = ", ";
           }
           else if (field.type == Field.TIMESTAMP)
           {
-            outData.println(comma+field.name+" = getdate()");
+            outData.println(comma+field.name+" = GETDATE()");
             comma = ", ";
           }
         }
-        String cond = "where ";
+        String cond = "WHERE ";
         for (int i=0; i < table.fields.size(); i++)
         {
           Field field = (Field) table.fields.elementAt(i);
           if (field.isPrimaryKey)
           {
-            outData.println(cond+field.name+" = (select "+field.name+" from inserted)");
-            cond = "  and ";
+            outData.println(cond+field.name+" = (SELECT "+field.name+" FROM INSERTED)");
+            cond = "  AND ";
           }
         }
-        outData.println("go");
+        outData.println("GO");
         outData.println();
       }
     }
-    if (useUpdateTrigger)
+    if (table.hasUserStamp || table.hasTimeStamp)
     {
-      if (table.hasUserStamp || table.hasTimeStamp)
+      outData.println("IF OBJECT_ID('"+tableName+"UpdateTrigger','TR') IS NOT NULL");
+      outData.println("    DROP TRIGGER "+tableName+"UpdateTrigger");
+      outData.println("GO");
+      outData.println();
+      outData.println("CREATE TRIGGER "+tableName+"UpdateTrigger ON "+tableName+" FOR UPDATE AS");
+      outData.println("UPDATE "+tableName);
+      outData.println("SET");
+      comma = "  ";
+      for (int i=0; i < table.fields.size(); i++)
       {
-        outData.println("drop trigger "+tableName+"UpdateTrigger");
-        outData.println("go");
-        outData.println();
-        outData.println("create trigger "+tableName+"UpdateTrigger on "+tableName+" for update as");
-        outData.println("update "+tableName);
-        outData.println("set");
-        comma = "  ";
-        for (int i=0; i < table.fields.size(); i++)
+        Field field = (Field) table.fields.elementAt(i);
+        if (field.type == Field.USERSTAMP)
         {
-          Field field = (Field) table.fields.elementAt(i);
-          if (field.type == Field.USERSTAMP)
-          {
-            outData.println(comma+field.name+" = user_name()");
-            comma = ", ";
-          }
-          else if (field.type == Field.TIMESTAMP)
-          {
-            outData.println(comma+field.name+" = getdate()");
-            comma = ", ";
-          }
+          outData.println(comma+field.name+" = USER_NAME()");
+          comma = ", ";
         }
-        String cond = "where ";
-        for (int i=0; i < table.fields.size(); i++)
+        else if (field.type == Field.TIMESTAMP)
         {
-          Field field = (Field) table.fields.elementAt(i);
-          if (field.isPrimaryKey)
-          {
-            outData.println(cond+field.name+" = (select "+field.name+" from inserted)");
-            cond = "  and ";
-          }
+          outData.println(comma+field.name+" = GETDATE()");
+          comma = ", ";
         }
-        outData.println("go");
-        outData.println();
       }
+      String cond = "WHERE ";
+      for (int i=0; i < table.fields.size(); i++)
+      {
+        Field field = (Field) table.fields.elementAt(i);
+        if (field.isPrimaryKey)
+        {
+          outData.println(cond+field.name+" = (SELECT "+field.name+" FROM INSERTED)");
+          cond = "  AND ";
+        }
+      }
+      outData.println("GO");
+      outData.println();
     }
     if (auditTrigger)
     {
@@ -420,11 +422,11 @@ public class MSSqlDDL extends Generator
   {
     String comma = "  ";
     if (key.isPrimary)
-      outData.println("create unique clustered index "+key.name+" on "+table);
+      outData.println("CREATE UNIQUE CLUSTERED INDEX "+key.name+" ON "+table);
     else if (key.isUnique)
-      outData.println("create unique index "+key.name+" on "+table);
+      outData.println("CREATE UNIQUE INDEX "+key.name+" ON "+table);
     else
-      outData.println("create index "+key.name+" on "+table);
+      outData.println("CREATE INDEX "+key.name+" ON "+table);
     outData.println("(");
     for (int i=0; i < key.fields.size(); i++, comma = ", ")
     {
@@ -432,7 +434,7 @@ public class MSSqlDDL extends Generator
       outData.println(comma+name);
     }
     outData.println(")");
-    outData.println("go");
+    outData.println("GO");
     outData.println();
     if (key.isPrimary)
     {
@@ -442,7 +444,7 @@ public class MSSqlDDL extends Generator
         String name = (String) key.fields.elementAt(i);
         outData.println(", "+name);
       }
-      outData.println("go");
+      outData.println("GO");
       outData.println();
     }
   }
@@ -452,7 +454,7 @@ public class MSSqlDDL extends Generator
   static void generatePrimary(Key key, PrintWriter outData)
   {
     String comma = "    ";
-    outData.println(", primary key (");
+	outData.println(", CONSTRAINT "+key.name+" PRIMARY KEY (");
     for (int i=0; i < key.fields.size(); i++, comma = "  , ")
     {
       String name = (String) key.fields.elementAt(i);
@@ -466,7 +468,7 @@ public class MSSqlDDL extends Generator
   static void generateUnique(Key key, PrintWriter outData)
   {
     String comma = "    ";
-    outData.println(", unique (");
+	outData.println(", CONSTRAINT " + key.name + " UNIQUE (");
     for (int i=0; i<key.fields.size(); i++, comma = "  , ")
     {
       String name = (String) key.fields.elementAt(i);
@@ -480,14 +482,20 @@ public class MSSqlDDL extends Generator
   static void generate(Link link, PrintWriter outData)
   {
     String comma = "    ";
-    outData.println(", foreign key (");
+	String temp = "";
+	for (int i = 0; i < link.fields.size(); i++)
+	{
+		String name = (String)link.fields.elementAt(i);
+		temp += "_"+name;
+	}
+	outData.println(", CONSTRAINT FK_" + link.name + temp+" FOREIGN KEY (");
     for (int i=0; i < link.fields.size(); i++, comma = "   ,")
     {
       String name = (String) link.fields.elementAt(i);
       outData.println(comma+name);
     }
     outData.println("  )");
-    outData.println("  references "+link.name);
+    outData.println("  REFERENCES "+link.name);
   }
   /**
   * Generates foreign key SQL Code for SQL Server
@@ -500,7 +508,7 @@ public class MSSqlDDL extends Generator
       String name = (String) link.fields.elementAt(i);
       outData.println(", "+name);
     }
-    outData.println("go");
+    outData.println("GO");
     outData.println();
   }
   /**
@@ -514,8 +522,8 @@ public class MSSqlDDL extends Generator
       for (int j=0; j < grant.users.size(); j++)
       {
         String user = (String) grant.users.elementAt(j);
-        outData.println("grant " + perm + " on " + object + " to " + user);
-        outData.println("go");
+        outData.println("GRANT " + perm + " ON " + object + " TO " + user);
+        outData.println("GO");
         outData.println();
       }
     }
@@ -525,10 +533,11 @@ public class MSSqlDDL extends Generator
   */
   static void generate(View view, PrintWriter outData, String tableName)
   {
-    outData.println("drop view "+tableName+view.name);
-    outData.println("go");
+    outData.println("IF OBJECT_ID('"+tableName+view.name+"','V') IS NOT NULL");
+    outData.println("    DROP VIEW "+tableName+view.name);
+    outData.println("GO");
     outData.println();
-    outData.println("create view "+tableName+view.name);
+    outData.println("CREATE VIEW "+tableName+view.name);
     outData.println("(");
     String comma = "  ";
     for (int i=0; i<view.aliases.size(); i++)
@@ -537,7 +546,7 @@ public class MSSqlDDL extends Generator
       outData.println(comma+alias);
       comma = ", ";
     }
-    outData.println(") as");
+    outData.println(") AS");
     outData.println("(");
     for (int i=0; i<view.lines.size(); i++)
     {
@@ -545,16 +554,16 @@ public class MSSqlDDL extends Generator
       outData.println(line);
     }
     outData.println(")");
-    outData.println("go");
+    outData.println("GO");
     outData.println();
     for (int i=0; i<view.users.size(); i++)
     {
       String user = (String) view.users.elementAt(i);
-      outData.println("grant select on "+tableName+view.name+" to "+user);
+      outData.println("GRANT SELECT ON "+tableName+view.name+" TO "+user);
     }
     if (view.users.size() > 0)
     {
-      outData.println("go");
+      outData.println("GO");
       outData.println();
     }
   }
@@ -575,60 +584,61 @@ public class MSSqlDDL extends Generator
     switch(field.type)
     {
     case Field.BOOLEAN:
-      return field.name+" bit";
+      return field.name+" BIT";
     case Field.BYTE:
-      return field.name+" tinyint";
+      return field.name+" TINYINT";
     case Field.SHORT:
-      return field.name+" smallint";
+      return field.name+" SMALLINT";
     case Field.INT:
-      return field.name + " int";
+      return field.name + " INT";
     case Field.LONG:
-      return field.name+" bigint";
+      return field.name+" BIGINT";
     case Field.SEQUENCE:
       if (hasSequenceReturning)
-        return field.name+" integer IDENTITY(1,1)";
-      return field.name+" integer";
+        return field.name+" INTEGER IDENTITY(1,1)";
+      return field.name+" INTEGER";
     case Field.IDENTITY:
       if (typeOnly == true)
-        return field.name + " integer";
+        return field.name + " INTEGER";
       else
-        return field.name+" integer IDENTITY(1,1)";
+        return field.name+" INTEGER IDENTITY(1,1)";
     case Field.BIGIDENTITY:
       if (typeOnly == true)
-        return field.name + " bigint";
+        return field.name + " BIGINT";
       else
-        return field.name + " bigint IDENTITY(1,1)";
-    case Field.UID:
-      return field.name + " uniqueidentifier";
+        return field.name + " BIGINT IDENTITY(1,1)";
     case Field.CHAR:
-      if (field.length > 8000) 
-        return field.name + " varchar(MAX)";
-      return field.name+" varchar("+String.valueOf(field.length)+")";
+      if (field.length > 8000) {
+          return field.name + " VARCHAR(MAX)";
+      }
+      return field.name+" VARCHAR("+String.valueOf(field.length)+")";
     case Field.ANSICHAR:
-      return field.name+" char("+String.valueOf(field.length)+")";
+      return field.name+" CHAR("+String.valueOf(field.length)+")";
     case Field.DATE:
-      return field.name+" datetime";
+      return field.name+" DATETIME";
     case Field.DATETIME:
-      return field.name+" datetime";
+      return field.name+" DATETIME";
     case Field.TIME:
-      return field.name+" datetime";
+      return field.name+" DATETIME";
     case Field.TIMESTAMP:
-      return field.name+" datetime";
+      return field.name+" DATETIME";
     case Field.FLOAT:
     case Field.DOUBLE:
       if (field.precision > 15)
-        return field.name + " decimal("+field.precision+","+field.scale+")";
-      return field.name + " float";
+        return field.name + " DECIMAL("+field.precision+","+field.scale+")";
+      return field.name + " FLOAT";
     case Field.BLOB:
-      return field.name+" image";
+      return field.name+" IMAGE";
     case Field.TLOB:
-      return field.name+" text";
+      return field.name+" TEXT";
     case Field.XML:
-      return field.name + " xml";
+      return field.name + " XML";
     case Field.MONEY:
-      return field.name+" money";
+      return field.name+" MONEY";
     case Field.USERSTAMP:
-      return field.name+" char(8)";
+      return field.name+" CHAR(8)";
+    case Field.UID:
+      return field.name + " UNIQUEIDENTIFIER";
     }
     return "unknown";
   }

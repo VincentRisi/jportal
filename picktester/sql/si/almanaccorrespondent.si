@@ -28,9 +28,8 @@ KEY BankFileKey PRIMARY
   CorrFinId
   CorrBranchId
 
-link Bankfile
+link Bankfile DELETE CASCADE
   CorrSwiftAddress
-//   DELETE CASCADE
 
 PROC Insert 
 PROC Update 
@@ -51,7 +50,6 @@ sqlcode
      ,USId = :USId
      ,TMStamp = current_timestamp
 endcode
-
 
 //Used By Router, IDE
 PROC Get 

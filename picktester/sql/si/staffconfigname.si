@@ -20,9 +20,8 @@ KEY StaffConfigName PRIMARY
   Config_Name
   StaffId
 
-link Staff
+link Staff DELETE CASCADE
   StaffId
-//   DELETE CASCADE
 
 PROC    Insert
 PROC    Update

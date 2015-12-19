@@ -18,17 +18,14 @@ KEY BankCorrespondentsKey PRIMARY
   CurrId
   Correspondent
 
-LINK BankFile
+LINK BankFile DELETE CASCADE
   SwiftAddress
-//   DELETE CASCADE
 
-LINK Currency
+LINK Currency DELETE CASCADE
   CurrId
-//   DELETE CASCADE
 
-LINK BankFile
+LINK BankFile DELETE CASCADE
   Correspondent
-//   DELETE CASCADE
 
 PROC Insert
 PROC Update

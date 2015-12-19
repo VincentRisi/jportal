@@ -15,13 +15,11 @@ KEY StaffGroupKey PRIMARY
   StaffId
   GroupId
 
-LINK Staff 
+LINK Staff DELETE CASCADE
   StaffId
-//   DELETE CASCADE
 
-LINK Grps 
+LINK Grps DELETE CASCADE 
   GroupId
-//   DELETE CASCADE
 
 PROC Insert 
 PROC DeleteOne 

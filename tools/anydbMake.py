@@ -45,10 +45,7 @@ if len(args) < 1:
 sourceFile = fixname(args[0])
 print 'Project file:', sourceFile
 
-class Project(object): pass
-class Switch(object): pass
-class Source(object): pass
-class Target(object): pass
+class Class(object): pass
 
 def lastmod(name,try_lower=True):
   if os.path.exists(name) == True:
@@ -71,12 +68,12 @@ def jportal(name, switches, iiFiles, piFiles):
       _, tail = os.path.split(line[6:])
       _, ext = os.path.splitext(tail)
       if ext == '.ii':
-        iiFile = Source()
+        iiFile = Class()
         iiFile.name = fixname(line[6:])
         iiFile.lastmod = lastmod(iiFile.name)
         iiFiles.append(iiFile)
       elif ext == '.pi':
-        piFile = Source()
+        piFile = Class()
         piFile.name = fixname(line[6:])
         piFile.lastmod = lastmod(piFile.name)
         piFiles.append(piFile)
@@ -99,6 +96,7 @@ def pickle(name, switches):
   os.close(fd)
   command = r'java -jar %s -l %s %s %s' %(pickleJar, fname, name, switches)
   print command
+  
   os.system(command)
   for line in open(fname):
     line = line[:-1] 
@@ -106,6 +104,7 @@ def pickle(name, switches):
   os.remove(fname)
 
 switches = {}
+args = {}
 
 def clean(project):
   global dirsep
@@ -142,8 +141,6 @@ def make_ib_files(pathlist):
       ibFiles.append(file)  
   return ibFiles
 
-args = {}
-
 def remove_comment(line):
   p = line.find('#')
   if p >= 0:
@@ -169,7 +166,8 @@ def expand(line):
       result += args[arg]
   return result
 
-state = 0;JPORTAL=1;CRACKLE=2;PICKLE=3;SOURCE=4;IDL=5;APP=8
+state=0;JPORTAL=1;CRACKLE=2;PICKLE=3;SOURCE=4;IDL=5;APP=8
+
 def parse_anydb(sourceFile):
   ifile = open(sourceFile, 'r')
   lines = ifile.readlines()
@@ -188,7 +186,7 @@ def parse_anydb(sourceFile):
       continue
     fields=line.split()
     if fields[0] == 'project' and len(fields) > 1:
-      project = Project()
+      project = Class()
       project.name = fixname(fields[1])
       project.switches = []
       project.sources = []
@@ -239,7 +237,7 @@ def parse_anydb(sourceFile):
           project.masks[state][dir].append(mask)
       continue
     if state == SOURCE:
-      source = Source()
+      source = Class()
       source.targets = []
       source.name = fixname(fields[0])
       source.noTargets = 0
@@ -247,7 +245,7 @@ def parse_anydb(sourceFile):
       project.sources.append(source)
       continue
     if state == APP:
-      source = Source()
+      source = Class()
       app_list = ('appfile', 'pmfile', 'prfile', 'pifile')
       app_type = fields[0]
       if (not app_type in app_list):
@@ -266,7 +264,7 @@ def parse_anydb(sourceFile):
       project.apps[app_type].append(source)
       continue
     if state == IDL:
-      source = Source()
+      source = Class()
       idl_list = ('idlfile', 'imfile', 'ibfile', 'icfile', 'iifile')
       idl_type = fields[0]
       if (not idl_type in idl_list):
@@ -287,7 +285,7 @@ def parse_anydb(sourceFile):
   return project
 
 def add_target(source, file):
-  target = Target()
+  target = Class() #Target()
   target.name = fixname(file)
   target.lastmod = lastmod(target.name, False)
   source.targets.append(target)
@@ -348,8 +346,6 @@ icFiles = project.idls['icfile']
 iiFiles = project.idls['iifile']
 if not project.apps.has_key('prfile'):
   project.apps['prfile'] = []
-#if not project.apps.has_key('pifile'):
-#  project.apps['pifile'] = []
 prFiles = project.apps['prfile']
 piFiles = project.apps['pifile']
 #-------------------------------------------------------
@@ -386,7 +382,7 @@ for source in project.sources:
       head, tail = os.path.split(target.name)
       root, ext = os.path.splitext(tail)
       if ext == '.ii':
-        iiFile = Source()
+        iiFile = Class()
         iiFile.name = fixname(target.name)
         iiFile.lastmod = lastmod(iiFile.name)
         iiFiles.append(iiFile)
@@ -402,10 +398,10 @@ if len(sourceList) > 0:
 #------------------------------------------------------------------
 compile = False
 if 'idlModule' in switches and 'idlTarget' in switches:
-  idlTarget = Source()
+  idlTarget = Class()
   idlTarget.name = fixname(switches['idlTarget'])
   idlTarget.lastmod = lastmod(idlTarget.name)
-  idlModule = Source()
+  idlModule = Class()
   idlModule.name = fixname(switches['idlModule'])
   idlModule.lastmod = lastmod(idlModule.name)
   if idlModule.lastmod > idlTarget.lastmod:
@@ -438,7 +434,7 @@ if 'idlModule' in switches and 'idlTarget' in switches:
       ifile.close()
     outfile.close()
 elif 'idlTarget' in switches:
-  idlTarget = Source()
+  idlTarget = Class()
   idlTarget.name = fixname(switches['idlTarget'])
   idlTarget.lastmod = lastmod(idlTarget.name)
   compile = True
@@ -447,10 +443,10 @@ if compile == True:
 #----------------------------------------------------------------
 compile = False
 if 'appModule' in switches and 'appTarget' in switches:
-  appTarget = Source()
+  appTarget = Class()
   appTarget.name = fixname(switches['appTarget'])
   appTarget.lastmod = lastmod(appTarget.name)
-  appModule = Source()
+  appModule = Class()
   appModule.name = fixname(switches['appModule'])
   appModule.lastmod = lastmod(appModule.name)
   if appModule.lastmod > appTarget.lastmod:
@@ -480,7 +476,7 @@ if 'appModule' in switches and 'appTarget' in switches:
       ifile.close()
     outfile.close()
 elif 'appTarget' in switches:
-  appTarget = Source()
+  appTarget = Class()
   appTarget.name = fixname(switches['appTarget'])
   appTarget.lastmod = lastmod(appTarget.name)
   compile = True

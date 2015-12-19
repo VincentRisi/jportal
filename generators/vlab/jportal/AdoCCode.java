@@ -844,7 +844,7 @@ private static ObjectInputStream in;
     }
     return field.useName() + " <unsupported>";
   }
-  static boolean blobCheck(Vector<?> fields)
+  static boolean blobCheck(Vector<Field> fields)
   {
     for (int i = 0; i < fields.size(); i++)
     {
