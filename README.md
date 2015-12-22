@@ -271,5 +271,32 @@ Building JPortal
   - ported to C++ by Csaba Balazs, University of Szeged
   - with improvements by Pat Terry, Rhodes University
 * log4j   - Apache log4j-1.2.17.jar
+* Oracle DB Developer VM with VirtualBox - OTN_Developer_Day_VM.ova
+* oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm 
+* oracle-instantclient12.1-basiclite-12.1.0.2.0-1.x86_64.rpm 
+* oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm 
+* oracle-instantclient12.1-jdbc-12.1.0.2.0-1.x86_64.rpm 
+* oracle-instantclient12.1-odbc-12.1.0.2.0-1.x86_64.rpm 
+* oracle-instantclient12.1-precomp-12.1.0.2.0-1.x86_64.rpm 
+* oracle-instantclient12.1-sqlplus-12.1.0.2.0-1.x86_64.rpm 
+* oracle-instantclient12.1-tools-12.1.0.2.0-1.x86_64.rpm
+* postgresql - 9.4
+
+**Windows 7.0 tools**
+
+* postgresql-9.5.0-beta2-3-windows.exe
+* cmake-2.8.5-win32-x86.exe
+* codeblocks-13.12-setup.exe
+* eclipse-java-mars-1-win32.zip
+* jdk-8u65-windows-i586.exe
+* mingw-w64-install.exe
+* postgresql-9.5.0-beta2-3-windows.exe
+* PyScripter-v2.5.3-Setup.exe
+* PyScripter-v2.5.3-x64-Setup.exe
+* python-2.7.9.msi
 
 Assuming the repository has been checked out to */main/jportal*. The cmake is used from */main/jportal/build*, build is in .gitignore so initially one must do a *'mkdir'*  of it and from it do a *'cmake ..'*. Once the cmake has been made and as long as all the required tools are in place, *'make'* should complete an initial build.
+
+I am running on linux mint 17.3 Rosa, which is debian based. Installing oracle client software is quite trial and error. But I do now have the client connecting to the Developer Days stuff. Of course we use sudo alien -i ... to install the instantclient stuff. The linux mint is a superb desktop environment, IMNSHO it is the route Microsoft should have gone, but when you business model is Total Resale every 3-5 years, more the pity.
+
+I have quite good success on a Windows 7 VM - I am not using Visual Studio for the cmake, but using mingw - using unix build - I am also using git bash for the make terminal.
