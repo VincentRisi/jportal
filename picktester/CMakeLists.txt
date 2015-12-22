@@ -4,7 +4,7 @@ anydbMake(jportal_picktester ${PICKTESTER_SOURCE_DIR}/picktester.anydb "${PICKTE
 
 anydbMake(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb "${PICKTESTER_BINARY_DIR}/sql/pgDDl/FieldSearch.sql")
 
-set (psql_list
+set (sql_list
   QueueType Drivers SourceSystem StreamFieldsDef StreamMessageFormat Staff
   Currency BankFile AccountType Grps StreamType FieldSearchDef BlobData
   StreamFieldMsgRel StaffQueuePerm FileOutput FileInput StaffQueueConfig Message
@@ -16,17 +16,35 @@ set (psql_list
   Queue Streams Audittrail Fields FieldSearch
 )
 
-message (STATUS "COMMAND ${psqlExe} -h localhost -d postgres -U vince -a -e -f ... -o ...")
-foreach (name ${psql_list})
+set (user_name $ENV{USER})
+message (STATUS "COMMAND ${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ... -o ...")
+foreach (name ${sql_list})
   set (logFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.log)
   set (srcFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.sql)
   add_custom_command(
     OUTPUT  ${logFile}
     DEPENDS ${srcFile}
-    COMMAND ${psqlExe} -h localhost -d postgres -U vince -a -e -f ${srcFile} -o ${logFile} >> ${logFile}
+    COMMAND ${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ${srcFile} -o ${logFile} >> ${logFile}
   )
   add_custom_target(
     psql_${name}_build ALL  
+    DEPENDS ${logFile}
+  )
+endforeach()
+
+set (conn_str $ENV{VLAB_ORACONN})
+set (sqlplusExe sqlplus)
+message (STATUS "COMMAND ${sqlplusExe} ${conn_str} @${srcFile} > ${logFile}")
+foreach (name ${sql_list})
+  set (logFile ${PICKTESTER_BINARY_DIR}/sql/oraDDL/${name}.log)
+  set (srcFile ${PICKTESTER_BINARY_DIR}/sql/oraDDL/${name}.sql)
+  add_custom_command(
+    OUTPUT  ${logFile}
+    DEPENDS ${srcFile}
+    COMMAND ${sqlplusExe} ${conn_str} @${srcFile} > ${logFile}
+  )
+  add_custom_target(
+    sqlname_${name}_build ALL  
     DEPENDS ${logFile}
   )
 endforeach()

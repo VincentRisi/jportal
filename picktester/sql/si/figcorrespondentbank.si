@@ -1,4 +1,4 @@
-DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
+DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   FigCorrespondentBank
 SERVER   npu
@@ -23,14 +23,14 @@ KEY FigCorrespondentBankKey PRIMARY
   RankType
   SwiftAddress
 
-//LINK Country
-//  Country
+LINK Country
+  Country
 
-//LINK BankFile
-//  SwiftAddress
+LINK BankFile
+  SwiftAddress
 
-//LINK Currency
-//  CurrId
+LINK Currency
+  CurrId
 
 PROC Insert
 PROC Update
@@ -109,7 +109,7 @@ INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('AUSTRALIA',         'AUD', 'S', 0,
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('NEW ZEALAND',       'NZD', 'P', 0,  'ANZBNZ22',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('INDIA',             'INR', 'P', 0,  'SBININBB',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('LESOTHO',           'LSL', 'P', 0,  'NEDLLSMX',   0, 0, 0,  'DEFINED', current_timestamp);
-INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('MALAWI',            'MKW',  'P', 0,  'CBBLMWMW',   0, 0, 0,  'DEFINED', current_timestamp);
+--INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('REPUBLIC OF MALAWI','MWK', 'P', 0,  'CBBLMWMW',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('NAMIBIA',           'NAD', 'P', 0,  'CBONNANX',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('SWAZILAND',         'SZL', 'P', 0,  'NESWSZMX',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('SWAZILAND',         'SZL', 'S', 0,  'SDBDZM1',    0, 0, 0,  'DEFINED', current_timestamp);
@@ -137,7 +137,7 @@ INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('GERMANY',           'EUR', 'S', 0,
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('GERMANY',           'EUR', 'S', 0,  'HYVEDEMM',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('GERMANY',           'EUR', 'S', 0,  'SOLADEST',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('GERMANY',           'EUR', 'S', 0,  'MARKDEFF',   0, 0, 0,  'DEFINED', current_timestamp);
-INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('IRELAND',           'EUR', 'P', 0,  'AIBKIE2D',   0, 0, 0,  'DEFINED', current_timestamp);
+--INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('IRELAND',           'EUR', 'P', 0,  'AIBKIE2D',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('NETHERLANDS',       'EUR', 'P', 0,  'ABNANL2A',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('NETHERLANDS',       'EUR', 'S', 0,  'INGBNL2A',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('NETHERLANDS',       'EUR', 'S', 0,  'RABONL2U',   0, 0, 0,  'DEFINED', current_timestamp);
@@ -158,13 +158,13 @@ INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('SPAIN',             'EUR', 'P', 0,
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('SPAIN',             'EUR', 'S', 0,  'BSABESBB',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('SPAIN',             'EUR', 'S', 0,  'BBVAESMM',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('DENMARK',           'DKK', 'P', 0,  'DABADKKK',   0, 0, 0,  'DEFINED', current_timestamp);
-INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('DENMARK',           'DDK', 'S', 0,  'UNIBDKKK',   0, 0, 0,  'DEFINED', current_timestamp);
+INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('DENMARK',           'DKK', 'S', 0,  'UNIBDKKK',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('FINLAND',           'EUR', 'P', 0,  'PSPBFIHH',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('NORWAY',            'NOK', 'P', 0,  'DNBANOKK',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('SWEDEN',            'SEK', 'P', 0,  'HANDSESS',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('SWEDEN',            'SEK', 'S', 0,  'ESSESESS',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('SWEDEN',            'SEK', 'S', 0,  'NBBKSESS',   0, 0, 0,  'DEFINED', current_timestamp);
-INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('ISREAL',            'ILS', 'P', 0,  'POALILIT',   0, 0, 0,  'DEFINED', current_timestamp);
+--INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('ISREAL',            'ILS', 'P', 0,  'POALILIT',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('UNITED STATES OF AMERICA',     'USD', 'P', 0,  'IRVTUS3N',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('UNITED STATES OF AMERICA',     'USD', 'P', 0,  'FNBBUS33',   0, 0, 0,  'DEFINED', current_timestamp);
 INSERT INTO vlab.FIGCORRESPONDENTBANK VALUES('UNITED STATES OF AMERICA',     'USD', 'P', 0,  'PNBPUS3NNYC',0, 0, 0,  'DEFINED', current_timestamp);

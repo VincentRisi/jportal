@@ -19,6 +19,8 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import com.sun.org.apache.bcel.internal.generic.Type;
+
 public class OracleDDL extends Generator
 {
   /**
@@ -55,12 +57,20 @@ public class OracleDDL extends Generator
   {
     return "Generate Oracle DDL.";
   }
+  private static boolean addExit = false;
   public static void generate(Database database, String output, PrintWriter outLog)
   {
     try
     {
       String tableOwner = "";
       String fileName;
+      for (String flag : database.flags)
+      {
+    	if (flag.equals("addExit") == true)
+    		addExit = true;
+      }
+      if (addExit == false)
+      	outLog.println("-- No addExit flag detected.");
       if (database.output.length() > 0)
         fileName = database.output;
       else
@@ -76,15 +86,23 @@ public class OracleDDL extends Generator
           tableOwner = database.userid + ".";
         if (database.password.length() > 0)
         {
+          if (addExit == false)
+        	outLog.println("-- An exit added because a CONNECT is generated.");
           outData.println("CONNECT " + database.userid + "/" + database.password + "@" + database.server);
           outData.println();
+          addExit = true;
         }
         for (int i = 0; i < database.tables.size(); i++)
-          generate((Table)database.tables.elementAt(i), outData);
+          generateTable(database.tables.elementAt(i), outData);
         for (int i = 0; i < database.views.size(); i++)
-          generate((View)database.views.elementAt(i), outData, "", tableOwner);
+          generateView(database.views.elementAt(i), outData, "", tableOwner);
         for (int i = 0; i < database.sequences.size(); i++)
-          generate((Sequence)database.sequences.elementAt(i), outData, tableOwner);
+          generateSequence(database.sequences.elementAt(i), outData, tableOwner);
+        if (addExit == true)
+        {
+          outData.println("exit");
+          outData.println();
+        }
         outData.flush();
       }
       finally
@@ -102,13 +120,14 @@ public class OracleDDL extends Generator
     String x = "" + (101 + i);
     return x.substring(1);
   }
-  static void generate(Table table, PrintWriter outData)
+  static void generateTable(Table table, PrintWriter outData)
   {
     String tableOwner = "";
     if (table.database.userid.length() > 0)
       tableOwner = table.database.userid + ".";
     String comma = "( ";
     boolean hasNotNull = false;
+    boolean bigSequence = false;
     if (table.fields.size() > 0)
     {
       outData.println("DROP TABLE " + tableOwner + table.name + " CASCADE CONSTRAINTS;");
@@ -124,15 +143,20 @@ public class OracleDDL extends Generator
           hasNotNull = true;
         else if (!field.isNull)
           hasNotNull = true;
+        if (field.type == Field.BIGSEQUENCE)
+          bigSequence = true;	
       }
       outData.print(")");
       if (table.options.size() > 0)
       {
         for (int i = 0; i < table.options.size(); i++)
         {
-          String option = (String)table.options.elementAt(i);
-          outData.println();
-          outData.print(option);
+          String option = table.options.elementAt(i);
+          if (option.toUpperCase().startsWith("TABLESPACE"))
+          {
+            outData.println();
+            outData.print(option);
+          }
         }
       }
       outData.println(";");
@@ -143,8 +167,8 @@ public class OracleDDL extends Generator
       outData.println();
       for (int i = 0; i < table.grants.size(); i++)
       {
-        Grant grant = (Grant)table.grants.elementAt(i);
-        generate(grant, outData, tableOwner + table.name);
+        Grant grant = table.grants.elementAt(i);
+        generateGrant(grant, outData, tableOwner + table.name);
       }
       if (table.hasSequence)
       {
@@ -152,7 +176,10 @@ public class OracleDDL extends Generator
         outData.println();
         outData.println("CREATE SEQUENCE " + tableOwner + table.name + "Seq");
         outData.println("  MINVALUE 1");
-        outData.println("  MAXVALUE 999999999");
+        if (bigSequence == true)
+          outData.println("  MAXVALUE 999999999999999999");
+        else
+          outData.println("  MAXVALUE 999999999");
         outData.println("  CYCLE");
         outData.println("  ORDER;");
         outData.println();
@@ -162,10 +189,10 @@ public class OracleDDL extends Generator
         outData.println();
         if (table.grants.size() > 0)
         {
-          Grant grant = (Grant)table.grants.elementAt(0);
+          Grant grant = table.grants.elementAt(0);
           for (int j = 0; j < grant.users.size(); j++)
           {
-            String user = (String)grant.users.elementAt(j);
+            String user = grant.users.elementAt(j);
             outData.println("GRANT SELECT ON " + tableOwner + table.name + "SEQ TO " + user + ";");
             outData.println();
           }
@@ -173,17 +200,15 @@ public class OracleDDL extends Generator
       }
       for (int i = 0; i < table.keys.size(); i++)
       {
-        Key key = (Key)table.keys.elementAt(i);
+        Key key = table.keys.elementAt(i);
         if (!key.isPrimary && !key.isUnique)
           generateIndex(table, key, outData);
       }
-      //if (hasEnums)
-      //  generateEnumTables(table, outData);
     }
     for (int i = 0; i < table.views.size(); i++)
     {
       View view = (View)table.views.elementAt(i);
-      generate(view, outData, table.name, tableOwner);
+      generateView(view, outData, table.name, tableOwner);
     }
     if (hasNotNull == true)
     {
@@ -192,7 +217,7 @@ public class OracleDDL extends Generator
       comma = "( ";
       for (int i = 0; i < table.fields.size(); i++, comma = ", ")
       {
-        Field field = (Field)table.fields.elementAt(i);
+        Field field = table.fields.elementAt(i);
         if (field.isNull && field.defaultValue.length() == 0 && field.checkValue.length() == 0)
           continue;
         outData.print(comma + field.name + " CONSTRAINT " + table.name + "_NN" + bSO(i));
@@ -214,7 +239,7 @@ public class OracleDDL extends Generator
       outData.println("ADD");
       for (int i = 0; i < table.keys.size(); i++)
       {
-        Key key = (Key)table.keys.elementAt(i);
+        Key key = table.keys.elementAt(i);
         if (key.isPrimary)
           generatePrimary(table, key, outData, mComma);
         else if (key.isUnique)
@@ -231,10 +256,10 @@ public class OracleDDL extends Generator
       outData.println("ADD");
       for (int i = 0; i < table.links.size(); i++)
       {
-        Link link = (Link)table.links.elementAt(i);
+        Link link = table.links.elementAt(i);
         if (link.linkName.length() == 0)
           link.linkName = table.name + "_FK" + bSO(i);
-        generate(link, outData, mComma);
+        generateLink(link, outData, mComma);
         mComma = ", ";
       }
       outData.println(");");
@@ -242,9 +267,9 @@ public class OracleDDL extends Generator
     }
     for (int i = 0; i < table.procs.size(); i++)
     {
-      Proc proc = (Proc)table.procs.elementAt(i);
+      Proc proc = table.procs.elementAt(i);
       if (proc.isData)
-        generate(proc, outData);
+        generateData(proc, outData);
     }
   }
   /**
@@ -266,7 +291,8 @@ public class OracleDDL extends Generator
     for (int i = 0; i < key.options.size(); i++)
     {
       String option = (String)key.options.elementAt(i);
-      outData.println("  " + option);
+      if (option.toUpperCase().startsWith("TABLESPACE"))
+        outData.println("  " + option);
     }
   }
   /**
@@ -288,7 +314,8 @@ public class OracleDDL extends Generator
     for (int i = 0; i < key.options.size(); i++)
     {
       String option = (String)key.options.elementAt(i);
-      outData.println("  " + option);
+      if (option.toUpperCase().startsWith("TABLESPACE"))
+          outData.println("  " + option);
     }
   }
   /**
@@ -316,7 +343,8 @@ public class OracleDDL extends Generator
     {
       outData.println();
       String option = (String)key.options.elementAt(i);
-      outData.print(option);
+      if (option.toUpperCase().startsWith("TABLESPACE"))
+        outData.print(option);
     }
     outData.println(";");
     outData.println();
@@ -324,7 +352,7 @@ public class OracleDDL extends Generator
   /**
   * Generates foreign key SQL Code for Oracle
   */
-  static void generate(Link link, PrintWriter outData, String mComma)
+  static void generateLink(Link link, PrintWriter outData, String mComma)
   {
     String comma = "  ( ";
     outData.println(mComma + "CONSTRAINT " + link.linkName + " FOREIGN KEY");
@@ -338,7 +366,7 @@ public class OracleDDL extends Generator
   /**
   * Generates grants for Oracle
   */
-  static void generate(Grant grant, PrintWriter outData, String object)
+  static void generateGrant(Grant grant, PrintWriter outData, String object)
   {
     for (int i = 0; i < grant.perms.size(); i++)
     {
@@ -354,7 +382,7 @@ public class OracleDDL extends Generator
   /**
   * Generates views for Oracle
   */
-  static void generate(View view, PrintWriter outData, String tableName, String tableOwner)
+  static void generateView(View view, PrintWriter outData, String tableName, String tableOwner)
   {
     outData.println("CREATE OR REPLACE FORCE VIEW " + tableName + view.name);
     String comma = "( ";
@@ -387,11 +415,13 @@ public class OracleDDL extends Generator
   /**
   * Generates pass through data for Oracle
   */
-  static void generate(Proc proc, PrintWriter outData)
+  static void generateData(Proc proc, PrintWriter outData)
   {
     for (int i = 0; i < proc.lines.size(); i++)
     {
       String l = proc.lines.elementAt(i).line;
+      if (l.toUpperCase().trim().startsWith("START"))
+        continue;
       outData.println(l);
     }
     outData.println();
@@ -399,7 +429,7 @@ public class OracleDDL extends Generator
   /**
   * Generates pass through data for Oracle
   */
-  static void generate(Sequence sequence, PrintWriter outData, String tableOwner)
+  static void generateSequence(Sequence sequence, PrintWriter outData, String tableOwner)
   {
     outData.println("DROP SEQUENCE " + sequence.name + ";");
     outData.println();
