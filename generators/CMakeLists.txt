@@ -2,6 +2,8 @@ project (jportal_generators)
 
 set (class_bin_dir ${GENERATORS_SOURCE_DIR}/bin)
 
+add_subdirectory(vlab/jportal/decompiler)
+
 set (wild_card 
   vlab/jportal/*.class 
   vlab/jportal/decompiler/*.class 

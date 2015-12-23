@@ -15,6 +15,7 @@ package vlab.jportal;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class Decompile
@@ -42,21 +43,19 @@ public class Decompile
       }
       if (args.length < 2+i)
       {
-        outLog.println("usage java jportal.Decompile <decompiler> <keyinfo> (generators)+");
+        outLog.println("usage java jportal.Decompile <decompiler> <connect> (generators)+");
         outLog.println("for example to re(verse)engineer Oracle");
         outLog.println();
-        outLog.println("java jportal.Decompile Oracle \"UFAD00/control@orcl\" -o sql OracleDDL");
-        outLog.println("This would expect <decompiler> of jportal.decompiler.Oracle");
-        outLog.println("                  <keyinfo> of UFAD00 with password control at OracleSID of orcl");
+        outLog.println("java jportal.Decompile OracleRE vlab/polly@192.168.1.141:1521/orcl -o sql OracleDDL");
+        outLog.println("This would expect <decompiler> of vlab.jportal.decompiler.Oracle");
+        outLog.println("                  <connect> of vlab with password polly at host:port/SID of 192.168.1.141:1521/orcl");
         outLog.flush();
         return;
       }
       outLog.println(args[i]+" "+args[i+1]);
-      Class<?> c0 = Class.forName("vlab.jportal.decompiler."+args[i]);
-      Class<?> d0[] = {args[i+1].getClass(), outLog.getClass()};
-      Method m0 = c0.getMethod("devolve", d0);
-      Object o0[] = {args[i+1], outLog};
-      Database database = (Database) m0.invoke(null, o0);
+      String decompiler = args[i];
+      String connect = args[i+1];
+      Database database = runDecompiler(outLog, decompiler, connect);
       if (database == null)
       {
         outLog.println("Decompile has errors");
@@ -70,10 +69,16 @@ public class Decompile
         {
           if (i+1 < args.length)
           {
-            output = args[++i];
+        	i++;
+            output = args[i];
             char ch = output.charAt(output.length()-1);
-            if (ch != '\\')
-              output = output + "\\";
+            if (output.indexOf('/') == -1)
+            {
+              if (ch != '\\')
+                output = output + "\\";
+            }
+            else if (ch != '/')
+              output = output + "/";
           }
           continue;
         }
@@ -81,7 +86,8 @@ public class Decompile
         {
           if (i+1 < args.length)
           {
-            log = args[++i];
+        	i++;  
+            log = args[i];
             OutputStream outFile = new FileOutputStream(log);
             outLog.flush();
             outLog = new PrintWriter(outFile);
@@ -89,11 +95,12 @@ public class Decompile
           continue;
         }
         outLog.println(args[i]);
-        Class<?> c = Class.forName("jportal."+args[i]);
-        Class<?> d[] = {database.getClass(), output.getClass(), outLog.getClass()};
-        Method m = c.getMethod("generate", d);
-        Object o[] = {database, output, outLog};
-        m.invoke(database, o);
+        String generator = args[i];
+        Class<?> classOf = Class.forName("vlab.jportal."+generator);
+        Class<?> parmsOf[] = {database.getClass(), output.getClass(), outLog.getClass()};
+        Method methodOf = classOf.getMethod("generate", parmsOf);
+        Object parms[] = {database, output, outLog};
+        methodOf.invoke(database, parms);
       }
       outLog.flush();
     }
@@ -102,5 +109,15 @@ public class Decompile
       outLog.println("Error: "+e);
       outLog.flush();
     }
+  }
+  private static Database runDecompiler(PrintWriter outLog, String decompiler, String connect)
+		throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException 
+  {
+    Class<?> classOf = Class.forName("vlab.jportal.decompiler."+decompiler);
+    Class<?> parmsOf[] = {connect.getClass(), outLog.getClass()};
+    Method methodOf = classOf.getMethod("devolve", parmsOf);
+    Object parms[] = {connect, outLog};
+    Database database = (Database) methodOf.invoke(null, parms);
+    return database;
   }
 }

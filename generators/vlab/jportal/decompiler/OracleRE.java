@@ -12,7 +12,10 @@
 
 package vlab.jportal.decompiler;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -51,11 +54,72 @@ public class OracleRE
   protected static Vector<LinksTo> links;
   protected static Vector<String> sequencesDone;
   protected static Oracle oracle;
+
+  public static void main(String args[])
+  {
+    int i = 0;
+    PrintWriter outLog = new PrintWriter(System.out);
+    try
+    {
+      if (args.length == 0)
+      {
+        outLog.println("usage java <classpath> vlab.jportal.decompiler.OracleRE [-l logfile] <connect> (-o output | -l logfile | generator)+");
+        outLog.println();
+        outLog.println("java -cp jportal.jar vlab.jportal.decompiler.OracleRE vlab/polly@192.168.1.141:1521/orcl -o si JPortal.si");
+        outLog.flush();
+        return;
+      }
+      i = checkLog(args, i, outLog);
+      String parameters = args[i];
+      String output = "";
+      Database database = devolve(parameters, outLog);
+      for (i++; i < args.length; i++)
+      {
+        if (args[i].equals("-o") && i + 1 < args.length)
+        {
+          i++;
+          output = args[i];
+          continue;
+        }
+        i = checkLog(args, i, outLog);
+        if (i >= args.length)
+          break;
+        generate(database, args[i], output, outLog);
+      }
+    } catch (Throwable ex)
+    {
+      System.out.println(ex.toString());
+      System.out.flush();
+      ex.printStackTrace();
+    }
+  }
+
+  private static int checkLog(String args[], int i, PrintWriter outLog) throws Throwable
+  {
+    if (args[i].equals("-l") && i + 1 < args.length)
+    {
+      i++;
+      String log = args[i];
+      OutputStream outFile = new FileOutputStream(log);
+      outLog.flush();
+      outLog = new PrintWriter(outFile);
+      i++;
+    }
+    return i;
+  }
+  private static void generate(Database database, String generator, String output, PrintWriter outLog) throws Throwable
+  {
+    Class<?> classOf = Class.forName("vlab.jportal." + generator);
+    Class<?> parmsOf[] = { database.getClass(), output.getClass(), outLog.getClass() };
+    Method methodOf = classOf.getMethod("generate", parmsOf);
+    Object parms[] = { database, output, outLog };
+    methodOf.invoke(database, parms);
+  }
   /**
-  * parameters expected to be in the form user/password@sid.
-  * If the sid contains : eg "hulk:1521:qa01" then "thin" will
-  * be used for the connection else "oci7" will be used.
-  */
+   * parameters expected to be in the form user/password@sid. If the sid
+   * contains : eg "hulk:1521:qa01" then "thin" will be used for the connection
+   * else "oci7" will be used.
+   */
   public static Database devolve(String parameters, PrintWriter outLog)
   {
     try
@@ -75,10 +139,11 @@ public class OracleRE
       connector = new ConnectorOracle(driver, sid, userid, password);
       oracle = new Oracle(connector);
       database = new Database();
-      database.name = fixDatabaseName(sid);
-      database.server = sid;
+      fixDatabaseName(sid);
+      database.name = "OracleRE";
+      database.server = fixServerName(sid);
       database.userid = userid.toUpperCase();
-      database.password = password.toUpperCase();
+      database.password = password;
       sequencesDone = new Vector<String>();
       loadTables(outLog);
       loadViews(outLog);
@@ -102,11 +167,19 @@ public class OracleRE
     }
     return database;
   }
+  private static String fixServerName(String sid)
+  {
+    int i = sid.lastIndexOf('/');
+    if (i == -1)
+      return sid;
+    String name = sid.substring(i + 1);
+    return name;
+  }
   static String fixDatabaseName(String sid)
   {
     int i = sid.indexOf(':');
     if (i == -1)
-      return sid.toUpperCase();
+      return sid;
     String name = sid.substring(0, i);
     sid = sid.substring(i + 1);
     i = sid.indexOf(':');
@@ -116,17 +189,12 @@ public class OracleRE
       sid = sid.substring(i + 1);
     }
     name = name + sid;
-    return name.toUpperCase();
+    return name;
   }
   static String sqlExceptionMessage(SQLException e)
   {
-    return "\n\nSQLException thrown"
-      + "\n  SQL State  "
-      + e.getSQLState()
-      + "\n  Error Code "
-      + e.getErrorCode()
-      + "\n  Message    "
-      + e.getMessage();
+    return "\n\nSQLException thrown" + "\n  SQL State  " + e.getSQLState() + "\n  Error Code " + e.getErrorCode()
+        + "\n  Message    " + e.getMessage();
   }
   static String setKorM(int value)
   {
@@ -157,9 +225,7 @@ public class OracleRE
   }
   static String caseChange(String input)
   {
-    return caseChange(
-      caseChange(caseChange(input.toLowerCase(), '_'), '#'),
-      '$');
+    return caseChange(caseChange(caseChange(input.toLowerCase(), '_'), '#'), '$');
   }
   static void loadTables(PrintWriter outLog) throws SQLException
   {
@@ -172,14 +238,8 @@ public class OracleRE
       table.database = database;
       table.name = tablesRec.tableName;
       table.alias = caseChange(table.name);
-      table.options.addElement(
-        "TABLESPACE "
-          + tablesRec.tableSpaceName
-          + " STORAGE (INITIAL "
-          + setKorM(tablesRec.initialExtent)
-          + " NEXT "
-          + setKorM(tablesRec.nextExtent)
-          + ")");
+      table.options.addElement("TABLESPACE " + tablesRec.tableSpaceName + " STORAGE (INITIAL "
+          + setKorM(tablesRec.initialExtent) + " NEXT " + setKorM(tablesRec.nextExtent) + ")");
       outLog.println(table.name);
       outLog.flush();
       loadTableFields(outLog);
@@ -325,8 +385,7 @@ public class OracleRE
     Vector<String> sequenceFields = new Vector<String>();
     Vector<String> typeCFields = new Vector<String>();
     String sequenceName = table.name + "SEQ";
-    Query query1 =
-      tableSequenceRec.tableSequence(database.userid, table.name, sequenceName);
+    Query query1 = tableSequenceRec.tableSequence(database.userid, table.name, sequenceName);
     while (tableSequenceRec.tableSequence(query1))
       sequenceFields.addElement(tableSequenceRec.columnName);
     Oracle.TableTypeC tableTypeCRec = oracle.getTableTypeC();
@@ -344,13 +403,8 @@ public class OracleRE
       field = new Field();
       field.name = tableColumnsRec.columnName;
       field.alias = caseChange(field.name);
-      boolean usedSeq =
-        fieldType(
-          (sequenceFields.indexOf(field.name) != -1) ? true : false,
-          tableColumnsRec.dataType,
-          tableColumnsRec.dataLength,
-          tableColumnsRec.dataPrecision,
-          tableColumnsRec.dataScale);
+      boolean usedSeq = fieldType((sequenceFields.indexOf(field.name) != -1) ? true : false, tableColumnsRec.dataType,
+          tableColumnsRec.dataLength, tableColumnsRec.dataPrecision, tableColumnsRec.dataScale);
       if (usedSeq)
       {
         table.hasSequence = true;
@@ -368,12 +422,7 @@ public class OracleRE
       table.fields.addElement(field);
     }
   }
-  static boolean fieldType(
-    boolean isSeqField,
-    String dataType,
-    int dataLength,
-    int dataPrecision,
-    int dataScale)
+  static boolean fieldType(boolean isSeqField, String dataType, int dataLength, int dataPrecision, int dataScale)
   {
     boolean result = false;
     if (dataType.compareTo("NUMBER") == 0)
@@ -425,7 +474,7 @@ public class OracleRE
       field.type = Field.DATETIME;
       field.length = 14;
     } else // treat all else as char
-      {
+    {
       field.type = Field.CHAR;
       field.length = dataLength;
     }
@@ -447,15 +496,10 @@ public class OracleRE
         table.setPrimary(constraintColumnsRec.column);
         key.fields.addElement(constraintColumnsRec.column);
       }
-      Oracle.GetIndexTableSpace getIndexTableSpaceRec = oracle.getGetIndexTableSpace(); 
+      Oracle.GetIndexTableSpace getIndexTableSpaceRec = oracle.getGetIndexTableSpace();
       if (getIndexTableSpaceRec.getIndexTableSpace(database.userid, key.name))
-        key.options.addElement(
-          "USING INDEX TABLESPACE "
-            + getIndexTableSpaceRec.tableSpaceName
-            + " STORAGE (INITIAL "
-            + setKorM(getIndexTableSpaceRec.initialExtent)
-            + " NEXT "
-            + setKorM(getIndexTableSpaceRec.nextExtent)
+        key.options.addElement("USING INDEX TABLESPACE " + getIndexTableSpaceRec.tableSpaceName + " STORAGE (INITIAL "
+            + setKorM(getIndexTableSpaceRec.initialExtent) + " NEXT " + setKorM(getIndexTableSpaceRec.nextExtent)
             + ")");
       table.keys.addElement(key);
     }
@@ -475,13 +519,8 @@ public class OracleRE
         key.fields.addElement(constraintColumnsRec.column);
       Oracle.GetIndexTableSpace getIndexTableSpaceRec = oracle.getGetIndexTableSpace();
       if (getIndexTableSpaceRec.getIndexTableSpace(database.userid, key.name))
-        key.options.addElement(
-          "USING INDEX TABLESPACE "
-            + getIndexTableSpaceRec.tableSpaceName
-            + " STORAGE (INITIAL "
-            + setKorM(getIndexTableSpaceRec.initialExtent)
-            + " NEXT "
-            + setKorM(getIndexTableSpaceRec.nextExtent)
+        key.options.addElement("USING INDEX TABLESPACE " + getIndexTableSpaceRec.tableSpaceName + " STORAGE (INITIAL "
+            + setKorM(getIndexTableSpaceRec.initialExtent) + " NEXT " + setKorM(getIndexTableSpaceRec.nextExtent)
             + ")");
       table.keys.addElement(key);
     }
@@ -498,14 +537,8 @@ public class OracleRE
       Query query2 = indexColumnsRec.indexColumns(database.userid, key.name);
       while (indexColumnsRec.indexColumns(query2))
         key.fields.addElement(indexColumnsRec.column);
-      key.options.addElement(
-        "TABLESPACE "
-          + tableIndexesRec.tableSpaceName
-          + " STORAGE (INITIAL "
-          + setKorM(tableIndexesRec.initialExtent)
-          + " NEXT "
-          + setKorM(tableIndexesRec.nextExtent)
-          + ")");
+      key.options.addElement("TABLESPACE " + tableIndexesRec.tableSpaceName + " STORAGE (INITIAL "
+          + setKorM(tableIndexesRec.initialExtent) + " NEXT " + setKorM(tableIndexesRec.nextExtent) + ")");
       table.keys.addElement(key);
     }
   }

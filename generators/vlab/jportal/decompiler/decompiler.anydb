@@ -1,0 +1,14 @@
+#------------------------------------------
+#   DECOMPILER
+#------------------------------------------
+
+project decompiler
+
+source_dir=/main/jportal/generators/vlab/jportal/decompiler
+binary_dir=/main/jportal/build/generators/vlab/jportal/decompiler
+
+jportal  
+  JavaCode ${source_dir} %i.java
+
+source        
+  ${source_dir}/oracle.si   
