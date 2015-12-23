@@ -97,8 +97,12 @@ public class Java1Code extends Generator
   {
     if (table.database.packageName.length() > 0)
       outData.println("package " + table.database.packageName + ";");
-    outData.println("import vlab.jportal.*;");
-    outData.println("import java.sql.*;");
+    outData.println("import java.sql.Connection;");
+    outData.println("import java.sql.PreparedStatement;");
+    outData.println("import java.sql.ResultSet;");
+    outData.println("import java.sql.SQLException;");
+    outData.println("import vlab.jportal.util.Connector;");
+    outData.println("import vlab.jportal.util.Query;");
     outData.println("/**");
     for (int i=0; i < table.comments.size(); i++)
     {

@@ -1,8 +1,8 @@
 DATABASE OracleALL
-PACKAGE  jportal.decompilers
+PACKAGE  vlab.jportal.decompiler
 SERVER   orcl
-USERID   scott
-PASSWORD tiger
+USERID   vlab
+PASSWORD polly
 
 TABLE Oracle ** PLEASE NOTE no fields as we are not defining anything new
              ** but the name Oracle will be tagged onto the procedures.
