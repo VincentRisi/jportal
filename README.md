@@ -321,228 +321,227 @@ All whitespace is ignored, this includes single line comment which start with "/
 Lexical Tokens
 --------------
 
-* codeline = (~["\n","\r"])* ("\r\n" | "\n" | "\r")
-* comment = "**" (~["\n","\r"])* ("\n"|"\r\n")
-* digit = ["0"-"9", "#", "$"]
-* dquoted = ("\"" (~["\"", "\\"] | "\\" (["\\", "\"", "\'"])?)* "\"")
-* identifier = letter (letter|digit)*>
-* letter = ["a"-"z", "_", "A"-"Z"]
-* lidentifier = ("l"|"L") "'" letter (letter>|digit)* "'"
-* number = (["1"-"9"] (["0"-"9"])*)|"0"
-* squoted = ("\'" (~["\'", "\\"] | "\\" (["\\", "\"", "\'"])?)* "\'")
-* string = dquoted | squoted
-
+    codeline = (~["\n","\r"])* ("\r\n" | "\n" | "\r")
+    comment = "**" (~["\n","\r"])* ("\n"|"\r\n")
+    digit = ["0"-"9", "#", "$"]
+    dquoted = ("\"" (~["\"", "\\"] | "\\" (["\\", "\"", "\'"])?)* "\"")
+    identifier = letter (letter|digit)*>
+    letter = ["a"-"z", "_", "A"-"Z"]
+    lidentifier = ("l"|"L") "'" letter (letter>|digit)* "'"
+    number = (["1"-"9"] (["0"-"9"])*)|"0"
+    squoted = ("\'" (~["\'", "\\"] | "\\" (["\\", "\"", "\'"])?)* "\'")
+    string = dquoted | squoted
 
 **Alias**
 
-'(' Ident ')'
+    '(' Ident ')'
 
 **CharSize**
 
-'(' number ')' | '[' number ']' | number
+    '(' number ')' | '[' number ']' | number
 
 **Check**
 
-CHECK string
+    CHECK string
 
 **Column**
 
-Ident
+    Ident
 
 **Database**
 
-DATABASE Ident  
-(FLAGS (string)+ )*  
-(PACKAGE Ident (.Ident)* )?  
-(OUTPUT (Ident | string) )?  
-SERVER Ident (USERID Ident PASSWORD Ident)?  
-(Tabledef)+
-(View)*
+    DATABASE Ident  
+    (FLAGS (string)+ )*  
+    (PACKAGE Ident (.Ident)* )?  
+    (OUTPUT (Ident | string) )?  
+    SERVER Ident (USERID Ident PASSWORD Ident)?  
+    (Tabledef)+
+    (View)*
 
 **DataType**
 
-ANSICHAR (CharSize)? |  
-BLOB (CharSize)? |  
-BOOLEAN |  
-BYTE |  
-CHAR (CharSize)? |  
-DATE |  
-DATETIME |  
-DOUBLE (FloatSize)? |  
-FLOAT (FloatSize)? |  
-IDENTITY |  
-INT (EnumValue)? |  
-LONG |  
-MONEY |  
-SEQUENCE |  
-SHORT (EnumValue)? |  
-TIME |  
-TIMESTAMP |  
-TLOB (CharSize)? |  
-UID |  
-USERSTAMP |  
+    ANSICHAR (CharSize)? |  
+    BLOB (CharSize)? |  
+    BOOLEAN |  
+    BYTE |  
+    CHAR (CharSize)? |  
+    DATE |  
+    DATETIME |  
+    DOUBLE (FloatSize)? |  
+    FLOAT (FloatSize)? |  
+    IDENTITY |  
+    INT (EnumValue)? |  
+    LONG |  
+    MONEY |  
+    SEQUENCE |  
+    SHORT (EnumValue)? |  
+    TIME |  
+    TIMESTAMP |  
+    TLOB (CharSize)? |  
+    UID |  
+    USERSTAMP
 
 **Default**
 
-DEFAULT string
+    DEFAULT string
 
 **EnumValue**
 
-'(' (Ident '=' number (',')? )+ ')'
+    '(' (Ident '=' number (',')? )+ ')'
 
 **Extras**
 
-Grant | Key | Link | View
+    Grant | Key | Link | View
 
 **Field**
 
-Ident  
-(Alias)?  
-DataType  
-(Default|Null|Check)*  
-(comment)*  
+    Ident  
+    (Alias)?  
+    DataType  
+    (Default|Null|Check)*  
+    (comment)*  
 
 **FloatSize**
 
-'(' number ',' number  ')' | '[' number ',' number ']'
+    '(' number ',' number  ')' | '[' number ',' number ']'
 
 **Grant**
 
-GRANT (Permission)+ TO (User)+
+    GRANT (Permission)+ TO (User)+
 
 **Ident**
 
-(identifier | lidentifier)
+    (identifier | lidentifier)
 
 **Input**
 
-(InputType)? (Field)+
+    (InputType)? (Field)+
 
 **InputType**
 
-'(' (MULTIPLE | number) ')'
+    '(' (MULTIPLE | number) ')'
 
 **Key**
 
-KEYIdent (Options)* (Modifier)* (Column)+
+    KEYIdent (Options)* (Modifier)* (Column)+
 
 **Link**
 
-LINK Ident (Column)+
+    LINK Ident (Column)+
 
 **Modifier**
 
-UNIQUE | PRIMARY
+    UNIQUE | PRIMARY
 
 **NewCode**
 
-SQLCODE  
-(codeline)+  // with embedded Param  
-ENDCODE  
+    SQLCODE  
+    (codeline)+  // with embedded Param  
+    ENDCODE  
 
 **NewData**
 
-SQLDATA  
-(codeline)+  
-ENDDATA  
+    SQLDATA  
+    (codeline)+  
+    ENDDATA  
 
 **NewViewCode**
 
-SQLCODE  
-(codeline)+  
-ENDCODE  
+    SQLCODE  
+    (codeline)+  
+    ENDCODE  
 
 **Null**
 
-(NOT)? NULL
+    (NOT)? NULL
 
 **OldCode**
 
-CODE  
-(string | Ident)+  
-ENDCODE  
+    CODE  
+    (string | Ident)+  
+    ENDCODE  
 
 **OldData**
 
-DATA  
-(string | Ident)+  
-ENDDATA  
+    DATA  
+    (string | Ident)+  
+    ENDDATA  
 
 **OldViewCode**
 
-CODE  
-(string)+  
-ENDCODE  
+    CODE  
+    (string)+  
+    ENDCODE  
 
 **Options**
 
-OPTIONS (string)+
+    OPTIONS (string)+
 
 **Output**
 
-(OutputType)?(Field)+
+    (OutputType)?(Field)+
 
 **OutputType**
 
-'(' (SINGLE | number) ')'
+    '(' (SINGLE | number) ')'
 
 **Param**
 
-'&' Ident ('(' number ')')?
+    '&' Ident ('(' number ')')?
 
 **Permission**
 
-ALL | DELETE | SELECT | UPDATE | EXECUTE
+    ALL | DELETE | SELECT | UPDATE | EXECUTE
 
 **Proc**
 
-(PROC (StdProc | UserProc) | OldData | NewData
+    (PROC (StdProc | UserProc) | OldData | NewData
 
 **StdProc**
 
-BULKINSERT (number)? |  
-BULKUPDATE (number)? |  
-COUNT |  
-DELETEALL |  
-DELETEONE |  
-EXISTS |  
-INSERT |  
-SELECTALL ((IN)? ORDER)? ((FOR)? UPDATE)? |  
-SELECTONE ((FOR)? UPDATE)? |  
-UPDATE  
-(Options)*  
+    BULKINSERT (number)? |  
+    BULKUPDATE (number)? |  
+    COUNT |  
+    DELETEALL |  
+    DELETEONE |  
+    EXISTS |  
+    INSERT |  
+    SELECTALL ((IN)? ORDER)? ((FOR)? UPDATE)? |  
+    SELECTONE ((FOR)? UPDATE)? |  
+    UPDATE  
+    (Options)*  
 
 **Table**
 
-TABLE Ident  
-(Alias)?  
-(Check)?  
-(comment)*  
-(Options)*  
-(Field)*  
+    TABLE Ident  
+    (Alias)?  
+    (Check)?  
+    (comment)*  
+    (Options)*  
+    (Field)*  
 
 **Tabledef**
 
-Table  
-(Extras)*  
-(Proc)*  
+    Table  
+    (Extras)*  
+    (Proc)*  
 
 **User**
 
-Ident
+    Ident
 
 **UserProc**
 
-Ident (comment)*  
-(Input)?  
-(Output)?  
-(OldCode | NewCode)  
+    Ident (comment)*  
+    (Input)?  
+    (Output)?  
+    (OldCode | NewCode)  
 
 **View**
 
-Ident (TO (User)+)?  
-OUTPUT (Ident (Alias)?)+  
-(OldViewCode | NewViewCode)  
+    Ident (TO (User)+)?  
+    OUTPUT (Ident (Alias)?)+  
+    (OldViewCode | NewViewCode)  
 
 Format of an SI File
 --------------------
@@ -557,13 +556,13 @@ The first portion of the SI file is the Database Portion. We are showing keyword
 
 *Database Portion*
 
-DATABASE name                // The database name  
-(FLAGS (string)+)*           // The outer (...)* indicates 0 or more  
-                             // and the inner (...)+ indicates 1 or more  
-(PACKAGE name(.name)*)?      // The outer (...)? indicates 0 or 1  
-(OUTPUT (name|string))?      // The inner (...|...) indicates choice name or string  
-SERVER (name|string)         // Server name  
-(USERID name PASSWORD name)? // Connection information for DDL Generator  
+    DATABASE name                // The database name  
+    (FLAGS (string)+)*           // The outer (...)* indicates 0 or more  
+                                 // and the inner (...)+ indicates 1 or more  
+    (PACKAGE name(.name)*)?      // The outer (...)? indicates 0 or 1  
+    (OUTPUT (name|string))?      // The inner (...|...) indicates choice name or string  
+    SERVER (name|string)         // Server name  
+    (USERID name PASSWORD name)? // Connection information for DDL Generator  
 
 *(Table Definitions)* *
 
@@ -571,58 +570,58 @@ As you can see from above DATABASE and SERVER are always required, but the other
 
 *Table Definitions*
 
-TABLE name ('(' alias ')')? // the alias is optional, the generators  
-                            // generally use this for Code (not DDL)  
-(CHECK string)?             // Check string for DDL Generators  
-('**' restline)*            // Comments about the table the generators can use  
-(OPTIONS (string)+)*        // Options about the table the generators can use  
-(Field Definitions)*        // An existing table may be defined without field definitions  
-(Extra Definitions)*        // The extras are the Keys, Grants, Links, Views  
-(Proc Definitions)*         // These are the things that AnyDB is really about  
+    TABLE name ('(' alias ')')? // the alias is optional, the generators  
+                                // generally use this for Code (not DDL)  
+    (CHECK string)?             // Check string for DDL Generators  
+    ('**' restline)*            // Comments about the table the generators can use  
+    (OPTIONS (string)+)*        // Options about the table the generators can use  
+    (Field Definitions)*        // An existing table may be defined without field definitions  
+    (Extra Definitions)*        // The extras are the Keys, Grants, Links, Views  
+    (Proc Definitions)*         // These are the things that AnyDB is really about  
 
 *Field Definitions*
 
-name ('(' alias ')')?       // Optional alias for Code (DDL normally uses name)  
-(ANSICHAR (charSize)?       // Blank padded character  
-|BLOB (charSize)?           // Binary large object (generator dependant)  
-|TLOB (charSize)?           // Text large object (generator dependant)  
-|BOOLEAN                    // Not often implemented non standard type  
-|BYTE (enumDef)?            // 8 bit number (0 to 255 or -128 to 127)  
-|CHAR (charSize)?           // Null terminated var char  
-|SHORT (enumDef)?           // 16 bit number (0 to 65535 or -32768 to 32767  
-|INT (enumDef)?             // 32 bit number (work it out for yourself)  
-|LONG                       // 32 or 64 bit integer  
-|UID                        // Not often implemented non standard type  
-|DATE                       // Just the Date  
-|DATETIME                   // The Date together with the time  
-|TIME                       // Just the Time  
-|TIMESTAMP                  // The Date and Time as a TimeStamp  
-|USERSTAMP                  // A UserStamp  
-|SEQUENCE                   // Used for sequence number generators  
-|IDENTITY                   // Used for RDBMS that have identity  
-|DOUBLE (floatDef)?         // 64 bit IEEE double  
-|FLOAT (floatDef)?          // 32 or 64 bit IEEE double  
-|MONEY)                     // Not often implemented non standard type  
-(DEFAULT string|(NOT)? NULL|CHECK string)* 
+    name ('(' alias ')')?       // Optional alias for Code (DDL normally uses name)  
+    (ANSICHAR (charSize)?       // Blank padded character  
+    |BLOB (charSize)?           // Binary large object (generator dependant)  
+    |TLOB (charSize)?           // Text large object (generator dependant)  
+    |BOOLEAN                    // Not often implemented non standard type  
+    |BYTE (enumDef)?            // 8 bit number (0 to 255 or -128 to 127)  
+    |CHAR (charSize)?           // Null terminated var char  
+    |SHORT (enumDef)?           // 16 bit number (0 to 65535 or -32768 to 32767  
+    |INT (enumDef)?             // 32 bit number (work it out for yourself)  
+    |LONG                       // 32 or 64 bit integer  
+    |UID                        // Not often implemented non standard type  
+    |DATE                       // Just the Date  
+    |DATETIME                   // The Date together with the time  
+    |TIME                       // Just the Time  
+    |TIMESTAMP                  // The Date and Time as a TimeStamp  
+    |USERSTAMP                  // A UserStamp  
+    |SEQUENCE                   // Used for sequence number generators  
+    |IDENTITY                   // Used for RDBMS that have identity  
+    |DOUBLE (floatDef)?         // 64 bit IEEE double  
+    |FLOAT (floatDef)?          // 32 or 64 bit IEEE double  
+    |MONEY)                     // Not often implemented non standard type  
+    (DEFAULT string|(NOT)? NULL|CHECK string)* 
 
 The charSize is either an integral number or an integral number in parenthesis or brackets, e.g. Fred char(10). FloatDef is two numbers indicating precision and scale, e.g. Value float(15,4) indicating a 15 digit number with 4 decimal places. Generally the generator do not distinguish between float and double, they are both treated as double normally, but again that is up to the generation required. The enumDef is a very powerful construct, e.g. State byte (ok=1, err=2). The DDL could implement a check in the database, although we have found that checks can be restrictive from a developers point of view, especially when a Database is maintained by DBA's. By default fields are generally assumed to be NOT NULL, ie. fields that can be NULL must be stated to be so. This is not the norm in ANSI SQL but from a programmers point of view I do not like the the extra testing and uncertainty that NULL fields introduce. There is certainly a place for null fields but not by default. SEQUENCE is useful for databases that have sequence generators, Oracle, Interbase, PostgreSQL. IDENTITY is useful for those that do not use sequence generators like MsSqlServer, MySql.
 
 *Extra Definitions*
 
-(GRANT (ALL|DELETE|INSERT|SELECT|UPDATE)+ TO (name)+ // Grant rights to users  
-|KEY name (OPTIONS)+ (UNIQUE|PRIMARY)? (columns)+    // Define Keys and Indexes  
-|LINK table (columns)+                               // Define Foreign Keys  
-|View Definition)  
+    (GRANT (ALL|DELETE|INSERT|SELECT|UPDATE)+ TO (name)+ // Grant rights to users  
+    |KEY name (OPTIONS)+ (UNIQUE|PRIMARY)? (columns)+    // Define Keys and Indexes  
+    |LINK table (columns)+                               // Define Foreign Keys  
+    |View Definition)  
 
 It is normally good pracise to have a primary key for each table in the database. Unique keys and other indexes to help speed up queries should also be discovered. Links are used to define foreign keys to other tables (or even perhaps to itself on occasion). The links expect that the target table has a primary key and often null fields are useful for foreign keys. In the quest for simplicity most of the time programmers like to have a single logon to the database. In this case grants are not used very often. The problem with grants generally occurs when migrating database data to other machines. But grants should be considered together with different logins. I have chosen to expand (or expound) view definition separately.
 
 *View Definition*
 
-VIEW name (TO (user)+)?  
-OUTPUT (name ('(' alias ')')?)+  
-SQLCODE  
-lines  
-ENDCODE  
+    VIEW name (TO (user)+)?  
+    OUTPUT (name ('(' alias ')')?)+  
+    SQLCODE  
+    lines  
+    ENDCODE  
 
 Views are a powerful construct and allow for the simplification of queries in some cases. Normally views are readonly but I am sure that in some RDBMS you may be able to do updates and inserts. I personally would avoid updates to views, mainly because I dislike defining NULL fields.
 
@@ -630,34 +629,34 @@ Views are a powerful construct and allow for the simplification of queries in so
 
 (Standard Proc|User Proc|Data Blocks)
 
-Standard Proc
+`Standard Proc`
 
-PROC  
-(INSERT  
-|BULKINSERT ('(' number ')')?  
-|UPDATE  
-|BULKUPDATE ('(' number ')')?  
-|DELETEONE  
-|DELETEALL  
-|SELECTONE ((FOR)? UPDATE)?  
-|SELECTALL ((IN)? ORDER)? ((FOR)? UPDATE)?  
-|COUNT  
-|EXISTS)  
-(OPTIONS (string)+)*  
+    PROC  
+    (INSERT  
+    |BULKINSERT ('(' number ')')?  
+    |UPDATE  
+    |BULKUPDATE ('(' number ')')?  
+    |DELETEONE  
+    |DELETEALL  
+    |SELECTONE ((FOR)? UPDATE)?  
+    |SELECTALL ((IN)? ORDER)? ((FOR)? UPDATE)?  
+    |COUNT  
+    |EXISTS)  
+    (OPTIONS (string)+)*  
 
-User Proc
+`User Proc`
 
-PROC name  
-('**' restline)*            // Comments about the proc the generators can use  
-(OPTIONS (string)+)*        // Options about the proc the generators can use  
-(INPUT ('(' MULTIPLE | number ')')? (Field Definitions)+)?  
-(OUTPUT ('(' SINGLE | number ')')? (Field Definitions)+)?  
-SQLCODE  
-(lines)+    // Each line parsed later for dynamic parameters &inp('('number')')?  
-ENDCODE  
+    PROC name  
+    ('**' restline)*            // Comments about the proc the generators can use  
+    (OPTIONS (string)+)*        // Options about the proc the generators can use  
+    (INPUT ('(' MULTIPLE | number ')')? (Field Definitions)+)?  
+    (OUTPUT ('(' SINGLE | number ')')? (Field Definitions)+)?  
+    SQLCODE  
+    (lines)+    // Each line parsed later for dynamic parameters &inp('('number')')?  
+    ENDCODE  
 
-Data Blocks
+`Data Blocks`
 
-SQLDATA  
-(lines)+  
-ENDDATA  
+    SQLDATA  
+    (lines)+  
+    ENDDATA
