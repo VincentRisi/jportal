@@ -73,6 +73,7 @@ public class OracleRE
       String parameters = args[i];
       String output = "";
       Database database = devolve(parameters, outLog);
+      outLog.flush();
       for (i++; i < args.length; i++)
       {
         if (args[i].equals("-o") && i + 1 < args.length)
@@ -84,7 +85,9 @@ public class OracleRE
         i = checkLog(args, i, outLog);
         if (i >= args.length)
           break;
+        outLog.printf("%s %s\n", output, args[i]);
         generate(database, args[i], output, outLog);
+        outLog.flush();
       }
     } catch (Throwable ex)
     {
