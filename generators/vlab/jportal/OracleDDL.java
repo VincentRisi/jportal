@@ -291,7 +291,7 @@ public class OracleDDL extends Generator
     for (int i = 0; i < key.options.size(); i++)
     {
       String option = (String)key.options.elementAt(i);
-      if (option.toUpperCase().startsWith("TABLESPACE"))
+      if (option.toUpperCase().startsWith("TABLESPACE") || option.toUpperCase().startsWith("USING INDEX"))
         outData.println("  " + option);
     }
   }
@@ -314,7 +314,7 @@ public class OracleDDL extends Generator
     for (int i = 0; i < key.options.size(); i++)
     {
       String option = (String)key.options.elementAt(i);
-      if (option.toUpperCase().startsWith("TABLESPACE"))
+      if (option.toUpperCase().startsWith("TABLESPACE") || option.toUpperCase().startsWith("USING INDEX"))
           outData.println("  " + option);
     }
   }
@@ -343,7 +343,7 @@ public class OracleDDL extends Generator
     {
       outData.println();
       String option = (String)key.options.elementAt(i);
-      if (option.toUpperCase().startsWith("TABLESPACE"))
+      if (option.toUpperCase().startsWith("TABLESPACE") || option.toUpperCase().startsWith("USING INDEX"))
         outData.print(option);
     }
     outData.println(";");
