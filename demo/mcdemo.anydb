@@ -1,0 +1,16 @@
+#--------
+# MCDEMO  
+#--------
+
+project mcdemo
+
+root=/main/jportal
+source_dir=${root}/demo
+binary_dir=${root}/build/demo
+
+jportal  
+  AdoCSCode ${binary_dir}/cs  %a.cs
+  MSSqlDDL  ${binary_dir}/sql %a.ddl
+
+source        
+  ${source_dir}/kamcodes.si   

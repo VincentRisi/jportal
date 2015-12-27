@@ -33,4 +33,5 @@ add_subdirectory(idl2tester)
 add_subdirectory(binuc)
 add_subdirectory(binuj)
 add_subdirectory(picktester)
+add_subdirectory(demo)
  

@@ -4,24 +4,23 @@ from types import InstanceType
 def tree_tester():
     sys.path.append('/main/jportal/build/anydbtest/sql/PythonTree')
     from ZedZed import database
-    def print_it(obj, pad=0):
-        print ' '*pad, obj.__dict__
-        for attr in obj.__dict__:
-            o = obj.__dict__[attr]
-            if isinstance(o, list):
-                for inst in o:
-                    if isinstance(inst, InstanceType):
-                        print_it(inst, pad+2)
-                    #else:
-                        #print ' '*pad, inst     
-            elif isinstance(o, InstanceType):
-                print_it(o, pad+2)   
-            #else:
-                #print ' '*pad, attr             
-            
-    print_it(database)                
-    #for table in database.tables:
-        #print table.__dict__
+    def fill_it(o, pad=0):
+        d = o.__dict__
+        for k in d:
+            v = d[k]
+            if isinstance(v, list):
+                for n, i in enumerate(v):
+                    if isinstance(i, InstanceType):
+                        v[n] = fill_it(i, pad+2)
+                    elif not isinstance(v[n], str):    
+                        v[n] = repr(i)
+            elif isinstance(v, InstanceType):
+                d[k] = fill_it(v, pad+2)   
+            elif not isinstance(v, str):    
+                d[k] = repr(v)
+        return d             
+    dd = repr(fill_it(database)).replace("'", '"')
+    print dd             
 
 def json_tester():
     file_name = '/main/jportal/build/anydbtest/sql/json/zedzed.json'

@@ -1,5 +1,7 @@
 # MsSql CSharp Example 
 
+This code demonstrates almost 10 to 1 code generation. It is used in conjuction with Portal.cs from support code.
+
 ## SI File
 
     DATABASE AnyDB FLAGS "mssql storedprocs"
@@ -7,7 +9,7 @@
     OUTPUT   kopaCodes
     SERVER   Kopa
 
-    TABLE kopaCodes           ** List of available Kopa Series Codes
+    TABLE kopaCodes           ** List of availble Kopa Series Codes
       ecoCode       char 24   ** The Normalised Economic Time Series Code
       setId         char 2    ** The two character selector code
       kopaCode      char 24   ** The Kopa code used for time series
@@ -22,7 +24,7 @@
 
     KEY kopaCodesPK PRIMARY
       ecoCode
-    
+
     KEY kopaCodesUK UNIQUE
       setId
       kopaCode
@@ -70,11 +72,11 @@
       updBy         char 16   
       updWhen       timestamp
     SQLCODE
-      SELECT ecoCode, selected, strategy, disUsed, description, setId, kopaCode, pageId, period,     updBy, updWhen    
-      FROM kopaCodes    
-      WHERE setId =     :setId    
-      AND  pageId =     :pageId    
-      AND  period = :period    
+      SELECT ecoCode, selected, strategy, disUsed, description, setId, kopaCode, pageId, period, updBy, updWhen
+      FROM kopaCodes
+      WHERE setId = :setId
+      AND  pageId = :pageId
+      AND  period = :period
       ORDER BY ecoCode
     ENDCODE
 
@@ -146,40 +148,40 @@
     INPUT
       setId         char 2    ** The two character selector code
       kopaCode      char 24   ** The Kopa code used for time series
-      ecoCode       char 24   ** This code is unique here and will be unique if present in kopaCodes     on JohnnyDB    
-    SQLCODE    
-      updat    e kopaCodes set ecoCode = :ecoCode     
-      where  setId = :setId     
+      ecoCode       char 24   ** This code is unique here and will be unique if present in kopaCodes on JohnnyDB
+    SQLCODE
+      update kopaCodes set ecoCode = :ecoCode 
+      where  setId = :setId 
       and    kopaCode = :kopaCode
     ENDCODE
 
-## Generated CS File
+## CS File
 
     using System;
-    using System.Collections;
+    using System.Collections.Generic;
     using System.Data;
-    using Kam.DBRoutines;
-
+    using Bbd.Idl2.AnyDb;
+    
     namespace Kam.DBRoutines
     {
-      ///  List of available Kopa Series Codes
-  
+      /// <summary>
+      ///  List of availble Kopa Series Codes
+      /// </summary>
       [Serializable()]
-      public class kopaCodesRec
+      public partial class kopaCodesRec
       {
-        public string ecoCode;
-        public string setId;
-        public string kopaCode;
-        public string pageId;
-        public string period;
-        public string description;
-        public int selected;
-        public int strategy;
-        public int disUsed;
-        public string updBy;
-        public DateTime updWhen;
+        public string ecoCode { get { return _ecoCode; } set { _ecoCode = value; } } internal string _ecoCode;
+        public string setId { get { return _setId; } set { _setId = value; } } internal string _setId;
+        public string kopaCode { get { return _kopaCode; } set { _kopaCode = value; } } internal string _kopaCode;
+        public string pageId { get { return _pageId; } set { _pageId = value; } } internal string _pageId;
+        public string period { get { return _period; } set { _period = value; } } internal string _period;
+        public string description { get { return _description; } set { _description = value; } } internal string _description;
+        public int selected { get { return _selected; } set { _selected = value; } } internal int _selected;
+        public int strategy { get { return _strategy; } set { _strategy = value; } } internal int _strategy;
+        public int disUsed { get { return _disUsed; } set { _disUsed = value; } } internal int _disUsed;
+        public string updBy { get { return _updBy; } set { _updBy = value; } } internal string _updBy;
+        public DateTime updWhen { get { return _updWhen; } set { _updWhen = value; } } internal DateTime _updWhen;
       }
-  
       public class kopaCodesSelectedOrd
       {
         public const int No = 0;
@@ -191,10 +193,9 @@
           case 0: return "No";
           case 1: return "Yes";
           }
-          return "";
+          return "unknown ordinal: "+ordinal;
         }
       }
-
       public class kopaCodesStrategyOrd
       {
         public const int Update = 0;
@@ -208,10 +209,9 @@
           case 1: return "Replace";
           case 2: return "TakeOn";
           }
-          return "";
+          return "unknown ordinal: "+ordinal;
         }
       }
-
       public class kopaCodesDisUsedOrd
       {
         public const int InUse = 0;
@@ -223,462 +223,99 @@
           case 0: return "InUse";
           case 1: return "NotInUse";
           }
-          return "";
+          return "unknown ordinal: "+ordinal;
         }
       }
-
       [Serializable()]
-      public class kopaCodesDeleteOneRec
+      public partial class kopaCodesDeleteOneRec
       {
-        public string ecoCode;
+        public string ecoCode { get { return _ecoCode; } set { _ecoCode = value; } } internal string _ecoCode;
       }
-
       [Serializable()]
-      public class kopaCodesListRec
+      public partial class kopaCodesListRec
       {
-        public string ecoCode;
-        public string pageId;
-        public string kopaCode;
-        public string period;
-        public string description;
-        public int disUsed;
-        public string setId;
+        public string ecoCode { get { return _ecoCode; } set { _ecoCode = value; } } internal string _ecoCode;
+        public string pageId { get { return _pageId; } set { _pageId = value; } } internal string _pageId;
+        public string kopaCode { get { return _kopaCode; } set { _kopaCode = value; } } internal string _kopaCode;
+        public string period { get { return _period; } set { _period = value; } } internal string _period;
+        public string description { get { return _description; } set { _description = value; } } internal string _description;
+        public int disUsed { get { return _disUsed; } set { _disUsed = value; } } internal int _disUsed;
+        public string setId { get { return _setId; } set { _setId = value; } } internal string _setId;
       }
-
       [Serializable()]
-      public class kopaCodesListBySetRec
+      public partial class kopaCodesListBySetRec
       {
-        public string ecoCode;
-        public int selected;
-        public int strategy;
-        public int disUsed;
-        public string description;
-        public string setId;
-        public string kopaCode;
-        public string pageId;
-        public string period;
-        public string updBy;
-        public DateTime updWhen;
+        public string ecoCode { get { return _ecoCode; } set { _ecoCode = value; } } internal string _ecoCode;
+        public int selected { get { return _selected; } set { _selected = value; } } internal int _selected;
+        public int strategy { get { return _strategy; } set { _strategy = value; } } internal int _strategy;
+        public int disUsed { get { return _disUsed; } set { _disUsed = value; } } internal int _disUsed;
+        public string description { get { return _description; } set { _description = value; } } internal string _description;
+        public string setId { get { return _setId; } set { _setId = value; } } internal string _setId;
+        public string kopaCode { get { return _kopaCode; } set { _kopaCode = value; } } internal string _kopaCode;
+        public string pageId { get { return _pageId; } set { _pageId = value; } } internal string _pageId;
+        public string period { get { return _period; } set { _period = value; } } internal string _period;
+        public string updBy { get { return _updBy; } set { _updBy = value; } } internal string _updBy;
+        public DateTime updWhen { get { return _updWhen; } set { _updWhen = value; } } internal DateTime _updWhen;
       }
-
       [Serializable()]
-      public class kopaCodesUpdateFromKRec
+      public partial class kopaCodesUpdateFromKRec
       {
-        public string setId;
-        public string pageId;
-        public string kopaCode;
-        public string description;
-        public string updBy;
-        public DateTime updWhen;
+        public string setId { get { return _setId; } set { _setId = value; } } internal string _setId;
+        public string pageId { get { return _pageId; } set { _pageId = value; } } internal string _pageId;
+        public string kopaCode { get { return _kopaCode; } set { _kopaCode = value; } } internal string _kopaCode;
+        public string description { get { return _description; } set { _description = value; } } internal string _description;
+        public string updBy { get { return _updBy; } set { _updBy = value; } } internal string _updBy;
+        public DateTime updWhen { get { return _updWhen; } set { _updWhen = value; } } internal DateTime _updWhen;
       }
-
       [Serializable()]
-      public class kopaCodesMarkNotUsedRec
+      public partial class kopaCodesMarkNotUsedRec
       {
-        public string setId;
-        public string kopaCode;
+        public string setId { get { return _setId; } set { _setId = value; } } internal string _setId;
+        public string kopaCode { get { return _kopaCode; } set { _kopaCode = value; } } internal string _kopaCode;
       }
-
       [Serializable()]
-      public class kopaCodesUpdateSelectRec
+      public partial class kopaCodesUpdateSelectRec
       {
-        public string setId;
-        public string kopaCode;
-        public string ecoCode;
-        public int selected;
-        public int strategy;
+        public string setId { get { return _setId; } set { _setId = value; } } internal string _setId;
+        public string kopaCode { get { return _kopaCode; } set { _kopaCode = value; } } internal string _kopaCode;
+        public string ecoCode { get { return _ecoCode; } set { _ecoCode = value; } } internal string _ecoCode;
+        public int selected { get { return _selected; } set { _selected = value; } } internal int _selected;
+        public int strategy { get { return _strategy; } set { _strategy = value; } } internal int _strategy;
       }
-
       [Serializable()]
-      public class kopaCodesBuildSetListRec
+      public partial class kopaCodesBuildSetListRec
       {
-        public string ecoCode;
-        public int selected;
-        public int strategy;
-        public string dir;
-        public string setId;
-        public string kopaCode;
-        public string period;
-        public int lastNo;
+        public string ecoCode { get { return _ecoCode; } set { _ecoCode = value; } } internal string _ecoCode;
+        public int selected { get { return _selected; } set { _selected = value; } } internal int _selected;
+        public int strategy { get { return _strategy; } set { _strategy = value; } } internal int _strategy;
+        public string dir { get { return _dir; } set { _dir = value; } } internal string _dir;
+        public string setId { get { return _setId; } set { _setId = value; } } internal string _setId;
+        public string kopaCode { get { return _kopaCode; } set { _kopaCode = value; } } internal string _kopaCode;
+        public string period { get { return _period; } set { _period = value; } } internal string _period;
+        public int lastNo { get { return _lastNo; } set { _lastNo = value; } } internal int _lastNo;
       }
-
       [Serializable()]
-      public class kopaCodesChangeAliasRec
+      public partial class kopaCodesChangeAliasRec
       {
-        public string setId;
-        public string kopaCode;
-        public string ecoCode;
+        public string setId { get { return _setId; } set { _setId = value; } } internal string _setId;
+        public string kopaCode { get { return _kopaCode; } set { _kopaCode = value; } } internal string _kopaCode;
+        public string ecoCode { get { return _ecoCode; } set { _ecoCode = value; } } internal string _ecoCode;
       }
-
-      public class kopaCodesSelectAllDataTable : DataTable
-      {
-        public const int cEcoCode = 0;
-        public const int cSetId = 1;
-        public const int cKopaCode = 2;
-        public const int cPageId = 3;
-        public const int cPeriod = 4;
-        public const int cDescription = 5;
-        public const int cSelected = 6;
-        public const int cStrategy = 7;
-        public const int cDisUsed = 8;
-        public const int cUpdBy = 9;
-        public const int cUpdWhen = 10;
-        public static string ToString(int ordinal)
-        {
-          switch (ordinal)
-          {
-          case cEcoCode: return "EcoCode";
-          case cSetId: return "SetId";
-          case cKopaCode: return "KopaCode";
-          case cPageId: return "PageId";
-          case cPeriod: return "Period";
-          case cDescription: return "Description";
-          case cSelected: return "Selected";
-          case cStrategy: return "Strategy";
-          case cDisUsed: return "DisUsed";
-          case cUpdBy: return "UpdBy";
-          case cUpdWhen: return "UpdWhen";
-          }
-          return "";
-        }
-        public kopaCodesSelectAllDataTable(ArrayList aList)
-        : base("kopaCodesSelectAll")
-        {
-          Columns.Add(new DataColumn("EcoCode", typeof(String)));
-          Columns.Add(new DataColumn("SetId", typeof(String)));
-          Columns.Add(new DataColumn("KopaCode", typeof(String)));
-          Columns.Add(new DataColumn("PageId", typeof(String)));
-          Columns.Add(new DataColumn("Period", typeof(String)));
-          Columns.Add(new DataColumn("Description", typeof(String)));
-          Columns.Add(new DataColumn("Selected", typeof(Int32)));
-          Columns.Add(new DataColumn("Strategy", typeof(Int32)));
-          Columns.Add(new DataColumn("DisUsed", typeof(Int32)));
-          Columns.Add(new DataColumn("UpdBy", typeof(String)));
-          Columns.Add(new DataColumn("UpdWhen", typeof(String)));
-          foreach (kopaCodesRec wRec in aList)
-          {
-            DataRow wRow = NewRow();
-            wRow[cEcoCode] = wRec.ecoCode;
-            wRow[cSetId] = wRec.setId;
-            wRow[cKopaCode] = wRec.kopaCode;
-            wRow[cPageId] = wRec.pageId;
-            wRow[cPeriod] = wRec.period;
-            wRow[cDescription] = wRec.description;
-            wRow[cSelected] = wRec.selected;
-            wRow[cStrategy] = wRec.strategy;
-            wRow[cDisUsed] = wRec.disUsed;
-            wRow[cUpdBy] = wRec.updBy;
-            wRow[cUpdWhen] = wRec.updWhen;
-            Rows.Add(wRow);
-          }
-        }
-        public kopaCodesRec this[int row]
-        {
-          get
-          {
-            DataRow wRow = Rows[row];
-            kopaCodesRec wRec = new kopaCodesRec();
-            wRec.ecoCode = (string)wRow[cEcoCode];
-            wRec.setId = (string)wRow[cSetId];
-            wRec.kopaCode = (string)wRow[cKopaCode];
-            wRec.pageId = (string)wRow[cPageId];
-            wRec.period = (string)wRow[cPeriod];
-            wRec.description = (string)wRow[cDescription];
-            wRec.selected = (int)wRow[cSelected];
-            wRec.strategy = (int)wRow[cStrategy];
-            wRec.disUsed = (int)wRow[cDisUsed];
-            wRec.updBy = (string)wRow[cUpdBy];
-            wRec.updWhen = (DateTime)wRow[cUpdWhen];
-            return wRec;
-          }
-          set
-          {
-            DataRow wRow = Rows[row];
-            wRow[cEcoCode] = value.ecoCode;
-            wRow[cSetId] = value.setId;
-            wRow[cKopaCode] = value.kopaCode;
-            wRow[cPageId] = value.pageId;
-            wRow[cPeriod] = value.period;
-            wRow[cDescription] = value.description;
-            wRow[cSelected] = value.selected;
-            wRow[cStrategy] = value.strategy;
-            wRow[cDisUsed] = value.disUsed;
-            wRow[cUpdBy] = value.updBy;
-            wRow[cUpdWhen] = value.updWhen;
-          }
-        }
-      }
-
-      public class kopaCodesListDataTable : DataTable
-      {
-        public const int cSetId = 0;
-        public const int cPeriod = 1;
-        public const int cEcoCode = 2;
-        public const int cPageId = 3;
-        public const int cKopaCode = 4;
-        public const int cDescription = 5;
-        public const int cDisUsed = 6;
-        public static string ToString(int ordinal)
-        {
-          switch (ordinal)
-          {
-          case cSetId: return "SetId";
-          case cPeriod: return "Period";
-          case cEcoCode: return "EcoCode";
-          case cPageId: return "PageId";
-          case cKopaCode: return "KopaCode";
-          case cDescription: return "Description";
-          case cDisUsed: return "DisUsed";
-          }
-          return "";
-        }
-        public kopaCodesListDataTable(ArrayList aList)
-        : base("kopaCodesList")
-        {
-          Columns.Add(new DataColumn("SetId", typeof(String)));
-          Columns.Add(new DataColumn("Period", typeof(String)));
-          Columns.Add(new DataColumn("EcoCode", typeof(String)));
-          Columns.Add(new DataColumn("PageId", typeof(String)));
-          Columns.Add(new DataColumn("KopaCode", typeof(String)));
-          Columns.Add(new DataColumn("Description", typeof(String)));
-          Columns.Add(new DataColumn("DisUsed", typeof(Int32)));
-          foreach (kopaCodesListRec wRec in aList)
-          {
-            DataRow wRow = NewRow();
-            wRow[cSetId] = wRec.setId;
-            wRow[cPeriod] = wRec.period;
-            wRow[cEcoCode] = wRec.ecoCode;
-            wRow[cPageId] = wRec.pageId;
-            wRow[cKopaCode] = wRec.kopaCode;
-            wRow[cDescription] = wRec.description;
-            wRow[cDisUsed] = wRec.disUsed;
-            Rows.Add(wRow);
-          }
-        }
-        public kopaCodesListRec this[int row]
-        {
-          get
-          {
-            DataRow wRow = Rows[row];
-            kopaCodesListRec wRec = new kopaCodesListRec();
-            wRec.setId = (string)wRow[cSetId];
-            wRec.period = (string)wRow[cPeriod];
-            wRec.ecoCode = (string)wRow[cEcoCode];
-            wRec.pageId = (string)wRow[cPageId];
-            wRec.kopaCode = (string)wRow[cKopaCode];
-            wRec.description = (string)wRow[cDescription];
-            wRec.disUsed = (int)wRow[cDisUsed];
-            return wRec;
-          }
-          set
-          {
-            DataRow wRow = Rows[row];
-            wRow[cSetId] = value.setId;
-            wRow[cPeriod] = value.period;
-            wRow[cEcoCode] = value.ecoCode;
-            wRow[cPageId] = value.pageId;
-            wRow[cKopaCode] = value.kopaCode;
-            wRow[cDescription] = value.description;
-            wRow[cDisUsed] = value.disUsed;
-          }
-        }
-      }
-
-      public class kopaCodesListBySetDataTable : DataTable
-      {
-        public const int cSetId = 0;
-        public const int cPageId = 1;
-        public const int cPeriod = 2;
-        public const int cEcoCode = 3;
-        public const int cSelected = 4;
-        public const int cStrategy = 5;
-        public const int cDisUsed = 6;
-        public const int cDescription = 7;
-        public const int cKopaCode = 8;
-        public const int cUpdBy = 9;
-        public const int cUpdWhen = 10;
-        public static string ToString(int ordinal)
-        {
-          switch (ordinal)
-          {
-          case cSetId: return "SetId";
-          case cPageId: return "PageId";
-          case cPeriod: return "Period";
-          case cEcoCode: return "EcoCode";
-          case cSelected: return "Selected";
-          case cStrategy: return "Strategy";
-          case cDisUsed: return "DisUsed";
-          case cDescription: return "Description";
-          case cKopaCode: return "KopaCode";
-          case cUpdBy: return "UpdBy";
-          case cUpdWhen: return "UpdWhen";
-          }
-          return "";
-        }
-        public kopaCodesListBySetDataTable(ArrayList aList)
-        : base("kopaCodesListBySet")
-        {
-          Columns.Add(new DataColumn("SetId", typeof(String)));
-          Columns.Add(new DataColumn("PageId", typeof(String)));
-          Columns.Add(new DataColumn("Period", typeof(String)));
-          Columns.Add(new DataColumn("EcoCode", typeof(String)));
-          Columns.Add(new DataColumn("Selected", typeof(Int32)));
-          Columns.Add(new DataColumn("Strategy", typeof(Int32)));
-          Columns.Add(new DataColumn("DisUsed", typeof(Int32)));
-          Columns.Add(new DataColumn("Description", typeof(String)));
-          Columns.Add(new DataColumn("KopaCode", typeof(String)));
-          Columns.Add(new DataColumn("UpdBy", typeof(String)));
-          Columns.Add(new DataColumn("UpdWhen", typeof(String)));
-          foreach (kopaCodesListBySetRec wRec in aList)
-          {
-            DataRow wRow = NewRow();
-            wRow[cSetId] = wRec.setId;
-            wRow[cPageId] = wRec.pageId;
-            wRow[cPeriod] = wRec.period;
-            wRow[cEcoCode] = wRec.ecoCode;
-            wRow[cSelected] = wRec.selected;
-            wRow[cStrategy] = wRec.strategy;
-            wRow[cDisUsed] = wRec.disUsed;
-            wRow[cDescription] = wRec.description;
-            wRow[cKopaCode] = wRec.kopaCode;
-            wRow[cUpdBy] = wRec.updBy;
-            wRow[cUpdWhen] = wRec.updWhen;
-            Rows.Add(wRow);
-          }
-        }
-        public kopaCodesListBySetRec this[int row]
-        {
-          get
-          {
-            DataRow wRow = Rows[row];
-            kopaCodesListBySetRec wRec = new kopaCodesListBySetRec();
-            wRec.setId = (string)wRow[cSetId];
-            wRec.pageId = (string)wRow[cPageId];
-            wRec.period = (string)wRow[cPeriod];
-            wRec.ecoCode = (string)wRow[cEcoCode];
-            wRec.selected = (int)wRow[cSelected];
-            wRec.strategy = (int)wRow[cStrategy];
-            wRec.disUsed = (int)wRow[cDisUsed];
-            wRec.description = (string)wRow[cDescription];
-            wRec.kopaCode = (string)wRow[cKopaCode];
-            wRec.updBy = (string)wRow[cUpdBy];
-            wRec.updWhen = (DateTime)wRow[cUpdWhen];
-            return wRec;
-          }
-          set
-          {
-            DataRow wRow = Rows[row];
-            wRow[cSetId] = value.setId;
-            wRow[cPageId] = value.pageId;
-            wRow[cPeriod] = value.period;
-            wRow[cEcoCode] = value.ecoCode;
-            wRow[cSelected] = value.selected;
-            wRow[cStrategy] = value.strategy;
-            wRow[cDisUsed] = value.disUsed;
-            wRow[cDescription] = value.description;
-            wRow[cKopaCode] = value.kopaCode;
-            wRow[cUpdBy] = value.updBy;
-            wRow[cUpdWhen] = value.updWhen;
-          }
-        }
-      }
-
-      public class kopaCodesBuildSetListDataTable : DataTable
-      {
-        public const int cSetId = 0;
-        public const int cEcoCode = 1;
-        public const int cSelected = 2;
-        public const int cStrategy = 3;
-        public const int cDir = 4;
-        public const int cKopaCode = 5;
-        public const int cPeriod = 6;
-        public const int cLastNo = 7;
-        public static string ToString(int ordinal)
-        {
-          switch (ordinal)
-          {
-          case cSetId: return "SetId";
-          case cEcoCode: return "EcoCode";
-          case cSelected: return "Selected";
-          case cStrategy: return "Strategy";
-          case cDir: return "Dir";
-          case cKopaCode: return "KopaCode";
-          case cPeriod: return "Period";
-          case cLastNo: return "LastNo";
-          }
-          return "";
-        }
-        public kopaCodesBuildSetListDataTable(ArrayList aList)
-        : base("kopaCodesBuildSetList")
-        {
-          Columns.Add(new DataColumn("SetId", typeof(String)));
-          Columns.Add(new DataColumn("EcoCode", typeof(String)));
-          Columns.Add(new DataColumn("Selected", typeof(Int32)));
-          Columns.Add(new DataColumn("Strategy", typeof(Int32)));
-          Columns.Add(new DataColumn("Dir", typeof(String)));
-          Columns.Add(new DataColumn("KopaCode", typeof(String)));
-          Columns.Add(new DataColumn("Period", typeof(String)));
-          Columns.Add(new DataColumn("LastNo", typeof(Int32)));
-          foreach (kopaCodesBuildSetListRec wRec in aList)
-          {
-            DataRow wRow = NewRow();
-            wRow[cSetId] = wRec.setId;
-            wRow[cEcoCode] = wRec.ecoCode;
-            wRow[cSelected] = wRec.selected;
-            wRow[cStrategy] = wRec.strategy;
-            wRow[cDir] = wRec.dir;
-            wRow[cKopaCode] = wRec.kopaCode;
-            wRow[cPeriod] = wRec.period;
-            wRow[cLastNo] = wRec.lastNo;
-            Rows.Add(wRow);
-          }
-        }
-        public kopaCodesBuildSetListRec this[int row]
-        {
-          get
-          {
-            DataRow wRow = Rows[row];
-            kopaCodesBuildSetListRec wRec = new kopaCodesBuildSetListRec();
-            wRec.setId = (string)wRow[cSetId];
-            wRec.ecoCode = (string)wRow[cEcoCode];
-            wRec.selected = (int)wRow[cSelected];
-            wRec.strategy = (int)wRow[cStrategy];
-            wRec.dir = (string)wRow[cDir];
-            wRec.kopaCode = (string)wRow[cKopaCode];
-            wRec.period = (string)wRow[cPeriod];
-            wRec.lastNo = (int)wRow[cLastNo];
-            return wRec;
-          }
-          set
-          {
-            DataRow wRow = Rows[row];
-            wRow[cSetId] = value.setId;
-            wRow[cEcoCode] = value.ecoCode;
-            wRow[cSelected] = value.selected;
-            wRow[cStrategy] = value.strategy;
-            wRow[cDir] = value.dir;
-            wRow[cKopaCode] = value.kopaCode;
-            wRow[cPeriod] = value.period;
-            wRow[cLastNo] = value.lastNo;
-          }
-        }
-      }
-
       [Serializable()]
-      public class kopaCodes
+      public partial class kopaCodes
       {
         private kopaCodesRec mRec;
         public kopaCodesRec Rec { get { return mRec; } set { mRec = value; } }
-        private ArrayList mList;
+        private List<kopaCodesRec> mList;
         public int Count { get { return mList.Count; } }
         public Cursor mCursor;
         public kopaCodesRec this[int i]
         {
           get
           {
-            if (i < mList.Count)
-              return (kopaCodesRec)mList[i];
-            return null;
+            if (i >= 0 && i < mList.Count)
+              return mList[i];
+            throw new JPortalException("m index out of range");
           }
           set
           {
@@ -689,61 +326,63 @@
         }
         public void Clear()
         {
-          mList = new ArrayList();
+          mList = new List<kopaCodesRec>();
           mRec = new kopaCodesRec();
         }
         public kopaCodes()
         {
           Clear();
         }
-        public string CommandInsert
+        public string CommandInsert()
         {
-          // insert into kopaCodes
-          // ( ecoCode
-          // , setId
-          // , kopaCode
-          // , pageId
-          // , period
-          // , description
-          // , selected
-          // , strategy
-          // , disUsed
-          // , updBy
-          // , updWhen
-          // ) 
-          // values
-          //  (@P0
-          // , @P1
-          // , @P2
-          // , @P3
-          // , @P4
-          // , @P5
-          // , @P6
-          // , @P7
-          // , @P8
-          // , @P9
-          // , @P10
-          // )
-          get {return "kopaCodesInsert";}
+          // insert into kopaCodes (
+          //   ecoCode,
+          //   setId,
+          //   kopaCode,
+          //   pageId,
+          //   period,
+          //   description,
+          //   selected,
+          //   strategy,
+          //   disUsed,
+          //   updBy,
+          //   updWhen
+          //  ) 
+          //  values (
+          //   @P0,
+          //   @P1,
+          //   @P2,
+          //   @P3,
+          //   @P4,
+          //   @P5,
+          //   @P6,
+          //   @P7,
+          //   @P8,
+          //   @P9,
+          //   @P10
+          //  )
+          return "kopaCodesInsert";
         }
-        public void Insert(Connect aConnect)
+        public void Insert(Connect connect)
         {
-          Cursor wCursor = new Cursor(aConnect);
-          wCursor.Procedure(CommandInsert);
-          wCursor.Parameter(0, mRec.ecoCode);
-          wCursor.Parameter(1, mRec.setId);
-          wCursor.Parameter(2, mRec.kopaCode);
-          wCursor.Parameter(3, mRec.pageId);
-          wCursor.Parameter(4, mRec.period);
-          wCursor.Parameter(5, mRec.description);
-          wCursor.Parameter(6, mRec.selected);
-          wCursor.Parameter(7, mRec.strategy);
-          wCursor.Parameter(8, mRec.disUsed);
-          wCursor.Parameter(9, mRec.updBy);
-          wCursor.Parameter(10, mRec.updWhen);
-          wCursor.Exec();
+          using (Cursor wCursor = new Cursor(connect))
+          {
+            wCursor.Procedure(CommandInsert());
+            wCursor.Parameter(0, mRec._ecoCode);
+            wCursor.Parameter(1, mRec._setId);
+            wCursor.Parameter(2, mRec._kopaCode);
+            wCursor.Parameter(3, mRec._pageId);
+            wCursor.Parameter(4, mRec._period);
+            wCursor.Parameter(5, mRec._description);
+            wCursor.Parameter(6, mRec._selected);
+            wCursor.Parameter(7, mRec._strategy);
+            wCursor.Parameter(8, mRec._disUsed);
+            wCursor.Parameter(9, mRec._updBy);
+            wCursor.Parameter(10, wCursor.GetTimeStamp(ref mRec._updWhen));
+            wCursor.Exec();
+          }
         }
-        public string CommandSelectOne
+        public string CommandSelectOne()
         {
           // select
           //   setId
@@ -758,33 +397,44 @@
           // , updWhen
           //  from kopaCodes
           //  where ecoCode = @P0
-          get {return "kopaCodesSelectOne";}
+          return "kopaCodesSelectOne";
         }
-        public bool SelectOne(Connect aConnect)
+        public bool SelectOne(Connect connect)
         {
-          Cursor wCursor = new Cursor(aConnect);
-          wCursor.Procedure(CommandSelectOne);
-          wCursor.Parameter(0, mRec.ecoCode);
-          wCursor.Run();
-          bool wResult = (wCursor.HasReader() && wCursor.Read());
-          if (wResult == true)
+          using (Cursor wCursor = new Cursor(connect))
           {
-            mRec.setId = wCursor.GetString(0);
-            mRec.kopaCode = wCursor.GetString(1);
-            mRec.pageId = wCursor.GetString(2);
-            mRec.period = wCursor.GetString(3);
-            mRec.description = wCursor.GetString(4);
-            mRec.selected = wCursor.GetInt(5);
-            mRec.strategy = wCursor.GetInt(6);
-            mRec.disUsed = wCursor.GetInt(7);
-            mRec.updBy = wCursor.GetString(8);
-            mRec.updWhen = wCursor.GetDateTime(9);
+            wCursor.Procedure(CommandSelectOne);
+            wCursor.Parameter(0, mRec._ecoCode);
+            wCursor.Run();
+            bool wResult = (wCursor.HasReader() && wCursor.Read());
+            if (wResult == true)
+            {
+              mRec._setId = wCursor.GetString(0);
+              mRec._kopaCode = wCursor.GetString(1);
+              mRec._pageId = wCursor.GetString(2);
+              mRec._period = wCursor.GetString(3);
+              mRec._description = wCursor.GetString(4);
+              mRec._selected = wCursor.GetInt(5);
+              mRec._strategy = wCursor.GetInt(6);
+              mRec._disUsed = wCursor.GetInt(7);
+              mRec._updBy = wCursor.GetString(8);
+              mRec._updWhen = wCursor.GetDateTime(9);
+            }
+            if (wCursor.HasReader())
+              wCursor.Close();
+            return wResult;
           }
-          if (wCursor.HasReader())
-            wCursor.Close();
-          return wResult;
         }
-        public string CommandUpdate
+        public bool SelectOne(Connect connect
+        , string _ecoCode
+        )
+        {
+          mRec = new kopaCodesRec
+          { ecoCode = _ecoCode
+          };
+          return SelectOne(connect);
+        }
+        public string CommandUpdate()
         {
           // update kopaCodes
           //  set
@@ -799,26 +449,28 @@
           // , updBy = @P8
           // , updWhen = @P9
           //  where ecoCode = @P10
-          get {return "kopaCodesUpdate";}
+          return "kopaCodesUpdate";
         }
-        public void Update(Connect aConnect)
+        public void Update(Connect connect)
         {
-          Cursor wCursor = new Cursor(aConnect);
-          wCursor.Procedure(CommandUpdate);
-          wCursor.Parameter(0, mRec.setId);
-          wCursor.Parameter(1, mRec.kopaCode);
-          wCursor.Parameter(2, mRec.pageId);
-          wCursor.Parameter(3, mRec.period);
-          wCursor.Parameter(4, mRec.description);
-          wCursor.Parameter(5, mRec.selected);
-          wCursor.Parameter(6, mRec.strategy);
-          wCursor.Parameter(7, mRec.disUsed);
-          wCursor.Parameter(8, mRec.updBy);
-          wCursor.Parameter(9, mRec.updWhen);
-          wCursor.Parameter(10, mRec.ecoCode);
-          wCursor.Exec();
+          using (Cursor wCursor = new Cursor(connect))
+          {
+            wCursor.Procedure(CommandUpdate());
+            wCursor.Parameter(0, mRec._setId);
+            wCursor.Parameter(1, mRec._kopaCode);
+            wCursor.Parameter(2, mRec._pageId);
+            wCursor.Parameter(3, mRec._period);
+            wCursor.Parameter(4, mRec._description);
+            wCursor.Parameter(5, mRec._selected);
+            wCursor.Parameter(6, mRec._strategy);
+            wCursor.Parameter(7, mRec._disUsed);
+            wCursor.Parameter(8, mRec._updBy);
+            wCursor.Parameter(9, wCursor.GetTimeStamp(ref mRec._updWhen));
+            wCursor.Parameter(10, mRec._ecoCode);
+            wCursor.Exec();
+          }
         }
-        public string CommandSelectAll
+        public string CommandSelectAll()
         {
           // select
           //   ecoCode
@@ -833,243 +485,258 @@
           // , updBy
           // , updWhen
           //  from kopaCodes
-          get {return "kopaCodesSelectAll";}
+          return "kopaCodesSelectAll";
         }
-        public void SelectAll(Connect aConnect)
+        public void SelectAll(Connect connect)
         {
-          mCursor = new Cursor(aConnect);
+          mCursor = new Cursor(connect);
           mCursor.Procedure(CommandSelectAll);
           mCursor.Run();
+        }
+        public DataTable SelectAllDataTable(Connect connect)
+        {
+          SelectAll(connect);
+          if (mCursor.HasReader())
+          {
+            DataTable table = new DataTable();
+            table.Load(mCursor.Reader);
+            return table;
+          }
+          else return null;
+        }
+        public void SetkopaCodesRec(DataTable table, int row)
+        {
+          mRec = new kopaCodesRec();
+          DataRowCollection rows = table.Rows;
+          if (row < rows.Count)
+          {
+            mRec._ecoCode = (string)rows[row]["ecoCode"];
+            mRec._setId = (string)rows[row]["setId"];
+            mRec._kopaCode = (string)rows[row]["kopaCode"];
+            mRec._pageId = (string)rows[row]["pageId"];
+            mRec._period = (string)rows[row]["period"];
+            mRec._description = (string)rows[row]["description"];
+            mRec._selected = Convert.Int32(rows[row]["selected"]);
+            mRec._strategy = Convert.Int32(rows[row]["strategy"]);
+            mRec._disUsed = Convert.Int32(rows[row]["disUsed"]);
+            mRec._updBy = (string)rows[row]["updBy"];
+            mRec._updWhen = (DateTime)rows[row]["updWhen"];
+          }
         }
         public bool SelectAllFetch()
         {
           bool wResult = (mCursor.HasReader() && mCursor.Read());
           if (wResult == true)
           {
-            mRec.ecoCode = mCursor.GetString(0);
-            mRec.setId = mCursor.GetString(1);
-            mRec.kopaCode = mCursor.GetString(2);
-            mRec.pageId = mCursor.GetString(3);
-            mRec.period = mCursor.GetString(4);
-            mRec.description = mCursor.GetString(5);
-            mRec.selected = mCursor.GetInt(6);
-            mRec.strategy = mCursor.GetInt(7);
-            mRec.disUsed = mCursor.GetInt(8);
-            mRec.updBy = mCursor.GetString(9);
-            mRec.updWhen = mCursor.GetDateTime(10);
+            mRec._ecoCode = mCursor.GetString(0);
+            mRec._setId = mCursor.GetString(1);
+            mRec._kopaCode = mCursor.GetString(2);
+            mRec._pageId = mCursor.GetString(3);
+            mRec._period = mCursor.GetString(4);
+            mRec._description = mCursor.GetString(5);
+            mRec._selected = mCursor.GetInt(6);
+            mRec._strategy = mCursor.GetInt(7);
+            mRec._disUsed = mCursor.GetInt(8);
+            mRec._updBy = mCursor.GetString(9);
+            mRec._updWhen = mCursor.GetDateTime(10);
           }
           else if (mCursor.HasReader())
             mCursor.Close();
           return wResult;
         }
-        public void SelectAllLoad(Connect aConnect)
+        public void SelectAllLoad(Connect connect)
         {
-          SelectAll(aConnect);
+          SelectAll(connect);
           while (SelectAllFetch())
           {
             mList.Add(mRec);
             mRec = new kopaCodesRec();
           }
         }
-        public ArrayList Loaded { get { return mList; } }
-        public class SelectAllOrd
+        public IEnumerable<kopaCodesRec> SelectAllYield(Connect connect)
         {
-          public const int ecoCode = 0;
-          public const int setId = 1;
-          public const int kopaCode = 2;
-          public const int pageId = 3;
-          public const int period = 4;
-          public const int description = 5;
-          public const int selected = 6;
-          public const int strategy = 7;
-          public const int disUsed = 8;
-          public const int updBy = 9;
-          public const int updWhen = 10;
-          public static string ToString(int ordinal)
+          try
           {
-            switch (ordinal)
-            {
-            case 0: return "ecoCode";
-            case 1: return "setId";
-            case 2: return "kopaCode";
-            case 3: return "pageId";
-            case 4: return "period";
-            case 5: return "description";
-            case 6: return "selected";
-            case 7: return "strategy";
-            case 8: return "disUsed";
-            case 9: return "updBy";
-            case 10: return "updWhen";
-            }
-            return "";
+            SelectAll(connect);
+            while (SelectAllFetch())
+              yield return mRec;
           }
-        }
-        public kopaCodesSelectAllDataTable SelectAllDataTable()
-        {
-          kopaCodesSelectAllDataTable wResult = new kopaCodesSelectAllDataTable(mList);
-          return wResult;
-        }
-        public kopaCodesSelectAllDataTable SelectAllDataTable(Connect aConnect)
-        {
-          SelectAllLoad(aConnect);
-          return SelectAllDataTable();
-        }
-      }
-
-      [Serializable()]
-      public class kopaCodesDeleteOne
-      {
-        private kopaCodesDeleteOneRec mRec;
-        public kopaCodesDeleteOneRec Rec { get { return mRec; } set { mRec = value; } }
-        public void Clear()
-        {
-          mRec = new kopaCodesDeleteOneRec();
-        }
-        public kopaCodesDeleteOne()
-        {
-          Clear();
-        }
-        public string CommandDeleteOne
-        {
-          // delete from kopaCodes
-          //  where ecoCode = @P0
-          get {return "kopaCodesDeleteOne";}
-        }
-        public void DeleteOne(Connect aConnect)
-        {
-          Cursor wCursor = new Cursor(aConnect);
-          wCursor.Procedure(CommandDeleteOne);
-          wCursor.Parameter(0, mRec.ecoCode);
-          wCursor.Exec();
-        }
-      }
-
-      [Serializable()]
-      public class kopaCodesList
-      {
-        private kopaCodesListRec mRec;
-        public kopaCodesListRec Rec { get { return mRec; } set { mRec = value; } }
-        private ArrayList mList;
-        public int Count { get { return mList.Count; } }
-        public Cursor mCursor;
-        public kopaCodesListRec this[int i]
-        {
-          get
+          finally
           {
-            if (i < mList.Count)
-              return (kopaCodesListRec)mList[i];
-            return null;
-          }
-          set
-          {
-            if (i < mList.Count)
-              mList.RemoveAt(i);
-            mList.Insert(i, value);
-          }
-        }
-        public void Clear()
-        {
-          mList = new ArrayList();
-          mRec = new kopaCodesListRec();
-        }
-        public kopaCodesList()
-        {
-          Clear();
-        }
-        public string CommandList
-        {
-          // SELECT ecoCode, pageId, kopaCode, period, description, disUsed 
-          // FROM kopaCodes 
-          // WHERE setId = @P0 
-          // AND   period = @P1 
-          // ORDER BY kopaCode 
-          get {return "kopaCodesList";}
-        }
-        public void List(Connect aConnect)
-        {
-          mCursor = new Cursor(aConnect);
-          mCursor.Procedure(CommandList);
-          mCursor.Parameter(0, mRec.setId);
-          mCursor.Parameter(1, mRec.period);
-          mCursor.Run();
-        }
-        public bool ListFetch()
-        {
-          bool wResult = (mCursor.HasReader() && mCursor.Read());
-          if (wResult == true)
-          {
-            mRec.ecoCode = mCursor.GetString(0);
-            mRec.pageId = mCursor.GetString(1);
-            mRec.kopaCode = mCursor.GetString(2);
-            mRec.period = mCursor.GetString(3);
-            mRec.description = mCursor.GetString(4);
-            mRec.disUsed = mCursor.GetInt(5);
-          }
-          else if (mCursor.HasReader())
             mCursor.Close();
-          return wResult;
-        }
-        public void ListLoad(Connect aConnect)
-        {
-          List(aConnect);
-          while (ListFetch())
-          {
-            mList.Add(mRec);
-            mRec = new kopaCodesListRec();
           }
         }
-        public ArrayList Loaded { get { return mList; } }
-        public class ListOrd
-        {
-          public const int setId = 0;
-          public const int period = 1;
-          public const int ecoCode = 2;
-          public const int pageId = 3;
-          public const int kopaCode = 4;
-          public const int description = 5;
-          public const int disUsed = 6;
-          public static string ToString(int ordinal)
-          {
-            switch (ordinal)
-            {
-            case 0: return "setId";
-            case 1: return "period";
-            case 2: return "ecoCode";
-            case 3: return "pageId";
-            case 4: return "kopaCode";
-            case 5: return "description";
-            case 6: return "disUsed";
-            }
-            return "";
-          }
-        }
-        public kopaCodesListDataTable ListDataTable()
-        {
-          kopaCodesListDataTable wResult = new kopaCodesListDataTable(mList);
-          return wResult;
-        }
-        public kopaCodesListDataTable ListDataTable(Connect aConnect)
-        {
-          ListLoad(aConnect);
-          return ListDataTable();
-        }
+        public List<kopaCodesRec> Loaded { get { return mList; } }
+       }
+       [Serializable()]
+       public partial class kopaCodesDeleteOne
+       {
+         private kopaCodesDeleteOneRec mRec;
+         public kopaCodesDeleteOneRec Rec { get { return mRec; } set { mRec = value; } }
+         public void Clear()
+         {
+           mRec = new kopaCodesDeleteOneRec();
+         }
+         public kopaCodesDeleteOne()
+         {
+           Clear();
+         }
+         public string CommandDeleteOne()
+         {
+           // delete from kopaCodes
+           //  where ecoCode = @P0
+           return "kopaCodesDeleteOne";
+         }
+         public void DeleteOne(Connect connect)
+         {
+           using (Cursor wCursor = new Cursor(connect))
+           {
+             wCursor.Procedure(CommandDeleteOne());
+             wCursor.Parameter(0, mRec._ecoCode);
+             wCursor.Exec();
+           }
+         }
+       }
+       [Serializable()]
+       public partial class kopaCodesList
+       {
+         private kopaCodesListRec mRec;
+         public kopaCodesListRec Rec { get { return mRec; } set { mRec = value; } }
+         private List<kopaCodesListRec> mList;
+         public int Count { get { return mList.Count; } }
+         public Cursor mCursor;
+         public kopaCodesListRec this[int i]
+         {
+           get
+           {
+             if (i >= 0 && i < mList.Count)
+               return mList[i];
+             throw new JPortalException("m index out of range");
+           }
+           set
+           {
+             if (i < mList.Count)
+               mList.RemoveAt(i);
+             mList.Insert(i, value);
+           }
+         }
+         public void Clear()
+         {
+           mList = new List<kopaCodesListRec>();
+           mRec = new kopaCodesListRec();
+         }
+         public kopaCodesList()
+         {
+           Clear();
+         }
+         public string CommandList()
+         {
+           // SELECT ecoCode, pageId, kopaCode, period, description, disUsed 
+           // FROM kopaCodes 
+           // WHERE setId = @P0 
+           // AND   period = @P1 
+           // ORDER BY kopaCode 
+           return "kopaCodesList";
+         }
+         public void List(Connect connect)
+         {
+           mCursor = new Cursor(connect);
+           mCursor.Procedure(CommandList);
+           mCursor.Parameter(0, mRec._setId);
+           mCursor.Parameter(1, mRec._period);
+           mCursor.Run();
+         }
+         public DataTable ListDataTable(Connect connect)
+         {
+           List(connect);
+           if (mCursor.HasReader())
+           {
+             DataTable table = new DataTable();
+             table.Load(mCursor.Reader);
+             return table;
+           }
+           else return null;
+         }
+         public void SetkopaCodesListRec(DataTable table, int row)
+         {
+           mRec = new kopaCodesListRec();
+           DataRowCollection rows = table.Rows;
+           if (row < rows.Count)
+           {
+             mRec._ecoCode = (string)rows[row]["ecoCode"];
+             mRec._pageId = (string)rows[row]["pageId"];
+             mRec._kopaCode = (string)rows[row]["kopaCode"];
+             mRec._period = (string)rows[row]["period"];
+             mRec._description = (string)rows[row]["description"];
+             mRec._disUsed = Convert.Int32(rows[row]["disUsed"]);
+           }
+         }
+         public bool ListFetch()
+         {
+           bool wResult = (mCursor.HasReader() && mCursor.Read());
+           if (wResult == true)
+           {
+             mRec._ecoCode = mCursor.GetString(0);
+             mRec._pageId = mCursor.GetString(1);
+             mRec._kopaCode = mCursor.GetString(2);
+             mRec._period = mCursor.GetString(3);
+             mRec._description = mCursor.GetString(4);
+             mRec._disUsed = mCursor.GetInt(5);
+           }
+           else if (mCursor.HasReader())
+             mCursor.Close();
+           return wResult;
+         }
+         public void ListLoad(Connect connect)
+         {
+           List(connect);
+           while (ListFetch())
+           {
+             mList.Add(mRec);
+             mRec = new kopaCodesListRec();
+           }
+         }
+         public IEnumerable<kopaCodesListRec> ListYield(Connect connect)
+         {
+           try
+           {
+             List(connect);
+             while (ListFetch())
+               yield return mRec;
+           }
+           finally
+           {
+             mCursor.Close();
+           }
+         }
+         public IEnumerable<kopaCodesListRec> ListYield(Connect connect
+         , string _setId
+         , string _period
+         )
+         {
+           mRec = new kopaCodesListRec
+           { setId = _setId
+           , period = _period
+           };
+           return ListYield(connect);
+         }
+         public List<kopaCodesListRec> Loaded { get { return mList; } }
       }
-
       [Serializable()]
-      public class kopaCodesListBySet
+      public partial class kopaCodesListBySet
       {
         private kopaCodesListBySetRec mRec;
         public kopaCodesListBySetRec Rec { get { return mRec; } set { mRec = value; } }
-        private ArrayList mList;
+        private List<kopaCodesListBySetRec> mList;
         public int Count { get { return mList.Count; } }
         public Cursor mCursor;
         public kopaCodesListBySetRec this[int i]
         {
           get
           {
-            if (i < mList.Count)
-              return (kopaCodesListBySetRec)mList[i];
-            return null;
+            if (i >= 0 && i < mList.Count)
+              return mList[i];
+            throw new JPortalException("m index out of range");
           }
           set
           {
@@ -1080,14 +747,14 @@
         }
         public void Clear()
         {
-          mList = new ArrayList();
+          mList = new List<kopaCodesListBySetRec>();
           mRec = new kopaCodesListBySetRec();
         }
         public kopaCodesListBySet()
         {
           Clear();
         }
-        public string CommandListBySet
+        public string CommandListBySet()
         {
           // SELECT ecoCode, selected, strategy, disUsed, description, setId, kopaCode, pageId, period, updBy, updWhen 
           // FROM kopaCodes 
@@ -1095,94 +762,107 @@
           // AND  pageId = @P1 
           // AND  period = @P2 
           // ORDER BY ecoCode 
-          get {return "kopaCodesListBySet";}
+          return "kopaCodesListBySet";
         }
-        public void ListBySet(Connect aConnect)
+        public void ListBySet(Connect connect)
         {
-          mCursor = new Cursor(aConnect);
+          mCursor = new Cursor(connect);
           mCursor.Procedure(CommandListBySet);
-          mCursor.Parameter(0, mRec.setId);
-          mCursor.Parameter(1, mRec.pageId);
-          mCursor.Parameter(2, mRec.period);
+          mCursor.Parameter(0, mRec._setId);
+          mCursor.Parameter(1, mRec._pageId);
+          mCursor.Parameter(2, mRec._period);
           mCursor.Run();
+        }
+        public DataTable ListBySetDataTable(Connect connect)
+        {
+          ListBySet(connect);
+          if (mCursor.HasReader())
+          {
+            DataTable table = new DataTable();
+            table.Load(mCursor.Reader);
+            return table;
+          }
+          else return null;
+        }
+        public void SetkopaCodesListBySetRec(DataTable table, int row)
+        {
+          mRec = new kopaCodesListBySetRec();
+          DataRowCollection rows = table.Rows;
+          if (row < rows.Count)
+          {
+            mRec._ecoCode = (string)rows[row]["ecoCode"];
+            mRec._selected = Convert.Int32(rows[row]["selected"]);
+            mRec._strategy = Convert.Int32(rows[row]["strategy"]);
+            mRec._disUsed = Convert.Int32(rows[row]["disUsed"]);
+            mRec._description = (string)rows[row]["description"];
+            mRec._setId = (string)rows[row]["setId"];
+            mRec._kopaCode = (string)rows[row]["kopaCode"];
+            mRec._pageId = (string)rows[row]["pageId"];
+            mRec._period = (string)rows[row]["period"];
+            mRec._updBy = (string)rows[row]["updBy"];
+            mRec._updWhen = (DateTime)rows[row]["updWhen"];
+          }
         }
         public bool ListBySetFetch()
         {
           bool wResult = (mCursor.HasReader() && mCursor.Read());
           if (wResult == true)
           {
-            mRec.ecoCode = mCursor.GetString(0);
-            mRec.selected = mCursor.GetInt(1);
-            mRec.strategy = mCursor.GetInt(2);
-            mRec.disUsed = mCursor.GetInt(3);
-            mRec.description = mCursor.GetString(4);
-            mRec.setId = mCursor.GetString(5);
-            mRec.kopaCode = mCursor.GetString(6);
-            mRec.pageId = mCursor.GetString(7);
-            mRec.period = mCursor.GetString(8);
-            mRec.updBy = mCursor.GetString(9);
-            mRec.updWhen = mCursor.GetDateTime(10);
-          }
-          else if (mCursor.HasReader())
-            mCursor.Close();
-          return wResult;
-        }
-        public void ListBySetLoad(Connect aConnect)
-        {
-          ListBySet(aConnect);
-          while (ListBySetFetch())
-          {
-            mList.Add(mRec);
-            mRec = new kopaCodesListBySetRec();
-          }
-        }
-        public ArrayList Loaded { get { return mList; } }
-        public class ListBySetOrd
-        {
-          public const int setId = 0;
-          public const int pageId = 1;
-          public const int period = 2;
-          public const int ecoCode = 3;
-          public const int selected = 4;
-          public const int strategy = 5;
-          public const int disUsed = 6;
-          public const int description = 7;
-          public const int kopaCode = 8;
-          public const int updBy = 9;
-          public const int updWhen = 10;
-          public static string ToString(int ordinal)
-          {
-            switch (ordinal)
-            {
-            case 0: return "setId";
-            case 1: return "pageId";
-            case 2: return "period";
-            case 3: return "ecoCode";
-            case 4: return "selected";
-            case 5: return "strategy";
-            case 6: return "disUsed";
-            case 7: return "description";
-            case 8: return "kopaCode";
-            case 9: return "updBy";
-            case 10: return "updWhen";
-            }
-            return "";
-          }
-        }
-        public kopaCodesListBySetDataTable ListBySetDataTable()
-        {
-          kopaCodesListBySetDataTable wResult = new kopaCodesListBySetDataTable(mList);
-          return wResult;
-        }
-        public kopaCodesListBySetDataTable ListBySetDataTable(Connect aConnect)
-        {
-          ListBySetLoad(aConnect);
-          return ListBySetDataTable();
-        }
-      }
-
+            mRec._ecoCode = mCursor.GetString(0);
+            mRec._selected = mCursor.GetInt(1);
+            mRec._strategy = mCursor.GetInt(2);
+            mRec._disUsed = mCursor.GetInt(3);
+           mRec._description = mCursor.GetString(4);
+           mRec._setId = mCursor.GetString(5);
+           mRec._kopaCode = mCursor.GetString(6);
+           mRec._pageId = mCursor.GetString(7);
+           mRec._period = mCursor.GetString(8);
+           mRec._updBy = mCursor.GetString(9);
+           mRec._updWhen = mCursor.GetDateTime(10);
+         }
+         else if (mCursor.HasReader())
+           mCursor.Close();
+         return wResult;
+       }
+       public void ListBySetLoad(Connect connect)
+       {
+         ListBySet(connect);
+         while (ListBySetFetch())
+         {
+           mList.Add(mRec);
+           mRec = new kopaCodesListBySetRec();
+         }
+       }
+       public IEnumerable<kopaCodesListBySetRec> ListBySetYield(Connect connect)
+       {
+         try
+         {
+           ListBySet(connect);
+           while (ListBySetFetch())
+             yield return mRec;
+         }
+         finally
+         {
+           mCursor.Close();
+         }
+       }
+       public IEnumerable<kopaCodesListBySetRec> ListBySetYield(Connect connect
+       , string _setId
+       , string _pageId
+       , string _period
+       )
+       {
+         mRec = new kopaCodesListBySetRec
+         { setId = _setId
+         , pageId = _pageId
+         , period = _period
+         };
+         return ListBySetYield(connect);
+       }
+       public List<kopaCodesListBySetRec> Loaded { get { return mList; } }
+     }
       [Serializable()]
-      public class kopaCodesUpdateFromK
+      public partial class kopaCodesUpdateFromK
       {
         private kopaCodesUpdateFromKRec mRec;
         public kopaCodesUpdateFromKRec Rec { get { return mRec; } set { mRec = value; } }
@@ -1194,7 +874,7 @@
         {
           Clear();
         }
-        public string CommandUpdateFromK
+        public string CommandUpdateFromK()
         {
           // UPDATE kopaCodes 
           // SET pageId = @P0 
@@ -1202,22 +882,23 @@
           // , disUsed = 0 
           // WHERE setId = @P2 
           // AND   kopaCode = @P3 
-          get {return "kopaCodesUpdateFromK";}
+          return "kopaCodesUpdateFromK";
         }
-        public void UpdateFromK(Connect aConnect)
+        public void UpdateFromK(Connect connect)
         {
-          Cursor wCursor = new Cursor(aConnect);
-          wCursor.Procedure(CommandUpdateFromK);
-          wCursor.Parameter(0, mRec.pageId);
-          wCursor.Parameter(1, mRec.description);
-          wCursor.Parameter(2, mRec.setId);
-          wCursor.Parameter(3, mRec.kopaCode);
-          wCursor.Exec();
+          using (Cursor wCursor = new Cursor(connect))
+          {
+            wCursor.Procedure(CommandUpdateFromK());
+            wCursor.Parameter(0, mRec._pageId);
+            wCursor.Parameter(1, mRec._description);
+            wCursor.Parameter(2, mRec._setId);
+            wCursor.Parameter(3, mRec._kopaCode);
+            wCursor.Exec();
+          }
         }
       }
-
       [Serializable()]
-      public class kopaCodesMarkNotUsed
+      public partial class kopaCodesMarkNotUsed
       {
         private kopaCodesMarkNotUsedRec mRec;
         public kopaCodesMarkNotUsedRec Rec { get { return mRec; } set { mRec = value; } }
@@ -1229,26 +910,27 @@
         {
           Clear();
         }
-        public string CommandMarkNotUsed
+        public string CommandMarkNotUsed()
         {
           // UPDATE kopaCodes 
           // SET disUsed = 1 
           // WHERE setId = @P0 
           // AND   kopaCode = @P1 
-          get {return "kopaCodesMarkNotUsed";}
+          return "kopaCodesMarkNotUsed";
         }
-        public void MarkNotUsed(Connect aConnect)
+        public void MarkNotUsed(Connect connect)
         {
-          Cursor wCursor = new Cursor(aConnect);
-          wCursor.Procedure(CommandMarkNotUsed);
-          wCursor.Parameter(0, mRec.setId);
-          wCursor.Parameter(1, mRec.kopaCode);
-          wCursor.Exec();
+          using (Cursor wCursor = new Cursor(connect))
+          {
+            wCursor.Procedure(CommandMarkNotUsed());
+            wCursor.Parameter(0, mRec._setId);
+            wCursor.Parameter(1, mRec._kopaCode);
+            wCursor.Exec();
+          }
         }
       }
-
       [Serializable()]
-      public class kopaCodesUpdateSelect
+      public partial class kopaCodesUpdateSelect
       {
         private kopaCodesUpdateSelectRec mRec;
         public kopaCodesUpdateSelectRec Rec { get { return mRec; } set { mRec = value; } }
@@ -1260,7 +942,7 @@
         {
           Clear();
         }
-        public string CommandUpdateSelect
+        public string CommandUpdateSelect()
         {
           // UPDATE kopaCodes 
           // SET ecoCode  = @P0 
@@ -1268,36 +950,37 @@
           // , strategy = @P2 
           // WHERE setId  = @P3 
           // AND kopaCode = @P4 
-          get {return "kopaCodesUpdateSelect";}
+          return "kopaCodesUpdateSelect";
         }
-        public void UpdateSelect(Connect aConnect)
+        public void UpdateSelect(Connect connect)
         {
-          Cursor wCursor = new Cursor(aConnect);
-          wCursor.Procedure(CommandUpdateSelect);
-          wCursor.Parameter(0, mRec.ecoCode);
-          wCursor.Parameter(1, mRec.selected);
-          wCursor.Parameter(2, mRec.strategy);
-          wCursor.Parameter(3, mRec.setId);
-          wCursor.Parameter(4, mRec.kopaCode);
-          wCursor.Exec();
+          using (Cursor wCursor = new Cursor(connect))
+          {
+            wCursor.Procedure(CommandUpdateSelect());
+            wCursor.Parameter(0, mRec._ecoCode);
+            wCursor.Parameter(1, mRec._selected);
+            wCursor.Parameter(2, mRec._strategy);
+            wCursor.Parameter(3, mRec._setId);
+            wCursor.Parameter(4, mRec._kopaCode);
+            wCursor.Exec();
+          }
         }
       }
-
       [Serializable()]
-      public class kopaCodesBuildSetList
+      public partial class kopaCodesBuildSetList
       {
         private kopaCodesBuildSetListRec mRec;
         public kopaCodesBuildSetListRec Rec { get { return mRec; } set { mRec = value; } }
-        private ArrayList mList;
+        private List<kopaCodesBuildSetListRec> mList;
         public int Count { get { return mList.Count; } }
         public Cursor mCursor;
         public kopaCodesBuildSetListRec this[int i]
         {
           get
           {
-            if (i < mList.Count)
-              return (kopaCodesBuildSetListRec)mList[i];
-            return null;
+            if (i >= 0 && i < mList.Count)
+              return mList[i];
+            throw new JPortalException("m index out of range");
           }
           set
           {
@@ -1308,98 +991,110 @@
         }
         public void Clear()
         {
-          mList = new ArrayList();
+          mList = new List<kopaCodesBuildSetListRec>();
           mRec = new kopaCodesBuildSetListRec();
         }
         public kopaCodesBuildSetList()
         {
           Clear();
         }
-        public string CommandBuildSetList
+        public string CommandBuildSetList()
         {
           // SELECT c.ecoCode, c.selected, c.strategy, s.dir, c.setId, c.kopaCode, c.period, s.lastNo 
           // FROM kopaCodes c, KopaSets s 
           // WHERE c.selected > 0 
           // AND   (s.setId = @P0 or @P1 = '**') 
           // AND   c.setId = s.SetId 
-          get {return "kopaCodesBuildSetList";}
+          return "kopaCodesBuildSetList";
         }
-        public void BuildSetList(Connect aConnect)
+        public void BuildSetList(Connect connect)
         {
-          mCursor = new Cursor(aConnect);
+          mCursor = new Cursor(connect);
           mCursor.Procedure(CommandBuildSetList);
-          mCursor.Parameter(0, mRec.setId);
-          mCursor.Parameter(1, mRec.setId);
+          mCursor.Parameter(0, mRec._setId);
+          mCursor.Parameter(1, mRec._setId);
           mCursor.Run();
+        }
+        public DataTable BuildSetListDataTable(Connect connect)
+        {
+          BuildSetList(connect);
+          if (mCursor.HasReader())
+          {
+            DataTable table = new DataTable();
+            table.Load(mCursor.Reader);
+            return table;
+          }
+          else return null;
+        }
+        public void SetkopaCodesBuildSetListRec(DataTable table, int row)
+        {
+          mRec = new kopaCodesBuildSetListRec();
+          DataRowCollection rows = table.Rows;
+          if (row < rows.Count)
+          {
+            mRec._ecoCode = (string)rows[row]["ecoCode"];
+            mRec._selected = Convert.Int32(rows[row]["selected"]);
+            mRec._strategy = Convert.Int32(rows[row]["strategy"]);
+            mRec._dir = (string)rows[row]["dir"];
+            mRec._setId = (string)rows[row]["setId"];
+            mRec._kopaCode = (string)rows[row]["kopaCode"];
+            mRec._period = (string)rows[row]["period"];
+            mRec._lastNo = Convert.Int32(rows[row]["lastNo"]);
+          }
         }
         public bool BuildSetListFetch()
         {
           bool wResult = (mCursor.HasReader() && mCursor.Read());
           if (wResult == true)
           {
-            mRec.ecoCode = mCursor.GetString(0);
-            mRec.selected = mCursor.GetInt(1);
-            mRec.strategy = mCursor.GetInt(2);
-            mRec.dir = mCursor.GetString(3);
-            mRec.setId = mCursor.GetString(4);
-            mRec.kopaCode = mCursor.GetString(5);
-            mRec.period = mCursor.GetString(6);
-            mRec.lastNo = mCursor.GetInt(7);
+            mRec._ecoCode = mCursor.GetString(0);
+            mRec._selected = mCursor.GetInt(1);
+            mRec._strategy = mCursor.GetInt(2);
+            mRec._dir = mCursor.GetString(3);
+            mRec._setId = mCursor.GetString(4);
+            mRec._kopaCode = mCursor.GetString(5);
+            mRec._period = mCursor.GetString(6);
+            mRec._lastNo = mCursor.GetInt(7);
           }
           else if (mCursor.HasReader())
             mCursor.Close();
           return wResult;
         }
-        public void BuildSetListLoad(Connect aConnect)
+        public void BuildSetListLoad(Connect connect)
         {
-          BuildSetList(aConnect);
+          BuildSetList(connect);
           while (BuildSetListFetch())
           {
             mList.Add(mRec);
             mRec = new kopaCodesBuildSetListRec();
           }
         }
-        public ArrayList Loaded { get { return mList; } }
-        public class BuildSetListOrd
+        public IEnumerable<kopaCodesBuildSetListRec> BuildSetListYield(Connect connect)
         {
-          public const int setId = 0;
-          public const int ecoCode = 1;
-          public const int selected = 2;
-          public const int strategy = 3;
-          public const int dir = 4;
-          public const int kopaCode = 5;
-          public const int period = 6;
-          public const int lastNo = 7;
-          public static string ToString(int ordinal)
+          try
           {
-            switch (ordinal)
-            {
-            case 0: return "setId";
-            case 1: return "ecoCode";
-            case 2: return "selected";
-            case 3: return "strategy";
-            case 4: return "dir";
-            case 5: return "kopaCode";
-            case 6: return "period";
-            case 7: return "lastNo";
-            }
-            return "";
+            BuildSetList(connect);
+            while (BuildSetListFetch())
+              yield return mRec;
+          }
+          finally
+          {
+            mCursor.Close();
           }
         }
-        public kopaCodesBuildSetListDataTable BuildSetListDataTable()
+        public IEnumerable<kopaCodesBuildSetListRec> BuildSetListYield(Connect connect
+        , string _setId
+        )
         {
-          kopaCodesBuildSetListDataTable wResult = new kopaCodesBuildSetListDataTable(mList);
-          return wResult;
+          mRec = new kopaCodesBuildSetListRec
+          { setId = _setId
+          };
+          return BuildSetListYield(connect);
         }
-        public kopaCodesBuildSetListDataTable BuildSetListDataTable(Connect aConnect)
-        {
-          BuildSetListLoad(aConnect);
-          return BuildSetListDataTable();
-        }
+        public List<kopaCodesBuildSetListRec> Loaded { get { return mList; } }
       }
-
       [Serializable()]
-      public class kopaCodesChangeAlias
+      public partial class kopaCodesChangeAlias
       {
         private kopaCodesChangeAliasRec mRec;
         public kopaCodesChangeAliasRec Rec { get { return mRec; } set { mRec = value; } }
@@ -1411,63 +1106,35 @@
         {
           Clear();
         }
-        public string CommandChangeAlias
+        public string CommandChangeAlias()
         {
           // update kopaCodes set ecoCode = @P0 
           // where  setId = @P1 
           // and    kopaCode = @P2 
-          get {return "kopaCodesChangeAlias";}
+          return "kopaCodesChangeAlias";
         }
-        public void ChangeAlias(Connect aConnect)
+        public void ChangeAlias(Connect connect)
         {
-          Cursor wCursor = new Cursor(aConnect);
-          wCursor.Procedure(CommandChangeAlias);
-          wCursor.Parameter(0, mRec.ecoCode);
-          wCursor.Parameter(1, mRec.setId);
-          wCursor.Parameter(2, mRec.kopaCode);
-          wCursor.Exec();
+          using (Cursor wCursor = new Cursor(connect))
+          {
+            wCursor.Procedure(CommandChangeAlias());
+            wCursor.Parameter(0, mRec._ecoCode);
+            wCursor.Parameter(1, mRec._setId);
+            wCursor.Parameter(2, mRec._kopaCode);
+            wCursor.Exec();
+          }
         }
       }
     }
 
-## Generated DDL
+## Stored Procs
 
     use AnyDB
-
-    drop table kopaCodes
-    go
-
-    create table kopaCodes
-    (
-      ecoCode varchar(24) not null
-    , setId varchar(2) not null
-    , kopaCode varchar(24) not null
-    , pageId varchar(24) not null
-    , period varchar(1) not null
-    , description varchar(250) not null
-    , selected integer not null
-    , strategy integer not null
-    , disUsed integer not null
-    , updBy varchar(16) not null
-    , updWhen datetime not null
-    , primary key (
-        ecoCode
-      )
-    , unique (
-        setId
-      , kopaCode
-      )
-    )
-    go
-
-## Generated Stored Procs
-
-    use AnyDB
-
+    
     if exists (select * from sysobjects where id = object_id('dbo.kopaCodesInsert') and sysstat & 0xf = 4)
     drop procedure dbo.kopaCodesInsert
     GO
-
+    
     CREATE PROCEDURE dbo.kopaCodesInsert
     ( @P0 varchar(24) -- ecoCode
     , @P1 varchar(2) -- setId
@@ -1482,38 +1149,38 @@
     , @P10 datetime -- updWhen
     )
     AS
-    insert into kopaCodes
-    ( ecoCode
-    , setId
-    , kopaCode
-    , pageId
-    , period
-    , description
-    , selected
-    , strategy
-    , disUsed
-    , updBy
-    , updWhen
-    ) 
-    values
-     (@P0
-    , @P1
-    , @P2
-    , @P3
-    , @P4
-    , @P5
-    , @P6
-    , @P7
-    , @P8
-    , @P9
-    , @P10
-    )
+    insert into kopaCodes (
+      ecoCode,
+      setId,
+      kopaCode,
+      pageId,
+      period,
+      description,
+      selected,
+      strategy,
+      disUsed,
+      updBy,
+      updWhen
+     ) 
+     values (
+      @P0,
+      @P1,
+      @P2,
+      @P3,
+      @P4,
+      @P5,
+      @P6,
+      @P7,
+      @P8,
+      @P9,
+      @P10
+     )
     GO
 
     if exists (select * from sysobjects where id = object_id('dbo.kopaCodesSelectOne') and sysstat & 0xf = 4)
     drop procedure dbo.kopaCodesSelectOne
     GO
-
+    
     CREATE PROCEDURE dbo.kopaCodesSelectOne
     ( @P0 varchar(24) -- ecoCode
     )
@@ -1569,7 +1236,7 @@
     if exists (select * from sysobjects where id = object_id('dbo.kopaCodesSelectAll') and sysstat & 0xf = 4)
     drop procedure dbo.kopaCodesSelectAll
     GO
-    
+
     CREATE PROCEDURE dbo.kopaCodesSelectAll
     AS
     select
@@ -1655,7 +1322,7 @@
     if exists (select * from sysobjects where id = object_id('dbo.kopaCodesMarkNotUsed') and sysstat & 0xf = 4)
     drop procedure dbo.kopaCodesMarkNotUsed
     GO
-
+    
     CREATE PROCEDURE dbo.kopaCodesMarkNotUsed
     ( @P0 varchar(2) -- setId
     , @P1 varchar(24) -- kopaCode
@@ -1717,3 +1384,33 @@
     where  setId = @P1 
     and    kopaCode = @P2 
     GO
+
+## DDL 
+
+    use AnyDB
+
+    drop table kopaCodes
+    go
+
+    create table kopaCodes
+    (
+      ecoCode varchar(24) not null
+    , setId varchar(2) not null
+    , kopaCode varchar(24) not null
+    , pageId varchar(24) not null
+    , period varchar(1) not null
+    , description varchar(250) not null
+    , selected int not null
+    , strategy int not null
+    , disUsed int not null
+    , updBy varchar(16) not null
+    , updWhen datetime not null
+    , primary key (
+        ecoCode
+      )
+    , unique (
+        setId
+      , kopaCode
+      )
+    )
+    go
