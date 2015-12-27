@@ -21,6 +21,7 @@ jportal
   IdlBinUCode       ${binary_dir}/sql/IdlBinU     U%a.bin
   IdlCode           ${binary_dir}/sql/Idl         %l.ii %a.cs
   Java1Code         ${binary_dir}/sql/Java1       %a.java
+  JSONCode          ${binary_dir}/sql/json        %l.json
   MSSqlDDL          ${binary_dir}/sql/MSSql       %a.sql
   OciCCode          ${binary_dir}/sql/OciC        %l.cpp %l.sh
   ParmCode          ${binary_dir}/sql/Parm        %a.pi

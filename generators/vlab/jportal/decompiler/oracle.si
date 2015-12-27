@@ -9,10 +9,10 @@ TABLE Oracle ** PLEASE NOTE no fields as we are not defining anything new
 
 PROC Tables
 INPUT
-  OWNER           (owner)          char 64
+  OWNER           (owner)          char 128
 OUTPUT
-  TABLE_NAME      (tableName)      char 64
-  TABLESPACE_NAME (tableSpaceName) char 64
+  TABLE_NAME      (tableName)      char 128
+  TABLESPACE_NAME (tableSpaceName) char 30
   INITIAL_EXTENT  (initialExtent)  int
   NEXT_EXTENT     (nextExtent)     int
 SQLCODE

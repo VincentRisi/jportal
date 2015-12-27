@@ -1717,4 +1717,3 @@
     where  setId = @P1 
     and    kopaCode = @P2 
     GO
-  
