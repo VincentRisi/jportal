@@ -1,0 +1,16 @@
+#--------
+# OJDEMO  
+#--------
+
+project ojdemo
+
+root=/main/jportal
+source_dir=${root}/demo
+binary_dir=${root}/build/demo
+
+jportal  
+  JavaSCCode ${binary_dir}/java   %i.java
+  OracleDDL  ${binary_dir}/orasql %a.ddl
+
+source        
+  ${source_dir}/master.si   

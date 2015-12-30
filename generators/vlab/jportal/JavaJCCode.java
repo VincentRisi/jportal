@@ -20,7 +20,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Vector;
 
-public class Java3Code
+public class JavaJCCode
 {
   /**
    * Reads input from stored repository
@@ -50,11 +50,11 @@ public class Java3Code
    */
   public static String description()
   {
-    return "generate Java code for jdbc and crackle consumption";
+    return "generate Java code for jdbc and crackle consumption - separates structs and others from main";
   }
   public static String documentation()
   {
-    return "generate Java code for jdbc and crackle consumption";
+    return "generate Java code for jdbc and crackle consumption - separates structs and others from main";
   }
   public static void generate(Database database, String output, PrintWriter outLog)
   {
@@ -94,6 +94,7 @@ public class Java3Code
           outData.println(" *"+s);
         }
         outData.println(" * This code was generated, do not modify it, modify it at source and regenerate it.");
+        outData.println(" * Does not use inner public classes and separates structs out.");
         outData.println(" */");
         outData.println("public class "+table.useName()+"Struct implements Serializable");
         outData.println("{");

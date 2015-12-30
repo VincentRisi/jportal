@@ -19,7 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-public class JavaCode extends Generator
+public class JavaWRCode extends Generator
 {
   /**
    * Reads input from stored repository
@@ -31,7 +31,7 @@ public class JavaCode extends Generator
       PrintWriter outLog = new PrintWriter(System.out);
       for (int i = 0; i < args.length; i++)
       {
-        outLog.println(args[i] + ": generate Java code");
+        outLog.println(args[i] + ": generate Java with recs code");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
         Database database = (Database)in.readObject();
         in.close();
@@ -49,11 +49,11 @@ public class JavaCode extends Generator
    */
   public static String description()
   {
-    return "generate Java code";
+    return "generate Java with recs code - generates separate data recs but uses Standard and Other inner class";
   }
   public static String documentation()
   {
-    return "generate Java code";
+    return "generate Java with recs code - generates separate data recs but uses Standard and Other inner class";
   }
   public static void generate(Database database, String output, PrintWriter outLog)
   {

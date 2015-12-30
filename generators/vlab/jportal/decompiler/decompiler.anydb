@@ -7,8 +7,8 @@ project decompiler
 source_dir=/main/jportal/generators/vlab/jportal/decompiler
 binary_dir=/main/jportal/build/generators/vlab/jportal/decompiler
 
-jportal  
-  Java1Code ${binary_dir} %i.java
+jportal
+  JavaWRCode ${binary_dir} %i.java
 
-source        
-  ${source_dir}/oracle.si   
+source
+  ${source_dir}/oracle.si

@@ -1,0 +1,145 @@
+DATABASE oracleDemo         // This name is used to generate the .sql file
+PACKAGE  jportal.oracledemo // This value is inserted into each .java file
+OUTPUT   Master
+SERVER   orcl               // The next three values will build up the Oracle
+USERID   scott              // connect string value
+PASSWORD tiger
+                            // The ** comments are special and can only be used
+                            // behind TABLE xxx, special PROC xxx and field
+                            // defs. These supply extra comments for the
+                            // .java classes generated.
+
+TABLE Contacts              ** This table demonstrates the usage of Sequence,
+                            ** Timestamp and Userstamp
+  id        Sequence        ** Unique sequence number (gaps allowed)
+  name      Char 50         ** Name of the contacts
+  whenDone  Timestamp       ** Date and Time when inserted or updated
+  whoDoneIt Userstamp       ** Logged on user responsible for the insert or update
+
+KEY ContactsKey1 PRIMARY    // Primary key for table
+  id
+
+KEY ContactsKey2 UNIQUE     // Unique key
+  name
+
+PROC insert                 // Standard insert
+PROC update                 // Standard update
+PROC selectOne              // Standard selectOne ([for Update] can be added)
+PROC selectAll in order     // Standard selectAll ([in Order]
+                            // [for Update] can be added)
+PROC deleteOne              // Standard deleteOne
+PROC deleteAll              // Standard deleteAll
+PROC count                  // Standard count
+PROC exists                 // Standard exists
+
+PROC findName               ** This procedure demonstrates a single record output
+INPUT                       // There is a one for one relationship of Input to ?
+                            // (use a :placeholder rather)
+  name      Char 50         ** name to base the lookup on
+OUTPUT (single)             // (single) indicates zero or one output only
+  id        int             ** id no of record looked up
+SQLCODE                     
+SELECT id FROM Contacts WHERE name = :name
+ENDCODE
+
+PROC changeName             ** This procedure demonstrates an update with no output
+INPUT                       // Note that the inputs match the ? marks in the query
+  newName   Char 50         ** New name for record
+  whenDone  Timestamp       ** Timestamp when done
+  whoDoneIt Userstamp       ** Userstamp of who dunnit
+  oldName   Char 50         ** Old name to change from
+SQLCODE                        
+UPDATE Contacts
+ SET name = :newName
+, whenDone = :whenDone
+, whoDoneIt = :whoDoneIt
+ WHERE name = :oldName
+ENDCODE
+
+PROC changeName2            ** This procedure is similar to changeName but demostrates dynamic parameters
+INPUT                       // Note that oldName and newName are not in the INPUT
+  whenDone  Timestamp       ** Timestamp when done
+  whoDoneIt Userstamp       ** Userstamp of who dunnit
+SQLCODE
+UPDATE Contacts 
+SET name = &newName
+, whenDone = :whenDone
+, whoDoneIt = :whoDoneIt 
+WHERE name = &oldName
+ENDCODE
+
+PROC changeName3            ** This procedure is similar to changeName but demostrates dynamic parameters
+INPUT                       // Note that oldName and newName are not in the INPUT
+  whenDone  Timestamp       ** Timestamp when done
+  whoDoneIt Userstamp       ** Userstamp of who dunnit
+SQLCODE
+  UPDATE Contacts
+  SET name = &newName(100),
+      whenDone = :whenDone,
+      whoDoneIt = :whoDoneIt
+  WHERE &Where(2048)
+ENDCODE
+
+SQLDATA
+insert into Contacts values(ContactsSeq.NextVal, 'Contact 1', sysdate, user)
+insert into Contacts values(ContactsSeq.NextVal, 'Contact 2', sysdate, user)
+insert into Contacts values(ContactsSeq.NextVal, 'Contact 3', sysdate, user)
+commit
+select * from Contacts
+ENDDATA
+
+TABLE Master                ** This table demonstrates the usage of Sequence, Timestamp and Userstamp
+                            ** it also demostrates a link or foreign key to Contacts based on contact
+  id        Sequence        ** Unique sequence number (gaps allowed)
+  name      Char 50         ** Name of the master
+  addr1     Char 50         ** address lines (say street)
+  addr2     Char 50         ** address lines (say suburb)
+  addr3     Char 50         ** address lines (say town)
+  phone     Char 20         ** phone numbers
+  contact   int             ** foreign link to Contacts
+  whenDone  Timestamp       ** Timestamp when done
+  whoDoneIt Userstamp       ** Userstamp of who dunnit
+
+KEY MasterKey PRIMARY       // Primary key needed for standard PROCS
+  id
+
+LINK Contacts contact       // Link or foreign key back to Contacts (id)
+
+VIEW View1
+OUTPUT
+  id
+  name
+  addr1
+  addr2
+  addr3
+  phone
+  contact
+SQLCODE
+  select master.id
+  , master.name
+  , master.addr1
+  , master.addr2
+  , master.addr3
+  , master.phone
+  , contacts.name
+   from master
+  , contacts
+  where master.contact = contacts.id
+ENDCODE
+
+PROC insert                 // Standard insert
+PROC update                 // Standard update
+PROC selectOne              // Standard selectOne ([for Update] can be added)
+PROC selectAll              // Standard selectAll ([in Order] [for Update] can be added)
+PROC deleteOne              // Standard deleteOne
+PROC deleteAll              // Standard deleteAll
+PROC count                  // Standard count
+PROC exists                 // Standard exists
+
+SQLDATA
+insert into Master values(MasterSeq.NextVal, 'Porkie Pygg', 'Grass Hut', '1. Pyggs Lane', 'Easy Pyggings', 'oink Oink', 1, sysdate, user);
+insert into Master values(MasterSeq.NextVal, 'Morkie Pygg', 'Styx Hut', '2. Pyggs Lane', 'Easy Pyggings', 'oink Oink Eeeh', 2, sysdate, user);
+insert into Master values(MasterSeq.NextVal, 'Torkie Pygg', 'BryxTon Hut', '3. Pyggs Lane', 'Easy Pyggings', 'oink Oink Bing Bang', 3, sysdate, user);
+commit;
+select * from Master;
+ENDDATA

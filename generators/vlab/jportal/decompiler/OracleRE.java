@@ -230,7 +230,7 @@ public class OracleRE
   {
     return caseChange(caseChange(caseChange(input.toLowerCase(), '_'), '#'), '$');
   }
-  static void loadTables(PrintWriter outLog) throws SQLException
+  static void loadTables(PrintWriter outLog) throws Throwable
   {
     Oracle.Tables tablesRec = oracle.getTables();
     Query query = tablesRec.tables(database.userid);
@@ -382,7 +382,7 @@ public class OracleRE
     table.buildCount(proc);
     table.procs.addElement(proc);
   }
-  static void loadTableFields(PrintWriter outLog) throws SQLException
+  static void loadTableFields(PrintWriter outLog)  throws Throwable
   {
     Oracle.TableSequence tableSequenceRec = oracle.getTableSequence();
     Vector<String> sequenceFields = new Vector<String>();
@@ -483,7 +483,7 @@ public class OracleRE
     }
     return result;
   }
-  static void loadTablePrimaryKey(PrintWriter outLog) throws SQLException
+  static void loadTablePrimaryKey(PrintWriter outLog)  throws Throwable
   {
     Oracle.TablePrimaryKey tablePrimaryKeyRec = oracle.getTablePrimaryKey();
     if (tablePrimaryKeyRec.tablePrimaryKey(database.userid, table.name))
@@ -507,7 +507,7 @@ public class OracleRE
       table.keys.addElement(key);
     }
   }
-  static void loadTableUniqueKeys(PrintWriter outLog) throws SQLException
+  static void loadTableUniqueKeys(PrintWriter outLog)  throws Throwable
   {
     Oracle.TableUniqueKeys tableUniqueKeysRec = oracle.getTableUniqueKeys();
     Query query1 = tableUniqueKeysRec.tableUniqueKeys(database.userid, table.name);
@@ -528,7 +528,7 @@ public class OracleRE
       table.keys.addElement(key);
     }
   }
-  static void loadTableIndexes(PrintWriter outLog) throws SQLException
+  static void loadTableIndexes(PrintWriter outLog)  throws Throwable
   {
     Oracle.TableIndexes tableIndexesRec = oracle.getTableIndexes();
     Query query1 = tableIndexesRec.tableIndexes(database.userid, table.name);
@@ -545,7 +545,7 @@ public class OracleRE
       table.keys.addElement(key);
     }
   }
-  static void loadTableForeignKeys(PrintWriter outLog) throws SQLException
+  static void loadTableForeignKeys(PrintWriter outLog)  throws Throwable
   {
     Oracle.TableForeignKeys tableForeignKeysRec = oracle.getTableForeignKeys();
     Query query1 = tableForeignKeysRec.tableForeignKeys(database.userid, table.name);
@@ -561,7 +561,7 @@ public class OracleRE
       table.links.addElement(link);
     }
   }
-  static void loadTableGrants(PrintWriter outLog) throws SQLException
+  static void loadTableGrants(PrintWriter outLog)  throws Throwable
   {
     Oracle.TableGrants tableGrantsRec = oracle.getTableGrants();
     Query query1 = tableGrantsRec.tableGrants(database.userid, table.name);
@@ -573,7 +573,7 @@ public class OracleRE
       table.grants.addElement(grant);
     }
   }
-  static void loadViews(PrintWriter outLog) throws SQLException
+  static void loadViews(PrintWriter outLog)  throws Throwable
   {
     Oracle.Views viewsRec = oracle.getViews();
     Query query1 = viewsRec.views(database.userid);
@@ -596,7 +596,7 @@ public class OracleRE
       database.views.addElement(view);
     }
   }
-  static void loadSequences(PrintWriter outLog) throws SQLException
+  static void loadSequences(PrintWriter outLog)  throws Throwable
   {
     try
     {
