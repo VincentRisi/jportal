@@ -16,24 +16,21 @@ import java.io.Serializable;
 
 public class Sequence implements Serializable
 {
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 9000568162957080666L;
   public String  name;
-  public int     minValue;
-  public int     maxValue;
+  public long    minValue;
+  public long    maxValue;
   public int     increment;
   public boolean cycleFlag;
   public boolean orderFlag;
-  public int     startWith;
+  public long    startWith;
   /** Code starts at line */
   public int     start;
   public Sequence()
   {
     name        = "";
-    minValue    = 0;
-    maxValue    = 999999999;
+    minValue    = 1;
+    maxValue    = 999999999L;
     increment   = 1;
     cycleFlag   = true;
     orderFlag   = true;

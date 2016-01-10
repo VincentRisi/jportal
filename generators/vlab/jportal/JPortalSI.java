@@ -79,15 +79,19 @@ public class JPortalSI extends Generator
           outData.println(pad("OUTPUT", 10)+database.output);
         if (database.server.length() > 0)
           outData.println(pad("SERVER", 10)+database.server);
+        if (database.schema.length() > 0)
+          outData.println(pad("SCHEMA", 10)+database.schema);
         if (database.userid.length() > 0)
           outData.println(pad("USERID", 10)+database.userid);
         if (database.password.length() > 0)
           outData.println(pad("PASSWORD", 10)+database.password);
         outData.println();
         for (int i=0; i<database.tables.size(); i++)
-          generate((Table) database.tables.elementAt(i), outData, outLog);
+          generateTable(database.tables.elementAt(i), outData, outLog);
         for (int i=0; i<database.views.size(); i++)
-          generate((View) database.views.elementAt(i), outData, outLog);
+          generateView(database.views.elementAt(i), outData, outLog);
+        for (Sequence sequence : database.sequences)
+          generateSequence(sequence, outData, outLog);
       }
       finally
       {
@@ -99,7 +103,16 @@ public class JPortalSI extends Generator
       outLog.println("Generate Procs IO Error");
     }
   }
-  static void generate(Table table, PrintWriter outData, PrintWriter outLog)
+  private static void generateSequence(Sequence sequence, PrintWriter outData, PrintWriter outLog)
+  {
+    outLog.format("//SEQUENCE %s FROM %ld TO %ld BY %d\n", sequence.name, sequence.minValue, sequence.maxValue, sequence.increment);
+    outLog.format("//  CYCLE %s ORDER %s STARTS %ld\n"
+        , sequence.cycleFlag == true ? "yes" : "no"
+        , sequence.orderFlag == true ? "up" : "down"
+        , sequence.startWith);
+    outData.println();
+  }
+  static void generateTable(Table table, PrintWriter outData, PrintWriter outLog)
   {
     String line = pad("TABLE", 8)+table.name;
     if (table.alias.length() > 0)
@@ -112,22 +125,22 @@ public class JPortalSI extends Generator
     for (int i = 0; i < table.options.size(); i++)
       outData.println(pad("OPTIONS", 8) + "\"" + (String) table.options.elementAt(i) + "\"");
     for (int i = 0; i < table.fields.size(); i++)
-      generate((Field) table.fields.elementAt(i), outData, outLog);
+      generateField(table.fields.elementAt(i), outData, outLog);
     outData.println();
     for (int i = 0; i < table.grants.size(); i++)
-      generate((Grant) table.grants.elementAt(i), outData, outLog);
+      generateGrant(table.grants.elementAt(i), outData, outLog);
     outData.println();
     for (int i = 0; i < table.keys.size(); i++)
-      generate((Key) table.keys.elementAt(i), outData, outLog);
+      generateKey(table.keys.elementAt(i), outData, outLog);
     for (int i = 0; i < table.links.size(); i++)
-      generate((Link) table.links.elementAt(i), outData, outLog);
+      generateLink(table.links.elementAt(i), outData, outLog);
     for (int i = 0; i < table.views.size(); i++)
-      generate((View) table.views.elementAt(i), outData, outLog);
+      generateView((View) table.views.elementAt(i), outData, outLog);
     for (int i = 0; i < table.procs.size(); i++)
-      generate((Proc) table.procs.elementAt(i), outData, outLog);
+      generateProc(table.procs.elementAt(i), outData, outLog);
     outData.println();
   }
-  static void generate(Field field, PrintWriter outData, PrintWriter outLog)
+  static void generateField(Field field, PrintWriter outData, PrintWriter outLog)
   {
     String line = "  "+field.name;
     String ft = "";
@@ -212,7 +225,7 @@ public class JPortalSI extends Generator
     for (int i = 1; i < field.comments.size(); i++)
       outData.println(pad("", 56) + "** " + (String) field.comments.elementAt(i));
   }
-  static void generate(Grant grant, PrintWriter outData, PrintWriter outLog)
+  static void generateGrant(Grant grant, PrintWriter outData, PrintWriter outLog)
   {
     String line = "GRANT";
     for (int i = 0; i < grant.perms.size(); i++)
@@ -222,7 +235,7 @@ public class JPortalSI extends Generator
       line = line + " " + (String) grant.users.elementAt(i);
     outData.println(line);
   }
-  static void generate(Key key, PrintWriter outData, PrintWriter outLog)
+  static void generateKey(Key key, PrintWriter outData, PrintWriter outLog)
   {
     outData.println(pad("KEY", 8) + key.name);
     for (int i = 0; i < key.options.size(); i++)
@@ -235,14 +248,14 @@ public class JPortalSI extends Generator
       outData.println("  " + (String) key.fields.elementAt(i));
     outData.println();
   }
-  static void generate(Link link, PrintWriter outData, PrintWriter outLog)
+  static void generateLink(Link link, PrintWriter outData, PrintWriter outLog)
   {
     outData.println(pad("LINK", 8) + link.name);
     for (int i = 0; i < link.fields.size(); i++)
       outData.println("  " + (String) link.fields.elementAt(i));
     outData.println();
   }
-  static void generate(View view, PrintWriter outData, PrintWriter outLog)
+  static void generateView(View view, PrintWriter outData, PrintWriter outLog)
   {
     outData.println(pad("VIEW", 8) + view.name);
     if (view.users.size() > 0)
@@ -260,7 +273,7 @@ public class JPortalSI extends Generator
     outData.println("ENDCODE");
     outData.println();
   }
-  static void generate(Proc proc, PrintWriter outData, PrintWriter outLog)
+  static void generateProc(Proc proc, PrintWriter outData, PrintWriter outLog)
   {
     boolean stdProc = true;
     if (proc.name.compareTo("Insert") == 0
@@ -295,13 +308,13 @@ public class JPortalSI extends Generator
     {
       outData.println("INPUT");
       for (int i=0; i < proc.inputs.size(); i++)
-        generate((Field) proc.inputs.elementAt(i), outData, outLog);
+        generateField((Field) proc.inputs.elementAt(i), outData, outLog);
     }
     if (proc.outputs.size() > 0)
     {
       outData.println("OUTPUT");
       for (int i=0; i < proc.outputs.size(); i++)
-        generate((Field) proc.outputs.elementAt(i), outData, outLog);
+        generateField((Field) proc.outputs.elementAt(i), outData, outLog);
     }
     proc.isSql = true;
       outData.print("SQL ");

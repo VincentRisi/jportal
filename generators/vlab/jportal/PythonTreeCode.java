@@ -75,9 +75,13 @@ public class PythonTreeCode extends Generator
   }
   public static String string(String var, int value)
   {
-    //if (value != 0)
     return var + " = " + value;
-    //return "";
+  }
+  public static String string(String var, long value)
+  {
+    if (value <= 999999999)
+      return var + " = " + value;
+    return var + " = long(" + value + ")";
   }
   public static void out(PrintWriter outData, String data)
   {
