@@ -1,0 +1,216 @@
+database infomation_schema
+package  vlab.jportal.decompiler
+server   postgres
+userid   vlab
+password polly
+
+table InformSchema ** PLEASE NOTE no fields as we are not defining anything new
+                   ** but the name Postgre will prefix the procedures.
+
+proc Tables
+input
+  table_schema     (owner)           char 128
+output
+  table_catalog    (catalog)         char 128
+  table_name       (tableName)       char 128
+sqlcode
+  select table_catalog, table_name
+  from information_schema.tables
+  where table_schema = :table_schema
+  order by table_name
+endcode
+
+proc TablePrimaryKey
+input
+  table_schema    (owner)           char 128
+  table_name      (tableName)       char 128
+output (single)
+  constraint_name (constraintName)  char 128
+sqlcode
+  select constraint_name
+  from   information_schema.table_constraints
+  where  constraint_type = 'PRIMARY_KEY'
+  and    table_schema = :table_schema
+  and   table_name  = :table_name
+endcode
+
+proc TableUniqueKeys
+input
+  table_schema     (owner)           char 128
+  table_name       (tableName)       char 128
+output
+  constraint_name (constraintName)   char 128
+sqlcode
+  select constraint_name
+  from   information_schema.table_constraints
+  where  constraint_type = 'UNIQUE'
+  and    table_schema = :table_schema
+  and    table_name  = :table_name
+endcode
+
+proc TableForeignKeys
+input
+  table_schema    (owner)            char 128
+  table_name      (tableName)        char 128
+output
+  constraint_name (constraintName)   char 128
+sqlcode
+  select constraint_name
+  from   information_schema.table_constraints
+  where  constraint_type = 'FOREIGN KEY'
+  and    table_schema = :table_schema
+  and    table_name  = :table_name
+endcode
+
+proc ForeignLinks
+input
+  constraint_schema        (owner)                char 128
+output
+  table_name               (tableName)            char 128
+  link_name                (linkName)             char 128
+  constraint_name          (constraintName)       char 128
+  unique_constraint_schema (uniqueOwner)          char 128
+  unique_constraint_name   (uniqueConstraintName) char 128
+  match_option             (matchOption)          char 128
+  update_rule              (updateRule)           char 128
+  delete_rule              (deleteRule)           char 128
+sqlcode
+  select t.table_name                table_name
+       , l.table_name                link_name 
+       , rc.constraint_name          constraint_name
+       , rc.unique_constraint_schema unique_constraint_schema
+       , rc.unique_constraint_name   unique_constraint_name
+       , rc.match_option             match_option
+       , rc.update_rule              update_rule
+       , rc.delete_rule              delete_rule
+  from   information_schema.referential_constraints rc
+       , information_schema.table_constraints  t
+       , information_schema.table_constraints  l
+  where  rc.constraint_schema = :constraint_schema
+  and    t.table_schema = rc.constraint_schema
+  and    t.constraint_name = rc.constraint_name
+  and    l.constraint_name = rc.unique_constraint_name
+endcode
+
+proc TableChecks
+input
+  table_schema     (owner)          char 128
+  table_name       (tableName)      char 128
+output
+  constraint_name  (constraintName) char 128
+  check_clause     (condition)      tlob
+sqlcode
+  select tc.constraint_name constraint_name
+       , cc.check_clause    check_clause
+  from   information_schema.table_constraints tc
+      ,  information_schema.check_constraints cc
+  where  constraint_type = 'CHECK'
+  and    tc.constraint_name = cc.constraint_name
+  and    table_schema = :table_schema
+  and    table_name  = :table_name
+endcode
+
+proc ConstraintColumns
+input
+  table_schema     (owner)          char 128
+  constraint_name  (constraintName) char 128
+output
+  table_name       (tableName)      char 128
+  column_name      (column)         char 128
+sqlcode
+  select table_name, column_name
+   from   information_schema.constraint_column_usage
+   where table_schema = :table_schema
+   and   constraint_name = :constraint_name
+endcode
+
+proc TableColumns
+input
+  table_schema              (owner)             char 128
+  table_name                (tableName)         char 128
+output
+  ordinal_position          (columnID)          int
+  column_name               (columnName)        char 128
+  data_type                 (dataType)          char 128
+  udt_name                  (uDataType)         char 128
+  character_maximum_length  (dataLength)        int
+  numeric_precision         (dataPrecision)     int
+  numeric_precision_radix   (dataRadix)         int
+  numeric_scale             (dataScale)         int
+  datetime_precision        (datetimePrecision) int
+  is_nullable               (nullable)          char 16
+sqlcode
+  select ordinal_position
+  , column_name
+  , data_type
+  , udt_name
+  , coalesce(character_maximum_length, -1) character_maximum_length
+  , coalesce(numeric_precision, -1)        numeric_precision
+  , coalesce(numeric_precision_radix, -1)  numeric_precision_radix
+  , coalesce(numeric_scale, -1)            numeric_scale
+  , coalesce(datetime_precision, -1)       datetime_precision
+  , is_nullable
+   from information_schema.columns
+   where table_schema = :table_schema
+   and   table_name   = :table_name
+   order by ordinal_position
+endcode
+
+proc Sequences
+input
+  sequence_schema         (owner)            char 128
+output
+  sequence_name           (name)             char 128
+  minimum_value           (minValue)         char 128
+  maximum_value           (maxValue)         char 128
+  increment               (increment)        char 128
+  cycle_option            (cycleFlag)        char 128
+  numeric_precision       (dataPrecision)    int
+  numeric_precision_radix (dataRadix)        int
+  numeric_scale           (dataScale)        int
+  start_value             (startWith)        char 128
+sqlcode
+  select sequence_name
+       , minimum_value
+       , maximum_value
+       , increment
+       , cycle_option
+       , numeric_precision
+       , numeric_precision_radix
+       , numeric_scale
+       , start_value
+  from  information_schema.sequence
+  where sequence_schema = :sequence_schema
+endcode
+
+//proc Views
+//input
+//  table_schema       (owner)          char 128
+//output
+//  VIEW_NAME          (name)           char 128
+//  TEXT_LENGTH        (textLength)     int
+//  TEXT               (text)           tlob
+//sqlcode
+//  select VIEW_NAME
+//  , TEXT_LENGTH
+//  , TEXT
+//   from pg_catalog.ALL_VIEWS
+//   where table_schema = :table_schema
+//endcode
+//
+//proc ViewColumns
+//input
+//  table_schema         (owner)          char 128
+//  VIEW_NAME          (name)           char 128
+//output
+//  ordinal_position          (position)       int
+//  column_name        (column)         char 128
+//sqlcode
+//  select ordinal_position
+//  , column_name
+//   from pg_catalog.ALL_TAB_COLUMNS
+//   where table_schema = :table_schema
+//   and   table_name = :VIEW_NAME
+//   order by ordinal_position
+//endcode
+//

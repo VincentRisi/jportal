@@ -105,8 +105,8 @@ public class JPortalSI extends Generator
   }
   private static void generateSequence(Sequence sequence, PrintWriter outData, PrintWriter outLog)
   {
-    outLog.format("//SEQUENCE %s FROM %ld TO %ld BY %d\n", sequence.name, sequence.minValue, sequence.maxValue, sequence.increment);
-    outLog.format("//  CYCLE %s ORDER %s STARTS %ld\n"
+    outLog.format("//SEQUENCE %s FROM %d TO %d BY %d\n", sequence.name, sequence.minValue, sequence.maxValue, sequence.increment);
+    outLog.format("//  CYCLE %s ORDER %s STARTS %d\n"
         , sequence.cycleFlag == true ? "yes" : "no"
         , sequence.orderFlag == true ? "up" : "down"
         , sequence.startWith);
