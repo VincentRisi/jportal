@@ -20,9 +20,11 @@ jportal
   Db2DDL            ${binary_dir}/sql/Db2         %a.sql
   IdlBinUCode       ${binary_dir}/sql/IdlBinU     U%a.bin
   IdlCode           ${binary_dir}/sql/Idl         %l.ii %a.cs
-  JavaSWCCode       ${binary_dir}/sql/JavaSW      %a.java
+  JavaSCCode        ${binary_dir}/sql/JavaSC      %a.java
   JSONCode          ${binary_dir}/sql/json        %l.json
   MSSqlDDL          ${binary_dir}/sql/MSSql       %a.sql
+  MySqlDDL          ${binary_dir}/sql/MySql       %a.sql
+  MySqlCCode        ${binary_dir}/sql/MySqlC      %l.c %l.h
   OciCCode          ${binary_dir}/sql/OciC        %l.cpp %l.sh
   ParmCode          ${binary_dir}/sql/Parm        %a.pi
   PythonCliCode     ${binary_dir}/sql/PythonCli   DB_%u.py
