@@ -5,15 +5,21 @@ The script is read line by line.
 
 If there is a # character anywhere on the line the rest of the line including the # char is ignored.  
 
-If the line contains a simple xxxx=yyyy this is assumed to be a set of xxxx with the value yyyy and anything of the form ${xxxx} is replaced with yyyy. Replacements are done first before any parsing is done.  
+If the line contains a simple xxxx=yyyy this is assumed to be a set of xxxx with the value yyyy and anything of the form ${xxxx} is replaced with yyyy. 
+Replacements are done first before any parsing is done.  
 
 Empty line ie. lines containing only white space are ignored.  
 
 The script must start with a project name line.  
 
-Main keywords must be on a single line. These are *jportal* and *source* for the jportal generators for defining database code, *crackle* and *idl* for the crackle generators for defining client, server and implementation code and *pickle* and *app* for the pickle generator for parameter control code.   
+Main keywords must be a single case sensitive word on a line. These are 
 
+* *jportal* and *source* for the jportal generators for defining database code, 
+* *crackle* and *idl* for the crackle generators for defining client, server and implementation code and 
+* *pickle* and *app* for the pickle generator for parameter control code.
 
+After the main keyword *jportal* each non empty line must contain 2 or more items. The first item is the case sensitive name of the code generator. 
+The second item is the target directory where to generate the code. None or more items that follow are the wildcard shape markers.
 
 ## binuc
 
@@ -96,7 +102,7 @@ Uses *jportal* to define the jportal generators to use with the *source* to gene
 
 ## picktester 
 
-Uses *jportal* to generate *ParmCode* `xxx.pi` files for each *source*. Uses *app* to generate *appfile* `picktester.app` using *prfile* `picktester.pm` , *prfile* `picktester.pr` and the generated `xxx.pi` files.
+Uses *jportal* to generate **ParmCode** `xxx.pi` files for each *source*. Uses *app* to generate *appfile* `picktester.app` using *pmfile* `picktester.pm` , *prfile* `picktester.pr` and the generated `xxx.pi` files. We also use **OracleDDL** to generate the DDL for the database.
 
     #------------------------------------------
     #   PICK TESTER 

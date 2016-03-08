@@ -362,6 +362,21 @@ public class OracleDDL extends Generator
       outData.println(comma + name);
     }
     outData.println("  ) REFERENCES " + link.name);
+    if (link.linkFields.size() > 0)
+    {
+      comma = "(";
+      for (int i = 0; i < link.linkFields.size(); i++)
+      {
+        String name = (String)link.linkFields.elementAt(i);
+        outData.print(comma + name);
+        comma = ", ";
+      }
+      outData.print(")");
+    }
+    if (link.isDeleteCascade)
+      outData.print(" ON DELETE CASCADE");
+    outData.println(";");
+    outData.println();
   }
   /**
   * Generates grants for Oracle

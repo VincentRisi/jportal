@@ -163,9 +163,9 @@ public class MSSqlDDL extends Generator
           outData.println("use " + database.name);
         outData.println();
         for (int i=0; i<database.tables.size(); i++)
-          generate((Table) database.tables.elementAt(i), outData);
+          generateTable((Table) database.tables.elementAt(i), outData);
         for (int i=0; i<database.views.size(); i++)
-          generate((View) database.views.elementAt(i), outData, "");
+          generateView((View) database.views.elementAt(i), outData, "");
         outData.flush();
       }
       finally
@@ -239,7 +239,7 @@ public class MSSqlDDL extends Generator
     outData.println("go");
     outData.println();
   }
-  static void generate(Table table, PrintWriter outData)
+  static void generateTable(Table table, PrintWriter outData)
   {
     String tableName = tableOwner + table.name;
     String comma = "  ";
@@ -277,7 +277,7 @@ public class MSSqlDDL extends Generator
       for (int i=0; i < table.links.size(); i++)
       {
         Link link = (Link) table.links.elementAt(i);
-        generate(link, outData);
+        generateLink(link, outData);
       }
 //      if (hasEnums)
 //        generateEnumLinks(table, outData);
@@ -289,20 +289,20 @@ public class MSSqlDDL extends Generator
     {
       Key key = (Key) table.keys.elementAt(i);
       if (generate42 || (!key.isPrimary && !key.isUnique))
-        generate(key, outData, tableName);
+        generateKey(key, outData, tableName);
     }
     if (generate42)
     {
       for (int i=0; i < table.links.size(); i++)
       {
         Link link = (Link) table.links.elementAt(i);
-        generate(link, outData, tableName);
+        generateSpLink(link, outData, tableName);
       }
     }
     for (int i=0; i < table.grants.size(); i++)
     {
       Grant grant = (Grant) table.grants.elementAt(i);
-      generate(grant, outData, table.database.userid + "." + tableName);
+      generateGrant(grant, outData, table.database.userid + "." + tableName);
     }
     if (useInsertTrigger)
     {
@@ -404,19 +404,19 @@ public class MSSqlDDL extends Generator
     for (int i=0; i < table.views.size(); i++)
     {
       View view = (View) table.views.elementAt(i);
-      generate(view, outData, tableName);
+      generateView(view, outData, tableName);
     }
     for (int i=0; i < table.procs.size(); i++)
     {
       Proc proc = (Proc) table.procs.elementAt(i);
       if (proc.isData)
-        generate(proc, outData);
+        generateProc(proc, outData);
     }
   }
   /**
   * Generates SQL code for SQL Server Index
   */
-  static void generate(Key key, PrintWriter outData, String table)
+  static void generateKey(Key key, PrintWriter outData, String table)
   {
     String comma = "  ";
     if (key.isPrimary)
@@ -477,7 +477,7 @@ public class MSSqlDDL extends Generator
   /**
   * Generates foreign key SQL Code appended to table
   */
-  static void generate(Link link, PrintWriter outData)
+  static void generateLink(Link link, PrintWriter outData)
   {
     String comma = "    ";
     outData.println(", foreign key (");
@@ -487,12 +487,25 @@ public class MSSqlDDL extends Generator
       outData.println(comma+name);
     }
     outData.println("  )");
-    outData.println("  references "+link.name);
+    outData.print("  references "+link.name);
+    if (link.linkFields.size() > 0)
+    {
+      comma = "";
+      outData.print("(");
+      for (int i=0; i<link.linkFields.size(); i++)
+      {
+        String name = (String) link.linkFields.elementAt(i);
+        outData.print(comma+name);
+        comma = ", ";
+      }
+      outData.print(")");
+    }
+    outData.println();
   }
   /**
   * Generates foreign key SQL Code for SQL Server
   */
-  static void generate(Link link, PrintWriter outData, String table)
+  static void generateSpLink(Link link, PrintWriter outData, String table)
   {
     outData.println("sp_foreignkey "+table+", "+link.name);
     for (int i=0; i<link.fields.size(); i++)
@@ -506,7 +519,7 @@ public class MSSqlDDL extends Generator
   /**
   * Generates grant SQL Code for SQL Server
   */
-  static void generate(Grant grant, PrintWriter outData, String object)
+  static void generateGrant(Grant grant, PrintWriter outData, String object)
   {
     for (int i=0; i < grant.perms.size(); i++)
     {
@@ -523,7 +536,7 @@ public class MSSqlDDL extends Generator
   /**
   * Generates view SQL Code for SQL Server
   */
-  static void generate(View view, PrintWriter outData, String tableName)
+  static void generateView(View view, PrintWriter outData, String tableName)
   {
     outData.println("drop view "+tableName+view.name);
     outData.println("go");
@@ -558,7 +571,7 @@ public class MSSqlDDL extends Generator
       outData.println();
     }
   }
-  static void generate(Proc proc, PrintWriter outData)
+  static void generateProc(Proc proc, PrintWriter outData)
   {
     for (int i=0; i < proc.lines.size(); i++)
     {

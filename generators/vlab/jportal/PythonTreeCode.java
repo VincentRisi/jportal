@@ -55,7 +55,7 @@ public class PythonTreeCode extends Generator
   {
     return "Generates Python Tree Code";
   }
-  public static String string(String var, String value, boolean trip)
+  public static String stringTrip(String var, String value, boolean trip)
   {
     return var + " = _escape(''' " + value + " ''')";
   }
@@ -395,8 +395,8 @@ public class PythonTreeCode extends Generator
     outData.println("_fd = _class()");
     out(outData, string("_fd.name", field.name));
     out(outData, string("_fd.alias", field.alias));
-    out(outData, string("_fd.checkValue", field.checkValue));
-    out(outData, string("_fd.defaultValue", field.defaultValue));
+    out(outData, stringTrip("_fd.checkValue", field.checkValue, true));
+    out(outData, stringTrip("_fd.defaultValue", field.defaultValue, true));
     out(outData, string("_fd.enumLink", field.enumLink));
     out(outData, string("_fd.type", fieldType(field.type)));
     out(outData, string("_fd.length", field.length));
@@ -503,7 +503,7 @@ public class PythonTreeCode extends Generator
     out(outData, string("_fg.value", toBoolean(flag.value)));
     outData.println("_fg.description = '" + flag.description + "'");
   }
-  static void generateString(Vector<?> allUsers, PrintWriter outData, PrintWriter outLog)
+  static void generateString(Vector<String> allUsers, PrintWriter outData, PrintWriter outLog)
   {
     outData.println("_strings('''\\");
     for (int i = 0; i < allUsers.size(); i++)

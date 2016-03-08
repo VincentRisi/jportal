@@ -38,7 +38,7 @@ public class Table implements Serializable
   public Vector<Proc>   procs;
   public Vector<String>   comments;
   public Vector<String>   options;
-  public Vector<?>   allUsers;
+  public Vector<String>   allUsers;
   public Vector<Parameter>   parameters;
   public Vector<Const>   consts;
   public boolean  hasPrimaryKey;
@@ -70,7 +70,7 @@ public class Table implements Serializable
     procs             = new Vector<Proc>();
     comments          = new Vector<String>();
     options           = new Vector<String>();
-    allUsers          = new Vector<Object>(); // ????
+    allUsers          = new Vector<String>();
     parameters        = new Vector<Parameter>();
     consts            = new Vector<Const>();
     hasExecute        = false;
