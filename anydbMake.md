@@ -18,8 +18,18 @@ Main keywords must be a single case sensitive word on a line. These are
 * *crackle* and *idl* for the crackle generators for defining client, server and implementation code and 
 * *pickle* and *app* for the pickle generator for parameter control code.
 
-After the main keyword *jportal* each non empty line must contain 2 or more items. The first item is the case sensitive name of the code generator. 
-The second item is the target directory where to generate the code. None or more items that follow are the wildcard shape markers.
+After the main keyword *jportal*, *crackle* or *pickle* each non empty line must contain 2 or more items. The first item is the case sensitive name of the code generator. 
+The second item is the target directory where to generate the code. 
+Anymore items that follow are the wildcard based or target filenames in the target directory.
+
+After the main keyword *source* each non empty lines must contain a single fullpath source file for the *jportal* generators.
+
+After the main keyword *idl* each non empty line must contain a keyword in ['idlfile', 'imfile', 'ibfile', 'icfile'] followed by a single fullpath filename. 
+There must be one 'idlfile' and at most one 'imfile'. The can be more than one 'ibfile', 'icfile' or 'iifile'.
+If there is no 'imfile' it is assumed the would only be an 'idlfile'.
+If there is an 'imfile' it is used to create the 'idlfile' together with all supplied 'iifile' and generated 'iifile' followed by all supplied 'ibfile' and 'icfile'.
+The single 'idlfile' is then used by each *crackle* generator. 
+
 
 ## binuc
 
