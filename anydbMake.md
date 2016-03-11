@@ -24,11 +24,12 @@ Anymore items that follow are the wildcard based or target filenames in the targ
 
 After the main keyword *source* each non empty lines must contain a single fullpath source file for the *jportal* generators.
 
-After the main keyword *idl* each non empty line must contain a keyword in ['idlfile', 'imfile', 'ibfile', 'icfile'] followed by a single fullpath filename. 
-There must be one 'idlfile' and at most one 'imfile'. The can be more than one 'ibfile', 'icfile' or 'iifile'.
+After the main keyword *idl* each non empty line must contain a keyword in ['idlfile', 'imfile', 'iifile', ibfile', 'icfile'] followed by a single fullpath filename. 
+There must be one 'idlfile' and at most one 'imfile'. The can be more than one 'ibfile', 'icfile' or 'iifile'. 
+A *jportal* generator can be used to generate any amount of 'iifile'.
 If there is no 'imfile' it is assumed the would only be an 'idlfile'.
 If there is an 'imfile' it is used to create the 'idlfile' together with all supplied 'iifile' and generated 'iifile' followed by all supplied 'ibfile' and 'icfile'.
-The single 'idlfile' is then used by each *crackle* generator. 
+The single 'idlfile' sopplied or built is then used by each *crackle* generator. 
 
 
 ## binuc
