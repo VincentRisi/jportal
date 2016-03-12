@@ -1,8 +1,8 @@
 # CMake usage - here is the basic way to build the sources.
 
-## functions.cmake
-
 We use cmake to build more than just *C/C++* source. The following functions are a big help here.
+
+## functions.cmake
 
     set (jportalJar ${GENERATORS_SOURCE_DIR}/bin/jportal.jar)
     set (crackleJar ${GENERATORS_SOURCE_DIR}/bin/crackle.jar)
@@ -98,6 +98,9 @@ We use cmake to build more than just *C/C++* source. The following functions are
       )
     endfunction ()
 
+Here we define the starting cmake file for the project. 
+
+## jportal
 
     project (main_jportal)
     
@@ -136,6 +139,9 @@ We use cmake to build more than just *C/C++* source. The following functions are
     add_subdirectory(picktester)
     add_subdirectory(demo)
 
+## jportal/generators
+
+This cmake builds the generator jar files. The java source for these jars are maintained using Eclipse.
 
     project (jportal_generators)
     
@@ -180,6 +186,13 @@ We use cmake to build more than just *C/C++* source. The following functions are
       WORKING_DIRECTORY ${class_bin_dir}
     )
 
+## jportal/generators/vlab/jportal/decompiler
+
+    project (jportal_decompiler)
+    
+    anydbMake(jportal_decompiler ${CMAKE_CURRENT_SOURCE_DIR}/decompiler.anydb "${CMAKE_CURRENT_SOURCE_DIR}/Oracle.java")
+
+## jportal/loyalty
 
     project (jportal_loyalty)
     
@@ -219,11 +232,13 @@ We use cmake to build more than just *C/C++* source. The following functions are
     add_dependencies(loyalty_jportal target_jportal_jar)
     add_dependencies(loyalty_crackle target_crackle_jar)
 
+## jportal/idl2tester
 
     project (jportal_idl2tester)
     
     anydbMake(jportal_idl2tester ${IDL2TESTER_SOURCE_DIR}/idl2tester.anydb "${IDL2TESTER_BINARY_DIR}/idl/idl2tester.idl")
 
+## jportal/binuc
 
     project (jportal_binuc)
     
@@ -231,6 +246,7 @@ We use cmake to build more than just *C/C++* source. The following functions are
     
     add_subdirectory(coco)
 
+## jportal/binuc/coco
 
     project (exe_coco)
     
@@ -261,6 +277,7 @@ We use cmake to build more than just *C/C++* source. The following functions are
     
     add_executable (Coco ${source})
 
+## jportal/binuj
 
     project (jportal_binuj)
     
@@ -292,6 +309,7 @@ We use cmake to build more than just *C/C++* source. The following functions are
       SOURCES ${source} ${generated}
     )
 
+## jportal/picktester
 
     project (jportal_picktester)
     
@@ -344,6 +362,7 @@ We use cmake to build more than just *C/C++* source. The following functions are
       )
     endforeach()
 
+## jportal/demos
 
     project (jportal_demos)
     
