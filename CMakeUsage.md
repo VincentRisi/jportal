@@ -1,6 +1,7 @@
 # CMake usage - here is the basic way to build the sources.
 
-We use cmake to build more than just *C/C++* source. The following functions are a big help here.
+We use cmake to build more than just *C/C++* source.
+The following functions are a big help here.
 
 ## functions.cmake
 
@@ -98,7 +99,8 @@ We use cmake to build more than just *C/C++* source. The following functions are
       )
     endfunction ()
 
-Here we define the starting cmake file for the project. 
+Here we define the starting cmake file for the project.
+We include the above functions for use with added the subdirectories. 
 
 ## jportal
 
@@ -139,9 +141,12 @@ Here we define the starting cmake file for the project.
     add_subdirectory(picktester)
     add_subdirectory(demo)
 
-## jportal/generators
+This cmake builds the generator jar files. 
+The java source for these jars are maintained using Eclipse.
+It is also a good example of how add_custom_target works in cmake.
+We include a subdirectory for a database decompiler application used from jportal.
 
-This cmake builds the generator jar files. The java source for these jars are maintained using Eclipse.
+## jportal/generators
 
     project (jportal_generators)
     
@@ -186,11 +191,17 @@ This cmake builds the generator jar files. The java source for these jars are ma
       WORKING_DIRECTORY ${class_bin_dir}
     )
 
+This is an example of using anydbMake within cmake.
+It should be noted that anydbMake is a special make system for the jportal generators.
+The is a markdown document describing the anydbMake, viz. anydbMake.md.
+
 ## jportal/generators/vlab/jportal/decompiler
 
     project (jportal_decompiler)
     
     anydbMake(jportal_decompiler ${CMAKE_CURRENT_SOURCE_DIR}/decompiler.anydb "${CMAKE_CURRENT_SOURCE_DIR}/Oracle.java")
+
+This is an example of using the generators not using anydbMake but invoking jportal.jar and crackle.jar using the cmake functions described above.
 
 ## jportal/loyalty
 
@@ -232,6 +243,10 @@ This cmake builds the generator jar files. The java source for these jars are ma
     add_dependencies(loyalty_jportal target_jportal_jar)
     add_dependencies(loyalty_crackle target_crackle_jar)
 
+Idl2 is a client/server system which has been used very successfully for C# front end clients talking to C++ or Java services.
+Idl2tester is a small subsystem to test out the generators. 
+It uses arbitrary named tables and functions which could never be confused to be real world applications.
+
 ## jportal/idl2tester
 
     project (jportal_idl2tester)
@@ -245,6 +260,8 @@ This cmake builds the generator jar files. The java source for these jars are ma
     anydbMake(jportal_binuc ${BINUC_SOURCE_DIR}/binuc.anydb "${BINUC_BINARY_DIR}/idl/server/binucserver.cpp")
     
     add_subdirectory(coco)
+
+CocoR is a very nice parser generator. The cmake here builds it using standard cmake c++ executable building.
 
 ## jportal/binuc/coco
 
@@ -308,6 +325,8 @@ This cmake builds the generator jar files. The java source for these jars are ma
       DEPENDS ${generated}
       SOURCES ${source} ${generated}
     )
+
+The sql_list has the table names used for the database generation is dependancy order.
 
 ## jportal/picktester
 

@@ -1,16 +1,17 @@
 # anydbMake.py - A simple make scripter for building generator based code
 
-The python code parses a simple text script using the following syntax rules.  
-The script is read line by line.  
+The python code parses a simple text script using the following syntax rules.
+The script is read line by line.
+The syntax used by the scripter is to make is easy to have readable scripts.
 
 If there is a # character anywhere on the line the rest of the line including the # char is ignored.  
 
-If the line contains a simple xxxx=yyyy this is assumed to be a set of xxxx with the value yyyy and anything of the form ${xxxx} is replaced with yyyy. 
+If the line contains a single token ie no white space of the form xxxx=yyyy this is assumed to be a set of xxxx with the value yyyy and anything of the form ${xxxx} is replaced with yyyy. 
 Replacements are done first before any parsing is done.  
 
 Empty line ie. lines containing only white space are ignored.  
 
-The script must start with a project name line.  
+The script must start with a project name line. There can be comment and blank lines before the project name line.
 
 Main keywords must be a single case sensitive word on a line. These are 
 
@@ -21,6 +22,13 @@ Main keywords must be a single case sensitive word on a line. These are
 After the main keyword *jportal*, *crackle* or *pickle* each non empty line must contain 2 or more items. The first item is the case sensitive name of the code generator. 
 The second item is the target directory where to generate the code. 
 Anymore items that follow are the wildcard based or target filenames in the target directory.
+Wildcard markers apply to the basename sans extension of the source. eg. /fred/xyz.si would translate to xyz as the basename.
+
+- %a : asis-case
+- %i : ignore-case
+- %l : lowercase 
+- %u : uppercase
+
 
 After the main keyword *source* each non empty lines must contain a single fullpath source file for the *jportal* generators.
 
@@ -29,8 +37,16 @@ There must be one 'idlfile' and at most one 'imfile'. The can be more than one '
 A *jportal* generator can be used to generate any amount of 'iifile'.
 If there is no 'imfile' it is assumed the would only be an 'idlfile'.
 If there is an 'imfile' it is used to create the 'idlfile' together with all supplied 'iifile' and generated 'iifile' followed by all supplied 'ibfile' and 'icfile'.
-The single 'idlfile' sopplied or built is then used by each *crackle* generator. 
+The single 'idlfile' supplied or built is then used by each *crackle* generator. 
 
+After the main keyword *app* each non empty line must contain a keyword in ['appfile', 'pmfile', 'prfile', 'pifile'] followed by a single fullpath filename. 
+There must be one 'appfile' and at most one 'pmfile'. The can be more than one 'prfile' or 'pifile'. 
+A *jportal* generator can be used to generate any amount of 'pifile'.
+If there is no 'pmfile' it is assumed the would only be an 'appfile'.
+If there is a 'pmfile' it is used to create the 'appfile' together with all supplied 'pifile' and generated 'pifile' followed by all supplied 'prfile'.
+The single 'idlfile' supplied or built is then used by each *pickle* generator. 
+
+The above two paragraphs are very similar and they show the synergy between *jportal* and *crackle* or *pickle*.
 
 ## binuc
 
