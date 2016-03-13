@@ -48,12 +48,35 @@ The single 'idlfile' supplied or built is then used by each *pickle* generator.
 
 The above two paragraphs are very similar and they show the synergy between *jportal* and *crackle* or *pickle*.
 
+## decompiler
+
+Uses *jportal* to generate java code to access any Oracle database in order to decompile the code.
+ 
+    #------------------------------------------
+    #   DECOMPILER
+    #   wildcards %a -asis-case %i -ignore-case
+    #             %l -lowercase %u -uppercase
+    #------------------------------------------
+
+    project decompiler
+
+    source_dir=/main/jportal/generators/vlab/jportal/decompiler
+    binary_dir=/main/jportal/build/generators/vlab/jportal/decompiler
+
+    jportal
+      JavaWRCode ${binary_dir} %i.java
+
+    source
+      ${source_dir}/oracle.si
+
 ## binuc
 
 Uses *crackle* to define the crackle generator to use together with the *idl* to define the server data to use for a cpp based server.
 
     #------------------------------------------
     #   BINU CPP SERVER
+    #   wildcards %a -asis-case %i -ignore-case
+    #             %l -lowercase %u -uppercase
     #------------------------------------------
     
     project binuc
@@ -74,6 +97,8 @@ Uses *crackle* to define the crackle generator to use together with the *idl* to
 
     #------------------------------------------
     #   BINU JAVA SERVER
+    #   wildcards %a -asis-case %i -ignore-case
+    #             %l -lowercase %u -uppercase
     #------------------------------------------
     
     project binuj
