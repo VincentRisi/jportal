@@ -52,9 +52,9 @@ public class CreateParms
       outLog.flush();
       e1.printStackTrace();
     }
-    catch (Throwable e2)
+    catch (Exception e2)
     {
-      outLog.println("Throwable");
+      outLog.println("Exception");
       outLog.println(e2.toString ());
       outLog.flush();
       e2.printStackTrace();

@@ -34,7 +34,7 @@ public class Writer
     baos = new Baos();
     dos = new DataOutputStream(baos);
   }
-  public byte[] close() throws Throwable
+  public byte[] close() throws Exception
   {
     baos.flush();
     baos.close();

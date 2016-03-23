@@ -175,7 +175,7 @@ public class PopGenServer extends Generator
       System.out.flush();
       e1.printStackTrace();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();
@@ -225,7 +225,7 @@ public class PopGenServer extends Generator
       System.out.flush();
       e1.printStackTrace();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();
@@ -447,7 +447,7 @@ public class PopGenServer extends Generator
       System.out.flush();
       e1.printStackTrace();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();
@@ -579,7 +579,7 @@ public class PopGenServer extends Generator
       System.out.flush();
       e1.printStackTrace();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();
@@ -619,7 +619,7 @@ public class PopGenServer extends Generator
       System.out.flush();
       e1.printStackTrace();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();
@@ -955,7 +955,7 @@ public class PopGenServer extends Generator
       System.out.flush();
       e1.printStackTrace();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();

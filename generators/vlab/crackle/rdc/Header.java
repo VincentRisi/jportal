@@ -55,7 +55,7 @@ public class Header
     prevProcessDuration = 0.0;
   }
 
-  public void write(Writer writer) throws Throwable
+  public void write(Writer writer) throws Exception
   {
     writer.putString(rpcVersion, 16);
     writer.putString(usrId, 16);
@@ -79,7 +79,7 @@ public class Header
     writer.filler(80);
   }
 
-  public void read(Reader reader) throws Throwable
+  public void read(Reader reader) throws Exception
   {
     rpcVersion = reader.getString(16);
     usrId = reader.getString(16);

@@ -38,31 +38,31 @@ public class Reader
   {
     bais.skip(length);
   }
-  public byte getByte() throws Throwable
+  public byte getByte() throws Exception
   {
     return dis.readByte();
   }
-  public char getChar() throws Throwable
+  public char getChar() throws Exception
   {
     return (char)dis.readByte();
   }
-  public short getShort() throws Throwable
+  public short getShort() throws Exception
   {
     return dis.readShort();
   }
-  public int getInt() throws Throwable
+  public int getInt() throws Exception
   {
     return dis.readInt();
   }
-  public long getLong() throws Throwable
+  public long getLong() throws Exception
   {
     return dis.readLong();
   }
-  public double getDouble() throws Throwable
+  public double getDouble() throws Exception
   {
     return dis.readDouble();
   }
-  public String getString(int length) throws Throwable
+  public String getString(int length) throws Exception
   {
     byte[] b = new byte[length];
     dis.read(b);

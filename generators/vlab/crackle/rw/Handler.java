@@ -25,7 +25,7 @@ public class Handler
   private final RpcSocket rpc;
   private final Header header;
   private byte[] data = null;
-  public Handler(RpcSocket rpc) throws Throwable
+  public Handler(RpcSocket rpc) throws Exception
   {
     this.rpc = rpc;
     header = new Header();
@@ -40,7 +40,7 @@ public class Handler
   {
     return data;
   }
-  private byte[] receive(int size) throws Throwable
+  private byte[] receive(int size) throws Exception
   {
     byte[] data = rpc.read(size);
     if (data.length < size)
@@ -50,7 +50,7 @@ public class Handler
     }
     return data;
   }
-  private byte[] compress(byte[] data) throws Throwable
+  private byte[] compress(byte[] data) throws Exception
   {
     ByteArrayOutputStream baos= new ByteArrayOutputStream(data.length);
     ZipOutputStream zos = new ZipOutputStream(baos);
@@ -65,7 +65,7 @@ public class Handler
       return result;
     return data;
   }
-  private byte[] decompress(byte[] data, int size) throws Throwable
+  private byte[] decompress(byte[] data, int size) throws Exception
   {
     if (size > data.length)
     {
@@ -96,13 +96,13 @@ public class Handler
     messageWriter = new Writer();
     return messageWriter;
   }
-  public void setMessage(byte[] data) throws Throwable
+  public void setMessage(byte[] data) throws Exception
   {
     header.mSize = data.length;
     //
   }
   private byte[] error = null;
-  public void setError(Throwable ex)
+  public void setError(Exception ex)
   {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintStream stream = new PrintStream(baos);
@@ -142,13 +142,13 @@ public class Handler
       rpc.write(baos.toByteArray());
       rpc.close();
     }
-    catch (Throwable ex)
+    catch (Exception ex)
     {
       try
       {
         rpc.close();
       }
-      catch (Throwable e)
+      catch (Exception e)
       {
         e.printStackTrace();
       }

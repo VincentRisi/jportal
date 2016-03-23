@@ -19,8 +19,8 @@ package vlab.crackle.rpc;
  */
 public interface Rpc
 {
-	Object call(int message, int signature, Object object) throws Throwable;
-	Object call(int message, int signature) throws Throwable;
+	Object call(int message, int signature, Object object) throws Exception;
+	Object call(int message, int signature) throws Exception;
 	Rpc open();
 	public Object read();
 	void write(Object object);

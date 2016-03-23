@@ -223,7 +223,7 @@ public class Compiler
       }
       outLog.flush();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       outLog.println("Error: "+e);
       e.printStackTrace();

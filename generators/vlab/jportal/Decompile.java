@@ -105,7 +105,7 @@ public class Decompile
       }
       outLog.flush();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       outLog.println("Error: "+e);
       outLog.flush();

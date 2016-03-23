@@ -206,7 +206,7 @@ public class CSIdl2Code extends Generator
   //  outData.println("//      Cache.put(this, \""+function+"\", new String[] {"+tableList+"}, "+function+"(), reload);");
   //  outData.println("//    result = ("+function+"Result) Cache.get(\""+function+"\");");
   //  outData.println("//  }");
-  //  outData.println("//  catch(Throwable ex)");
+  //  outData.println("//  catch(Exception ex)");
   //  outData.println("//  {");
   //  outData.println("//    ex.printStackTrace();");
   //  outData.println("//    throw ex;");
@@ -340,7 +340,7 @@ public class CSIdl2Code extends Generator
     outData.println("//    if (has == true)");
     outData.println("//      result = cursor.get"+added+"Copy();");
     outData.println("//  }");
-    outData.println("//  catch(Throwable ex)");
+    outData.println("//  catch(Exception ex)");
     outData.println("//  {");
     outData.println("//    ex.printStackTrace();");
     outData.println("//    throw ex;");

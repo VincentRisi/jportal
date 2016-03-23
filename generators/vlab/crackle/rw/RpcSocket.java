@@ -35,7 +35,7 @@ public class RpcSocket
       inetAddress = InetAddress.getLocalHost();
       if (inetAddress != null)
         host = inetAddress.getHostName();
-    } catch (Throwable ex)
+    } catch (Exception ex)
     {
       host = "local";
     }
@@ -56,7 +56,7 @@ public class RpcSocket
       e.printStackTrace();
     }
   }
-  public RpcSocket open() throws Throwable
+  public RpcSocket open() throws Exception
   {
     if (serverSocket == null)
     {
@@ -65,7 +65,7 @@ public class RpcSocket
     socket = serverSocket.accept();
     return new RpcSocket(this);
   }
-  public byte[] read(int size) throws Throwable
+  public byte[] read(int size) throws Exception
   {
     DataInputStream dis = new DataInputStream(socket.getInputStream());
     int expect = dis.readInt();
@@ -86,13 +86,13 @@ public class RpcSocket
     }
     return data;
   }
-  public void write(byte[] data) throws Throwable
+  public void write(byte[] data) throws Exception
   {
     os = socket.getOutputStream();
     os.write(data);
     os.flush();   
   }
-  public void close() throws Throwable
+  public void close() throws Exception
   {
     socket.close();
   }

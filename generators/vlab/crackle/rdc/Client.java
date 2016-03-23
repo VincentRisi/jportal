@@ -22,7 +22,7 @@ public class Client
   protected Reader reader;
   protected Writer writer;
 
-  public Client(String host, String service, int timeOut) throws Throwable
+  public Client(String host, String service, int timeOut) throws Exception
   {
     header = new Header();
     rdc = new Rdc();
@@ -30,7 +30,7 @@ public class Client
     socket.setTimeout(timeOut);
   }
 
-  public void init(int reqId, String serverName, String methodName) throws Throwable
+  public void init(int reqId, String serverName, String methodName) throws Exception
   {
     this.reqId = reqId;
     this.serverName = serverName;
@@ -45,7 +45,7 @@ public class Client
     writer.putInt(0);
   }
 
-  public void call() throws Throwable
+  public void call() throws Exception
   {
     int mSize = writer.size() - 264;
     writer.storeLength(writer.getMSizeOffset(), mSize);
@@ -80,18 +80,18 @@ public class Client
     }
   }
 
-  private byte[] readBytes(int dataLength) throws Throwable
+  private byte[] readBytes(int dataLength) throws Exception
   {
     return socket.read(dataLength);
   }
 
-  private int readInt() throws Throwable
+  private int readInt() throws Exception
   {
     byte[] data = readBytes(4);
     return new Reader(data).getInt();
   }
 
-  private void raiseServerError() throws Throwable
+  private void raiseServerError() throws Exception
   {
     int errorLength = readInt();
     byte[] error = readBytes(errorLength);

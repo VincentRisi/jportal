@@ -208,7 +208,7 @@ public class Compiler
           System.exit(1);
       }
       System.exit(0);
-    } catch (Throwable e)
+    } catch (Exception e)
     {
       e.printStackTrace();
       outLog.println("Error: " + e);

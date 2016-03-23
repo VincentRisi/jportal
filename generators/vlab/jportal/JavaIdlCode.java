@@ -202,7 +202,7 @@ public class JavaIdlCode extends Generator
     if (proc.hasUpdates)
       outData.println("    _connector.flagCommit();");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     if (proc.hasUpdates)
@@ -251,7 +251,7 @@ public class JavaIdlCode extends Generator
       outData.println("    cursor.assign(rec);");
     outData.println("    result.recs = cursor."+proc.lowerFirst()+"Load();");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     outData.println("    throw ex;");
@@ -308,7 +308,7 @@ public class JavaIdlCode extends Generator
     if (hasMods == true)
       outData.println("    rec = cursor.get"+added+"Copy();");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     outData.println("    _connector.flagRollback();");
@@ -358,7 +358,7 @@ public class JavaIdlCode extends Generator
     outData.println("      Cache.put(this, \""+function+"\", new String[] {"+tableList+"}, "+function+"(), reload);");
     outData.println("    result = ("+function+"Result) Cache.get(\""+function+"\");");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     outData.println("    throw ex;");

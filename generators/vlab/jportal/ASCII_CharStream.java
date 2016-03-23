@@ -78,7 +78,7 @@ public final class ASCII_CharStream
            maxNextCharInd = (bufpos -= tokenBegin);
         }
      }
-     catch (Throwable t)
+     catch (Exception t)
      {
         throw new Error(t.getMessage());
      }

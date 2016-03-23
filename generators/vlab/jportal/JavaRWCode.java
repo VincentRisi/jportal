@@ -335,7 +335,7 @@ public class JavaRWCode extends Generator
         outData.println("    " + name + "IsNull = _value." + name + "IsNull;");
     }
     outData.println("  }");
-    outData.println("  public void read(Reader reader) throws Throwable");
+    outData.println("  public void read(Reader reader) throws Exception");
     outData.println("  {");
     for (int i = 0; i < table.fields.size(); i++)
     {
@@ -343,7 +343,7 @@ public class JavaRWCode extends Generator
       readCall(field, outData);
     }
     outData.println("  }");
-    outData.println("  public void write(Writer writer) throws Throwable");
+    outData.println("  public void write(Writer writer) throws Exception");
     outData.println("  {");
     for (int i = 0; i < table.fields.size(); i++)
     {
@@ -537,7 +537,7 @@ public class JavaRWCode extends Generator
       outData.println("    " + s + " = _value." + s + ";");
     }
     outData.println("  }");
-    outData.println("  public void read(Reader reader)  throws Throwable");
+    outData.println("  public void read(Reader reader)  throws Exception");
     outData.println("  {");
     for (int i = 0; i < proc.inputs.size(); i++)
     {
@@ -560,7 +560,7 @@ public class JavaRWCode extends Generator
       readCall(field, outData);
     }
     outData.println("  }");
-    outData.println("  public void write(Writer writer) throws Throwable");
+    outData.println("  public void write(Writer writer) throws Exception");
     outData.println("  {");
     for (int i = 0; i < proc.inputs.size(); i++)
     {
@@ -665,9 +665,9 @@ public class JavaRWCode extends Generator
   {
     outData.println("  /**");
     outData.println("  * class method as it has no input or output.");
-    outData.println("  * @exception Throwable is passed through");
+    outData.println("  * @exception Exception is passed through");
     outData.println("  */");
-    outData.println("  public static void " + proc.lowerFirst() + "(Connector connector) throws Throwable");
+    outData.println("  public static void " + proc.lowerFirst() + "(Connector connector) throws Exception");
     outData.println("  {");
     outData.println("    String statement = ");
     int phIndex = 0;
@@ -841,19 +841,19 @@ public class JavaRWCode extends Generator
       outData.println(indent + "  * Returns any number of records.");
       outData.println(indent + "  * @return result set of records found");
     }
-    outData.println(indent + "  * @exception Throwable is passed through");
+    outData.println(indent + "  * @exception Exception is passed through");
     outData.println(indent + "  */");
     String procName = proc.lowerFirst();
     if (proc.isMultipleInput)
-      outData.println(indent + "  public void " + procName + "(" + extendsName + "[] recs) throws Throwable");
+      outData.println(indent + "  public void " + procName + "(" + extendsName + "[] recs) throws Exception");
     else if (proc.outputs.size() == 0 || proc.isSProc == true)
-      outData.println(indent + "  public void " + procName + "(" + extendsName + " rec) throws Throwable");
+      outData.println(indent + "  public void " + procName + "(" + extendsName + " rec) throws Exception");
     else if (proc.isSingle)
-      outData.println(indent + "  public boolean " + procName + "(" + extendsName + " rec) throws Throwable");
+      outData.println(indent + "  public boolean " + procName + "(" + extendsName + " rec) throws Exception");
     else if (proc.inputs.size() > 0 || proc.dynamics.size() > 0)
-      outData.println(indent + "  public Query " + procName + "(" + extendsName + " rec) throws Throwable");
+      outData.println(indent + "  public Query " + procName + "(" + extendsName + " rec) throws Exception");
     else
-      outData.println(indent + "  public Query " + procName + "() throws Throwable");
+      outData.println(indent + "  public Query " + procName + "() throws Exception");
     outData.println(indent + "  {");
     String parmField = "";
     if (proc.hasReturning || proc.isMultipleInput)
@@ -967,9 +967,9 @@ public class JavaRWCode extends Generator
         outData.println(indent + "  * Returns the next record in a result set.");
         outData.println(indent + "  * @param result The result set for the query.");
         outData.println(indent + "  * @return true while records are found.");
-        outData.println(indent + "  * @exception Throwable is passed through");
+        outData.println(indent + "  * @exception Exception is passed through");
         outData.println(indent + "  */");
-        outData.println(indent + "  public " + extendsName + " " + procName + "(Query query) throws Throwable");
+        outData.println(indent + "  public " + extendsName + " " + procName + "(Query query) throws Exception");
         outData.println(indent + "  {");
         outData.println(indent + "    if (!query.result.next())");
         outData.println(indent + "    {");
@@ -1064,7 +1064,7 @@ public class JavaRWCode extends Generator
       {
         outData.println(indent + "        " + prep + ".addBatch();");
         outData.println(indent + "      }");
-        outData.println(indent + "      catch (Throwable ex)");
+        outData.println(indent + "      catch (Exception ex)");
         outData.println(indent + "      {");
         outData.println(indent + "        " + prep + ".clearBatch();");
         outData.println(indent + "        throw(ex);");
@@ -1103,17 +1103,17 @@ public class JavaRWCode extends Generator
       outData.println("    /**");
       outData.println("    * Returns all the records in a result set as array of " + extendsName + ".");
       outData.println("    * @return array of " + extendsName + ".");
-      outData.println("    * @exception Throwable is passed through");
+      outData.println("    * @exception Exception is passed through");
       outData.println("    */");
       if (proc.inputs.size() > 0)
       {
-        outData.println("    public " + extendsName + "[] " + procName + "Load(" + extendsName + " rec) throws Throwable");
+        outData.println("    public " + extendsName + "[] " + procName + "Load(" + extendsName + " rec) throws Exception");
         outData.println("    {");
         outData.println("      Query query = " + procName + "(rec);");
       }
       else
       {
-        outData.println("    public " + extendsName + "[] " + procName + "Load() throws Throwable");
+        outData.println("    public " + extendsName + "[] " + procName + "Load() throws Exception");
         outData.println("    {");
         outData.println("      " + extendsName + " rec = new " + extendsName + "();");
         outData.println("      Query query = " + procName + "();");

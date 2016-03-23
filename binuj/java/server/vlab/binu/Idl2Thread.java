@@ -12,7 +12,7 @@ public class Idl2Thread extends Thread
   private String[] dbs;
   private Connector[] conns;
   BinuDispatch dispatcher;
-  public Idl2Thread(Notifier<RpcSocket> notifier, String[] dbs, String[] connects, int no) throws Throwable
+  public Idl2Thread(Notifier<RpcSocket> notifier, String[] dbs, String[] connects, int no) throws Exception
   {
     this.notifier = notifier;
     this.dbs = dbs;
@@ -55,12 +55,12 @@ public class Idl2Thread extends Thread
           {
             socket.close();
           }
-        } catch (Throwable e)
+        } catch (Exception e)
         {
           e.printStackTrace();
         }
       }
-    } catch (Throwable e)
+    } catch (Exception e)
     {
       e.printStackTrace();
     }

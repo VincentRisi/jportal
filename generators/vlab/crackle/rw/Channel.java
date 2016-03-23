@@ -29,7 +29,7 @@ public class Channel<PARCEL>
       try
       {
         wait();
-      } catch (Throwable e)
+      } catch (Exception e)
       {
         e.printStackTrace();
       }
@@ -45,7 +45,7 @@ public class Channel<PARCEL>
       try
       {
         wait();
-      } catch (Throwable e)
+      } catch (Exception e)
       {
         e.printStackTrace();
       }

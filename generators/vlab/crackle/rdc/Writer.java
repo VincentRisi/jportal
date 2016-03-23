@@ -18,7 +18,7 @@ public class Writer
 {
   public static interface ByteWriter
   {
-    public void write(Writer writer) throws Throwable;
+    public void write(Writer writer) throws Exception;
   }
   static final short JP_NULL = -1;
   static final short JP_NOT_NULL = 0;
@@ -43,7 +43,7 @@ public class Writer
   {
     baos.reset();
   }
-  public byte[] close() throws Throwable
+  public byte[] close() throws Exception
   {
     baos.flush();
     baos.close();
@@ -66,44 +66,44 @@ public class Writer
     for (int i = 0; i < no; i++)
       baos.write(0);
   }
-  public void putChar(char ch) throws Throwable
+  public void putChar(char ch) throws Exception
   {
     dos.write(ch);
   }
-  public void putByte(byte i8) throws Throwable
+  public void putByte(byte i8) throws Exception
   {
     dos.writeShort((short)i8);
   }
-  public void putBytes(byte[] bd) throws Throwable
+  public void putBytes(byte[] bd) throws Exception
   {
     dos.write(bd);
   }
-  public void putDouble(double d8) throws Throwable
+  public void putDouble(double d8) throws Exception
   {
     dos.writeDouble(d8);
   }
-  public void putInt(int i32) throws Throwable
+  public void putInt(int i32) throws Exception
   {
     dos.writeInt(i32);
   }
-  public void putLong(long i64) throws Throwable
+  public void putLong(long i64) throws Exception
   {
     dos.writeLong(i64);
   }
-  public void putShort(short i16) throws Throwable
+  public void putShort(short i16) throws Exception
   {
     dos.writeShort(i16);
   }
-  public void putBoolean(boolean b) throws Throwable
+  public void putBoolean(boolean b) throws Exception
   {
     dos.writeShort(b == true ? JP_NULL : JP_NOT_NULL);
   }
-  public void putString(String string, int length) throws Throwable
+  public void putString(String string, int length) throws Exception
   {
     byte[] b = string.getBytes();
     putBytes(b, length);
   }
-  public void putBytes(byte[] b, int length) throws Throwable
+  public void putBytes(byte[] b, int length) throws Exception
   {
     if (b.length >= length)
       dos.write(b, 0, length);

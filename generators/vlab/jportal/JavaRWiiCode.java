@@ -203,7 +203,7 @@ public class JavaRWiiCode extends Generator
     if (proc.hasUpdates)
       outData.println("    _connector.flagCommit();");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     if (proc.hasUpdates)
@@ -255,7 +255,7 @@ public class JavaRWiiCode extends Generator
       loadArg = "rec";
     outData.println("    result.recs = cursor." + proc.lowerFirst() + "Load(" + loadArg + ");");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     outData.println("    throw ex;");
@@ -307,7 +307,7 @@ public class JavaRWiiCode extends Generator
       outData.println("    " + table.useName() + "Tab." + proc.lowerFirst() + "(_connector);");
     outData.println("    _connector.flagCommit();");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     outData.println("    _connector.flagRollback();");
@@ -363,7 +363,7 @@ public class JavaRWiiCode extends Generator
       outData.println("    " + table.useName() + "Tab." + proc.lowerFirst() + "(_connector);");
     outData.println("    _connector.flagCommit();");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     outData.println("    _connector.flagRollback();");
@@ -413,7 +413,7 @@ public class JavaRWiiCode extends Generator
     outData.println("      Cache.put(this, \"" + function + "\", new String[] {" + tableList + "}, " + function + "(), reload);");
     outData.println("    result = (" + function + "Result) Cache.get(\"" + function + "\");");
     outData.println("  }");
-    outData.println("  catch(Throwable ex)");
+    outData.println("  catch(Exception ex)");
     outData.println("  {");
     outData.println("    ex.printStackTrace();");
     outData.println("    throw ex;");

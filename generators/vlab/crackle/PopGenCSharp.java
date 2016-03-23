@@ -130,7 +130,7 @@ public class PopGenCSharp extends Generator
     {
       outLog.println("Generate Procs IO Error");
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();
@@ -177,7 +177,7 @@ public class PopGenCSharp extends Generator
     {
       outLog.println("Generate Procs IO Error");
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();
@@ -238,7 +238,7 @@ public class PopGenCSharp extends Generator
     {
       outLog.println("Generate Procs IO Error");
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();
@@ -297,7 +297,7 @@ public class PopGenCSharp extends Generator
     {
       outLog.println("Generate Procs IO Error");
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();
@@ -771,7 +771,7 @@ public class PopGenCSharp extends Generator
         outFile.close();
       }
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();

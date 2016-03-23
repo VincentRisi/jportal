@@ -247,7 +247,7 @@ public class Compiler
       }
       outLog.flush();
       System.exit(0);
-    } catch (Throwable e)
+    } catch (Exception e)
     {
       outLog.println("Error: " + e + "[" + e.getMessage() + "]");
       e.printStackTrace();

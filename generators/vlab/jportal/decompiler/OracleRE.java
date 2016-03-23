@@ -92,7 +92,7 @@ public class OracleRE
         generate(database, args[i], output, outLog);
         outLog.flush();
       }
-    } catch (Throwable ex)
+    } catch (Exception ex)
     {
       System.out.println(ex.toString());
       System.out.flush();
@@ -109,7 +109,7 @@ public class OracleRE
     }
     return i;
   }
-  private static int checkLog(String args[], int i, PrintWriter outLog) throws Throwable
+  private static int checkLog(String args[], int i, PrintWriter outLog) throws Exception
   {
     if (args[i].equals("-l") && i + 1 < args.length)
     {
@@ -122,7 +122,7 @@ public class OracleRE
     }
     return i;
   }
-  private static void generate(Database database, String generator, String output, PrintWriter outLog) throws Throwable
+  private static void generate(Database database, String generator, String output, PrintWriter outLog) throws Exception
   {
     Class<?> classOf = Class.forName("vlab.jportal." + generator);
     Class<?> parmsOf[] = { database.getClass(), output.getClass(), outLog.getClass() };
@@ -177,7 +177,7 @@ public class OracleRE
       System.out.flush();
       e.printStackTrace();
       return null;
-    } catch (Throwable e)
+    } catch (Exception e)
     {
       e.printStackTrace();
       return null;
@@ -244,7 +244,7 @@ public class OracleRE
   {
     return caseChange(caseChange(caseChange(input.toLowerCase(), '_'), '#'), '$');
   }
-  static void loadTables(PrintWriter outLog) throws Throwable
+  static void loadTables(PrintWriter outLog) throws Exception
   {
     Oracle.Tables tablesRec = oracle.getTables();
     Query query = tablesRec.tables(database.schema);
@@ -396,7 +396,7 @@ public class OracleRE
     table.buildCount(proc);
     table.procs.addElement(proc);
   }
-  static void loadTableFields(PrintWriter outLog)  throws Throwable
+  static void loadTableFields(PrintWriter outLog)  throws Exception
   {
     Oracle.TableSequence tableSequenceRec = oracle.getTableSequence();
     Vector<String> sequenceFields = new Vector<String>();
@@ -497,7 +497,7 @@ public class OracleRE
     }
     return result;
   }
-  static void loadTablePrimaryKey(PrintWriter outLog)  throws Throwable
+  static void loadTablePrimaryKey(PrintWriter outLog)  throws Exception
   {
     Oracle.TablePrimaryKey tablePrimaryKeyRec = oracle.getTablePrimaryKey();
     if (tablePrimaryKeyRec.tablePrimaryKey(database.schema, table.name))
@@ -521,7 +521,7 @@ public class OracleRE
       table.keys.addElement(key);
     }
   }
-  static void loadTableUniqueKeys(PrintWriter outLog)  throws Throwable
+  static void loadTableUniqueKeys(PrintWriter outLog)  throws Exception
   {
     Oracle.TableUniqueKeys tableUniqueKeysRec = oracle.getTableUniqueKeys();
     Query query1 = tableUniqueKeysRec.tableUniqueKeys(database.schema, table.name);
@@ -542,7 +542,7 @@ public class OracleRE
       table.keys.addElement(key);
     }
   }
-  static void loadTableIndexes(PrintWriter outLog)  throws Throwable
+  static void loadTableIndexes(PrintWriter outLog)  throws Exception
   {
     Oracle.TableIndexes tableIndexesRec = oracle.getTableIndexes();
     Query query1 = tableIndexesRec.tableIndexes(database.schema, table.name);
@@ -559,7 +559,7 @@ public class OracleRE
       table.keys.addElement(key);
     }
   }
-  static void loadTableForeignKeys(PrintWriter outLog)  throws Throwable
+  static void loadTableForeignKeys(PrintWriter outLog)  throws Exception
   {
     Oracle.TableForeignKeys tableForeignKeysRec = oracle.getTableForeignKeys();
     Query query1 = tableForeignKeysRec.tableForeignKeys(database.schema, table.name);
@@ -575,7 +575,7 @@ public class OracleRE
       table.links.addElement(link);
     }
   }
-  static void loadTableGrants(PrintWriter outLog)  throws Throwable
+  static void loadTableGrants(PrintWriter outLog)  throws Exception
   {
     Oracle.TableGrants tableGrantsRec = oracle.getTableGrants();
     Query query1 = tableGrantsRec.tableGrants(database.schema, table.name);
@@ -587,7 +587,7 @@ public class OracleRE
       table.grants.addElement(grant);
     }
   }
-  static void loadViews(PrintWriter outLog)  throws Throwable
+  static void loadViews(PrintWriter outLog)  throws Exception
   {
     Oracle.Views viewsRec = oracle.getViews();
     Query query1 = viewsRec.views(database.schema);
@@ -610,7 +610,7 @@ public class OracleRE
       database.views.addElement(view);
     }
   }
-  static void loadSequences(PrintWriter outLog)  throws Throwable
+  static void loadSequences(PrintWriter outLog)  throws Exception
   {
     try
     {

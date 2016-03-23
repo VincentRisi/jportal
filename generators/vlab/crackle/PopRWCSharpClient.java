@@ -203,7 +203,7 @@ public class PopRWCSharpClient extends Generator
     {
       outLog.println("Generate Procs IO Error");
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();
@@ -484,7 +484,7 @@ public class PopRWCSharpClient extends Generator
         break;
     }
   }
-  public static void generateReturnStructs(Module module, PrintWriter outData) throws Throwable
+  public static void generateReturnStructs(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -494,7 +494,7 @@ public class PopRWCSharpClient extends Generator
       generateReturnStructs(module, prototype, i, outData);
     }
   }
-  public static void generateReturnStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateReturnStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     if (hasReturn == true)
@@ -576,7 +576,7 @@ public class PopRWCSharpClient extends Generator
     {
       outLog.println("Generate Procs IO Error");
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();

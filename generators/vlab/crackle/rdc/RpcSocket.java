@@ -28,7 +28,7 @@ public class RpcSocket
   private Socket       socket       = null;
   private ServerSocket serverSocket = null;
   private OutputStream os = null;
-  public RpcSocket(String host, String service) throws Throwable
+  public RpcSocket(String host, String service) throws Exception
   {
     try
     {
@@ -47,7 +47,7 @@ public class RpcSocket
       inetAddress = InetAddress.getLocalHost();
       if (inetAddress != null)
         host = inetAddress.getHostName();
-    } catch (Throwable ex)
+    } catch (Exception ex)
     {
       host = "localhost";
     }
@@ -68,7 +68,7 @@ public class RpcSocket
       e.printStackTrace();
     }
   }
-  public RpcSocket accept() throws Throwable
+  public RpcSocket accept() throws Exception
   {
     if (serverSocket == null)
     {
@@ -77,18 +77,18 @@ public class RpcSocket
     socket = serverSocket.accept();
     return new RpcSocket(this);
   }
-  public void open() throws Throwable
+  public void open() throws Exception
   {
     socket = new Socket(inetAddress, port);
     socket.setSoTimeout(timeout);
   }
-  public void write(byte[] data) throws Throwable
+  public void write(byte[] data) throws Exception
   {
     os = socket.getOutputStream();
     os.write(data);
     os.flush();   
   }
-  public byte[] read(int size) throws Throwable
+  public byte[] read(int size) throws Exception
   {
     DataInputStream dis = new DataInputStream(socket.getInputStream());
     int pos = 0;
@@ -104,7 +104,7 @@ public class RpcSocket
     }
     return data;
   }
-  public void close() throws Throwable
+  public void close() throws Exception
   {
     socket.close();
   }

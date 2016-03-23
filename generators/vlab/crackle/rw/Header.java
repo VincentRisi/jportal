@@ -37,7 +37,7 @@ public class Header
   {
     return HEADER_SIZE;
   }
-  public void read(Reader reader) throws Throwable
+  public void read(Reader reader) throws Exception
   {
     rpcVersion = reader.getString(16);
     hostId = reader.getString(16);
@@ -48,7 +48,7 @@ public class Header
     mSize = reader.getInt();reader.skip(4);
     eSize = reader.getInt();reader.skip(4);
   }
-  public void write(Writer writer) throws Throwable
+  public void write(Writer writer) throws Exception
   {
     writer.putString(rpcVersion, 16);
     writer.putString(hostId, 16);

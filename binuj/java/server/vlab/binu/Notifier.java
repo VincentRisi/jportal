@@ -11,7 +11,7 @@ public class Notifier<PARCEL>
       try
       {
         wait();
-      } catch (Throwable e)
+      } catch (Exception e)
       {
         e.printStackTrace();
       }
@@ -27,7 +27,7 @@ public class Notifier<PARCEL>
       try
       {
         wait();
-      } catch (Throwable e)
+      } catch (Exception e)
       {
         e.printStackTrace();
       }

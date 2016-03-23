@@ -402,9 +402,9 @@ public class JavaWRCode extends Generator
   {
     outData.println("  /**");
     outData.println("  * class method as it has no input or output.");
-    outData.println("  * @exception Throwable is passed through");
+    outData.println("  * @exception Exception is passed through");
     outData.println("  */");
-    outData.println("  public static void " + proc.lowerFirst() + "(Connector connector) throws Throwable");
+    outData.println("  public static void " + proc.lowerFirst() + "(Connector connector) throws Exception");
     outData.println("  {");
     //outData.println("    String CRLF = (String) System.getProperty(\"line.separator\");");
     outData.println("    String statement = ");
@@ -580,15 +580,15 @@ public class JavaWRCode extends Generator
       outData.println(indent + "  * Returns any number of records.");
       outData.println(indent + "  * @return result set of records found");
     }
-    outData.println(indent + "  * @exception Throwable is passed through");
+    outData.println(indent + "  * @exception Exception is passed through");
     outData.println(indent + "  */");
     String procName = proc.lowerFirst();
     if (proc.outputs.size() == 0 || proc.isSProc == true)
-      outData.println(indent + "  public void " + procName + "() throws Throwable");
+      outData.println(indent + "  public void " + procName + "() throws Exception");
     else if (proc.isSingle)
-      outData.println(indent + "  public boolean " + procName + "() throws Throwable");
+      outData.println(indent + "  public boolean " + procName + "() throws Exception");
     else
-      outData.println(indent + "  public Query " + procName + "() throws Throwable");
+      outData.println(indent + "  public Query " + procName + "() throws Exception");
     outData.println(indent + "  {");
     String parmField = "";
     if (proc.hasReturning || (proc.isMultipleInput && proc.isInsert))
@@ -697,9 +697,9 @@ public class JavaWRCode extends Generator
         outData.println(indent + "  * Returns the next record in a result set.");
         outData.println(indent + "  * @param result The result set for the query.");
         outData.println(indent + "  * @return true while records are found.");
-        outData.println(indent + "  * @exception Throwable is passed through");
+        outData.println(indent + "  * @exception Exception is passed through");
         outData.println(indent + "  */");
-        outData.println(indent + "  public boolean " + procName + "(Query query) throws Throwable");
+        outData.println(indent + "  public boolean " + procName + "(Query query) throws Exception");
         outData.println(indent + "  {");
         outData.println(indent + "    if (!query.result.next())");
         outData.println(indent + "    {");
@@ -815,9 +815,9 @@ public class JavaWRCode extends Generator
       outData.println("    /**");
       outData.println("    * Returns all the records in a result set as array of " + extendsName + ".");
       outData.println("    * @return array of " + extendsName + ".");
-      outData.println("    * @exception Throwable is passed through");
+      outData.println("    * @exception Exception is passed through");
       outData.println("    */");
-      outData.println("    public " + extendsName + "[] " + procName + "Load() throws Throwable");
+      outData.println("    public " + extendsName + "[] " + procName + "Load() throws Exception");
       outData.println("    {");
       outData.println("      Vector recs = new Vector();");
       outData.println("      Query query = " + procName + "();");
@@ -883,7 +883,7 @@ public class JavaWRCode extends Generator
       }
       for (int i = 0; i < proc.dynamics.size(); i++)
         outData.println(indent + "  * @param " + proc.name + " dynamic input.");
-      outData.println(indent + "  * @exception Throwable is passed through");
+      outData.println(indent + "  * @exception Exception is passed through");
       outData.println(indent + "  */");
       if (proc.outputs.size() == 0)
         outData.println(indent + "  public void " + procName + "(");
@@ -939,7 +939,7 @@ public class JavaWRCode extends Generator
         outData.println(indent + comma + "String " + name);
         comma = "  , ";
       }
-      outData.println(indent + "  ) throws Throwable");
+      outData.println(indent + "  ) throws Exception");
       outData.println(indent + "  {");
       for (int i = 0; i < proc.inputs.size(); i++)
       {

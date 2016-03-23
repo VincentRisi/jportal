@@ -72,7 +72,7 @@ public class SocketRpc implements Rpc
     outZipStream = rpc.outZipStream;
   }
   public Object call(int message, int signature, Object object)
-      throws Throwable
+      throws Exception
   {
     Object result = null;
     // InetAddress inet;
@@ -113,19 +113,19 @@ public class SocketRpc implements Rpc
     } catch (UnknownHostException e)
     {
       e.printStackTrace();
-      throw new Throwable("UnknownHostException: " + e.getMessage());
+      throw new Exception("UnknownHostException: " + e.getMessage());
     } catch (IOException e)
     {
       e.printStackTrace();
-      throw new Throwable("IOException: " + e.getMessage());
+      throw new Exception("IOException: " + e.getMessage());
     } catch (ClassNotFoundException e)
     {
       e.printStackTrace();
-      throw new Throwable("ClassNotFoundException: " + e.getMessage());
+      throw new Exception("ClassNotFoundException: " + e.getMessage());
     }
     // return null;
   }
-  public Object call(int message, int signature) throws Throwable
+  public Object call(int message, int signature) throws Exception
   {
     return call(message, signature, null);
   }

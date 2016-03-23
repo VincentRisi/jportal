@@ -125,7 +125,7 @@ public class CliJCode extends Generator
   }
   private static void stdReaderWriters(Table table, PrintWriter outData)
   {
-    outData.println("    public void write(Writer writer) throws Throwable");
+    outData.println("    public void write(Writer writer) throws Exception");
     outData.println("    {");
     for (int i = 0; i < table.fields.size(); i++)
     {
@@ -136,7 +136,7 @@ public class CliJCode extends Generator
         outData.println("      writer.putBoolean(" + name + "IsNull);writer.filler(6);");
     }
     outData.println("    }");
-    outData.println("    public void read(Reader reader) throws Throwable");
+    outData.println("    public void read(Reader reader) throws Exception");
     outData.println("    {");
     for (int i = 0; i < table.fields.size(); i++)
     {
@@ -222,7 +222,7 @@ public class CliJCode extends Generator
   }
   private static void otherOutputReaderWriters(Table table, Proc proc, PrintWriter outData)
   {
-    outData.println("    public void write(Writer writer) throws Throwable");
+    outData.println("    public void write(Writer writer) throws Exception");
     outData.println("    {");
     for (int j = 0; j < proc.outputs.size(); j++)
     {
@@ -242,7 +242,7 @@ public class CliJCode extends Generator
       outData.println("writer.filler(" + n + ");");
     }
     outData.println("    }");
-    outData.println("    public void read(Reader reader) throws Throwable");
+    outData.println("    public void read(Reader reader) throws Exception");
     outData.println("    {");
     for (int j = 0; j < proc.outputs.size(); j++)
     {
@@ -266,7 +266,7 @@ public class CliJCode extends Generator
   private static void otherInputReaderWriters(Table table, Proc proc, PrintWriter outData, boolean useSuper)
   {
 
-    outData.println("    public void write(Writer writer) throws Throwable");
+    outData.println("    public void write(Writer writer) throws Exception");
     outData.println("    {");
     if (useSuper)
       outData.println("      super.write(writer);");
@@ -278,7 +278,7 @@ public class CliJCode extends Generator
       writeParms(field, outData);
     }
     outData.println("    }");
-    outData.println("    public void read(Reader reader) throws Throwable");
+    outData.println("    public void read(Reader reader) throws Exception");
     outData.println("    {");
     if (useSuper)
       outData.println("      super.read(reader);");

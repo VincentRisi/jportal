@@ -1,6 +1,6 @@
 package vlab.binu.parser;
 
-public class TJException extends Throwable
+public class TJException extends Exception
 {
   private static final long serialVersionUID = 1L;
 

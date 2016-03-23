@@ -36,20 +36,20 @@ public class TJProc
   }
   private StringBuffer command;
   private PreparedStatement prep;
-  public PreparedStatement setup(Connector conn) throws Throwable
+  public PreparedStatement setup(Connector conn) throws Exception
   {
     command = new StringBuffer();
     for (TJLine line : lines)
     {
       if (line.isVar == true)
-        throw new Throwable("Command has dynamic variables");
+        throw new Exception("Command has dynamic variables");
       command.append(line.line);
     }
     prep = conn.prepareStatement(command.toString());
     return prep;
   }
   private Connector.Returning returning;
-  public PreparedStatement setup(Connector conn, byte[] rec) throws Throwable
+  public PreparedStatement setup(Connector conn, byte[] rec) throws Exception
   {
     command = new StringBuffer();
     if (isInsert == true && hasReturning == true)
@@ -65,7 +65,7 @@ public class TJProc
     bind(conn, rec);
     return prep;
   }
-  public PreparedStatement setupBulk(Connector conn, int noRecs, byte[] recs) throws Throwable
+  public PreparedStatement setupBulk(Connector conn, int noRecs, byte[] recs) throws Exception
   {
     byte[] rec = new byte[recSize];
     setup(conn);
@@ -97,7 +97,7 @@ public class TJProc
   {
     return _rc;
   }
-  public void runMulti() throws Throwable
+  public void runMulti() throws Exception
   {
     _noRecs = 0;
     _outBufferSize = 0;
@@ -131,7 +131,7 @@ public class TJProc
     _outBuffer = baos.toByteArray();
     baos.close();
   }
-  public void runSingle() throws Throwable
+  public void runSingle() throws Exception
   {
     _rc = 0;
     _outBufferSize = 0;
@@ -157,7 +157,7 @@ public class TJProc
     _outBuffer = baos.toByteArray();
     baos.close();
   }
-  private boolean getNull(TJField field, DataInputStream dis) throws Throwable
+  private boolean getNull(TJField field, DataInputStream dis) throws Exception
   {
     switch (field.type)
     {
@@ -173,27 +173,27 @@ public class TJProc
     short value = dis.readShort();
     return value != 0;
   }
-  private short getShort(TJField field, DataInputStream dis) throws Throwable
+  private short getShort(TJField field, DataInputStream dis) throws Exception
   {
     short value = dis.readShort();
     return value;
   }
-  private int getInt(TJField field, DataInputStream dis) throws Throwable
+  private int getInt(TJField field, DataInputStream dis) throws Exception
   {
     int value = dis.readInt();
     return value;
   }
-  private long getLong(TJField field, DataInputStream dis) throws Throwable
+  private long getLong(TJField field, DataInputStream dis) throws Exception
   {
     long value = dis.readLong();
     return value;
   }
-  private double getDouble(TJField field, DataInputStream dis) throws Throwable
+  private double getDouble(TJField field, DataInputStream dis) throws Exception
   {
     double value = dis.readDouble();
     return value;
   }
-  private ByteArrayBlob getBlob(TJField field, DataInputStream dis) throws Throwable
+  private ByteArrayBlob getBlob(TJField field, DataInputStream dis) throws Exception
   {
     JPBlob blob = new JPBlob(field.size);
     byte[] data = new byte[field.size];
@@ -201,29 +201,29 @@ public class TJProc
     blob.setBytes(data);
     return blob.getBlob();
   }
-  private java.sql.Date getDate(TJField field, DataInputStream dis) throws Throwable
+  private java.sql.Date getDate(TJField field, DataInputStream dis) throws Exception
   {
     String value = getString(field, dis);
     return DataHandler.date(value);
   }
-  private java.sql.Timestamp getTimestamp(TJField field, DataInputStream dis) throws Throwable
+  private java.sql.Timestamp getTimestamp(TJField field, DataInputStream dis) throws Exception
   {
     String value = getString(field, dis);
     return DataHandler.timeStamp(value);
   }
-  private java.sql.Time getTime(TJField field, DataInputStream dis) throws Throwable
+  private java.sql.Time getTime(TJField field, DataInputStream dis) throws Exception
   {
     String value = getString(field, dis);
     return DataHandler.time(value);
   }
-  private String getString(TJField field, DataInputStream dis) throws Throwable
+  private String getString(TJField field, DataInputStream dis) throws Exception
   {
     byte[] data = new byte[field.size];
     dis.read(data, 0, field.size);
     String value = new String(data);
     return value;
   }
-  private void bind(Connector conn, byte[] rec) throws Throwable
+  private void bind(Connector conn, byte[] rec) throws Exception
   {
     ByteArrayInputStream bais = new ByteArrayInputStream(rec);
     DataInputStream dis = new DataInputStream(bais);
@@ -360,7 +360,7 @@ public class TJProc
       }
     }
   }
-  private void define(DataOutputStream dos, ResultSet result) throws Throwable
+  private void define(DataOutputStream dos, ResultSet result) throws Exception
   {
     short shortValue;
     int intValue;
@@ -587,32 +587,32 @@ public class TJProc
       }
     }
   }
-  private void putNull(DataOutputStream dos, TJField field) throws Throwable
+  private void putNull(DataOutputStream dos, TJField field) throws Exception
   {
     {
       fill(dos, field.size);
       putShort(dos, (short) 1);
     }
   }
-  private void fill(DataOutputStream dos, int len) throws Throwable
+  private void fill(DataOutputStream dos, int len) throws Exception
   {
     for (int i = 0; i < len; i++)
       dos.writeByte(0);
   }
-  private void putLong(DataOutputStream dos, long longValue) throws Throwable
+  private void putLong(DataOutputStream dos, long longValue) throws Exception
   {
     dos.writeLong(longValue);
   }
-  private void putInt(DataOutputStream dos, int intValue) throws Throwable
+  private void putInt(DataOutputStream dos, int intValue) throws Exception
   {
     dos.writeInt(intValue);
     fill(dos, 4);
   }
-  private void putDouble(DataOutputStream dos, double doubleValue) throws Throwable
+  private void putDouble(DataOutputStream dos, double doubleValue) throws Exception
   {
     dos.writeDouble(doubleValue);
   }
-  private void putString(DataOutputStream dos, String stringValue, int size) throws Throwable
+  private void putString(DataOutputStream dos, String stringValue, int size) throws Exception
   {
     int extra = size - stringValue.length();
     byte[] b = stringValue.getBytes();
@@ -623,22 +623,22 @@ public class TJProc
     } else
       dos.write(b, 0, size);
   }
-  private void putTime(DataOutputStream dos, Time timeValue) throws Throwable
+  private void putTime(DataOutputStream dos, Time timeValue) throws Exception
   {
     String time = DataHandler.time(timeValue);
     putString(dos, time, 8);
   }
-  private void putTimestamp(DataOutputStream dos, Timestamp timestampValue) throws Throwable
+  private void putTimestamp(DataOutputStream dos, Timestamp timestampValue) throws Exception
   {
     String timeStamp = DataHandler.timeStamp(timestampValue);
     putString(dos, timeStamp, 16);
   }
-  private void putDate(DataOutputStream dos, Date dateValue) throws Throwable
+  private void putDate(DataOutputStream dos, Date dateValue) throws Exception
   {
     String date = DataHandler.date(dateValue);
     putString(dos, date, 8);
   }
-  private void putBlob(DataOutputStream dos, Blob blobValue, int size) throws Throwable
+  private void putBlob(DataOutputStream dos, Blob blobValue, int size) throws Exception
   {
     byte[] data = blobValue.getBytes(0, size);
     int extra = size - data.length;
@@ -646,7 +646,7 @@ public class TJProc
     if (extra > 0)
       fill(dos, extra);
   }
-  private void putShort(DataOutputStream dos, short shortValue) throws Throwable
+  private void putShort(DataOutputStream dos, short shortValue) throws Exception
   {
     dos.writeShort(shortValue);
     fill(dos, 6);

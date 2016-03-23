@@ -77,7 +77,7 @@ public class PopBinuJavaServer extends Generator
       generateIFace(module, output, outLog);
       generateImpl(module, output, outLog);
       generateDispatch(module, output, outLog);
-    } catch (Throwable e)
+    } catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();
@@ -115,7 +115,7 @@ public class PopBinuJavaServer extends Generator
     usings.addElement("import " + packageName(module) + ".*;");
   }
 
-  private static void generateStructs(Module module, String output, PrintWriter outLog) throws Throwable
+  private static void generateStructs(Module module, String output, PrintWriter outLog) throws Exception
   {
     for (int i = 0; i < module.structures.size(); i++)
     {
@@ -129,7 +129,7 @@ public class PopBinuJavaServer extends Generator
     }
   }
 
-  private static void generateStruct(Module module, Structure structure, String output, PrintWriter outLog) throws Throwable
+  private static void generateStruct(Module module, Structure structure, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output + structure.name + ".java", outLog);
     try
@@ -371,7 +371,7 @@ public class PopBinuJavaServer extends Generator
     outData.println("          break;");
     outData.println("        }");
     outData.println("      }");
-    outData.println("      catch (Throwable ex)");
+    outData.println("      catch (Exception ex)");
     outData.println("      {");
     outData.println("        _connector.flagRollback();");
     outData.println("        throw ex;");
@@ -382,7 +382,7 @@ public class PopBinuJavaServer extends Generator
     outData.println("      }");
     outData.println("      _handler.write();");
     outData.println("    }");
-    outData.println("    catch (Throwable ex)");
+    outData.println("    catch (Exception ex)");
     outData.println("    {");
     outData.println("      _handler.setReply(Message.THROWABLE_EXCEPTION.key);");
     outData.println("      _handler.setError(ex);");
@@ -408,7 +408,7 @@ public class PopBinuJavaServer extends Generator
   public static void generateDispatchFunction(Module module, Prototype prototype, PrintWriter outData)
   {
     boolean hasReturn = buildParameterList(prototype);
-    outData.println("  private void _" + Parameter.lowerFirst(prototype.name) + "() throws Throwable");
+    outData.println("  private void _" + Parameter.lowerFirst(prototype.name) + "() throws Exception");
     outData.println("  {");
     outData.println("    int _signature = _input.getInt();");
     outData.println("    _logger.info(\"" + prototype.name + " start\");");
@@ -597,7 +597,7 @@ public class PopBinuJavaServer extends Generator
     }
     outData.println("  , INV_SIGNATURE(" + (++mb) + ", \"Invalid Signature\")");
     outData.println("  , UNKNOWN_FUNCTION(" + (++mb) + ", \"Unknown Function\")");
-    outData.println("  , THROWABLE_EXCEPTION(" + (++mb) + ", \"Throwable Exception\")");
+    outData.println("  , THROWABLE_EXCEPTION(" + (++mb) + ", \"Exception Exception\")");
     outData.println("  , LAST_LAST(" + (++mb) + ", \"??Last??\");");
     outData.println("    public final int key;");
     outData.println("    public final String value;");
@@ -619,7 +619,7 @@ public class PopBinuJavaServer extends Generator
     outData.println("  }");
   }
 
-  public static void generateCallStructs(Module module, String output, PrintWriter outLog) throws Throwable
+  public static void generateCallStructs(Module module, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output + module.name + "Structs.java", outLog);
     try
@@ -646,7 +646,7 @@ public class PopBinuJavaServer extends Generator
     }
   }
 
-  public static void generateCallStructs(Module module, PrintWriter outData) throws Throwable
+  public static void generateCallStructs(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -657,7 +657,7 @@ public class PopBinuJavaServer extends Generator
     }
   }
 
-  public static void generateCallStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateCallStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     if (hasReturn == true)
@@ -678,7 +678,7 @@ public class PopBinuJavaServer extends Generator
       if (pd.isOutput)
         outData.println("    public " + pd.fullType() + " " + pd.name + ";");
     }
-    outData.println("    public void write(Writer writer) throws Throwable");
+    outData.println("    public void write(Writer writer) throws Exception");
     outData.println("    {");
     if (prototype.type.reference == Type.BYVAL && prototype.type.typeof != Type.VOID)
       outData.println("      writer." + writeType(prototype.type.name, "", "_rc"));
@@ -692,7 +692,7 @@ public class PopBinuJavaServer extends Generator
     outData.println("  }");
   }
 
-  public static void generateIFace(Module module, String output, PrintWriter outLog) throws Throwable
+  public static void generateIFace(Module module, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output + module.name + "IFace.java", outLog);
     try
@@ -719,7 +719,7 @@ public class PopBinuJavaServer extends Generator
     }
   }
 
-  public static void generateIFaceConsts(Module module, PrintWriter outData) throws Throwable
+  public static void generateIFaceConsts(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -731,7 +731,7 @@ public class PopBinuJavaServer extends Generator
     }
   }
 
-  public static void generateIFaceCalls(Module module, PrintWriter outData) throws Throwable
+  public static void generateIFaceCalls(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -742,7 +742,7 @@ public class PopBinuJavaServer extends Generator
     }
   }
 
-  public static void generateIFaceCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateIFaceCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     String comma = "";
@@ -767,7 +767,7 @@ public class PopBinuJavaServer extends Generator
       if (comma.length() == 0)
         comma = padded(work.length() - 2) + ", ";
     }
-    outData.println(") throws Throwable;");
+    outData.println(") throws Exception;");
   }
 
   public static void generateImpl(Module module, String output, PrintWriter outLog) throws IOException
@@ -887,7 +887,7 @@ public class PopBinuJavaServer extends Generator
       if (comma.length() == 0)
         comma = padded(work.length() - 2) + ", ";
     }
-    outData.println(") throws Throwable");
+    outData.println(") throws Exception");
     outData.println("  {");
     for (int i = 0; i < prototype.code.size(); i++)
     {
@@ -919,7 +919,7 @@ public class PopBinuJavaServer extends Generator
       if (comma.length() == 0)
         comma = padded(work.length() - 2) + ", ";
     }
-    outData.println(") throws Throwable");
+    outData.println(") throws Exception");
     outData.println("  {");
     for (int i = 0; i < prototype.code.size(); i++)
     {

@@ -88,7 +88,7 @@ public class PopUbiIdl2Py extends Generator
         outFile.close();
       }
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();

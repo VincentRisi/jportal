@@ -284,7 +284,7 @@ public class PopUbiPython extends Generator
     {
       outLog.println("Generate Procs IO Error");
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();
@@ -335,7 +335,7 @@ public class PopUbiPython extends Generator
     {
       outLog.println("Generate Procs IO Error");
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();

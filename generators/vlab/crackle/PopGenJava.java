@@ -63,7 +63,7 @@ public class PopGenJava extends Generator
       }
       outLog.flush();
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       e.printStackTrace();
     }
@@ -104,14 +104,14 @@ public class PopGenJava extends Generator
       generateImplementation(module, output, outLog);
       generateAssign(module, output, outLog);
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString ());
       System.out.flush();
       e.printStackTrace();
     }
   }
-  public static void generateStructs(Module module, String output, PrintWriter outLog) throws Throwable
+  public static void generateStructs(Module module, String output, PrintWriter outLog) throws Exception
   {
     for (int i = 0; i < module.structures.size(); i++)
     {
@@ -130,7 +130,7 @@ public class PopGenJava extends Generator
       return module.packageName;
     return "vlab."+module.name.toLowerCase()+".crackle";
   }
-  public static void generateStruct(Module module, Structure structure, String output, PrintWriter outLog) throws Throwable
+  public static void generateStruct(Module module, Structure structure, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output+dropTee(structure.name)+".java", outLog);
     try
@@ -200,7 +200,7 @@ public class PopGenJava extends Generator
   {
     return "0x"+Integer.toHexString(Integer.parseInt(value));
   }
-  public static void generateCallStructs(Module module, String output, PrintWriter outLog) throws Throwable
+  public static void generateCallStructs(Module module, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output+module.name+"Structs.java", outLog);
     try
@@ -250,7 +250,7 @@ public class PopGenJava extends Generator
     outData.println("  , LAST_LAST = "+(++mb)+";");
     outData.println("  }");
   }
-  public static void generateCallStructs(Module module, PrintWriter outData) throws Throwable
+  public static void generateCallStructs(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -260,13 +260,13 @@ public class PopGenJava extends Generator
       generateCallStructs(module, prototype, i, outData);
     }
   }
-  public static void generateCallStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateCallStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     if (prototype.inputs.size() > 0)
       generateInputsStruct(prototype, outData);
     if (prototype.outputs.size() > 0)
-      throw new Throwable("Output parameters are not supported in Java generation");
+      throw new Exception("Output parameters are not supported in Java generation");
     if (hasReturn == true)
       generateReturnStruct(prototype, outData);
   }
@@ -322,7 +322,7 @@ public class PopGenJava extends Generator
     outData.println("  }");
     outData.println("}");
   }
-  public static void generateInterface(Module module, String output, PrintWriter outLog) throws Throwable
+  public static void generateInterface(Module module, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output+module.name+"IFace.java", outLog);
     try
@@ -353,7 +353,7 @@ public class PopGenJava extends Generator
       outFile.close();
     }
   }
-  public static void generateInterfaceConsts(Module module, PrintWriter outData) throws Throwable
+  public static void generateInterfaceConsts(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -364,7 +364,7 @@ public class PopGenJava extends Generator
       outData.println("  public static final int "+asSignature(prototype.name)+" = "+asHex(prototype.signature(false))+";");
     }
   }
-  public static void generateInterfaceCalls(Module module, PrintWriter outData) throws Throwable
+  public static void generateInterfaceCalls(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -374,7 +374,7 @@ public class PopGenJava extends Generator
       generateInterfaceCall(module, prototype, i, outData);
     }
   }
-  public static void generateInterfaceCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateInterfaceCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     String comma = "";
@@ -389,9 +389,9 @@ public class PopGenJava extends Generator
       if (comma.length() == 0)
         comma = padded(work.length()-2)+", ";
     }
-    outData.println(") throws Throwable;");
+    outData.println(") throws Exception;");
   }
-  public static void generateProxy(Module module, String output, PrintWriter outLog) throws Throwable
+  public static void generateProxy(Module module, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output+module.name+"Proxy.java", outLog);
     try
@@ -423,7 +423,7 @@ public class PopGenJava extends Generator
       outFile.close();
     }
   }
-  public static void generateProxyCalls(Module module, PrintWriter outData) throws Throwable
+  public static void generateProxyCalls(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -433,7 +433,7 @@ public class PopGenJava extends Generator
       generateProxyCall(module, prototype, i, outData);
     }
   }
-  public static void generateProxyCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateProxyCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     String comma = "";
@@ -448,12 +448,12 @@ public class PopGenJava extends Generator
       if (comma.length() == 0)
         comma = padded(work.length()-2)+", ";
     }
-    outData.println(") throws Throwable");
+    outData.println(") throws Exception");
     outData.println("  {");
     if (prototype.inputs.size() > 0)
       generateCallInputs(prototype, outData);
     if (prototype.outputs.size() > 0)
-      throw new Throwable("Outputs are not supported by java as there are no reference parameters.");
+      throw new Exception("Outputs are not supported by java as there are no reference parameters.");
     if (hasReturn == true)
       generateCallReturn(prototype, outData);
     else
@@ -639,7 +639,7 @@ public class PopGenJava extends Generator
     outData.println("          break;");
     outData.println("        }");
     outData.println("      }");
-    outData.println("      catch (Throwable ex)");
+    outData.println("      catch (Exception ex)");
     outData.println("      {");
     outData.println("        connector.flagRollback();");
     outData.println("        throw ex;");
@@ -650,7 +650,7 @@ public class PopGenJava extends Generator
     outData.println("      }");
     outData.println("      _rpc.write(_header);");
     outData.println("    }");
-    outData.println("    catch (Throwable ex)");
+    outData.println("    catch (Exception ex)");
     outData.println("    {");
     outData.println("      if (_header == null)");
     outData.println("        _header = new Header();");
@@ -678,7 +678,7 @@ public class PopGenJava extends Generator
   public static void generateAssignFunction(Module module, Prototype prototype, PrintWriter outData)
   {
     boolean hasReturn = buildParameterList(prototype);
-    outData.println("  private void _"+prototype.name+"() throws Throwable");
+    outData.println("  private void _"+prototype.name+"() throws Exception");
     outData.println("  {");
     outData.println("    _logger.info(\""+prototype.name+" start\");");
     outData.println("    if (_header.signature != "+asSignature(prototype.name)+")");
@@ -752,7 +752,7 @@ public class PopGenJava extends Generator
       if (comma.length() == 0)
         comma = padded(work.length()-2)+", ";
     }
-    outData.println(") throws Throwable");
+    outData.println(") throws Exception");
     outData.println("  {");
     for (int i=0; i<prototype.code.size(); i++)
     {
@@ -775,7 +775,7 @@ public class PopGenJava extends Generator
     }
     outData.println("    case Message.INV_SIGNATURE: return \"Invalid Signature\";");
     outData.println("    case Message.UNKNOWN_FUNCTION: return \"Unknown Function\";");
-    outData.println("    case Message.THROWABLE_EXCEPTION: return \"Throwable Exception\";");
+    outData.println("    case Message.THROWABLE_EXCEPTION: return \"Exception Exception\";");
     outData.println("    }");
     outData.println("    return \"MessageDesc for \"+no+\" Unknown.\";");
     outData.println("  }");

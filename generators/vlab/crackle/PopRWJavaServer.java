@@ -118,7 +118,7 @@ public class PopRWJavaServer extends Generator
       generateImplementation(module, output, outLog);
       generateDispatch(module, output, outLog);
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();
@@ -141,7 +141,7 @@ public class PopRWJavaServer extends Generator
       if (comma.length() == 0)
         comma = padded(work.length() - 2) + ", ";
     }
-    outData.println(") throws Throwable");
+    outData.println(") throws Exception");
     outData.println("  {");
     for (int i = 0; i < prototype.code.size(); i++)
     {
@@ -218,7 +218,7 @@ public class PopRWJavaServer extends Generator
     f.mkdirs();
     return result.toString();
   }
-  public static void generateCallStructs(Module module, String stdOutput, PrintWriter outLog) throws Throwable
+  public static void generateCallStructs(Module module, String stdOutput, PrintWriter outLog) throws Exception
   {
     String output = outputDir(module, stdOutput);
     PrintWriter outData = openOutData(output + module.name + "Structs.java", outLog);
@@ -321,7 +321,7 @@ public class PopRWJavaServer extends Generator
   public static void generateDispatchFunction(Module module, Prototype prototype, PrintWriter outData)
   {
     boolean hasReturn = buildParameterList(prototype);
-    outData.println("  private void _" + prototype.name + "() throws Throwable");
+    outData.println("  private void _" + prototype.name + "() throws Exception");
     outData.println("  {");
     outData.println("    int _signature = _reader.getInt();");
     outData.println("    _logger.info(\"" + prototype.name + " start\");");
@@ -374,7 +374,7 @@ public class PopRWJavaServer extends Generator
     outData.println("          break;");
     outData.println("        }");
     outData.println("      }");
-    outData.println("      catch (Throwable ex)");
+    outData.println("      catch (Exception ex)");
     outData.println("      {");
     outData.println("        _connector.flagRollback();");
     outData.println("        throw ex;");
@@ -385,7 +385,7 @@ public class PopRWJavaServer extends Generator
     outData.println("      }");
     outData.println("      _handler.write();");
     outData.println("    }");
-    outData.println("    catch (Throwable ex)");
+    outData.println("    catch (Exception ex)");
     outData.println("    {");
     outData.println("      _handler.setReply(Message.THROWABLE_EXCEPTION.key);");
     outData.println("      _handler.setError(ex);");
@@ -432,7 +432,7 @@ public class PopRWJavaServer extends Generator
       outFile.close();
     }
   }
-  public static void generateInterface(Module module, String stdOutput, PrintWriter outLog) throws Throwable
+  public static void generateInterface(Module module, String stdOutput, PrintWriter outLog) throws Exception
   {
     String output = outputDir(module, stdOutput);
     PrintWriter outData = openOutData(output + module.name + "IFace.java", outLog);
@@ -460,7 +460,7 @@ public class PopRWJavaServer extends Generator
       outFile.close();
     }
   }
-  public static void generateInterfaceCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateInterfaceCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     String comma = "";
@@ -476,9 +476,9 @@ public class PopRWJavaServer extends Generator
       if (comma.length() == 0)
         comma = padded(work.length() - 2) + ", ";
     }
-    outData.println(") throws Throwable;");
+    outData.println(") throws Exception;");
   }
-  public static void generateInterfaceCalls(Module module, PrintWriter outData) throws Throwable
+  public static void generateInterfaceCalls(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -488,7 +488,7 @@ public class PopRWJavaServer extends Generator
       generateInterfaceCall(module, prototype, i, outData);
     }
   }
-  public static void generateInterfaceConsts(Module module, PrintWriter outData) throws Throwable
+  public static void generateInterfaceConsts(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -513,7 +513,7 @@ public class PopRWJavaServer extends Generator
     }
     outData.println("  , INV_SIGNATURE(" + (++mb) + ", \"Invalid Signature\")");
     outData.println("  , UNKNOWN_FUNCTION(" + (++mb) + ", \"Unknown Function\")");
-    outData.println("  , THROWABLE_EXCEPTION(" + (++mb) + ", \"Throwable Exception\")");
+    outData.println("  , THROWABLE_EXCEPTION(" + (++mb) + ", \"Exception Exception\")");
     outData.println("  , LAST_LAST(" + (++mb) + ", \"??Last??\");");
     outData.println("    public final int key;");
     outData.println("    public final String value;");
@@ -547,14 +547,14 @@ public class PopRWJavaServer extends Generator
     outData.println("    {");
     outData.println("      this.result = result;");
     outData.println("    }");
-    outData.println("    public void read(Reader reader) throws Throwable");
+    outData.println("    public void read(Reader reader) throws Exception");
     outData.println("    {");
     if (rcs.rc == true)
       outData.println("      result.read(reader);");
     else
       readCall("result", prototype.type, null, outData);
     outData.println("    }");
-    outData.println("    public void write(Writer writer) throws Throwable");
+    outData.println("    public void write(Writer writer) throws Exception");
     outData.println("    {");
     if (rcs.rc == true)
       outData.println("      result.write(writer);");
@@ -577,13 +577,13 @@ public class PopRWJavaServer extends Generator
     outData.println("    {");
     outData.println("      this.result = result;");
     outData.println("    }");
-    outData.println("    public void read(Reader reader) throws Throwable");
+    outData.println("    public void read(Reader reader) throws Exception");
     outData.println("    {");
     outData.println("      int no_of = reader.getInt();");
     outData.println("      for (int i = 0; i < no_of; i++)");
     outData.println("        result[i].read(reader);");
     outData.println("    }");
-    outData.println("    public void write(Writer writer) throws Throwable");
+    outData.println("    public void write(Writer writer) throws Exception");
     outData.println("    {");
     outData.println("      int no_of = (int) result.length;");
     outData.println("      writer.putInt(no_of);");
@@ -592,7 +592,7 @@ public class PopRWJavaServer extends Generator
     outData.println("    }");
     outData.println("  }");
   }
-  public static void generateReturnStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateReturnStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     if (hasReturn == true)
@@ -601,7 +601,7 @@ public class PopRWJavaServer extends Generator
       else
         generateReturnStruct(prototype, outData);
   }
-  public static void generateReturnStructs(Module module, PrintWriter outData) throws Throwable
+  public static void generateReturnStructs(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -611,7 +611,7 @@ public class PopRWJavaServer extends Generator
       generateReturnStructs(module, prototype, i, outData);
     }
   }
-  private static void generateStructs(Module module, PrintWriter outData) throws Throwable
+  private static void generateStructs(Module module, PrintWriter outData) throws Exception
   {
     primeUsings(module);
     for (int i = 0; i < module.structures.size(); i++)
@@ -625,7 +625,7 @@ public class PopRWJavaServer extends Generator
       generateStruct(module, structure, outData);
     }
   }
-  private static void generateStruct(Module module, Structure structure, PrintWriter outData) throws Throwable
+  private static void generateStruct(Module module, Structure structure, PrintWriter outData) throws Exception
   {
     outData.println("class " + structure.name);
     outData.println("{");
@@ -634,7 +634,7 @@ public class PopRWJavaServer extends Generator
       Field field = (Field)structure.fields.elementAt(i);
       outData.println("  public " + field.type.javaStructDef(field.name) + " = " + assignValue(field) + ";");
     }
-    outData.println("  public void read(Reader reader) throws Throwable");
+    outData.println("  public void read(Reader reader) throws Exception");
     outData.println("  {");
     for (int i = 0; i < structure.fields.size(); i++)
     {
@@ -642,7 +642,7 @@ public class PopRWJavaServer extends Generator
       readCall(field.name, field.type, null, outData);
     }
     outData.println("  }");
-    outData.println("  public void write(Writer writer) throws Throwable");
+    outData.println("  public void write(Writer writer) throws Exception");
     outData.println("  {");
     for (int i = 0; i < structure.fields.size(); i++)
     {

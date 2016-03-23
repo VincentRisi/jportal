@@ -18,7 +18,7 @@ public class Reader
 {
   public static interface ByteReader
   {
-    public void read(Reader reader) throws Throwable;
+    public void read(Reader reader) throws Exception;
   }
   static final short JP_NULL = -1;
   static final short JP_NOT_NULL = 0;
@@ -45,41 +45,41 @@ public class Reader
   {
     bais.skip(no);
   }
-  public char getChar() throws Throwable
+  public char getChar() throws Exception
   {
     return (char)dis.readByte();
   }
-  public byte getByte() throws Throwable
+  public byte getByte() throws Exception
   {
     return dis.readByte();
   }
-  public short getShort() throws Throwable
+  public short getShort() throws Exception
   {
     return dis.readShort();
   }
-  public boolean getBoolean() throws Throwable
+  public boolean getBoolean() throws Exception
   {
     return dis.readShort() == JP_NOT_NULL ? false : true;
   }
-  public int getInt() throws Throwable
+  public int getInt() throws Exception
   {
     return dis.readInt();
   }
-  public long getLong() throws Throwable
+  public long getLong() throws Exception
   {
     return dis.readLong();
   }
-  public double getDouble() throws Throwable
+  public double getDouble() throws Exception
   {
     return dis.readDouble();
   }
-  public byte[] getBytes(int length) throws Throwable
+  public byte[] getBytes(int length) throws Exception
   {
     byte[] b = new byte[length];
     dis.read(b);
     return b;
   }
-  public String getString(int length) throws Throwable
+  public String getString(int length) throws Exception
   {
     byte[] b = new byte[length];
     dis.read(b);

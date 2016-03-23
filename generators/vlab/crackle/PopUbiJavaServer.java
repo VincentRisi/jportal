@@ -75,7 +75,7 @@ public class PopUbiJavaServer extends Generator
       generateImplementation(module, output, outLog);
       generateDispatch(module, output, outLog);
     }
-    catch (Throwable e)
+    catch (Exception e)
     {
       System.out.println(e.toString());
       System.out.flush();
@@ -97,7 +97,7 @@ public class PopUbiJavaServer extends Generator
     return outData;
   }
   private static Vector<String> usings;
-  private static void generateStructs(Module module, String output, PrintWriter outLog) throws Throwable
+  private static void generateStructs(Module module, String output, PrintWriter outLog) throws Exception
   {
     for (int i = 0; i < module.structures.size(); i++)
     {
@@ -121,7 +121,7 @@ public class PopUbiJavaServer extends Generator
     usings = new Vector<String>();
     usings.addElement("import " + packageName(module) + ".*;");
   }
-  private static void generateStruct(Module module, Structure structure, String output, PrintWriter outLog) throws Throwable
+  private static void generateStruct(Module module, Structure structure, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output + structure.name + ".java", outLog);
     try
@@ -356,7 +356,7 @@ public class PopUbiJavaServer extends Generator
     outData.println("          break;");
     outData.println("        }");
     outData.println("      }");
-    outData.println("      catch (Throwable ex)");
+    outData.println("      catch (Exception ex)");
     outData.println("      {");
     outData.println("        _connector.flagRollback();");
     outData.println("        throw ex;");
@@ -367,7 +367,7 @@ public class PopUbiJavaServer extends Generator
     outData.println("      }");
     outData.println("      _handler.write();");
     outData.println("    }");
-    outData.println("    catch (Throwable ex)");
+    outData.println("    catch (Exception ex)");
     outData.println("    {");
     outData.println("      _handler.setReply(Message.THROWABLE_EXCEPTION.key);");
     outData.println("      _handler.setError(ex);");
@@ -391,7 +391,7 @@ public class PopUbiJavaServer extends Generator
   public static void generateDispatchFunction(Module module, Prototype prototype, PrintWriter outData)
   {
     boolean hasReturn = buildParameterList(prototype);
-    outData.println("  private void _" + prototype.name + "() throws Throwable");
+    outData.println("  private void _" + prototype.name + "() throws Exception");
     outData.println("  {");
     outData.println("    int _signature = _input.readInt();");
     outData.println("    _logger.info(\"" + prototype.name + " start\");");
@@ -533,7 +533,7 @@ public class PopUbiJavaServer extends Generator
     }
     outData.println("  , INV_SIGNATURE(" + (++mb) + ", \"Invalid Signature\")");
     outData.println("  , UNKNOWN_FUNCTION(" + (++mb) + ", \"Unknown Function\")");
-    outData.println("  , THROWABLE_EXCEPTION(" + (++mb) + ", \"Throwable Exception\")");
+    outData.println("  , THROWABLE_EXCEPTION(" + (++mb) + ", \"Exception Exception\")");
     outData.println("  , LAST_LAST(" + (++mb) + ", \"??Last??\");");
     outData.println("    public final int key;");
     outData.println("    public final String value;");
@@ -554,7 +554,7 @@ public class PopUbiJavaServer extends Generator
     outData.println("    }");
     outData.println("  }");
   }
-  public static void generateCallStructs(Module module, String output, PrintWriter outLog) throws Throwable
+  public static void generateCallStructs(Module module, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output + module.name + "Structs.java", outLog);
     try
@@ -581,7 +581,7 @@ public class PopUbiJavaServer extends Generator
       outFile.close();
     }
   }
-  public static void generateCallStructs(Module module, PrintWriter outData) throws Throwable
+  public static void generateCallStructs(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -591,7 +591,7 @@ public class PopUbiJavaServer extends Generator
       generateCallStructs(module, prototype, i, outData);
     }
   }
-  public static void generateCallStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateCallStructs(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     if (hasReturn == true)
@@ -618,7 +618,7 @@ public class PopUbiJavaServer extends Generator
       result = result + "()";
     return result;
   }
-  public static void generateInterface(Module module, String output, PrintWriter outLog) throws Throwable
+  public static void generateInterface(Module module, String output, PrintWriter outLog) throws Exception
   {
     PrintWriter outData = openOutData(output + module.name + "IFace.java", outLog);
     try
@@ -645,7 +645,7 @@ public class PopUbiJavaServer extends Generator
       outFile.close();
     }
   }
-  public static void generateInterfaceConsts(Module module, PrintWriter outData) throws Throwable
+  public static void generateInterfaceConsts(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -656,7 +656,7 @@ public class PopUbiJavaServer extends Generator
       outData.println("  public static final int " + asSignature(prototype.name) + " = " + asHex(prototype.signature(true)) + ";");
     }
   }
-  public static void generateInterfaceCalls(Module module, PrintWriter outData) throws Throwable
+  public static void generateInterfaceCalls(Module module, PrintWriter outData) throws Exception
   {
     for (int i = 0; i < module.prototypes.size(); i++)
     {
@@ -666,7 +666,7 @@ public class PopUbiJavaServer extends Generator
       generateInterfaceCall(module, prototype, i, outData);
     }
   }
-  public static void generateInterfaceCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Throwable
+  public static void generateInterfaceCall(Module module, Prototype prototype, int no, PrintWriter outData) throws Exception
   {
     boolean hasReturn = buildParameterList(prototype);
     String comma = "";
@@ -681,7 +681,7 @@ public class PopUbiJavaServer extends Generator
       if (comma.length() == 0)
         comma = padded(work.length() - 2) + ", ";
     }
-    outData.println(") throws Throwable;");
+    outData.println(") throws Exception;");
   }
   public static void generateImplementation(Module module, String output, PrintWriter outLog) throws IOException
   {
@@ -735,7 +735,7 @@ public class PopUbiJavaServer extends Generator
       if (comma.length() == 0)
         comma = padded(work.length() - 2) + ", ";
     }
-    outData.println(") throws Throwable");
+    outData.println(") throws Exception");
     outData.println("  {");
     for (int i = 0; i < prototype.code.size(); i++)
     {

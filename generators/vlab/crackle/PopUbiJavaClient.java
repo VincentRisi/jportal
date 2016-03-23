@@ -266,7 +266,7 @@ public class PopUbiJavaClient extends Generator
       outLog.println("Generate Procs IO Error");
       e1.printStackTrace(outLog);
       outLog.flush();
-    } catch (Throwable e)
+    } catch (Exception e)
     {
       outLog.println(e.toString());
       e.printStackTrace(outLog);
@@ -314,7 +314,7 @@ public class PopUbiJavaClient extends Generator
         outData.println("  public String getVersion() {return version;}");
         outData.println("  public int getSignature() {return signature;}");
         outData.println("  public " + module.name
-            + "(String host, String service, int timeOut) throws Throwable");
+            + "(String host, String service, int timeOut) throws Exception");
         outData.println("  {");
         outData.println("    super(host, service, timeOut);");
         outData.println("  }");
@@ -330,7 +330,7 @@ public class PopUbiJavaClient extends Generator
       outLog.println("Generate Procs IO Error");
       e1.printStackTrace(outLog);
       outLog.flush();
-    } catch (Throwable e)
+    } catch (Exception e)
     {
       outLog.println(e.toString());
       e.printStackTrace(outLog);
@@ -354,7 +354,7 @@ public class PopUbiJavaClient extends Generator
     outData.println("  , UNKNOWN_FUNCTION(" + (++mb)
         + ", \"Unknown Function\")");
     outData.println("  , THROWABLE_EXCEPTION(" + (++mb)
-        + ", \"Throwable Exception\")");
+        + ", \"Exception Exception\")");
     outData.println("  , LAST_LAST(" + (++mb) + ", \"??Last??\");");
     outData.println("    public final int key;");
     outData.println("    public final String value;");
@@ -599,7 +599,7 @@ public class PopUbiJavaClient extends Generator
             + field.type.javaStructDef(field.nameLowerFirst()) + " = "
             + assignValue(field) + ";");
       }
-      outData.println("    public void write(Writer writer) throws Throwable");
+      outData.println("    public void write(Writer writer) throws Exception");
       outData.println("    {");
       for (int j = 0; j < structure.fields.size(); j++)
       {
@@ -607,7 +607,7 @@ public class PopUbiJavaClient extends Generator
         writeCalls(field, outData);
       }
       outData.println("    }");
-      outData.println("    public void read(Reader reader) throws Throwable");
+      outData.println("    public void read(Reader reader) throws Exception");
       outData.println("    {");
       for (int j = 0; j < structure.fields.size(); j++)
       {
@@ -700,7 +700,7 @@ public class PopUbiJavaClient extends Generator
       outData.println("  }");
     }
     outData.println("  public " + gcTuple.name + " " + gcTuple.body
-        + " throws Throwable");
+        + " throws Exception");
     outData.println("  {");
     outData.println("    init("
         + (prototype.message.length() > 0 ? asHex(prototype.message)

@@ -28,7 +28,7 @@ public class Rdc
   {
     print(String.format(form, objs));
   }
-  public static void main(String[] args) throws Throwable
+  public static void main(String[] args) throws Exception
   {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     Random r = new Random();
@@ -175,31 +175,31 @@ public class Rdc
       pos = 0;
       buffer = new byte[length];
     }
-    void put(byte data) throws Throwable
+    void put(byte data) throws Exception
     {
       if (pos >= buffer.length)
-        throw new Throwable(String.format("put(data=%d) -- exceeds buffer [pos=%d length=%d]", data, pos, buffer.length));
+        throw new Exception(String.format("put(data=%d) -- exceeds buffer [pos=%d length=%d]", data, pos, buffer.length));
       buffer[pos++] = data;
     }
-    void copy(int offset, int count) throws Throwable
+    void copy(int offset, int count) throws Exception
     {
       int in = pos - offset;
       //print("copy((%d-%d)=%d, %d) to %d", pos, offset, in, count, pos);
       if (in < 0 || pos + count > buffer.length + 1)      
-        throw new Throwable(String.format("copy(offset=%d, count=%d) -- out of ranges [pos=%d length=%d in(pos-offset)=%d ]", offset, count, pos, buffer.length, in));
+        throw new Exception(String.format("copy(offset=%d, count=%d) -- out of ranges [pos=%d length=%d in(pos-offset)=%d ]", offset, count, pos, buffer.length, in));
       for (int i = 0; i < count; i++)
         buffer[pos++] = buffer[in++];
     }
-    void rle(byte data, int count) throws Throwable
+    void rle(byte data, int count) throws Exception
     {
       //print("rle(%d, %d) to %d", data, count, pos);
       if (pos + count >= buffer.length + 1)      
-        throw new Throwable(String.format("rle(data=%d, count=%d) -- out of ranges [pos=%d length=%d]", data, count, pos, buffer.length));
+        throw new Exception(String.format("rle(data=%d, count=%d) -- out of ranges [pos=%d length=%d]", data, count, pos, buffer.length));
       for (int i = 0; i < count; i++)
         buffer[pos++] = data;
     }
   }
-  public byte[] decompress(byte[] inBuff, int length) throws Throwable
+  public byte[] decompress(byte[] inBuff, int length) throws Exception
   {
     int inLen = inBuff.length;
     int ctrlBits = 0;

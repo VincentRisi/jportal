@@ -24,7 +24,7 @@ public class TJAction
     parser.Parse();
     return parser.proc;
   }
-  public void action(String queryCode, String buffer) throws Throwable
+  public void action(String queryCode, String buffer) throws Exception
   {
     TJProc proc = compile(queryCode);
     Connector conn = thread.getConn(proc.database);
@@ -33,7 +33,7 @@ public class TJAction
     prep.executeUpdate();
     prep.close();
   }
-  public void actionOnly(String queryCode) throws Throwable
+  public void actionOnly(String queryCode) throws Exception
   {
     TJProc proc = compile(queryCode);
     Connector conn = thread.getConn(proc.database);
@@ -41,7 +41,7 @@ public class TJAction
     prep.executeUpdate();
     prep.close();
   }
-  public void bulkAction(String queryCode, int noRecs, String buffer) throws Throwable
+  public void bulkAction(String queryCode, int noRecs, String buffer) throws Exception
   {
     TJProc proc = compile(queryCode);
     Connector conn = thread.getConn(proc.database);
@@ -50,7 +50,7 @@ public class TJAction
     prep.executeBatch();
     prep.close();
   }
-  public void multiple(MultipleReturn _tx, String queryCode, String buffer) throws Throwable
+  public void multiple(MultipleReturn _tx, String queryCode, String buffer) throws Exception
   {
     TJProc proc = compile(queryCode);
     Connector conn = thread.getConn(proc.database);
@@ -61,7 +61,7 @@ public class TJAction
     _tx.outBufferSize = proc.getOutBufferSize();
     _tx.outBuffer = proc.getOutBuffer();
   }
-  public void multipleOnly(MultipleOnlyReturn _tx, String queryCode) throws Throwable
+  public void multipleOnly(MultipleOnlyReturn _tx, String queryCode) throws Exception
   {
     TJProc proc = compile(queryCode);
     Connector conn = thread.getConn(proc.database);
@@ -71,7 +71,7 @@ public class TJAction
     _tx.outBufferSize = proc.getOutBufferSize();
     _tx.outBuffer = proc.getOutBuffer();
   }
-  public void single(SingleReturn _tx, String queryCode, String buffer) throws Throwable
+  public void single(SingleReturn _tx, String queryCode, String buffer) throws Exception
   {
     TJProc proc = compile(queryCode);
     Connector conn = thread.getConn(proc.database);
@@ -83,7 +83,7 @@ public class TJAction
     _tx.outBuffer = proc.getOutBuffer();
   }
   public void singleOnly(SingleOnlyReturn _tx, String queryCode)
-      throws Throwable
+      throws Exception
   {
     TJProc proc = compile(queryCode);
     Connector conn = thread.getConn(proc.database);

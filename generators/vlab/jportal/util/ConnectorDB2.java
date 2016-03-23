@@ -22,14 +22,14 @@ public class ConnectorDB2 extends Connector
   String userId;
 
   public ConnectorDB2(String server, String schema, String user, String password)
-      throws Throwable
+      throws Exception
   {
     String url = "jdbc:db2:";
     if (server.length() > 0) url = url + server;
     connect(url, schema, user, password);
   }
 
-  void connect(String url, String schema, String user, String password) throws Throwable
+  void connect(String url, String schema, String user, String password) throws Exception
   {
     userId = user;
     Class.forName("COM.ibm.db2.jdbc.app.DB2Driver").newInstance();

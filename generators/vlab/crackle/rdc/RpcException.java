@@ -11,10 +11,10 @@
 /// ------------------------------------------------------------------
 package vlab.crackle.rdc;
 
-public class RpcException extends Throwable
+public class RpcException extends Exception
 {
   private static final long serialVersionUID = 1L;
-  public RpcException(String message, Throwable cause)
+  public RpcException(String message, Exception cause)
   {
     super(message, cause);
   }

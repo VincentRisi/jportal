@@ -38,7 +38,7 @@ public class Server
     }
     return iniFile.getProperty(key);
   }
-  public void listener(Notifier<RpcSocket> notifier, String port, int timeout, int noThreads) throws Throwable
+  public void listener(Notifier<RpcSocket> notifier, String port, int timeout, int noThreads) throws Exception
   {
     final RpcSocket rpc = new RpcSocket(port, timeout);
     int count = 0;
@@ -51,7 +51,7 @@ public class Server
         logger.info("Request received");
         notifier.put(request);
       } 
-      catch (Throwable e)
+      catch (Exception e)
       {
         if (count == 0)
           e.printStackTrace();
@@ -65,7 +65,7 @@ public class Server
         notifier.put(killer);
     }
   }
-  public Server(String[] args) throws Throwable
+  public Server(String[] args) throws Exception
   {
     String iniFileName = args[0];
     iniFile = new Properties();
@@ -106,7 +106,7 @@ public class Server
       if (args.length > 0)
         new Server(args);
     }
-    catch (Throwable ex)
+    catch (Exception ex)
     {
       System.out.println("Server failed: " + ex.toString());
       StackTraceElement[] traceElements = ex.getStackTrace();

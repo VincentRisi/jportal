@@ -272,7 +272,7 @@ public class IdlJRWCode extends Generator
       if (isNull(field) == true && field.isEmptyOrAnsiAsNull() == false)
         outData.println("    public bool " + field.useLowerName() + "IsNull;");
     }
-    outData.println("    public void read(Reader reader) throws Throwable");
+    outData.println("    public void read(Reader reader) throws Exception");
     outData.println("    {");
     for (int i = 0; i < fields.size(); i++)
     {
@@ -280,7 +280,7 @@ public class IdlJRWCode extends Generator
       readCall(field, outData);
     }
     outData.println("    }");
-    outData.println("    public void write(Writer writer) throws Throwable");
+    outData.println("    public void write(Writer writer) throws Exception");
     outData.println("    {");
     for (int i = 0; i < fields.size(); i++)
     {
@@ -320,7 +320,7 @@ public class IdlJRWCode extends Generator
       field.length = n.intValue();
       outData.println("    " + fieldDef(field));
     }
-    outData.println("    public void read(Reader reader) throws Throwable");
+    outData.println("    public void read(Reader reader) throws Exception");
     outData.println("    {");
     for (int i = 0; i < proc.inputs.size(); i++)
     {
@@ -342,7 +342,7 @@ public class IdlJRWCode extends Generator
       readCall(field, outData);
     }
     outData.println("    }");
-    outData.println("    public void write(Writer writer) throws Throwable");
+    outData.println("    public void write(Writer writer) throws Exception");
     outData.println("    {");
     for (int i = 0; i < proc.inputs.size(); i++)
     {
