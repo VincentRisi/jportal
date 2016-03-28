@@ -2,7 +2,7 @@
 
 The python code parses a simple text script using the following syntax rules.
 The script is read line by line.
-The syntax used by the scripter is to make is easy to have readable scripts.
+The syntax used by the scripter is to make it easy to have readable scripts.
 
 If there is a # character anywhere on the line the rest of the line including the # char is ignored.  
 
@@ -34,7 +34,8 @@ After the main keyword *source* each non empty lines must contain a single fullp
 
 After the main keyword *idl* each non empty line must contain a keyword in ['idlfile', 'imfile', 'iifile', ibfile', 'icfile'] followed by a single fullpath filename. 
 There must be one 'idlfile' and at most one 'imfile'. The can be more than one 'ibfile', 'icfile' or 'iifile'. 
-A *jportal* generator can be used to generate any amount of 'iifile'.
+A *jportal* generator can be used to generate any amount of 'iifile'. 
+If an 'iifile' is being generated then do not define it as it would be included again.
 If there is no 'imfile' it is assumed the would only be an 'idlfile'.
 If there is an 'imfile' it is used to create the 'idlfile' together with all supplied 'iifile' and generated 'iifile' followed by all supplied 'ibfile' and 'icfile'.
 The single 'idlfile' supplied or built is then used by each *crackle* generator. 
@@ -42,6 +43,7 @@ The single 'idlfile' supplied or built is then used by each *crackle* generator.
 After the main keyword *app* each non empty line must contain a keyword in ['appfile', 'pmfile', 'prfile', 'pifile'] followed by a single fullpath filename. 
 There must be one 'appfile' and at most one 'pmfile'. The can be more than one 'prfile' or 'pifile'. 
 A *jportal* generator can be used to generate any amount of 'pifile'.
+If a 'pifile' is being generated then do not define it as it would be included again.
 If there is no 'pmfile' it is assumed the would only be an 'appfile'.
 If there is a 'pmfile' it is used to create the 'appfile' together with all supplied 'pifile' and generated 'pifile' followed by all supplied 'prfile'.
 The single 'idlfile' supplied or built is then used by each *pickle* generator. 
