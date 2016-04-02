@@ -9,7 +9,7 @@ If there is a # character anywhere on the line the rest of the line including th
 If the line contains a single token ie no white space of the form xxxx=yyyy this is assumed to be a set of xxxx with the value yyyy and anything of the form ${xxxx} is replaced with yyyy. 
 Replacements are done first before any parsing is done.  
 
-Empty line ie. lines containing only white space are ignored.  
+Empty lines ie. lines containing only white space are ignored.  
 
 The script must start with a project name line. There can be comment and blank lines before the project name line.
 
