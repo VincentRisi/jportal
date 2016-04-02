@@ -252,7 +252,7 @@ public class JavaRWCode extends Generator
     String[] op = seperate(output, delim);
     int n = op.length - 1;
     int b = 1;
-    if (op[0].charAt(1) == ':')
+    if (op[0].length() > 1 && op[0].charAt(1) == ':')
       b++;
     for (int oi = op.length - 1; oi >= b; oi--)
     {

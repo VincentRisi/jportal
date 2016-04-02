@@ -1,8 +1,8 @@
 project (jportal_picktester)
 
-anydbMake(jportal_picktester ${PICKTESTER_SOURCE_DIR}/picktester.anydb "${PICKTESTER_BINARY_DIR}/parm/picktester.bin")
+anydbMake2(jportal_picktester ${PICKTESTER_SOURCE_DIR}/picktester.anydb)
 
-anydbMake(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb "${PICKTESTER_BINARY_DIR}/sql/pgDDl/FieldSearch.sql")
+anydbMake2(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb)
 
 set (sql_list
   QueueType Drivers SourceSystem StreamFieldsDef StreamMessageFormat Staff
