@@ -91,3 +91,10 @@ function (anydbMake projectName anydbMakeFile targetFiles)
     SOURCES ${anydbMakeFile}
   )
 endfunction ()
+
+function (anydbMake2 projectName anydbMakeFile)
+  add_custom_target (${projectName} ALL
+    ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -p ${pickleJar} -v ${anydbMakeFile} 
+    SOURCES ${anydbMakeFile}
+  )
+endfunction ()

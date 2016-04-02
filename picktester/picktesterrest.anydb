@@ -16,7 +16,7 @@ jportal
   Lite3DDL   ${binary_dir}/sql/lt3DDL %a.sql
   MySqlDDL   ${binary_dir}/sql/myDDL  %a.sql
   AdoCSCode  ${binary_dir}/sql/cs     %i.cs
-  JavaCode   ${binary_dir}/sql/java   %iRec.java
+  JavaRWCode ${binary_dir}/sql/java   %iRec.java
 
 source
   ${source_dir}/sql/si/audittrail.si
