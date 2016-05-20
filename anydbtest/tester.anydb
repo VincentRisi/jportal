@@ -20,7 +20,13 @@ jportal
   Db2DDL            ${binary_dir}/sql/Db2         %a.sql
   IdlBinUCode       ${binary_dir}/sql/IdlBinU     U%a.bin
   IdlCode           ${binary_dir}/sql/Idl         %l.ii %a.cs
+  JavaCSCode        ${binary_dir}/sql/JavaCS      %a.java
+  JavaJCCode        ${binary_dir}/sql/JavaJC      %a.java
+  JavaOSCode        ${binary_dir}/sql/JavaOS      %a.java
+  JavaRWCode        ${binary_dir}/sql/JavaRW      %a.java
+  JavaRWiiCode      ${binary_dir}/sql/JavaRWii    %a.java
   JavaSCCode        ${binary_dir}/sql/JavaSC      %a.java
+  JavaWRCode        ${binary_dir}/sql/JavaWR      %a.java
   JSONCode          ${binary_dir}/sql/json        %l.json
   MSSqlDDL          ${binary_dir}/sql/MSSql       %a.sql
   MySqlDDL          ${binary_dir}/sql/MySql       %a.sql
