@@ -1,5 +1,5 @@
 #!/usr/local/bin/python
-import xml.sax
+
 import sys
 import os.path
 import tempfile
@@ -18,7 +18,7 @@ parser.add_option("-v", "--verbose",    dest="verbose",    default=False, action
 
 def log(*line):
   if (options.verbose == True):
-    print '%s ' * len(line) % line
+    print('%s ' * len(line) % line)
 
 def fixname(name):
   result = name
@@ -38,12 +38,12 @@ crackleJar = fixname(options.crackle);log('crackle jar:', crackleJar)
 pickleJar  = fixname(options.pickle); log('pickle jar:',  pickleJar)
 
 if len(args) < 1:
-  print "usage :-\> anydbMake.py [options] sourcefile"
+  print("usage :-\> anydbMake.py [options] sourcefile")
   parser.print_help()
   exit()
 
 sourceFile = fixname(args[0])
-print 'Project file:', sourceFile
+print('Project file:', sourceFile)
 
 class Class(object): pass
 
@@ -59,11 +59,11 @@ def jportal(name, switches, iiFiles, piFiles):
   fd, fname = tempfile.mkstemp('.~tmp')
   os.close(fd)
   command = r'java -jar %s -l %s %s %s' %(jportalJar, fname, name, switches)
-  print command
+  print(command)
   os.system(command)
   for line in open(fname):
     line = line[:-1]
-    print line 
+    print(line) 
     if line[:6] == 'Code: ':
       _, tail = os.path.split(line[6:])
       _, ext = os.path.splitext(tail)
@@ -84,23 +84,22 @@ def crackle(name, switches):
   fd, fname = tempfile.mkstemp('.~tmp')
   os.close(fd)
   command = r'java -jar %s -l %s %s %s' %(crackleJar, fname, name, switches)
-  print command
+  print(command)
   os.system(command)
   for line in open(fname):
     line = line[:-1] 
-    print line
+    print(line)
   os.remove(fname)
 
 def pickle(name, switches):
   fd, fname = tempfile.mkstemp('.~tmp')
   os.close(fd)
   command = r'java -jar %s -l %s %s %s' %(pickleJar, fname, name, switches)
-  print command
-  
+  print(command)
   os.system(command)
   for line in open(fname):
     line = line[:-1] 
-    print line
+    print(line)
   os.remove(fname)
 
 switches = {}
@@ -114,19 +113,19 @@ def clean(project):
     for target in source.targets:
       head, tail = os.path.split(target.name)
       _, ext = os.path.splitext(tail)
-      if dirLists.has_key(head) == False:
+      if (head in dirLists) == False:
         dirLists[head] = []
         dirExts[head] = []
       if not tail in dirLists[head]:
         dirLists[head].append(tail)
       if not ext in dirExts[head]:
         dirExts[head].append(ext)
-  for head in dirLists.keys():
+  for head in list(dirLists.keys()):
     for ext in dirExts[head]:
       for fileName in glob.glob('%s%s*%s' % (fixname(head), dirsep, ext)):
         _, ft = os.path.split(fileName)
         if not ft in dirLists[head]:
-          print 'removing %s' % (fileName)
+          print('removing %s' % (fileName))
           os.remove(fileName)
 
 def make_ib_files(pathlist):
@@ -162,7 +161,7 @@ def expand(line):
       break
     arg = line[:e]
     line = line[e+1:]
-    if args.has_key(arg):
+    if arg in args:
       result += args[arg]
   return result
 
@@ -202,7 +201,7 @@ def parse_anydb(sourceFile):
       project.apps['pifile'] = piFiles = []
       continue
     if project == None:
-      print 'expecting project name'
+      print('expecting project name')
       return None
     if fields[0] == 'jportal':
       state = JPORTAL
@@ -231,7 +230,7 @@ def parse_anydb(sourceFile):
         dir = ''  
         switches[state] += '%s ' % (fields[0])
       if len(fields) > 2:
-        if not project.masks.has_key(dir):
+        if dir not in project.masks:
           project.masks[state][dir] = []
         for mask in fields[2:]:
           project.masks[state][dir].append(mask)
@@ -249,7 +248,7 @@ def parse_anydb(sourceFile):
       app_list = ('appfile', 'pmfile', 'prfile', 'pifile')
       app_type = fields[0]
       if (not app_type in app_list):
-        print '%s - not a valid - not in %s' % (app_type, repr(app_list))
+        print('%s - not a valid - not in %s' % (app_type, repr(app_list)))
         continue
       source.name = fixname(fields[1])
       source.lastmod = lastmod(source.name)
@@ -259,7 +258,7 @@ def parse_anydb(sourceFile):
       if app_type == 'pmfile':
         switches['appModule'] = source.name
         continue
-      if not project.apps.has_key(app_type):
+      if app_type not in project.apps:
         project.apps[app_type] = []
       project.apps[app_type].append(source)
       continue
@@ -268,7 +267,7 @@ def parse_anydb(sourceFile):
       idl_list = ('idlfile', 'imfile', 'ibfile', 'icfile', 'iifile')
       idl_type = fields[0]
       if (not idl_type in idl_list):
-        print '%s - not a valid - not in %s' % (idl_type, repr(idl_list))
+        print('%s - not a valid - not in %s' % (idl_type, repr(idl_list)))
         continue
       source.name = fixname(fields[1])
       source.lastmod = lastmod(source.name)
@@ -278,7 +277,7 @@ def parse_anydb(sourceFile):
       if idl_type == 'imfile':
         switches['idlModule'] = source.name
         continue
-      if not project.idls.has_key(idl_type):
+      if idl_type not in project.idls:
         project.idls[idl_type] = []
       project.idls[idl_type].append(source)
       continue
@@ -337,14 +336,14 @@ crackleJarMod = lastmod(crackleJar)
 pickleJarMod = lastmod(pickleJar)
 sourceList = []
 reasons = {}
-if not project.idls.has_key('ibfile'):
+if 'ibfile' not in project.idls:
   project.idls['ibfile'] = []
-if not project.idls.has_key('icfile'):
+if 'icfile' not in project.idls:
   project.idls['icfile'] = []
 ibFiles = project.idls['ibfile']
 icFiles = project.idls['icfile']
 iiFiles = project.idls['iifile']
-if not project.apps.has_key('prfile'):
+if 'prfile' not in project.apps:
   project.apps['prfile'] = []
 prFiles = project.apps['prfile']
 piFiles = project.apps['pifile']
@@ -374,7 +373,7 @@ for source in project.sources:
     sourceList.append(source.name)
     for target in source.targets:
       if os.path.exists(target.name) == True:
-        print 'removing %s' % (target.name)
+        print('removing %s' % (target.name))
         os.remove(target.name)
   else:
     log(source.name, 'up to date')
@@ -390,7 +389,7 @@ if len(sourceList) > 0:
   fd, fname = tempfile.mkstemp('.~tmp')
   for source in sourceList:
     if len(reasons[source]) > 0:
-      print '%s --- %s' % (source, reasons[source])
+      print('%s --- %s' % (source, reasons[source]))
     os.write(fd, '%s\n' % (source))
   os.close(fd)
   jportal('-f %s' % (fname), switches[JPORTAL], iiFiles, piFiles)
