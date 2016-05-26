@@ -12,6 +12,8 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
+  #If you prefer a mint linux box, uncomment the line below, and comment out the ubuntu1404 line
+  #config.vm.box = "npalm/mint17-amd64-cinnamon"
   config.vm.box = "box-cutter/ubuntu1404-desktop"
 
   # Disable automatic box update checking. If you disable this, then
