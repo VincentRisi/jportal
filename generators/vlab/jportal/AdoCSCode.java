@@ -431,17 +431,30 @@ public class AdoCSCode extends Generator
       if (isNull(field))
         tail = ", true";
       if (proc.isInsert && field.isSequence)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetSequence(\"" + proc.table.name + "\",\"" + field.name + "\", ref mRec._" + field.useName() + "));");
+			{
+				outData.println("        var " + field.useLowerName() + " = mRec._" + field.useName() + ";");
+				outData.println("        wCursor.Parameter(" + i + ", wCursor.GetSequence(\"" + proc.table.name + "\",\"" + field.name + "\", ref " + field.useLowerName() + "));");
+				outData.println("        mRec._" + field.useName() + " = " + field.useLowerName() + ";");
+			}
       else if (field.type == Field.TIMESTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref mRec._" + field.useName() + "));");
+			{
+				outData.println("        var " + field.useLowerName() + " = mRec._" + field.useName() + ";");
+				outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref " + field.useLowerName() + "));");
+				outData.println("        mRec._" + field.useName() + " = " + field.useLowerName() + ";");
+			}
       else if (field.type == Field.USERSTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref mRec._" + field.useName() + "));");
+			{
+				outData.println("        var " + field.useLowerName() + " = mRec._" + field.useName() + ";");
+				outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref " + field.useLowerName() + "));");
+				outData.println("        mRec._" + field.useName() + " = " + field.useLowerName() + ";");
+			}
       else
         outData.println("        wCursor.Parameter(" + i + ", mRec._" + field.useName() + member + tail + ");");
-    }
+
     outData.println("        wCursor.Exec();");
     outData.println("      }");
     outData.println("    }");
+		}
   }
   static void generateReturningProc(Proc proc, String mainName, PrintWriter outData)
   {
@@ -466,7 +479,7 @@ public class AdoCSCode extends Generator
     outData.println("      using (Cursor wCursor = new Cursor(connect))");
     outData.println("      {");
     if (doMSSqlStoredProcs(proc))
-      outData.println("        wCursor.Procedure(Command" + upperFirst + ");");
+			outData.println("        wCursor.Procedure(Command" + upperFirst + "());");
     else
       outData.println("        wCursor.Format(Command" + upperFirst + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
     for (int i = 0; i < placeHolder.pairs.size(); i++)
@@ -480,12 +493,20 @@ public class AdoCSCode extends Generator
       if (isNull(field))
         tail = ", true";
       if (field.type == Field.TIMESTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref mRec._" + field.useName() + "));");
+			{
+				outData.println("        var " + field.useLowerName() + " = mRec._" + field.useName() + ";");
+				outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref " + field.useLowerName() + "));");
+				outData.println("        mRec._" + field.useName() + " = " + field.useLowerName() + ";");
+			}
       else if (field.type == Field.USERSTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref mRec._" + field.useName() + "));");
+			{
+				outData.println("        var " + field.useLowerName() + " = mRec._" + field.useName() + ";");
+				outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref " + field.useLowerName() + "));");
+				outData.println("        mRec._" + field.useName() + " = " + field.useLowerName() + ";");
+			}
       else
         outData.println("        wCursor.Parameter(" + i + ", mRec._" + field.useName() + member + tail + ");");
-    }
+
     outData.println("        wCursor.Run();");
     outData.println("        bool wResult = (wCursor.HasReader() && wCursor.Read());");
     outData.println("        if (wResult == true)");
@@ -496,6 +517,7 @@ public class AdoCSCode extends Generator
     outData.println("      }");
     outData.println("    }");
   }
+	}
   static void generateReadOneProc(Proc proc, String mainName, PrintWriter outData)
   {
     String upperFirst = proc.upperFirst();
@@ -504,7 +526,7 @@ public class AdoCSCode extends Generator
     outData.println("      using (Cursor wCursor = new Cursor(connect))");
     outData.println("      {");
     if (doMSSqlStoredProcs(proc))
-      outData.println("        wCursor.Procedure(Command" + upperFirst + ");");
+			outData.println("        wCursor.Procedure(Command" + upperFirst + "());");
     else
       outData.println("        wCursor.Format(Command" + upperFirst + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
     for (int i = 0; i < placeHolder.pairs.size(); i++)
@@ -518,9 +540,17 @@ public class AdoCSCode extends Generator
       if (isNull(field))
         tail = ", true";
       if (field.type == Field.TIMESTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref mRec._" + field.useName() + "));");
+			{
+				outData.println("        var " + field.useLowerName() + " = mRec._" + field.useUpperName() + ";");
+				outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref " + field.useLowerName() + "));");
+				outData.println("        mRec._" + field.useUpperName() + " = " + field.useLowerName() + ";");
+			}
       else if (field.type == Field.USERSTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref mRec._" + field.useName() + "));");
+			{
+				outData.println("        var " + field.useLowerName() + " = mRec._" + field.useUpperName() + ";");
+				outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref " + field.useLowerName() + "));");
+				outData.println("        mRec._" + field.useUpperName() + " = " + field.useLowerName() + ";");
+			}
       else
         outData.println("        wCursor.Parameter(" + i + ", mRec._" + field.useName() + member + tail + ");");
     }
@@ -616,7 +646,7 @@ public class AdoCSCode extends Generator
     outData.println("    {");
     outData.println("      mCursor = new Cursor(connect);");
     if (doMSSqlStoredProcs(proc))
-      outData.println("      mCursor.Procedure(Command" + upperFirst + ");");
+			outData.println("      mCursor.Procedure(Command" + upperFirst + "());");
     else
       outData.println("      mCursor.Format(Command" + upperFirst + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
     for (int i = 0; i < placeHolder.pairs.size(); i++)

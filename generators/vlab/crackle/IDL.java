@@ -2,7 +2,6 @@
 package vlab.crackle;
 
 import java.util.*;
-import java.lang.*;
 import java.io.*;
 
 /**
@@ -22,9 +21,8 @@ public class IDL implements IDLConstants {
   protected static Type       type;
   protected static Operation  operation;
   protected static Action     action;
-  protected static Vector     messageNos;
+  protected static Vector<Integer>     messageNos;
   static private   IDL parser;
-  private static   PrintWriter idlLog;
   /**
   * Reads input from standard input
   */
@@ -37,10 +35,10 @@ public class IDL implements IDLConstants {
       {
         System.out.println(args[i]+": Parsing ...");
         Module module = run(args[i], outLog);
-        //System.out.println("Outputting "+module.name+".repository");
-        //ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(module.name+".repository"));
-        //out.writeObject(module);
-        //out.close();
+        System.out.println("Outputting "+module.name+".repository");
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(module.name+".repository"));
+        out.writeObject(module);
+        out.close();
       }
     }
     catch (Exception e)
@@ -68,11 +66,10 @@ public class IDL implements IDLConstants {
   }
   public static Module run(String inFile, Reader reader, PrintWriter outLog)
   {
-    idlLog = outLog;
     try
     {
       parser = new IDL(reader);
-      messageNos = new Vector();
+      messageNos = new Vector<Integer>();
       parser.idlStart();
       module.sourceName = inFile;
       return module;
@@ -248,9 +245,8 @@ public class IDL implements IDLConstants {
   }
 
   final public void idlSubModule() throws ParseException {
-  Token t;
     jj_consume_token(MODULE);
-    t = jj_consume_token(IDENTIFIER);
+    jj_consume_token(IDENTIFIER);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 50:
       jj_consume_token(50);
@@ -634,7 +630,6 @@ public class IDL implements IDLConstants {
   }
 
   final public void idlType() throws ParseException {
-  Token t;
     idlTypeLookup();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case POINTER:
@@ -1276,6 +1271,11 @@ public class IDL implements IDLConstants {
     return false;
   }
 
+  private boolean jj_3R_20() {
+    if (jj_scan_token(PROTECTED)) return true;
+    return false;
+  }
+
   private boolean jj_3R_16() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1294,23 +1294,18 @@ public class IDL implements IDLConstants {
     return false;
   }
 
-  private boolean jj_3R_20() {
-    if (jj_scan_token(PROTECTED)) return true;
-    return false;
-  }
-
   private boolean jj_3R_43() {
     if (jj_scan_token(58)) return true;
     return false;
   }
 
-  private boolean jj_3R_38() {
-    if (jj_scan_token(IDENTIFIER)) return true;
+  private boolean jj_3R_19() {
+    if (jj_scan_token(PUBLIC)) return true;
     return false;
   }
 
-  private boolean jj_3R_19() {
-    if (jj_scan_token(PUBLIC)) return true;
+  private boolean jj_3R_38() {
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
@@ -1333,11 +1328,6 @@ public class IDL implements IDLConstants {
     return false;
   }
 
-  private boolean jj_3R_42() {
-    if (jj_scan_token(POINTER)) return true;
-    return false;
-  }
-
   private boolean jj_3R_18() {
     if (jj_scan_token(PRIVATE)) return true;
     return false;
@@ -1356,13 +1346,18 @@ public class IDL implements IDLConstants {
     return false;
   }
 
-  private boolean jj_3_2() {
-    if (jj_3R_14()) return true;
+  private boolean jj_3R_42() {
+    if (jj_scan_token(POINTER)) return true;
     return false;
   }
 
   private boolean jj_3R_37() {
     if (jj_scan_token(VOID)) return true;
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_3R_14()) return true;
     return false;
   }
 

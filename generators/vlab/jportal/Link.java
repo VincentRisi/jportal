@@ -34,6 +34,9 @@ public class Link implements Serializable
   public Vector<String> linkFields;
   public Vector<String> options;
   public boolean isDeleteCascade;
+  public boolean isUpdateCascade;
+  public boolean isProc;
+  public boolean isDProc;
   public Link()
   {
     name      = "";
@@ -42,6 +45,9 @@ public class Link implements Serializable
     linkFields = new Vector<String>();
     options = new Vector<String>();
     isDeleteCascade = false;
+    isUpdateCascade = false;
+    isProc = false;
+    isDProc = false;
   }
   public void reader(DataInputStream ids) throws IOException
   {

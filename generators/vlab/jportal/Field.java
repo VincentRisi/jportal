@@ -61,6 +61,8 @@ public class Field implements Serializable
   public boolean isIn;
   /** Indicates the field is OUTPUT */
   public boolean isOut;
+  /** Indicates the field is EXT */
+  public boolean isExtStd;
   public static final byte
     BLOB       = 1
   , BOOLEAN    = 2
@@ -116,6 +118,7 @@ public class Field implements Serializable
     isSequence = false;
     isNull = false;
     isIn = false;
+    isExtStd = false;
     isOut = false;
   }
   public void reader(DataInputStream ids) throws IOException
@@ -154,6 +157,7 @@ public class Field implements Serializable
     isSequence = ids.readBoolean();
     isNull = ids.readBoolean();
     isIn = ids.readBoolean();
+    isExtStd = ids.readBoolean();
     isOut = ids.readBoolean();
   }
   public void writer(DataOutputStream ods) throws IOException
@@ -191,6 +195,7 @@ public class Field implements Serializable
     ods.writeBoolean(isSequence);
     ods.writeBoolean(isNull);
     ods.writeBoolean(isIn);
+    ods.writeBoolean(isExtStd);
     ods.writeBoolean(isOut);
   }
   /** If there is an alias uses that else returns name */
@@ -205,6 +210,10 @@ public class Field implements Serializable
   {
     String n = useName();
     String f = n.substring(0, 1);
+    if (isExtStd)
+    {
+      n = replaceAll(n,".", "");
+    }
     return f.toLowerCase()+n.substring(1);
   }
   /** If there is an alias uses that else returns name */
@@ -212,7 +221,29 @@ public class Field implements Serializable
   {
     String n = useName();
     String f = n.substring(0, 1);
+    if (isExtStd)
+    {
+      n = replaceAll(n,".", "");
+    }
     return f.toUpperCase()+n.substring(1);
+  }
+  public String replaceAll(
+    String haystack,              // String to search in
+    String needle,                // Substring to find
+    String replacement)
+  {         // Substring to replace with
+    int i = haystack.lastIndexOf(needle);
+    if (i != -1)
+    {
+      StringBuffer buffer = new StringBuffer(haystack);
+      buffer.replace(i, i + needle.length(), replacement);
+      while ((i = haystack.lastIndexOf(needle, i - 1)) != -1)
+      {
+        buffer.replace(i, i + needle.length(), replacement);
+      }
+      haystack = buffer.toString();
+    }
+    return haystack;
   }
   /**
    * Check for empty string as null type fields.

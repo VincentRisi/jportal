@@ -604,30 +604,59 @@ public class Table implements Serializable
   * Builds an update proc
   * generated as part of standard record class
   */
-  public void buildUpdate(Proc proc)
+  public void buildUpdate(Proc proc, PrintWriter outLog)
   {
     String name = tableName();
-    int i, j;
+    int i, j, k;
     String line;
+    String forname;
+    forname = "";
     proc.isStd = true;
     proc.isSql = true;
     proc.lines.addElement(new Line("update " + name));
     proc.lines.addElement(new Line(" set"));
-    for (i=0, j = 0; i<fields.size(); i++)
+    if (proc.fields.size() == 0)
     {
-      Field field = fields.elementAt(i);
-      if (!field.isPrimaryKey)
+      for (i = 0, j = 0; i < fields.size(); i++)
       {
-        proc.inputs.addElement(field);
-        if (j==0)
-          line = "  ";
-        else
-          line = ", ";
-        j++;
-        proc.lines.addElement(new Line(line + field.name + " = ?"));
+        Field field = (Field)fields.elementAt(i);
+        if (!field.isPrimaryKey && !field.isSequence)
+        {
+          proc.inputs.addElement(field);
+          if (j == 0)
+            line = "  ";
+          else
+            line = ", ";
+          j++;
+          proc.lines.addElement(new Line(line + field.name + " = ?"));
+        }
       }
     }
-    for (i=0, j=0; i<fields.size(); i++)
+    else
+    {
+      proc.name = "UpdateFor";
+      for (i = 0, j = 0; i < proc.fields.size(); i++)
+      {
+        String fieldName = (String)proc.fields.elementAt(i);
+        for (k = 0; k < fields.size(); k++)
+        {
+          Field field = (Field)fields.elementAt(k);
+          if (field.name.equalsIgnoreCase(fieldName))
+          {
+            proc.inputs.addElement(field);
+            if (j == 0)
+              line = "  ";
+            else
+              line = ", ";
+            j++;
+            forname = forname + field.name;
+            proc.lines.addElement(new Line(line + field.name + " = ?"));
+          }
+        }
+      }
+      AddTMstampUserName(proc);
+    }
+    for (i = 0, j = 0; i < fields.size(); i++)
     {
       Field field = fields.elementAt(i);
       if (field.isPrimaryKey)
@@ -642,15 +671,143 @@ public class Table implements Serializable
         proc.lines.addElement(new Line(line));
       }
     }
+    if (proc.username != "")
+    {
+      proc.name = proc.username;
+    }
+    else
+    {
+      if (forname.length() > 10)
+        forname = abbreviateString(forname);
+      proc.name = proc.name + forname;
+      if (proc.name.length() > 20)
+      {
+        outLog.println("Proc name to long " + proc.name + ". Consider using Uname \"customName\" ");
+      }
+    }
+    if (proc.hasReturning)
+      proc.lines.add(new Line("_ret.tail", true));
+  }
+
+  private void AddTMstampUserName(Proc proc)
+  {
+    int k;
+    String line;
+    boolean tmAdded, unAdded;
+    tmAdded = unAdded = false;
+
+
+    for (k = 0; k < fields.size(); k++)
+    {
+      Field field = (Field)fields.elementAt(k);
+      if (field.name.equalsIgnoreCase("username") && !unAdded)
+      {
+        unAdded = true;
+        if (!proc.inputs.contains(field))
+        {
+          proc.inputs.addElement(field);
+          line = ", ";
+          proc.lines.addElement(new Line(line + field.name + " = ?"));
+        }
+      }
+      else if (field.name.equalsIgnoreCase("tmstamp") && !tmAdded)
+      {
+        tmAdded = true;
+        if (!proc.inputs.contains(field))
+        {
+          proc.inputs.addElement(field);
+          line = ", ";
+          proc.lines.addElement(new Line(line + field.name + " = ?"));
+        }
+      }
+    }
+  }
+
+  /**
+  * Builds an updateby proc
+  * generated as part of standard record class
+  */
+  public void buildUpdateBy(Proc proc, PrintWriter outLog)
+  {
+    String name = tableName();
+    int i, j, k;
+    String line;
+    String byname, forname;
+    byname = "";
+    forname = "";
+    proc.isStd = true;
+    proc.isSql = true;
+    proc.lines.addElement(new Line("update " + name));
+    proc.lines.addElement(new Line(" set"));
+
+    for (i = 0, j = 0; i < proc.fields.size(); i++)
+    {
+      String fieldName = (String)proc.fields.elementAt(i);
+      for (k = 0; k < fields.size(); k++)
+      {
+        Field field = fields.elementAt(k);
+        if (field.name.equalsIgnoreCase(fieldName))
+        {
+          proc.inputs.addElement(field);
+          if (j == 0)
+            line = "  ";
+          else
+            line = ", ";
+          j++;
+          forname = forname + field.name;
+          proc.lines.addElement(new Line(line + field.name + " = ?"));
+        }
+      }
+    }
+    AddTMstampUserName(proc);
+    for (i = 0, j = 0; i < proc.updateFields.size(); i++)
+    {
+      String fieldName = (String)proc.updateFields.elementAt(i);
+      for (k = 0; k < fields.size(); k++)
+      {
+        Field field = fields.elementAt(k);
+        if (field.name.equalsIgnoreCase(fieldName))
+        {
+          proc.inputs.addElement(field);
+          if (j == 0)
+            line = " where ";
+          else
+            line = "   and ";
+          j++;
+          line = line + field.name + " = ?";
+          byname = byname + field.name;
+          proc.lines.addElement(new Line(line));
+        }
+      }
+    }
+    if (proc.username != "")
+    {
+      proc.name = proc.username;
+    }
+    else
+    {
+      if (byname.length() > 10)
+        byname = abbreviateString(byname);
+      if (forname.length() > 10)
+        forname = abbreviateString(forname);
+      proc.name = proc.name + byname + "For" + forname;
+      if (proc.name.length() > 20)
+      {
+        outLog.println("Proc name to long " + proc.name + ". Trimming at 20. Consider using Uname \"customName\" ");
+        proc.name = proc.name.substring(0, 20);
+      }
+    }
+    if (proc.hasReturning)
+      proc.lines.add(new Line("_ret.tail", true));
   }
   /**
   * Builds an update proc
   * generated as part of standard record class
   */
-  public void buildBulkUpdate(Proc proc)
+  public void buildBulkUpdate(Proc proc, PrintWriter outLog)
   {
     proc.isMultipleInput = true;
-    buildUpdate(proc);
+    buildUpdate(proc, outLog);
   }
   /**
   * Builds a delete by primary key proc
@@ -677,6 +834,8 @@ public class Table implements Serializable
         proc.lines.addElement(new Line(line));
       }
     }
+	if (proc.hasReturning)
+		proc.lines.add(new Line("_ret.tail", true));
   }
   /**
   * Builds a delete all rows proc
@@ -686,6 +845,8 @@ public class Table implements Serializable
     String name = tableName();
     proc.isSql = true;
     proc.lines.addElement(new Line("delete from " + name));
+	if (proc.hasReturning)
+		proc.lines.add(new Line("_ret.tail", true));
   }
   /**
   * Builds a count rows proc
@@ -782,6 +943,28 @@ public class Table implements Serializable
       proc.lines.addElement(new Line(" for read only"));
   }
   /**
+  * Builds a select on primary key proc
+  */
+  public void buildMaxTmStamp(Proc proc)
+  {
+    String name = tableName();
+    int i;
+    proc.isStd = true;
+    proc.isSql = true;
+    proc.isSingle = true;
+    proc.lines.addElement(new Line("select"));
+    for (i = 0; i < fields.size(); i++)
+    {
+      Field field = fields.elementAt(i);
+      if (field.name.equalsIgnoreCase("tmstamp"))
+      {
+        proc.outputs.addElement(field);
+        proc.lines.addElement(new Line("max(" + field.name + ")"));
+      }
+    }
+    proc.lines.addElement(new Line(" from " + name));
+  }
+  /**
   * Builds a select all rows proc
   */
   public void buildSelectAll(Proc proc, boolean update, boolean readonly, boolean inOrder)
@@ -824,6 +1007,166 @@ public class Table implements Serializable
     else if (readonly)
       proc.lines.addElement(new Line(" for read only"));
   }
+  public void buildDeleteBy(Proc proc, PrintWriter outLog)
+  {
+    String name = tableName();
+    int i, j, k;
+    String line;
+    proc.isStd = true;
+    proc.isSql = true;
+    proc.name = "DeleteBy";
+    proc.lines.addElement(new Line("Delete from " + name));
+    for (i = 0, j = 0; i < proc.fields.size(); i++)
+    {
+      String fieldName = (String)proc.fields.elementAt(i);
+      for (k = 0; k < fields.size(); k++)
+      {
+        Field field = fields.elementAt(k);
+        if (field.name.equalsIgnoreCase(fieldName))
+        {
+          proc.inputs.addElement(field);
+          if (j == 0)
+            line = " where ";
+          else
+            line = "   and ";
+          j++;
+          line = line + field.name + " = ?";
+          proc.name = proc.name + field.name;
+          proc.lines.addElement(new Line(line));
+        }
+      }
+    }
+    if (proc.hasReturning)
+		  proc.lines.add(new Line("_ret.tail", true));
+    if (j == 0)
+    {
+      throw new Error("Error generating buildDeleteBy");
+    }
+    if (proc.username != "")
+    {
+      proc.name = proc.username;
+    }
+    else
+    {
+      if (proc.name.length() > 20)
+      {
+        outLog.println("Proc name to long "+ proc.name + ". Trimming at 20. Consider using Uname \"customName\" ");
+        proc.name = proc.name.substring(0, 20);
+      }
+    }
+    
+  }
+  public void buildSelectBy(Proc proc, boolean forUpdate, boolean forReadOnly, boolean inOrder, PrintWriter outLog)
+  {
+    String name = tableName();
+    int i, j, k;
+    String line;
+    proc.isStd = true;
+    proc.isSql = true;
+
+    proc.lines.addElement(new Line("select"));
+    for (i = 0; i < fields.size(); i++)
+    {
+      Field field = (Field)fields.elementAt(i);
+      proc.outputs.addElement(field);
+      if (i == 0)
+        line = "  ";
+      else
+        line = ", ";
+      proc.lines.addElement(new Line(line + field.name));
+    }
+
+    proc.lines.addElement(new Line(" from " + name));
+
+    for (i = 0, j = 0; i < proc.fields.size(); i++)
+    {
+      String fieldName = (String)proc.fields.elementAt(i);
+      for (k = 0; k < fields.size(); k++)
+      {
+        Field field = (Field)fields.elementAt(k);
+        if (field.name.equalsIgnoreCase(fieldName))
+        {
+          proc.inputs.addElement(field);
+          if (j == 0)
+            line = " where ";
+          else
+            line = "   and ";
+          j++;
+          line = line + field.name + " = ?";
+          proc.name = proc.name + field.name;
+          proc.lines.addElement(new Line(line));
+        }
+      }
+    }
+    if (proc.username != "")
+    {
+      proc.name = proc.username;
+    }
+    else
+    {
+      if (proc.name.length() > 20)
+      {
+        outLog.println("Proc name to long " + proc.name + ". Consider using Uname \"customName\" ");
+
+      }
+    }
+    if (inOrder) proc.name = proc.name + "Sorted";
+    if (forUpdate) proc.name = proc.name + "Upd";
+    else if (forReadOnly) proc.name = proc.name + "ReadOnly";
+    if (j == 0)
+    {
+      throw new Error("Error in SelectBy");
+    }
+  }
+  public void buildSelectFrom(Proc proc, PrintWriter outLog)
+  {
+    String name = tableName();
+    int i, j, k;
+    String line;
+    proc.isStd = false;
+    proc.isSql = true;
+    proc.lines.addElement(new Line("select"));
+    for (j = 0; j < proc.inputs.size(); j++)
+    {
+      Field fieldName = (Field)proc.inputs.elementAt(j);
+      proc.name = proc.name + fieldName.name;
+    }
+    for (j = 0; j < proc.outputs.size(); j++)
+    {
+      Field fieldName = (Field)proc.outputs.elementAt(j);
+      fieldName.isExtStd = true;
+      if (j == 0)
+        line = "  ";
+      else
+        line = ", ";
+      proc.lines.addElement(new Line(line + fieldName.name));
+      proc.inputs.addElement(fieldName);
+    }
+    for (i = 0; i < fields.size(); i++)
+    {
+      Field field = (Field)fields.elementAt(i);
+      proc.outputs.addElement(field);
+      if (i == 0 && j == 0)
+        line = "  " + name.substring(0, 1).toUpperCase() + ".";
+      else
+        line = ", " + name.substring(0, 1).toUpperCase() + ".";
+      proc.lines.addElement(new Line(line + field.name));
+    }
+    proc.lines.addElement(new Line(" from " + proc.from));
+    proc.lines.addElement(new Line(" where " + proc.where));
+    if (proc.username != "")
+    {
+      proc.name = proc.username;
+    }
+    else
+    {
+      if (proc.name.length() > 20)
+      {
+        outLog.println("Proc name to long " + proc.name + ". Consider using Uname \"customName\" ");
+
+      }
+    }
+   }
   public String toString()
   {
     return name;
@@ -905,6 +1248,22 @@ public class Table implements Serializable
         return true;
     }
     return false;
+  }
+  public static String abbreviateString(String input)
+  {
+    String ret = "";
+    for (int i = 0; i < input.length(); i++)
+    {
+      char c = input.charAt(i);
+      if (c >= 'A' && c <= 'Z')
+      {
+        if (input.length() < i + 2)
+          ret = ret + input.substring(i, input.length());
+        else
+          ret = ret + input.substring(i, i + 2);
+      }
+    }
+    return ret;
   }
   /**
   * Translates field type to DB2 SQL column types

@@ -4,11 +4,11 @@
 
 project decompiler
 
-source_dir=/main/jportal/generators/vlab/jportal/decompiler
-binary_dir=/main/jportal/build/generators/vlab/jportal/decompiler
+source_dir=/main/jportal/decompilers/sql/si
+binary_dir=/main/jportal/build/decompilers/java/vlab/jportal/decompiler
 
 jportal
-  JavaWRCode ${binary_dir} %i.java
+  JavaSCCode ${binary_dir} %i.java
 
 source
   ${source_dir}/oracle.si

@@ -9,7 +9,6 @@ PARSER_BEGIN(IDL)
 package vlab.crackle;
 
 import java.util.*;
-import java.lang.*;
 import java.io.*;
 
 /**
@@ -30,9 +29,8 @@ public class IDL
   protected static Type       type;
   protected static Operation  operation;
   protected static Action     action;
-  protected static Vector     messageNos;
+  protected static Vector<Integer>     messageNos;
   static private   IDL parser;
-  private static   PrintWriter idlLog;
   /**
   * Reads input from standard input
   */
@@ -45,10 +43,10 @@ public class IDL
       {
         System.out.println(args[i]+": Parsing ...");
         Module module = run(args[i], outLog);
-        //System.out.println("Outputting "+module.name+".repository");
-        //ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(module.name+".repository"));
-        //out.writeObject(module);
-        //out.close();
+        System.out.println("Outputting "+module.name+".repository");
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(module.name+".repository"));
+        out.writeObject(module);
+        out.close();
       }
     }
     catch (Exception e)
@@ -76,11 +74,10 @@ public class IDL
   }
   public static Module run(String inFile, Reader reader, PrintWriter outLog)
   {
-    idlLog = outLog;
     try
     {
       parser = new IDL(reader);
-      messageNos = new Vector();
+      messageNos = new Vector<Integer>();
       parser.idlStart();
       module.sourceName = inFile;
       return module;
@@ -259,10 +256,12 @@ void idlStart() :
 
 void idlSubModule() :
 {
-  Token t;
+  //Token t;
 }
 {
-  <MODULE> t = <IDENTIFIER> (";")?
+  <MODULE>
+  //t =
+  <IDENTIFIER> (";")?
 }
 
 String idlPackage() :
@@ -502,7 +501,6 @@ void idlFielddef() :
 
 void idlType() :
 {
-  Token t;
 }
 {
   idlTypeLookup()

@@ -28,10 +28,11 @@ set (BINUJ_BINARY_DIR ${CMAKE_BINARY_DIR}/binuj)
 include (${CMAKE_SOURCE_DIR}/cmake/functions.cmake)
 
 add_subdirectory(generators)
+add_subdirectory(decompilers)
 add_subdirectory(loyalty)
 add_subdirectory(idl2tester)
 add_subdirectory(binuc)
 add_subdirectory(binuj)
-add_subdirectory(picktester)
+#add_subdirectory(picktester)
 add_subdirectory(demo)
  
