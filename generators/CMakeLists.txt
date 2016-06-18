@@ -1,5 +1,7 @@
 project (jportal_generators)
 
+antMake(target_generators_ant ${GENERATORS_SOURCE_DIR}/build.xml)
+
 set (class_bin_dir ${GENERATORS_SOURCE_DIR}/bin)
 
 set (wild_card 
@@ -12,6 +14,7 @@ message (STATUS "COMMAND ${jarExe} vcfm ${jportal_jar} ${manifest_file} ${wild_c
 add_custom_target (target_jportal_jar ALL
   ${jarExe} vcfm ${jportal_jar} ${manifest_file} ${wild_card}
   WORKING_DIRECTORY ${class_bin_dir}
+  DEPENDS target_generators_ant
 )
 
 set (wild_card 
@@ -27,6 +30,7 @@ message (STATUS "COMMAND ${jarExe} vcfm ${crackle_jar} ${manifest_file} ${wild_c
 add_custom_target (target_crackle_jar ALL
   ${jarExe} vcfm ${crackle_jar} ${manifest_file} ${wild_card}
   WORKING_DIRECTORY ${class_bin_dir}
+  DEPENDS target_generators_ant
 )
 
 set (wild_card vlab/pickle/*.class)
@@ -36,4 +40,5 @@ message (STATUS "COMMAND ${jarExe} vcfm ${pickle_jar} ${manifest_file} ${wild_ca
 add_custom_target (target_pickle_jar ALL
   ${jarExe} vcfm ${pickle_jar} ${manifest_file} ${wild_card}
   WORKING_DIRECTORY ${class_bin_dir}
+  DEPENDS target_generators_ant
 )
