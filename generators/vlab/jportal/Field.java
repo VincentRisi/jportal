@@ -63,6 +63,10 @@ public class Field implements Serializable
   public boolean isOut;
   /** Indicates the field is EXT */
   public boolean isExtStd;
+  public boolean isExtStdOut;
+  public boolean isLiteral;
+  public String literalName;
+  public boolean isCalc;
   public static final byte
     BLOB       = 1
   , BOOLEAN    = 2
@@ -292,6 +296,13 @@ public class Field implements Serializable
   public boolean isCharEmptyOrAnsiAsNull()
   {
     return isCharEmptyAsNull() || ansiIsNull();
+  }
+  /** If there is an literal uses that else returns name */
+  public String useLiteral()
+  {
+    if (isLiteral)
+      return literalName;
+    return name;
   }
 }
 

@@ -95,6 +95,34 @@ public class Link implements Serializable
     }
     return false;
   }
+  /** If there is an alias uses that else returns name */
+  public String useName()
+  {
+    String n = name;
+    n = replaceAll(n, ".", "_");
+    return n;
+  }
+
+  public String replaceAll(
+    String haystack,              // String to search in
+    String needle,                // Substring to find
+    String replacement)
+  {         // Substring to replace with
+
+    int i = haystack.lastIndexOf(needle);
+    if (i != -1)
+    {
+      StringBuffer buffer = new StringBuffer(haystack);
+      buffer.replace(i, i + needle.length(), replacement);
+      while ((i = haystack.lastIndexOf(needle, i - 1)) != -1)
+      {
+        buffer.replace(i, i + needle.length(), replacement);
+      }
+      haystack = buffer.toString();
+    }
+
+    return haystack;
+  }
 }
 
 

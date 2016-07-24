@@ -44,6 +44,8 @@ public class JPortal
   protected static PrintWriter outLog;
   static private boolean parser_initialised = false;
   static private boolean fieldsNullByDefault = false;
+  static private boolean isLiteral = false;
+  static private String literal = "";
   /**
   * Reads input from standard input
   */
@@ -129,6 +131,8 @@ public class JPortal
       perm = null;
       user = null;
       line = null;
+      isLiteral = false;
+      literal = "";
       JPortal.jInput();
       return database;
     }
@@ -332,6 +336,34 @@ public class JPortal
       e.printStackTrace();
     }
   }
+  static String replaceAllLiteral(String haystack)
+  {
+    String s = "\\[]\'\" ";
+    for(int i = 0; i < s.length(); i++)
+    {
+       String c = "" + s.charAt(i);
+       haystack = replaceAll(haystack, c, "");
+    }
+    return haystack;
+  }
+  static String replaceAll(
+    String haystack,              // String to search in
+    String needle,                // Substring to find
+    String replacement)
+  {
+    int i = haystack.lastIndexOf(needle);
+    if (i != -1)
+    {
+      StringBuffer buffer = new StringBuffer(haystack);
+      buffer.replace(i, i + needle.length(), replacement);
+      while ((i = haystack.lastIndexOf(needle, i - 1)) != -1)
+      {
+        buffer.replace(i, i + needle.length(), replacement);
+      }
+      haystack = buffer.toString();
+    }
+    return haystack;
+  }
   static void saveTableModule()
   {
     try
@@ -382,6 +414,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <BULKINSERT:   "bulkinsert">
 | <BULKUPDATE:   "bulkupdate">
 | <BYTE:         "byte">
+| <CALC:         "calc">
 | <CASCADE:      "cascade">
 | <CHAR:         "char">
 | <CHECK:        "check">
@@ -418,7 +451,6 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <MERGE:        "merge">
 | <MONEY:        "money">
 | <MULTIPLE:     "multiple">
-| <UNAME:        "Uname">
 | <NAMES:        "names">
 | <NOT:          "not">
 | <NULL:         "null">
@@ -454,6 +486,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <UID:          "uid">
 | <UNIQUE:       "unique">
 | <UPDATE:       "update">
+| <UPDATEFOR:    "updatefor">
 | <UPDATEBY:     "updateby">
 | <MAXTMSTAMP:   "maxtmstamp">
 | <USERID:       "userid">
@@ -513,10 +546,11 @@ TOKEN :          // Literals
 TOKEN :          // Identifiers
 {
   <IDENTIFIER: (<LETTER>|<EXTRA>) (<LETTER>|<DIGIT>|<EXTRA>)*>
-| <LIDENTIFIER: ("l"|"L") "'" (<LETTER>|<EXTRA>) (<LETTER>|<DIGIT>|<EXTRA>)* "'">
-| <#LETTER: ["a"-"z", "_", ".", "A"-"Z"]>
+| <LIDENTIFIER: ("l"|"L") "'" (<LETTER>|<EXTRA>|<LITERAL>) (<LETTER>|<DIGIT>|<EXTRA>|<LITERAL>)* "'">
+| <#LETTER: ["a"-"z", "_", "A"-"Z"]>
 | <#DIGIT:  ["0"-"9"]>
 | <#EXTRA:  ["#", "$"]>
+| <#LITERAL:["[", "]", "\'", "\"", " ","\\"]>
 }
 
 SPECIAL_TOKEN[IGNORE_CASE] :
@@ -586,8 +620,7 @@ void jInput() :
 	  {
 	    database.output = s;
 	  }
-
-    | <IMPORT> s = jIdentOrString()
+  | <IMPORT> s = jIdentOrString()
 	  {
 	    database.imports.addElement(s);
 	  }
@@ -681,12 +714,16 @@ String jIdent() :
 {
   t = <IDENTIFIER>
   {
+    isLiteral = false;
+    literal = "";
     return t.image;
   }
 | t = <LIDENTIFIER>
   {
     s = t.image;
-    return s.substring(2, s.length()-1);
+    isLiteral = true;
+    literal = s.substring(2, s.length()-1);
+    return replaceAllLiteral(s.substring(2, s.length()-1));
   }
 }
 
@@ -755,6 +792,8 @@ void jTable() :
     table = new Table();
     table.database = database;
     table.name = s;
+    table.isLiteral = isLiteral;
+    table.literalName = literal;
     table.start = t.beginLine;
   }
   ( s = jAlias() { table.alias = s; } )?
@@ -782,17 +821,19 @@ void jTable() :
   )*
 }
 
-void jField() :
+void jPackageField() :
 {
   String s;
   Token t;
   boolean state;
 }
 {
-  s = jIdent()
+  s = jPackageIdent()
   {
     field = new Field();
     field.name = s;
+    field.isLiteral = isLiteral;
+    field.literalName = literal;
     field.isNull = fieldsNullByDefault;
     state = true;
   }
@@ -808,6 +849,56 @@ void jField() :
     {
       field.isNull = state;
     }
+    | <CALC>
+      {
+        field.isCalc = state;
+      }
+  | <CHECK> t = <STRING>
+    {
+      s = t.image;
+      field.checkValue = fixString(s);
+    }
+  )*
+  (
+   s = jComment()
+   {
+     field.comments.addElement(s);
+   }
+  )*
+}
+
+void jField() :
+{
+  String s;
+  Token t;
+  boolean state;
+}
+{
+  s = jIdent()
+  {
+    field = new Field();
+    field.name = s;
+    field.isLiteral = isLiteral;
+    field.literalName = literal;
+    field.isNull = fieldsNullByDefault;
+    state = true;
+  }
+  ( s = jAlias() { field.alias = s; } )?
+  jDatatype()
+  (
+    <DEFAULTV> t = <STRING>
+    {
+      s = t.image;
+      field.defaultValue = fixString(s);
+    }
+  | (<NOT> {state = false;})? <NULL>
+    {
+      field.isNull = state;
+    }
+    | <CALC>
+      {
+        field.isCalc = state;
+      }
   | <CHECK> t = <STRING>
     {
       s = t.image;
@@ -959,7 +1050,7 @@ void jDatatype() :
   {
     field.type = Field.USERSTAMP;
     table.hasUserStamp = true;
-    field.length = 16;
+    field.length = 30;
   }
 |  <SEQUENCE>
   {
@@ -1451,7 +1542,7 @@ void jLink() :
   Proc dproc = new Proc();
 }
 {
-  <LINK> s = jIdent()
+  <LINK> s = jPackageIdent()
   {
     link = new Link();
     link.name = s;
@@ -1630,7 +1721,7 @@ void jProc() :
       proc.isSProc = true;
     }
   )
-  (jStdProc() | jUserProc())
+  (jStdProc() | (LOOKAHEAD(3) jNewProc() |jUserProc()))
   {
     if (table.hasProc(proc))
       outLog.println("proc "+proc.name+" already present in table");
@@ -1672,43 +1763,22 @@ void jStdProc() :
         table.buildIdentity(proc);
       }
     }
+  | <UPDATE>
+      {
+        if (!table.hasPrimaryKey)
+          outLog.println("proc Update requires a primary key");
+        else
+        {
+          proc.name = "Update";
+          proc.isUpdate = true;
+          table.buildUpdate(proc, outLog);
+          table.hasStdProcs = true;
+        }
+      }
   | <BULKINSERT> (jRowCount())?
     {
       proc.name = "BulkInsert";
       table.buildBulkInsert(proc);
-      table.hasStdProcs = true;
-    }
-  | <UPDATE> ( <FOR> (jProcColumn())+ )?
-    ( <RETURNING> {proc.hasReturning = true;})?
-    (<UNAME> ( s = jString()
-              {
-                proc.username = s;
-              }
-            )
-     )?
-    {
-      if (!table.hasPrimaryKey)
-        outLog.println("proc Update requires a primary key");
-      else
-      {
-        proc.name = "Update";
-        proc.isUpdate = true;
-        table.buildUpdate(proc, outLog);
-        table.hasStdProcs = true;
-      }
-    }
-  | <UPDATEBY> ( (jProcUpdateByColumn())+ <FOR> (jProcColumn())+ )
-    ( <RETURNING> {proc.hasReturning = true;})?
-    (<UNAME> ( s = jString()
-              {
-                proc.username = s;
-              }
-            )
-     )?
-    {
-      proc.name = "UpdateBy";
-      proc.isUpdate = true;
-      table.buildUpdateBy(proc, outLog);
       table.hasStdProcs = true;
     }
 
@@ -1732,7 +1802,6 @@ void jStdProc() :
     }
   | <DELETEONE>
 
-    ( <RETURNING> {proc.hasReturning = true;})?
     ( <STANDARD>
       {
         proc.isStd = true;
@@ -1753,23 +1822,9 @@ void jStdProc() :
       }
     }
   | <DELETEALL>
-    ( <RETURNING> {proc.hasReturning = true;})?
     {
       proc.name = "DeleteAll";
       table.buildDeleteAll(proc);
-      table.hasStdProcs = true;
-    }
-  | <DELETEBY> ( jProcColumn())+
-    ( <RETURNING> {proc.hasReturning = true;})?
-    (<UNAME> ( s = jString()
-              {
-                proc.username = s;
-              }
-            )
-     )?
-    {
-      proc.name = "DeleteBy";
-      table.buildDeleteBy(proc, outLog);
       table.hasStdProcs = true;
     }
 
@@ -1803,124 +1858,8 @@ void jStdProc() :
         table.hasStdProcs = true;
       }
     }
-  | <SELECTBY> ( jProcColumn())+
-    ((<IN>)? <ORDER> {inOrder = true;})?
-    ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
 
-    (<UNAME> ( s = jString()
-              {
-                proc.username = s;
-              }
-            )
-     )?
-    {
-      proc.name = "SelectBy";
-      table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
-      table.hasStdProcs = true;
-    }
-  | <SELECT>
-    ( <INPUT> (jInputType())?
-      {
-        proc.extendsStd = true;
-        proc.useStd = true;
-        isStdProc = true;
-      }
-    ( jField()
-      {
-        if (proc.hasInput(field.name))
-        {
-          //if (proc.extendsStd == false)
-          outLog.println(proc.name+" field "+field.name+" already present as input");
-        }
-        else
-        {
-          if (proc.extendsStd == true && proc.hasOutput(field.name) == false)
-          {
-            proc.useStd = false;
-            isStdProc = false;
-          }
-           if (!field.isNull)
-             field.isNull = (table.hasFieldAsNull(field.name));
-           field.isIn = true;
-           proc.inputs.addElement(field);
-          }
-        }
-      )+
-    )
-    ( <OUTPUT> (jOutputType())?
-    ( jField()
-      {
-        if (proc.isSProc == true)
-        {
-          if (proc.hasInput(field.name))
-            field = proc.getInput(field.name);
-          else
-            proc.inputs.addElement(field);
-          field.isOut = true;
-        }
-        else
-        {
-          if (proc.hasOutput(field.name))
-          {
-            if (proc.extendsStd == false)
-              outLog.println(proc.name+" field "+field.name+" already present as output");
-          }
-          else
-          {
-            if (proc.extendsStd == true)
-            {
-              proc.useStd = false;
-              isStdProc = false;
-            }
-            if (!field.isNull)
-              field.isNull = (table.hasFieldAsNull(field.name));
-            proc.outputs.addElement(field);
-          }
-        }
-      }
-    )*
-  )?
 
-    (<FROM> ( s = jString()
-            {
-              proc.from = s;
-            }
-           )
-      )
-     (<WHERE>  ( s = jString()
-                {
-                  proc.where = s;
-                }
-               )
-      )
-    (<UNAME> ( s = jString()
-              {
-                proc.username = s;
-              }
-            )
-     )?
-    {
-      proc.name = "SelectFrom";
-      table.buildSelectFrom(proc, outLog);
-      proc.extendsStd = true;
-      proc.useStd = true;
-      isStdProc = true;
-    }
-  | <SELECTONEBY> ( jProcColumn())+
-    ((<IN>)? <ORDER> {inOrder = true;})?
-    ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
-    (<UNAME> ( s = jString()
-              {
-                proc.username = s;
-              }
-            )
-     )?
-    {
-      proc.name = "SelectOneBy";
-      proc.isSingle = true;
-      table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
-      table.hasStdProcs = true;
-    }
   | <COUNT>
     {
       proc.name = "Count";
@@ -1959,6 +1898,162 @@ void jStdProc() :
   )*
 }
 
+void jNewProc() :
+{
+  String s;
+  boolean isStdProc = false;
+  boolean forUpdate = false;
+  boolean forReadOnly = false;
+  boolean inOrder = false;
+}
+{
+ s = jIdent()
+  {
+    proc.name = s;
+  }
+  ( <SELECT>
+      ( <STANDARD>
+          {
+            proc.isStd = true;
+          }
+      )?
+      ( <INPUT> (jInputType())?
+        {
+          proc.extendsStd = true;
+          proc.useStd = true;
+          isStdProc = true;
+          Integer size;
+        }
+        ( jField()
+          {
+            if (proc.hasInput(field.name))
+            {
+              //if (proc.extendsStd == false)
+              outLog.println(proc.name+" field "+field.name+" already present as input");
+            }
+            else
+            {
+              if (proc.extendsStd == true && proc.hasOutput(field.name) == false)
+              {
+                proc.useStd = false;
+                isStdProc = false;
+              }
+              if (!field.isNull)
+                field.isNull = (table.hasFieldAsNull(field.name));
+              field.isIn = true;
+              proc.inputs.addElement(field);
+            }
+          }
+        )+
+      )?
+      ( <OUTPUT> (jOutputType())?
+        ( jPackageField()
+          {
+            if (proc.isSProc == true)
+            {
+              if (proc.hasInput(field.name))
+                field = proc.getInput(field.name);
+              else
+                proc.inputs.addElement(field);
+              field.isOut = true;
+            }
+            else
+            {
+              if (proc.hasOutput(field.name))
+              {
+                if (proc.extendsStd == false)
+                  outLog.println(proc.name+" field "+field.name+" already present as output");
+              }
+              else
+              {
+                if (proc.extendsStd == true)
+                {
+                  proc.useStd = false;
+                  isStdProc = false;
+                }
+                if (!field.isNull)
+                  field.isNull = (table.hasFieldAsNull(field.name));
+                proc.outputs.addElement(field);
+              }
+            }
+          }
+        )*
+      )?
+      ( jOldCode() | jNewCode() )
+      {
+        table.buildSelectFrom(proc,table, outLog);
+        proc.useStd = true;
+        isStdProc = true;
+      }
+  | <SELECTONEBY> ( jProcColumn())+
+      ((<IN>)? <ORDER> {inOrder = true;})?
+      ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
+      {
+        proc.isSingle = true;
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.hasStdProcs = true;
+      }
+  | <SELECTBY> ( jProcColumn())+
+      ((<IN>)? <ORDER> {inOrder = true;})?
+      ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
+      ( <OUTPUT> (jOutputType())?
+        ( jField()
+          {
+            if (proc.isSProc == true)
+            {
+              if (proc.hasInput(field.name))
+                field = proc.getInput(field.name);
+              else
+                proc.inputs.addElement(field);
+              field.isOut = true;
+            }
+            else
+            {
+              if (proc.hasOutput(field.name))
+              {
+                if (proc.extendsStd == false)
+                  outLog.println(proc.name+" field "+field.name+" already present as output");
+              }
+              else
+              {
+                if (proc.extendsStd == true)
+                {
+                  proc.useStd = false;
+                  isStdProc = false;
+                }
+                if (!field.isNull)
+                  field.isNull = (table.hasFieldAsNull(field.name));
+                proc.outputs.addElement(field);
+              }
+            }
+          }
+        )*
+      )?
+      {
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.hasStdProcs = true;
+      }
+  | <DELETEBY> ( jProcColumn())+
+      {
+        table.buildDeleteBy(proc, outLog);
+        table.hasStdProcs = true;
+      }
+  | <UPDATEFOR> (jProcColumn())+
+      {
+        proc.isUpdate = true;
+        table.buildUpdateFor(proc, outLog);
+        table.hasStdProcs = true;
+      }
+  | <UPDATEBY> ( (jProcUpdateByColumn())+ (<FOR> (jProcColumn())+)? )
+      {
+        proc.isUpdate = true;
+        table.buildUpdateBy(proc, outLog);
+        table.hasStdProcs = true;
+      }
+ )
+}
+
+
 void jProcColumn() :
 {
   String s;
@@ -1974,6 +2069,20 @@ void jProcColumn() :
       outLog.println(proc.name+" field "+s+" cannot be set aswell, already present as input");
     else
       proc.fields.addElement(s);
+  }
+}
+
+void jProcOutColumn() :
+{
+  String s;
+}
+{
+  s = jIdent()
+  {
+    if (!table.hasField(s))
+      outLog.println(proc.name+" field "+s+" not present in table");
+    else
+      proc.outputs.addElement(table.getField(s));
   }
 }
 

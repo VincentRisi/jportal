@@ -57,11 +57,14 @@ public class Table implements Serializable
   public boolean  hasBigXML;
   public boolean isStoredProc;
 	public int start;
+  public boolean isLiteral;
+  public String literalName;
   public Table()
   {
     name              = "";
     alias             = "";
     check             = "";
+    literalName       = "";
     fields            = new Vector<Field>();
     keys              = new Vector<Key>();
     links             = new Vector<Link>();
@@ -88,6 +91,7 @@ public class Table implements Serializable
     hasSequenceReturning = false;
     hasBigXML         = false;
     isStoredProc      = false;
+    isLiteral         = false;
     start             = 0;
   }
   public void reader(DataInputStream ids) throws IOException
@@ -722,7 +726,89 @@ public class Table implements Serializable
       }
     }
   }
+  /**
+   * Builds an update proc
+   * generated as part of standard record class
+   */
+  public void buildUpdateFor(Proc proc, PrintWriter outLog)
+  {
+    String name = tableName();
+    int i, j, k;
+    String line;
+    proc.isStd = true;
+    proc.isSql = true;
+    proc.lines.addElement(new Line("update " + name));
+    proc.lines.addElement(new Line(" set"));
+    for (i = 0, j = 0; i < proc.fields.size(); i++)
+    {
+      String fieldName = (String) proc.fields.elementAt(i);
+      for (k = 0; k < fields.size(); k++)
+      {
+        Field field = (Field) fields.elementAt(k);
+        if (field.isPrimaryKey || field.isCalc || field.isSequence)
+          continue;
+        if (field.name.equalsIgnoreCase(fieldName))
+        {
+          proc.inputs.addElement(field);
+          if (j == 0)
+            line = "  ";
+          else
+            line = ", ";
+          j++;
+          proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+        }
+      }
+    }
+    AddTimeStampUserStamp(proc);
+    for (i = 0, j = 0; i < fields.size(); i++)
+    {
+      Field field = (Field) fields.elementAt(i);
+      if (field.isPrimaryKey)
+      {
+        proc.inputs.addElement(field);
+        if (j == 0)
+          line = " where ";
+        else
+          line = "   and ";
+        j++;
+        line = line + field.useLiteral() + " = ?";
+        proc.lines.addElement(new Line(line));
+      }
+    }
+    if (proc.hasReturning)
+      proc.lines.add(new Line("_ret.tail", true));
+  }
+  private void AddTimeStampUserStamp(Proc proc)
+  {
+    int k;
+    String line;
+    boolean tmAdded, unAdded;
+    tmAdded = unAdded = false;
+    for (k = 0; k < fields.size(); k++)
+    {
+      Field field = (Field) fields.elementAt(k);
+      if (field.type == Field.USERSTAMP && !unAdded)
+      {
+        unAdded = true;
+        if (!proc.inputs.contains(field))
+        {
+          proc.inputs.addElement(field);
+          line = ", ";
 
+          proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+        }
+      } else if (field.type == Field.TIMESTAMP && !tmAdded)
+      {
+        tmAdded = true;
+        if (!proc.inputs.contains(field))
+        {
+          proc.inputs.addElement(field);
+          line = ", ";
+          proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+        }
+      }
+    }
+  }
   /**
   * Builds an updateby proc
   * generated as part of standard record class
@@ -845,7 +931,7 @@ public class Table implements Serializable
     String name = tableName();
     proc.isSql = true;
     proc.lines.addElement(new Line("delete from " + name));
-	if (proc.hasReturning)
+ 	if (proc.hasReturning)
 		proc.lines.add(new Line("_ret.tail", true));
   }
   /**
@@ -1118,10 +1204,116 @@ public class Table implements Serializable
       throw new Error("Error in SelectBy");
     }
   }
-  public void buildSelectFrom(Proc proc, PrintWriter outLog)
+  public void buildSelectFrom(Proc proc, Table table, PrintWriter outLog)
   {
     String name = tableName();
     int i, j, k;
+    String line;
+    proc.extendsStd = false;
+    proc.isSql = true;
+    String preFix = "";
+    boolean doSelect = true;
+    Line first;
+    if (proc.lines.size() > 0)
+    {
+      first = (Line)proc.lines.elementAt(0);
+      for (k = 0; k < proc.lines.size(); k++)
+      {
+        first = (Line)proc.lines.elementAt(k);
+        if (first.line.toLowerCase().indexOf("select ") > -1 && first.line.toLowerCase().indexOf("select ") < 5)
+        {
+          doSelect = false;
+          outLog.println("Select found not generating SELECT." + first.line.toLowerCase().indexOf("select "));
+          break;
+        }
+      }
+    }
+    if (doSelect)
+    {
+      if (preFix == "")
+      {
+        for (k = 0; k < proc.lines.size(); k++)
+        {
+          first = (Line)proc.lines.elementAt(k);
+          if (first.line.toLowerCase().indexOf(name.toLowerCase()) > -1)
+          {
+            preFix = first.line.substring(first.line.toLowerCase().indexOf(name.toLowerCase()) + name.length()).trim();
+            int n = preFix.indexOf(' ');
+            if (n > 0)
+            {
+              preFix = preFix.substring(0, n).trim();
+            }
+            if (!name.toLowerCase().startsWith(preFix.toLowerCase().substring(0, 1)))
+            {
+              outLog.println("PREFIX mismatch. Dropping PREFIX");
+              preFix = "";
+            }
+            break;
+          }
+        }
+      }
+      if (preFix.equals(""))
+      {
+        outLog.println("Unable to determine PREFIX for table");
+      }
+      proc.lines.insertElementAt(new Line("SELECT "), 0);
+      for (j = 0; j < proc.outputs.size(); j++)
+      {
+        Field fieldName = (Field)proc.outputs.elementAt(j);
+        if (table.hasField(fieldName.name))
+        {
+          if (j == 0)
+            if (preFix.length() > 0)
+              line = "  " + preFix + ".";
+            else
+              line = "  ";
+          else
+            if (preFix.length() > 0)
+              line = ", " + preFix + ".";
+            else
+              line = ", ";
+        }
+        else
+        {
+          fieldName.isExtStd = true;
+          fieldName.isExtStdOut = true;
+          if (j == 0)
+            line = "  ";
+          else
+            line = ", ";
+        }
+        proc.lines.insertElementAt(new Line(line + fieldName.useLiteral() + " "), j + 1);
+        if (proc.isStd)
+          proc.inputs.addElement(fieldName);
+      }
+      if (proc.isStd)
+      {
+        for (i = 0; i < fields.size(); i++)
+        {
+          Field field = (Field)fields.elementAt(i);
+          proc.outputs.addElement(field);
+          if (i == 0 && j == 0)
+            if (preFix.length() > 0)
+              line = "  " + preFix + ".";
+            else
+              line = "  ";
+          else
+            if (preFix.length() > 0)
+              line = ", " + preFix + ".";
+            else
+              line = ", ";
+          proc.lines.insertElementAt(new Line(line + field.useLiteral() + " "), j + i + 1);
+        }
+        proc.isStd = false;
+        proc.extendsStd = true;
+        proc.useStd = true;
+      }
+    }
+  }
+  public void buildSelectFrom(Proc proc, PrintWriter outLog)
+  {
+    String name = tableName();
+    int i, j;
     String line;
     proc.isStd = false;
     proc.isSql = true;

@@ -2,7 +2,7 @@
 /* JavaCCOptions:TOKEN_EXTENDS=,KEEP_LINE_COL=null,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Copyright (c) from 1996 Vincent Risi
-///                          
+///
 /// All rights reserved.
 /// This program and the accompanying materials are made available
 /// under the terms of the Common Public License v1.0
@@ -139,4 +139,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=d3043d31282162efc82c936636b6ba09 (do not edit this line) */
+/* JavaCC - OriginalChecksum=c6df8e6cfd420fe0668e6bdda32eb36d (do not edit this line) */
