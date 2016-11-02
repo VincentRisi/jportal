@@ -2,7 +2,7 @@
 /* JavaCCOptions: */
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Copyright (c) from 1996 Vincent Risi
-///                          
+///
 /// All rights reserved.
 /// This program and the accompanying materials are made available
 /// under the terms of the Common Public License v1.0
@@ -155,4 +155,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=cda4e1a2e1e5131149c24b291f0c6721 (do not edit this line) */
+/* JavaCC - OriginalChecksum=e12a357fde852b6f78fdab19176d350b (do not edit this line) */

@@ -2,7 +2,7 @@
 /* JavaCCOptions:KEEP_LINE_COL=null */
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Copyright (c) from 1996 Vincent Risi
-///                          
+///
 /// All rights reserved.
 /// This program and the accompanying materials are made available
 /// under the terms of the Common Public License v1.0
@@ -52,7 +52,7 @@ public class ParseException extends Exception {
    * The following constructors are for use by you for whatever
    * purpose you can think of.  Constructing the exception in this
    * manner makes the exception behave in the normal way - i.e., as
-   * documented in the class "Exception".  The fields "errorToken",
+   * documented in the class "Throwable".  The fields "errorToken",
    * "expectedTokenSequences", and "tokenImage" do not contain
    * relevant information.  The JavaCC generated code does not use
    * these constructors.
@@ -195,4 +195,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=cf06c9ca9cb81e8ab7757b8c7a380958 (do not edit this line) */
+/* JavaCC - OriginalChecksum=5466cf3e057a85e062bc20bf55d9f338 (do not edit this line) */

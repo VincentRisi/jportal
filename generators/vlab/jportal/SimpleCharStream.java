@@ -2,7 +2,7 @@
 /* JavaCCOptions:STATIC=true,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Copyright (c) from 1996 Vincent Risi
-///                          
+///
 /// All rights reserved.
 /// This program and the accompanying materials are made available
 /// under the terms of the Common Public License v1.0
@@ -85,7 +85,7 @@ public class SimpleCharStream
         maxNextCharInd = (bufpos -= tokenBegin);
       }
     }
-    catch (Exception t)
+    catch (Throwable t)
     {
       throw new Error(t.getMessage());
     }
@@ -483,4 +483,4 @@ public class SimpleCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=1c3db4fa3deb61f019bf77c1f4ec9982 (do not edit this line) */
+/* JavaCC - OriginalChecksum=b85cf4acf14f83b834f4d9393c4acb4a (do not edit this line) */

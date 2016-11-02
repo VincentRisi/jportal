@@ -18,10 +18,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.Vector;
-
-import vlab.jportal.util.Connector;
-import vlab.jportal.util.ConnectorOracle;
-import vlab.jportal.util.Query;
 import vlab.jportal.Database;
 import vlab.jportal.Field;
 import vlab.jportal.Grant;
@@ -31,6 +27,9 @@ import vlab.jportal.Proc;
 import vlab.jportal.Sequence;
 import vlab.jportal.Table;
 import vlab.jportal.View;
+import vlab.jportal.util.Connector;
+import vlab.jportal.util.ConnectorOracle;
+import vlab.jportal.util.Query;
 
 class LinksTo
 {
@@ -345,7 +344,7 @@ public class OracleRE
     proc = new Proc();
     proc.table = table;
     proc.name = "Update";
-    table.buildUpdate(proc);
+    table.buildUpdate(proc, outLog);
     table.procs.addElement(proc);
   }
   static void buildDeleteOne(PrintWriter outLog)

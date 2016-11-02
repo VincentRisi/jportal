@@ -7,6 +7,9 @@ set (TOOLS_DIR ${CMAKE_SOURCE_DIR}/tools)
 set (GENERATORS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/generators)
 set (GENERATORS_BINARY_DIR ${CMAKE_BINARY_DIR}/generators)
 
+set (DECOMPILERS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/decompilers)
+set (DECOMPILERS_BINARY_DIR ${CMAKE_BINARY_DIR}/decompilers)
+
 set (LOYALTY_SOURCE_DIR ${CMAKE_SOURCE_DIR}/loyalty)
 set (LOYALTY_BINARY_DIR ${CMAKE_BINARY_DIR}/loyalty)
 
@@ -28,10 +31,11 @@ set (BINUJ_BINARY_DIR ${CMAKE_BINARY_DIR}/binuj)
 include (${CMAKE_SOURCE_DIR}/cmake/functions.cmake)
 
 add_subdirectory(generators)
+add_subdirectory(decompilers)
 add_subdirectory(loyalty)
 add_subdirectory(idl2tester)
 add_subdirectory(binuc)
 add_subdirectory(binuj)
-add_subdirectory(picktester)
+#add_subdirectory(picktester)
 add_subdirectory(demo)
  

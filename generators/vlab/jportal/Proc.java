@@ -31,6 +31,12 @@ public class Proc implements Serializable
   public Table   table;
   /** name of procedure */
   public String  name;
+  /** name of procedure */
+  public String from;
+  /** name of procedure */
+  public String where;
+  /** user name of procedure */
+  public String username;
   /** name of rows on multiples */
   public int     noRows;
   /** List of input fields */
@@ -51,6 +57,10 @@ public class Proc implements Serializable
   public Vector<String>  comments;
   /** Generate options for procedure */
   public Vector<String>  options;
+  /** SelectBy DeleteBy std proc fields   */
+  public Vector<String> fields;
+  /** SelectFor update fields   */
+  public Vector<String> updateFields;
   /** Indicates the procedure uses stored procedure logic Code */
   public boolean isProc;
   /** Indicates the procedure uses stored procedure logic Code */
@@ -63,6 +73,8 @@ public class Proc implements Serializable
   public boolean isSql;
   /** Indicates a single result is expected */
   public boolean isSingle;
+  /** Indicates a update Proc */
+  public boolean isUpdate;
   /** Indicates an action no result is expected */
   public boolean isAction;
   /** Indicates procedure is a Standard procedure */
@@ -89,6 +101,9 @@ public class Proc implements Serializable
   public Proc()
   {
     name            = "";
+    from            = "";
+    where           = "";
+    username        = "";
     noRows          = 0;
     inputs          = new Vector<Field>();
     outputs         = new Vector<Field>();
@@ -99,6 +114,8 @@ public class Proc implements Serializable
     lines           = new Vector<Line>();
     comments        = new Vector<String>();
     options         = new Vector<String>();
+    fields          = new Vector<String>();
+    updateFields    = new Vector<String>();
     isProc          = false;
     isSProc         = false;
     isData          = false;
@@ -106,6 +123,7 @@ public class Proc implements Serializable
     isSql           = false;
     isAction        = false;
     isSingle        = false;
+    isUpdate        = false;
     isStd           = false;
     useStd          = false;
     extendsStd      = false;
@@ -120,6 +138,9 @@ public class Proc implements Serializable
   public void reader(DataInputStream ids) throws IOException
   {
     name            = ids.readUTF();
+    from            = ids.readUTF();
+    where           = ids.readUTF();
+    username        = ids.readUTF();
     noRows          = ids.readInt();
     int noOf        = ids.readInt();
     for (int i=0; i<noOf; i++)
@@ -179,6 +200,18 @@ public class Proc implements Serializable
       String value = ids.readUTF();
       options.addElement(value);
     }
+    noOf = ids.readInt();
+    for (int i = 0; i < noOf; i++)
+    {
+      String value = ids.readUTF();
+      fields.addElement(value);
+    }
+    noOf = ids.readInt();
+    for (int i = 0; i < noOf; i++)
+    {
+      String value = ids.readUTF();
+      updateFields.addElement(value);
+    }
     isProc          = ids.readBoolean();
     isSProc         = ids.readBoolean();
     isData          = ids.readBoolean();
@@ -186,6 +219,7 @@ public class Proc implements Serializable
     isSql           = ids.readBoolean();
     isAction        = ids.readBoolean();
     isSingle        = ids.readBoolean();
+    isUpdate        = ids.readBoolean();
     isStd           = ids.readBoolean();
     useStd          = ids.readBoolean();
     extendsStd      = ids.readBoolean();
@@ -200,6 +234,9 @@ public class Proc implements Serializable
   public void writer(DataOutputStream ods) throws IOException
   {
     ods.writeUTF(name);
+    ods.writeUTF(from);
+    ods.writeUTF(where);
+    ods.writeUTF(username);
     ods.writeInt(noRows);
     ods.writeInt(inputs.size());
     for (int i=0; i<inputs.size(); i++)
@@ -259,6 +296,18 @@ public class Proc implements Serializable
       String value = (String) options.elementAt(i);
       ods.writeUTF(value);
     }
+    ods.writeInt(fields.size());
+    for (int i = 0; i < fields.size(); i++)
+    {
+      String value = (String)fields.elementAt(i);
+      ods.writeUTF(value);
+    }
+    ods.writeInt(updateFields.size());
+    for (int i = 0; i < updateFields.size(); i++)
+    {
+      String value = (String)updateFields.elementAt(i);
+      ods.writeUTF(value);
+    }
     ods.writeBoolean(isProc);
     ods.writeBoolean(isSProc);
     ods.writeBoolean(isData);
@@ -266,6 +315,7 @@ public class Proc implements Serializable
     ods.writeBoolean(isSql);
     ods.writeBoolean(isAction);
     ods.writeBoolean(isSingle);
+    ods.writeBoolean(isUpdate);
     ods.writeBoolean(isStd);
     ods.writeBoolean(useStd);
     ods.writeBoolean(extendsStd);
@@ -282,6 +332,12 @@ public class Proc implements Serializable
   {
     String f = name.substring(0, 1);
     return f.toUpperCase()+name.substring(1);
+  }
+  /** Folds the first character of name to an upper case character */
+  public String upperFirstOnly()
+  {
+    String f = name.substring(0, 1);
+    return f.toUpperCase();
   }
   /** Folds the first character of name to an lower case character */
   public String lowerFirst()
@@ -461,6 +517,26 @@ public class Proc implements Serializable
     for (int i=0; i<options.size(); i++)
     {
       String option = (String) options.elementAt(i);
+      if (option.toLowerCase().compareTo(value.toLowerCase()) == 0)
+        return true;
+    }
+    return false;
+  }
+  public boolean hasFields(String value)
+  {
+    for (int i = 0; i < fields.size(); i++)
+    {
+      String option = (String)fields.elementAt(i);
+      if (option.toLowerCase().compareTo(value.toLowerCase()) == 0)
+        return true;
+    }
+    return false;
+  }
+  public boolean hasUpdateFields(String value)
+  {
+    for (int i = 0; i < updateFields.size(); i++)
+    {
+      String option = (String)updateFields.elementAt(i);
       if (option.toLowerCase().compareTo(value.toLowerCase()) == 0)
         return true;
     }

@@ -14,7 +14,7 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
+	<!--linkedResources>
 		<link>
 			<name>vlab/jportal/decompiler/Oracle.java</name>
 			<type>1</type>
@@ -110,5 +110,5 @@
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleViewsRec.java</locationURI>
 		</link>
-	</linkedResources>
+	</linkedResources-->
 </projectDescription>

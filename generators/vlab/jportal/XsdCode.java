@@ -750,7 +750,7 @@ public class XsdCode extends Generator
       genCommand(table, placeHolder, "SelectCommand", commandType, outData,
           outLog);
       proc = new Proc();
-      table.buildUpdate(proc);
+      table.buildUpdate(proc, outLog);
       placeHolder = genCommand(proc);
       if (!table.isStoredProc)
         genCommand(table, placeHolder, "UpdateCommand", "Text", outData, outLog);

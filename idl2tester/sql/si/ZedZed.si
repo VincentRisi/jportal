@@ -32,6 +32,7 @@ proc SelectAll
 proc DeleteOne options "BL"
 proc DeleteAll
 proc Update    options "BL"
+proc SelectBy Bee Cee
 
 proc AtomTest
 input

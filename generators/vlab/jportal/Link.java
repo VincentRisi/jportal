@@ -34,6 +34,9 @@ public class Link implements Serializable
   public Vector<String> linkFields;
   public Vector<String> options;
   public boolean isDeleteCascade;
+  public boolean isUpdateCascade;
+  public boolean isProc;
+  public boolean isDProc;
   public Link()
   {
     name      = "";
@@ -42,6 +45,9 @@ public class Link implements Serializable
     linkFields = new Vector<String>();
     options = new Vector<String>();
     isDeleteCascade = false;
+    isUpdateCascade = false;
+    isProc = false;
+    isDProc = false;
   }
   public void reader(DataInputStream ids) throws IOException
   {
@@ -88,6 +94,34 @@ public class Link implements Serializable
         return true;
     }
     return false;
+  }
+  /** If there is an alias uses that else returns name */
+  public String useName()
+  {
+    String n = name;
+    n = replaceAll(n, ".", "_");
+    return n;
+  }
+
+  public String replaceAll(
+    String haystack,              // String to search in
+    String needle,                // Substring to find
+    String replacement)
+  {         // Substring to replace with
+
+    int i = haystack.lastIndexOf(needle);
+    if (i != -1)
+    {
+      StringBuffer buffer = new StringBuffer(haystack);
+      buffer.replace(i, i + needle.length(), replacement);
+      while ((i = haystack.lastIndexOf(needle, i - 1)) != -1)
+      {
+        buffer.replace(i, i + needle.length(), replacement);
+      }
+      haystack = buffer.toString();
+    }
+
+    return haystack;
   }
 }
 

@@ -4,16 +4,18 @@ set (pickleJar  ${GENERATORS_SOURCE_DIR}/bin/pickle.jar)
 set (anydbMake ${TOOLS_DIR}/anydbMake.py)
 
 if (WIN32) #TBD - use cmake to find them
-  message (STATUS "Setup link or junction for PostgreSQL and JavaJDK")
+  message (STATUS "Setup link or junction for PostgreSQL, Ant and JavaJDK")
   set (pythonExe c:/python27/python.exe)
   set (psqlExe "c:/PostgeSQL/bin/psql.exe")
   set (javaExe "c:/JavaJDK/bin/java.exe")
   set (jarExe  "c:/JavaJDK/bin/jar.exe")
+  set (antExe  "c:/Ant/bin/ant.exe")
 else ()
   set (pythonExe /usr/bin/python)
   set (psqlExe /usr/bin/psql)
   set (javaExe /usr/bin/java)
   set (jarExe /usr/bin/jar)
+  set (antExe /usr/bin/ant)
 endif ()
 
 function (pathed result ext_dir)
@@ -96,5 +98,12 @@ function (anydbMake2 projectName anydbMakeFile)
   add_custom_target (${projectName} ALL
     ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -p ${pickleJar} -v ${anydbMakeFile} 
     SOURCES ${anydbMakeFile}
+  )
+endfunction ()
+
+function (antMake projectName buildFile)
+  add_custom_target (${projectName} ALL
+    ${antExe} -f ${buildFile} 
+    SOURCES ${buildFile}
   )
 endfunction ()
