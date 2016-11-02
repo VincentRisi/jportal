@@ -37,4 +37,8 @@ sudo sh -c "echo /usr/lib/oracle/12.1/client/lib >/etc/ld.so.conf.d/oracle.conf"
 sudo ldconfig
 
 #TODO: Must be added to .bashrc??
-sudo sh -c "echo export LD_LIBRARY_PATH=/usr/lib/oracle/12.1/client64/lib:\$LD_LIBRARY_PATH >> /home/vagrant/.bashrc"
+export LD_LIBRARY_PATH=/usr/lib/oracle/12.1/client64/lib:$LD_LIBRARY_PATH
+
+#Vince currently has a bug in the crackle stuff
+rm -Rf /home/vagrant/sync/generators/vlab/crackle
+
