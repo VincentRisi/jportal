@@ -3,7 +3,7 @@ sudo apt-get -y update
 sudo apt-get install -y cmake
 sudo apt-get install -y eclipse
 sudo apt-get install -y javacc
-sudo apt-get install -y cocor
+sudo apt-get install -y coco-java
 sudo apt-get install -y log4j
 sudo apt-get install -y postgresql 
 
@@ -25,11 +25,11 @@ sudo apt-get install -y libaio-dev
  
 #Alien can't install the oracle files if they reside on a vagrant shared folder, so copy them to ~/oracle_temp and install from there...
 mkdir ~/oracle_temp
-cp oracle/* ~/oracle_temp/
+cp sync/oracle/* ~/oracle_temp/
 cd ~/oracle_temp
 sudo alien -i oracle-instantclient12.1-basiclite-12.1.0.2.0-1.x86_64.rpm
 sudo alien -i oracle-instantclient12.1-jdbc-12.1.0.2.0-1.x86_64.rpm 
-sudo alien -i sudo alien -i oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm
+sudo alien -i oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm
 #sudo alien -i oracle-instantclinet*-sqlplus-*.rpm
 
 #set oracle confs
@@ -37,4 +37,4 @@ sudo sh -c "echo /usr/lib/oracle/12.1/client/lib >/etc/ld.so.conf.d/oracle.conf"
 sudo ldconfig
 
 #TODO: Must be added to .bashrc??
-export LD_LIBRARY_PATH=/usr/lib/oracle/12.1/client64/lib:$LD_LIBRARY_PATH
+sudo sh -c "echo export LD_LIBRARY_PATH=/usr/lib/oracle/12.1/client64/lib:\$LD_LIBRARY_PATH >> /home/vagrant/.bashrc"
