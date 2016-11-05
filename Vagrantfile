@@ -44,8 +44,11 @@ Vagrant.configure(2) do |config|
   
   ##For some idiotic reason the owners of CentOS/7 have the following line in their vagrantfile
   ## 	 config.vm.synced_folder ".", "/home/vagrant/sync", type: "rsync"
-  ##This causes an error on windows that 'rsync' is not available, so the line below overrides the rsync syncing with virtualbox syncing  
-  config.vm.synced_folder ".", "/home/vagrant/sync", type: "virtualbox"
+  ##This causes an error on windows that 'rsync' is not available, so the line below disables it
+  config.vm.synced_folder ".", "/home/vagrant/sync", disabled: true
+
+  #For some reason Vince mounts it in /main/jportal, so here we go
+  config.vm.synced_folder ".", "/main/jportal", type: "virtualbox"
   
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
