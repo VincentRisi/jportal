@@ -95,8 +95,8 @@ public class IdlBinUCode extends Generator
         {
           outData.println("using System;");
           outData.println("using System.IO;");
-          outData.println("using Bbd.Idl2;");
-          outData.println("namespace Bbd.Idl2.AnyDB");
+          outData.println("using vlab.idl2;");
+          outData.println("namespace Vlab.idl2.jportal");
           outData.println("{");
           generateStructs(table, outData);
           generateBinUsage(table, outData);

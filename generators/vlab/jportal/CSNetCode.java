@@ -203,7 +203,7 @@ public class CSNetCode extends Generator
     PrintWriter outData = new PrintWriter(outFile);
     String packageName = table.database.packageName;
     if (packageName.length() == 0)
-      packageName = "Bbd.JPortal";
+      packageName = "vlab.jportal";
     outData.println("using System;");
     if (useGenerics)
       outData.println("using System.Collections.Generic;");
@@ -213,7 +213,7 @@ public class CSNetCode extends Generator
       outData.println("using System.Collections.Specialized;");
     }
     outData.println("using System.Data;");
-    outData.println("using Bbd.Idl2.AnyDb;");
+    outData.println("using vlab.jportal;");
     outData.println("");
     outData.println("namespace " + packageName);
     outData.println("{");

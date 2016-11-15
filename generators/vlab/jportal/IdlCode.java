@@ -235,7 +235,7 @@ public class IdlCode extends Generator
         PrintWriter outData = new PrintWriter(outFile);
         try
         {
-          String packageName = "Bbd.Idl2.AnyDB";
+          String packageName = "vlab.idl2.jportal";
           if (usePackage == true)
             packageName = table.database.packageName;
           outData.println("// This code was generated, do not modify it, modify it at source and regenerate it.");
@@ -510,8 +510,8 @@ public class IdlCode extends Generator
         try
         {
           outData.println("using System;");
-          outData.println("using Bbd.Idl2;");
-          String packageName = "Bbd.Idl2.AnyDB";
+          outData.println("using vlab.idl2;");
+          String packageName = "vlab.idl2.jportal";
           if (usePackage == true)
             packageName =table.database.packageName;
           if (useSchema == true && table.database.schema.length() > 0)

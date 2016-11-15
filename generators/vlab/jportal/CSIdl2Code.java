@@ -97,7 +97,7 @@ public class CSIdl2Code extends Generator
     if (table.database.packageName.length() > 0)
       packName = table.database.packageName;
     else
-      packName = "Bbd.JPortal";
+      packName = "vlab.jportal";
     try
     {
       outLog.println("Code: "+output+table.useName() + ".ii");

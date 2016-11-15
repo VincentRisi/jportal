@@ -68,7 +68,7 @@ public class VBNetCode extends Generator
 			{
 				String packageName = table.database.packageName;
 				if (packageName.length() == 0)
-				  packageName = "Bbd.JPortal"; 
+				  packageName = "vlab.jportal"; 
 				PrintWriter outData = new PrintWriter(outFile);
 				outData.println("Import System");
 				outData.println("Import System.Collections");
