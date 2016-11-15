@@ -597,6 +597,10 @@ public class MSSql2DDL extends Generator
       if (hasSequenceReturning)
         return field.name+" INTEGER IDENTITY(1,1)";
       return field.name+" INTEGER";
+    case Field.BIGSEQUENCE:
+      if (hasSequenceReturning)
+        return field.name+" BIGINT IDENTITY(1,1)";
+      return field.name+" BIGINT";            
     case Field.IDENTITY:
       if (typeOnly == true)
         return field.name + " INTEGER";
