@@ -2,7 +2,17 @@
 
 ## Database, Module and Application code generators for varying platforms, vendors and languages.
 
-There are three code generator types written using the same mechanism.
+There are three code generator types written using the same mechanism: 
+  
+[JPortal](#jportalgenerator)  
+A generator that generates DALs (Data Access Layers) for various databases (Oracle, MS SQL Server, Postgres, SQLLite, DB2) in various languages (C#, Java, C++, Python, VB).  
+  
+[Crackle](#cracklegenerator)  
+A generator that generates ???  
+  
+[Pickle](#picklegenerator)  
+A generator that generates ???  
+
 This mechanism or paradigm follow the same coding pattern. There is a
 parser generator or compiler compiler written using javacc for the tokenising
 and grammar parsing. Each defines a domain specific language with some crossover
@@ -20,7 +30,99 @@ need for J# has freed up this restriction.
 
 See [Building JPortal](#buildingjportal) below.
 
-### JPortal RDBMS code generator
+# Building JPortal <a id="buildingjportal"></a>
+
+## Vagrant ##
+
+**This project now includes a vagrant file to simplify the building process**
+To use vagrant, first install the vagrant tool for your platform from https://www.vagrantup.com/downloads.html
+Then, from a command shell (windows or linux) run the following commands:
+
+```bash
+user@localmachine:~/jportal> vagrant up 
+user@localmachine:~/jportal> vagrant ssh 
+```
+The vagrant up command will take a while, as  it will download a Linux VM to run the compile in,
+and it will then install all the required tools.
+
+vagrant ssh will let you SSH into the newly created and running VM.
+
+Once you are ssh'ed into the vm, issue the following commans to build the generators:
+```bash
+vagrant@vagrant:~$ cd /main/jportal/
+vagrant@vagrant:~$ mkdir build && cd build
+vagrant@vagrant:~$ cmake ..
+vagrant@vagrant:~$ make
+```
+That will build the generators, and place the jar files in /main/jportal/generators/bin.
+
+If you just want to build jportal, you can issue
+```bash
+vagrant@vagrant:~$ make target_jportal_jar
+```
+or 
+```bash
+vagrant@vagrant:~$ make help
+```
+to see all possible build targets.
+
+Lastly you can use
+```bash
+vagrant@vagrant:~$ make VERBOSE=1 [<target>]
+```
+for debug info.
+
+
+To stop the VM once you are done, you can issue:
+```bash
+user@localmachine:~/jportal> vagrant halt
+```
+
+
+## Linux ##
+**The tools used to build this are**
+
+* cmake   - minimum 2.8
+* eclipse - Version: Mars.1 Release (4.5.1)
+* javacc  - SF JavaCC Eclipse Plug-in feature  1.5.32  sf.eclipse.javacc.feature.feature.group Rémi Koutcherawy
+* pydev   - PyDev for Eclipse 4.4.0.201510052309  org.python.pydev.feature.feature.group  Fabio Zadrozny
+* pydev   - Pydev Mylyn Integration  0.6.0 org.python.pydev.mylyn.feature.feature.group  Fabio Zadrozny
+* CocoR   - Compiler Generator Coco/R, Copyright (c) 1990, 2004 Hanspeter Moessenboeck, University of Linz extended by M. Loeberbauer & A. Woess, Univ. of Linz
+  - ported from C# to Java by Wolfgang Ahorner
+  - ported to C++ by Csaba Balazs, University of Szeged
+  - with improvements by Pat Terry, Rhodes University
+* log4j   - Apache log4j-1.2.17.jar
+* Oracle DB Developer VM with VirtualBox - OTN_Developer_Day_VM.ova
+* oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm
+* oracle-instantclient12.1-basiclite-12.1.0.2.0-1.x86_64.rpm
+* oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm
+* oracle-instantclient12.1-jdbc-12.1.0.2.0-1.x86_64.rpm
+* oracle-instantclient12.1-odbc-12.1.0.2.0-1.x86_64.rpm
+* oracle-instantclient12.1-precomp-12.1.0.2.0-1.x86_64.rpm
+* oracle-instantclient12.1-sqlplus-12.1.0.2.0-1.x86_64.rpm
+* oracle-instantclient12.1-tools-12.1.0.2.0-1.x86_64.rpm
+* postgresql - 9.4
+
+## Windows 7.0 tools ##
+
+* postgresql-9.5.0-beta2-3-windows.exe
+* cmake-2.8.5-win32-x86.exe
+* codeblocks-13.12-setup.exe
+* eclipse-java-mars-1-win32.zip
+* jdk-8u65-windows-i586.exe
+* mingw-w64-install.exe
+* postgresql-9.5.0-beta2-3-windows.exe
+* PyScripter-v2.5.3-Setup.exe
+* PyScripter-v2.5.3-x64-Setup.exe
+* python-2.7.9.msi
+
+Assuming the repository has been checked out to */main/jportal*. The cmake is used from */main/jportal/build*, build is in .gitignore so initially one must do a *'mkdir'*  of it and from it do a *'cmake ..'*. Once the cmake has been made and as long as all the required tools are in place, *'make'* should complete an initial build.
+
+I am running on linux mint 17.3 Rosa, which is debian based. Installing oracle client software is quite trial and error. But I do now have the client connecting to the Developer Days stuff. Of course we use sudo alien -i ... to install the instantclient stuff. The linux mint is a superb desktop environment, IMNSHO it is the route Microsoft should have gone, but when you business model is Total Resale every 3-5 years, more the pity.
+
+I have quite good success on a Windows 7 VM - I am not using Visual Studio for the cmake, but using mingw - using unix build - I am also using git bash for the make terminal.
+
+### JPortal RDBMS code generator <a id="jportalgenerator"></a>
 
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
 the structure below a database consists of various properties and Vector lists.
@@ -104,7 +206,7 @@ the structure below a database consists of various properties and Vector lists.
 
 * String key, value
 
-### Crackle Module code generator
+### Crackle Module code generator <a id="cracklegenerator"></a>
 
 The class tree for *Crackle* starts with a single Module instance. As can be seen from
 the structure below a database consists of various properties and Vector lists.
@@ -174,7 +276,7 @@ the structure below a database consists of various properties and Vector lists.
 * boolean isUnsigned
 * Vector Integer arraySizes
 
-### Pickle Application code generator
+### Pickle Application code generator <a id="picklegenerator"></a>
 
 The class tree for *Pickle* starts with a single Application instance. As can be seen from
 the structure below a database consists of various properties and Vector lists.
@@ -251,46 +353,3 @@ the structure below a database consists of various properties and Vector lists.
 * Vector Field list
 * boolean primary, unique
 
-## Building JPortal <a id="buildingjportal"></a>
-
-**The tools used to build this are**
-
-* cmake   - minimum 2.8
-* eclipse - Version: Mars.1 Release (4.5.1)
-* javacc  - SF JavaCC Eclipse Plug-in feature  1.5.32  sf.eclipse.javacc.feature.feature.group Rémi Koutcherawy
-* pydev   - PyDev for Eclipse 4.4.0.201510052309  org.python.pydev.feature.feature.group  Fabio Zadrozny
-* pydev   - Pydev Mylyn Integration  0.6.0 org.python.pydev.mylyn.feature.feature.group  Fabio Zadrozny
-* CocoR   - Compiler Generator Coco/R, Copyright (c) 1990, 2004 Hanspeter Moessenboeck, University of Linz extended by M. Loeberbauer & A. Woess, Univ. of Linz
-  - ported from C# to Java by Wolfgang Ahorner
-  - ported to C++ by Csaba Balazs, University of Szeged
-  - with improvements by Pat Terry, Rhodes University
-* log4j   - Apache log4j-1.2.17.jar
-* Oracle DB Developer VM with VirtualBox - OTN_Developer_Day_VM.ova
-* oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm
-* oracle-instantclient12.1-basiclite-12.1.0.2.0-1.x86_64.rpm
-* oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm
-* oracle-instantclient12.1-jdbc-12.1.0.2.0-1.x86_64.rpm
-* oracle-instantclient12.1-odbc-12.1.0.2.0-1.x86_64.rpm
-* oracle-instantclient12.1-precomp-12.1.0.2.0-1.x86_64.rpm
-* oracle-instantclient12.1-sqlplus-12.1.0.2.0-1.x86_64.rpm
-* oracle-instantclient12.1-tools-12.1.0.2.0-1.x86_64.rpm
-* postgresql - 9.4
-
-**Windows 7.0 tools**
-
-* postgresql-9.5.0-beta2-3-windows.exe
-* cmake-2.8.5-win32-x86.exe
-* codeblocks-13.12-setup.exe
-* eclipse-java-mars-1-win32.zip
-* jdk-8u65-windows-i586.exe
-* mingw-w64-install.exe
-* postgresql-9.5.0-beta2-3-windows.exe
-* PyScripter-v2.5.3-Setup.exe
-* PyScripter-v2.5.3-x64-Setup.exe
-* python-2.7.9.msi
-
-Assuming the repository has been checked out to */main/jportal*. The cmake is used from */main/jportal/build*, build is in .gitignore so initially one must do a *'mkdir'*  of it and from it do a *'cmake ..'*. Once the cmake has been made and as long as all the required tools are in place, *'make'* should complete an initial build.
-
-I am running on linux mint 17.3 Rosa, which is debian based. Installing oracle client software is quite trial and error. But I do now have the client connecting to the Developer Days stuff. Of course we use sudo alien -i ... to install the instantclient stuff. The linux mint is a superb desktop environment, IMNSHO it is the route Microsoft should have gone, but when you business model is Total Resale every 3-5 years, more the pity.
-
-I have quite good success on a Windows 7 VM - I am not using Visual Studio for the cmake, but using mingw - using unix build - I am also using git bash for the make terminal.
