@@ -177,8 +177,6 @@ namespace vlab.jportal
         public bool IsNew;
         internal int commandTimeout;
         internal IDbConnection connection;
-        internal IUserCredentials credentials;
-        internal ILogger logger;
         internal IDbTransaction transaction;
         internal ParameterType typeOfParameter;
         internal VendorType typeOfVendor;
@@ -190,11 +188,9 @@ namespace vlab.jportal
 
         #region Constructors
 
-        public Connect(IDbConnection connection, ILogger logger, IUserCredentials credentials)
+        public Connect(IDbConnection connection)
         {
             this.connection = connection;
-            this.credentials = credentials;
-            this.logger = logger;
 
             commandTimeout = 300;
             Type type = connection.GetType();
@@ -456,7 +452,7 @@ namespace vlab.jportal
 
         private void DefaultGetUserStampProc(ref string value)
         {
-            value = credentials.Username;
+            value = connection.Username;
         }
 
         #endregion Methods
@@ -469,7 +465,6 @@ namespace vlab.jportal
         public Connect connect;
         protected IDbCommand command;
         protected IDbConnection connection;
-        protected ILogger logger;
         protected IDataReader reader;
         private static int QUERYTOLONG = 5;
         private DateTime NullDefault = DateTime.MinValue;
@@ -482,7 +477,6 @@ namespace vlab.jportal
         public Cursor(Connect connect)
         {
             this.connect = connect;
-            this.logger = connect.logger;
             connection = connect.Connection;
         }
 
@@ -886,8 +880,6 @@ namespace vlab.jportal
             catch (Exception ex)
             {
                 Close();
-                logger.Log("Database", LogSeverity.Error, "Failed to read from SQL statement\r\n{0}", ReplaceParameters(command));
-                logger.Log("Database", ex);
                 throw;
             }
         }
@@ -904,8 +896,6 @@ namespace vlab.jportal
             catch (Exception ex)
             {
                 Close();
-                logger.Log("Database", LogSeverity.Error, "Failed to execute SQL statement\r\n{0}", ReplaceParameters(command));
-                logger.Log("Database", ex);
                 throw;
             }
         }
@@ -956,35 +946,6 @@ namespace vlab.jportal
             return txt;
         }
 
-        private void TestTime(bool fetch = false)
-        {
-            if (fetch)
-            {
-                var elapsedTime = (DateTime.Now - startTimeFetch);
-
-                if (elapsedTime.Seconds > QUERYTOLONG)
-                {
-                    logger.Log("Database", LogSeverity.Warning, "{0}ms to run query [{1}]", elapsedTime.TotalMilliseconds, ReplaceParameters(command));
-                }
-                else
-                {
-                    logger.Log("Database", LogSeverity.Debug, "{0}ms to run query [{1}]", elapsedTime.TotalMilliseconds, ReplaceParameters(command));
-                }
-            }
-            else
-            {
-                var elapsedTime = (DateTime.Now - startTimeFetch);
-
-                if (elapsedTime.Seconds > QUERYTOLONG)
-                {
-                    logger.Log("Database", LogSeverity.Warning, "{0}ms to run query [{1}]", elapsedTime.TotalMilliseconds, ReplaceParameters(command));
-                }
-                else
-                {
-                    logger.Log("Database", LogSeverity.Debug, "{0}ms to run query [{1}]", elapsedTime.TotalMilliseconds, ReplaceParameters(command));
-                }
-            }
-        }
 
         #endregion Methods
     }
