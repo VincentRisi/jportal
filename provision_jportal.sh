@@ -1,5 +1,6 @@
 echo "Installing jportal dependencies..."
 sudo apt-get -y update
+sudo apt-get install -y git
 sudo apt-get install -y cmake
 #sudo apt-get install -y eclipse
 sudo apt-get install -y javacc
