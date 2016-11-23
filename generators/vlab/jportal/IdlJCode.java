@@ -76,8 +76,8 @@ public class IdlJCode extends Generator
         try
         {
           outData.println("using System;");
-          outData.println("using Bbd.Idl2;");
-          outData.println("using Bbd.Idl2.Rpc;");
+          outData.println("using vlab.idl2;");
+          outData.println("using vlab.idl2.Rpc;");
           outData.println();
           outData.println("namespace " + namespace);
           outData.println("{");

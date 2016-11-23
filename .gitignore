@@ -8,3 +8,4 @@ Debug
 *.bak
 *.csproj.user
 *.user
+.vagrant/

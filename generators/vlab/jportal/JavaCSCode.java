@@ -106,8 +106,8 @@ public class JavaCSCode extends Generator
         }
         else
         {
-          outData.println("using Bbd.Utility;");
-          outData.println("namespace Bbd.Utility");
+          outData.println("using vlab.utility;");
+          outData.println("namespace vlab.utility");
           outData.println("{");
         }
         if (useStandard == true)

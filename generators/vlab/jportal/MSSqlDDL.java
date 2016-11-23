@@ -601,6 +601,10 @@ public class MSSqlDDL extends Generator
       if (hasSequenceReturning)
         return field.name+" integer IDENTITY(1,1)";
       return field.name+" integer";
+    case Field.BIGSEQUENCE:
+      if (hasSequenceReturning)
+        return field.name+" bigint IDENTITY(1,1)";
+      return field.name+" bigint";            
     case Field.IDENTITY:
       if (typeOnly == true)
         return field.name + " integer";
