@@ -1034,7 +1034,7 @@ public class OciCCode extends Generator
     case Field.ANSICHAR:
       return "" + (field.length + 1);
     case Field.USERSTAMP:
-      return "9";
+      return "51";
     case Field.BLOB:
     case Field.TLOB:
       return "sizeof(OCILobLocator *)";
@@ -1102,7 +1102,7 @@ public class OciCCode extends Generator
     case Field.ANSICHAR:
       return "char   " + field.useName() + "[" + (field.length + 1) + "]";
     case Field.USERSTAMP:
-      return "char   " + field.useName() + "[9]";
+      return "char   " + field.useName() + "[51]";
     case Field.BLOB:
     case Field.TLOB:
       return "TJLob  " + field.useName();
@@ -1240,7 +1240,7 @@ public class OciCCode extends Generator
           + "_LOB], " + field.useName() + "), " + field.useName().toUpperCase()
           + "_LOB_TYPE";
     case Field.USERSTAMP:
-      return "q_.UserStamp(" + field.useName() + "), 9";
+      return "q_.UserStamp(" + field.useName() + "), 51";
     case Field.DATE:
       return "q_.Date(" + field.useName() + "_OCIDate, " + field.useName()
           + ")";
@@ -1280,7 +1280,7 @@ public class OciCCode extends Generator
       return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), "
           + (field.length + 1) + ", 1";
     case Field.USERSTAMP:
-      return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), 9";
+      return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), 51";
     case Field.BLOB:
     case Field.TLOB:
       return "q_.LobLocator(q_.ociLobs[" + field.useName().toUpperCase()
@@ -1322,7 +1322,7 @@ public class OciCCode extends Generator
       return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), "
           + (field.length + 1) + ", 1";
     case Field.USERSTAMP:
-      return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), 9";
+      return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), 51";
     case Field.BLOB:
     case Field.TLOB:
       return "(OCILobLocator*) (q_.data+" + field.useName().toUpperCase()
@@ -1364,7 +1364,7 @@ public class OciCCode extends Generator
           + field.useName().toUpperCase() + "_POS, " + (field.length + 1);
     case Field.USERSTAMP:
       return padder(field.useName() + ",", 32) + " q_.data+"
-          + field.useName().toUpperCase() + "_POS, 9";
+          + field.useName().toUpperCase() + "_POS, 51";
     case Field.BLOB:
     case Field.TLOB:
       return padder(field.useName() + ",", 32) + " q_.data+"
@@ -1407,7 +1407,7 @@ public class OciCCode extends Generator
           + field.useName() + ", " + (field.length + 1);
     case Field.USERSTAMP:
       return padder("q_.data+" + field.useName().toUpperCase() + "_POS,", 32)
-          + field.useName() + ", 9";
+          + field.useName() + ", 51";
     case Field.BLOB:
     case Field.TLOB:
       return padder("q_.data+" + field.useName().toUpperCase() + "_POS,", 32)
