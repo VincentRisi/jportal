@@ -8,6 +8,7 @@
 /// http://www.eclipse.org/legal/cpl-v10.html 
 /// Contributors:
 ///    Vincent Risi
+///    Dieter Rosch
 /// ------------------------------------------------------------------
 
 package vlab.jportal;
@@ -344,6 +345,15 @@ public class JavaJCCode
         outData.println("{");
         outData.println("  Connector connector;");
         outData.println("  Connection connection;");
+        outData.println("  public Contingency()");
+        outData.println("  {");
+        outData.println("    super();");
+        outData.println("  }");
+        outData.println("  public void setConnector(Connector conn)");
+        outData.println("  {");
+        outData.println("    this.connector = conn;");
+        outData.println("    connection = connector.connection;");
+        outData.println("  }");
         outData.println("  /**");
         outData.println("   * @param Connector for specific database");
         outData.println("   */");
@@ -470,6 +480,26 @@ public class JavaJCCode
     outData.println("    prep.close();");
     outData.println("  }");
   }
+  private static String getParmField(Proc proc)
+  {
+    for (int i = 0; i < proc.inputs.size(); i++)
+    {
+      Field field = (Field)proc.inputs.elementAt(i);
+      if (field.type == Field.IDENTITY)
+        return field.useName();
+      if (field.isSequence)
+        return field.useName();
+    }
+    for (int i = 0; i < proc.outputs.size(); i++)
+    {
+      Field field = (Field)proc.outputs.elementAt(i);
+      if (field.type == Field.IDENTITY)
+        return field.useName();
+      if (field.isSequence)
+        return field.useName();
+    }
+    return "junked";
+  }  
   /** Emits class method for processing the database activity */
   static void emitProc(Proc proc, PrintWriter outData)
   {              //  12345
@@ -506,6 +536,13 @@ public class JavaJCCode
     outData.println("  {");
 		placeHolders = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
 		Vector<?> lines = placeHolders.getLines();
+    String parmField = "";
+    if (proc.hasReturning || proc.isMultipleInput)
+    {
+      parmField = getParmField(proc);
+      String parms = "\"" + proc.table.useName() + "\", \"" + parmField + "\"";
+      outData.println("    Connector.Returning _ret = connector.getReturning(" + parms + ");");
+    }    
 		outData.println("    String statement = ");
     String plus = "      ";
     for (int i=0; i<lines.size(); i++)
@@ -739,6 +776,8 @@ public class JavaJCCode
     case Field.IDENTITY:
       return "int "+ field.useName();
     case Field.LONG:
+    case Field.BIGSEQUENCE:
+    case Field.BIGIDENTITY:    
       return "long "+ field.useName();
     case Field.CHAR:
     case Field.ANSICHAR:
@@ -746,7 +785,7 @@ public class JavaJCCode
     case Field.DATE:
       return "Date "+ field.useName();
     case Field.DATETIME:
-      return "Date "+ field.useName();
+      return "Timestamp "+ field.useName();
     case Field.TIME:
       return "Time "+ field.useName();
     case Field.TIMESTAMP:
@@ -780,7 +819,7 @@ public class JavaJCCode
     case Field.DATE:
       return field.useName() +" = new Date(0);";
     case Field.DATETIME:
-      return field.useName() +" = new Date(0);";
+      return field.useName() +" = new Timestamp(0);";
     case Field.FLOAT:
     case Field.DOUBLE:
       return field.useName() +" = 0.0;";
@@ -792,6 +831,8 @@ public class JavaJCCode
     case Field.IDENTITY:
       return field.useName() +" = 0;";
     case Field.LONG:
+    case Field.BIGSEQUENCE:
+    case Field.BIGIDENTITY:        
       return field.useName() +" = 0;";
     case Field.MONEY:
       return field.useName() +" = 0.0;";
@@ -821,7 +862,7 @@ public class JavaJCCode
     case Field.DATE:
       return "Date";
     case Field.DATETIME:
-      return "Date";
+      return "Timestamp";
     case Field.FLOAT:
     case Field.DOUBLE:
       return "Double";
@@ -833,6 +874,8 @@ public class JavaJCCode
     case Field.IDENTITY:
       return "Int";
     case Field.LONG:
+    case Field.BIGSEQUENCE:
+    case Field.BIGIDENTITY:        
       return "Long";
     case Field.MONEY:
       return "Double";

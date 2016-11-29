@@ -867,7 +867,7 @@ public class JavaRWCode extends Generator
     String plus = "     ";
     for (int i = 0; i < proc.lines.size(); i++)
     {
-      Line l = (Line)proc.lines.elementAt(i);
+      Line l = proc.lines.elementAt(i);
       if (l.isVar)
       {
         if (l.line.indexOf("_ret.") >= 0)
