@@ -20,7 +20,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Vector;
 
-public class MSSql3DDL extends Generator
+public class MSSqlDDL extends Generator
 {
   /**
   * Reads input from stored repository
