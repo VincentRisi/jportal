@@ -528,14 +528,14 @@ public class JPortal implements JPortalConstants {
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 144:
+      case 145:
         ;
         break;
       default:
         jj_la1[9] = jj_gen;
         break label_6;
       }
-      jj_consume_token(144);
+      jj_consume_token(145);
       n = jIdent();
       s = s + "." + n;
     }
@@ -1247,7 +1247,7 @@ public class JPortal implements JPortalConstants {
       jj_consume_token(USERSTAMP);
     field.type = Field.USERSTAMP;
     table.hasUserStamp = true;
-    field.length = 30;
+    field.length = 50;
       break;
     case SEQUENCE:
       jj_consume_token(SEQUENCE);
@@ -2303,6 +2303,8 @@ public class JPortal implements JPortalConstants {
       case INSERT:
       case MERGE:
       case SELECTALL:
+      case SELECTBY:
+      case SELECTONEBY:
       case SELECTONE:
       case UPDATE:
       case MAXTMSTAMP:
@@ -2451,8 +2453,10 @@ public class JPortal implements JPortalConstants {
     case DELETEONE:
       jj_consume_token(DELETEONE);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case STANDARD:
+      case LEFTPAREN:
+        jj_consume_token(LEFTPAREN);
         jj_consume_token(STANDARD);
+        jj_consume_token(RIGHTPAREN);
         proc.isStd = true;
         break;
       default:
@@ -2519,8 +2523,35 @@ public class JPortal implements JPortalConstants {
         table.hasStdProcs = true;
       }
       break;
-    case SELECTALL:
-      jj_consume_token(SELECTALL);
+    case SELECTONEBY:
+      jj_consume_token(SELECTONEBY);
+      label_41:
+      while (true) {
+        jProcColumn();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IDENTIFIER:
+        case LIDENTIFIER:
+          ;
+          break;
+        default:
+          jj_la1[118] = jj_gen;
+          break label_41;
+        }
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case AS:
+        jj_consume_token(AS);
+        s = jIdent();
+        //DGR: I think long term it would be better to follow the convention that when a user overrides (aliases)
+        //     a PROC, we store the original name in proc.name and the alias in proc.username. But the original SelectBy 
+        //     just overrides the proc.name, so I am sticking to the convention.
+        //proc.username = s;
+        proc.name = s;
+        break;
+      default:
+        jj_la1[119] = jj_gen;
+        ;
+      }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IN:
       case ORDER:
@@ -2529,14 +2560,14 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(IN);
           break;
         default:
-          jj_la1[118] = jj_gen;
+          jj_la1[120] = jj_gen;
           ;
         }
         jj_consume_token(ORDER);
-                      inOrder = true;
+                        inOrder = true;
         break;
       default:
-        jj_la1[119] = jj_gen;
+        jj_la1[121] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2548,7 +2579,217 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(FOR);
           break;
         default:
-          jj_la1[120] = jj_gen;
+          jj_la1[122] = jj_gen;
+          ;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case UPDATE:
+          jj_consume_token(UPDATE);
+                           forUpdate = true;
+          break;
+        case READONLY:
+          jj_consume_token(READONLY);
+                                                            forReadOnly = true;
+          break;
+        default:
+          jj_la1[123] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        break;
+      default:
+        jj_la1[124] = jj_gen;
+        ;
+      }
+        //proc.name is set by <AS> clause above
+        if(proc.name == null || proc.name.trim().isEmpty())
+        {
+          proc.name = "SelectOneBy";
+          for (String fname : proc.fields)
+          {
+            proc.name += fname;
+          }
+        }
+        proc.isSingle = true;
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.hasStdProcs = true;
+      break;
+    case SELECTBY:
+      jj_consume_token(SELECTBY);
+      label_42:
+      while (true) {
+        jProcColumn();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IDENTIFIER:
+        case LIDENTIFIER:
+          ;
+          break;
+        default:
+          jj_la1[125] = jj_gen;
+          break label_42;
+        }
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case AS:
+        jj_consume_token(AS);
+        s = jIdent();
+        //DGR: I think long term it would be better to follow the convention that when a user overrides (aliases)
+        //     a PROC, we store the original name in proc.name and the alias in proc.username. But the original SelectBy 
+        //     just overrides the proc.name, so I am sticking to the convention.
+        //proc.username = s;
+        proc.name = s;
+        break;
+      default:
+        jj_la1[126] = jj_gen;
+        ;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IN:
+      case ORDER:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IN:
+          jj_consume_token(IN);
+          break;
+        default:
+          jj_la1[127] = jj_gen;
+          ;
+        }
+        jj_consume_token(ORDER);
+                        inOrder = true;
+        break;
+      default:
+        jj_la1[128] = jj_gen;
+        ;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case FOR:
+      case READONLY:
+      case UPDATE:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case FOR:
+          jj_consume_token(FOR);
+          break;
+        default:
+          jj_la1[129] = jj_gen;
+          ;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case UPDATE:
+          jj_consume_token(UPDATE);
+                           forUpdate = true;
+          break;
+        case READONLY:
+          jj_consume_token(READONLY);
+                                                            forReadOnly = true;
+          break;
+        default:
+          jj_la1[130] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        break;
+      default:
+        jj_la1[131] = jj_gen;
+        ;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case OUTPUT:
+        jj_consume_token(OUTPUT);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case LEFTPAREN:
+          jOutputType();
+          break;
+        default:
+          jj_la1[132] = jj_gen;
+          ;
+        }
+        label_43:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case IDENTIFIER:
+          case LIDENTIFIER:
+            ;
+            break;
+          default:
+            jj_la1[133] = jj_gen;
+            break label_43;
+          }
+          jField();
+            //proc.name is set by <AS> clause above
+            if(proc.name == null || proc.name.trim().isEmpty())
+            {
+              proc.name = "SelectBy";
+              for (String fname : proc.fields)
+              {
+                proc.name += fname;
+              }
+            }
+            if (proc.isSProc == true)
+            {
+              if (proc.hasInput(field.name))
+                field = proc.getInput(field.name);
+              else
+                proc.inputs.addElement(field);
+              field.isOut = true;
+            }
+            else
+            {
+              if (proc.hasOutput(field.name))
+              {
+                if (proc.extendsStd == false)
+                  outLog.println(proc.name+" field "+field.name+" already present as output");
+              }
+              else
+              {
+                if (proc.extendsStd == true)
+                {
+                  proc.useStd = false;
+                  isStdProc = false;
+                }
+                if (!field.isNull)
+                  field.isNull = (table.hasFieldAsNull(field.name));
+                proc.outputs.addElement(field);
+              }
+            }
+        }
+        break;
+      default:
+        jj_la1[134] = jj_gen;
+        ;
+      }
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.hasStdProcs = true;
+      break;
+    case SELECTALL:
+      jj_consume_token(SELECTALL);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IN:
+      case ORDER:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IN:
+          jj_consume_token(IN);
+          break;
+        default:
+          jj_la1[135] = jj_gen;
+          ;
+        }
+        jj_consume_token(ORDER);
+                      inOrder = true;
+        break;
+      default:
+        jj_la1[136] = jj_gen;
+        ;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case FOR:
+      case READONLY:
+      case UPDATE:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case FOR:
+          jj_consume_token(FOR);
+          break;
+        default:
+          jj_la1[137] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2561,13 +2802,13 @@ public class JPortal implements JPortalConstants {
                                                           forReadOnly = true;
           break;
         default:
-          jj_la1[121] = jj_gen;
+          jj_la1[138] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[122] = jj_gen;
+        jj_la1[139] = jj_gen;
         ;
       }
       if (table.hasBigXML)
@@ -2610,22 +2851,22 @@ public class JPortal implements JPortalConstants {
       }
       break;
     default:
-      jj_la1[123] = jj_gen;
+      jj_la1[140] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    label_41:
+    label_44:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case OPTIONS:
         ;
         break;
       default:
-        jj_la1[124] = jj_gen;
-        break label_41;
+        jj_la1[141] = jj_gen;
+        break label_44;
       }
       jj_consume_token(OPTIONS);
-      label_42:
+      label_45:
       while (true) {
         s = jString();
         proc.options.addElement(s);
@@ -2634,8 +2875,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[125] = jj_gen;
-          break label_42;
+          jj_la1[142] = jj_gen;
+          break label_45;
         }
       }
     }
@@ -2653,12 +2894,14 @@ public class JPortal implements JPortalConstants {
     case SELECT:
       jj_consume_token(SELECT);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case STANDARD:
+      case LEFTPAREN:
+        jj_consume_token(LEFTPAREN);
         jj_consume_token(STANDARD);
+        jj_consume_token(RIGHTPAREN);
             proc.isStd = true;
         break;
       default:
-        jj_la1[126] = jj_gen;
+        jj_la1[143] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2669,14 +2912,14 @@ public class JPortal implements JPortalConstants {
           jInputType();
           break;
         default:
-          jj_la1[127] = jj_gen;
+          jj_la1[144] = jj_gen;
           ;
         }
           proc.extendsStd = true;
           proc.useStd = true;
           isStdProc = true;
           Integer size;
-        label_43:
+        label_46:
         while (true) {
           jField();
             if (proc.hasInput(field.name))
@@ -2702,13 +2945,13 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[128] = jj_gen;
-            break label_43;
+            jj_la1[145] = jj_gen;
+            break label_46;
           }
         }
         break;
       default:
-        jj_la1[129] = jj_gen;
+        jj_la1[146] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2719,10 +2962,10 @@ public class JPortal implements JPortalConstants {
           jOutputType();
           break;
         default:
-          jj_la1[130] = jj_gen;
+          jj_la1[147] = jj_gen;
           ;
         }
-        label_44:
+        label_47:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IDENTIFIER:
@@ -2730,8 +2973,8 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[131] = jj_gen;
-            break label_44;
+            jj_la1[148] = jj_gen;
+            break label_47;
           }
           jPackageField();
             if (proc.isSProc == true)
@@ -2764,7 +3007,7 @@ public class JPortal implements JPortalConstants {
         }
         break;
       default:
-        jj_la1[132] = jj_gen;
+        jj_la1[149] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2773,7 +3016,7 @@ public class JPortal implements JPortalConstants {
         jOldCode();
         break;
       default:
-        jj_la1[133] = jj_gen;
+        jj_la1[150] = jj_gen;
         jNewCode();
       }
         table.buildSelectFrom(proc,table, outLog);
@@ -2782,7 +3025,7 @@ public class JPortal implements JPortalConstants {
       break;
     case SELECTONEBY:
       jj_consume_token(SELECTONEBY);
-      label_45:
+      label_48:
       while (true) {
         jProcColumn();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2791,8 +3034,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[134] = jj_gen;
-          break label_45;
+          jj_la1[151] = jj_gen;
+          break label_48;
         }
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2803,14 +3046,14 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(IN);
           break;
         default:
-          jj_la1[135] = jj_gen;
+          jj_la1[152] = jj_gen;
           ;
         }
         jj_consume_token(ORDER);
                         inOrder = true;
         break;
       default:
-        jj_la1[136] = jj_gen;
+        jj_la1[153] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2822,7 +3065,7 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(FOR);
           break;
         default:
-          jj_la1[137] = jj_gen;
+          jj_la1[154] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2835,13 +3078,13 @@ public class JPortal implements JPortalConstants {
                                                             forReadOnly = true;
           break;
         default:
-          jj_la1[138] = jj_gen;
+          jj_la1[155] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[139] = jj_gen;
+        jj_la1[156] = jj_gen;
         ;
       }
         proc.isSingle = true;
@@ -2850,7 +3093,7 @@ public class JPortal implements JPortalConstants {
       break;
     case SELECTBY:
       jj_consume_token(SELECTBY);
-      label_46:
+      label_49:
       while (true) {
         jProcColumn();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2859,8 +3102,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[140] = jj_gen;
-          break label_46;
+          jj_la1[157] = jj_gen;
+          break label_49;
         }
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2871,14 +3114,14 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(IN);
           break;
         default:
-          jj_la1[141] = jj_gen;
+          jj_la1[158] = jj_gen;
           ;
         }
         jj_consume_token(ORDER);
                         inOrder = true;
         break;
       default:
-        jj_la1[142] = jj_gen;
+        jj_la1[159] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2890,7 +3133,7 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(FOR);
           break;
         default:
-          jj_la1[143] = jj_gen;
+          jj_la1[160] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2903,13 +3146,13 @@ public class JPortal implements JPortalConstants {
                                                             forReadOnly = true;
           break;
         default:
-          jj_la1[144] = jj_gen;
+          jj_la1[161] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[145] = jj_gen;
+        jj_la1[162] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2920,10 +3163,10 @@ public class JPortal implements JPortalConstants {
           jOutputType();
           break;
         default:
-          jj_la1[146] = jj_gen;
+          jj_la1[163] = jj_gen;
           ;
         }
-        label_47:
+        label_50:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case IDENTIFIER:
@@ -2931,8 +3174,8 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[147] = jj_gen;
-            break label_47;
+            jj_la1[164] = jj_gen;
+            break label_50;
           }
           jField();
             if (proc.isSProc == true)
@@ -2965,7 +3208,7 @@ public class JPortal implements JPortalConstants {
         }
         break;
       default:
-        jj_la1[148] = jj_gen;
+        jj_la1[165] = jj_gen;
         ;
       }
         table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
@@ -2973,7 +3216,7 @@ public class JPortal implements JPortalConstants {
       break;
     case DELETEBY:
       jj_consume_token(DELETEBY);
-      label_48:
+      label_51:
       while (true) {
         jProcColumn();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2982,8 +3225,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[149] = jj_gen;
-          break label_48;
+          jj_la1[166] = jj_gen;
+          break label_51;
         }
       }
         table.buildDeleteBy(proc, outLog);
@@ -2991,7 +3234,7 @@ public class JPortal implements JPortalConstants {
       break;
     case UPDATEFOR:
       jj_consume_token(UPDATEFOR);
-      label_49:
+      label_52:
       while (true) {
         jProcColumn();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3000,8 +3243,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[150] = jj_gen;
-          break label_49;
+          jj_la1[167] = jj_gen;
+          break label_52;
         }
       }
         proc.isUpdate = true;
@@ -3010,7 +3253,7 @@ public class JPortal implements JPortalConstants {
       break;
     case UPDATEBY:
       jj_consume_token(UPDATEBY);
-      label_50:
+      label_53:
       while (true) {
         jProcUpdateByColumn();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3019,14 +3262,14 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[151] = jj_gen;
-          break label_50;
+          jj_la1[168] = jj_gen;
+          break label_53;
         }
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FOR:
         jj_consume_token(FOR);
-        label_51:
+        label_54:
         while (true) {
           jProcColumn();
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3035,13 +3278,13 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[152] = jj_gen;
-            break label_51;
+            jj_la1[169] = jj_gen;
+            break label_54;
           }
         }
         break;
       default:
-        jj_la1[153] = jj_gen;
+        jj_la1[170] = jj_gen;
         ;
       }
         proc.isUpdate = true;
@@ -3049,7 +3292,7 @@ public class JPortal implements JPortalConstants {
         table.hasStdProcs = true;
       break;
     default:
-      jj_la1[154] = jj_gen;
+      jj_la1[171] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3121,43 +3364,43 @@ public class JPortal implements JPortalConstants {
     s = jIdent();
     proc.name = s;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case STANDARD:
+    case LEFTPAREN:
+      jj_consume_token(LEFTPAREN);
       jj_consume_token(STANDARD);
+      jj_consume_token(RIGHTPAREN);
       proc.extendsStd = true;
       proc.useStd = true;
       isStdProc = true;
-      for (int i=0; i<table.fields.size(); i++)
-        proc.outputs.addElement(table.fields.elementAt(i));
       break;
     default:
-      jj_la1[155] = jj_gen;
+      jj_la1[172] = jj_gen;
       ;
     }
-    label_52:
+    label_55:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMMENT:
         ;
         break;
       default:
-        jj_la1[156] = jj_gen;
-        break label_52;
+        jj_la1[173] = jj_gen;
+        break label_55;
       }
       s = jComment();
       proc.comments.addElement(s);
     }
-    label_53:
+    label_56:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case OPTIONS:
         ;
         break;
       default:
-        jj_la1[157] = jj_gen;
-        break label_53;
+        jj_la1[174] = jj_gen;
+        break label_56;
       }
       jj_consume_token(OPTIONS);
-      label_54:
+      label_57:
       while (true) {
         s = jString();
         proc.options.addElement(s);
@@ -3166,8 +3409,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[158] = jj_gen;
-          break label_54;
+          jj_la1[175] = jj_gen;
+          break label_57;
         }
       }
     }
@@ -3179,10 +3422,10 @@ public class JPortal implements JPortalConstants {
         jInputType();
         break;
       default:
-        jj_la1[159] = jj_gen;
+        jj_la1[176] = jj_gen;
         ;
       }
-      label_55:
+      label_58:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
@@ -3190,8 +3433,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[160] = jj_gen;
-          break label_55;
+          jj_la1[177] = jj_gen;
+          break label_58;
         }
         jField();
         if (proc.hasInput(field.name))
@@ -3214,7 +3457,7 @@ public class JPortal implements JPortalConstants {
       }
       break;
     default:
-      jj_la1[161] = jj_gen;
+      jj_la1[178] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3225,10 +3468,10 @@ public class JPortal implements JPortalConstants {
         jOutputType();
         break;
       default:
-        jj_la1[162] = jj_gen;
+        jj_la1[179] = jj_gen;
         ;
       }
-      label_56:
+      label_59:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
@@ -3236,8 +3479,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[163] = jj_gen;
-          break label_56;
+          jj_la1[180] = jj_gen;
+          break label_59;
         }
         jField();
         if (proc.hasInput(field.name))
@@ -3269,7 +3512,7 @@ public class JPortal implements JPortalConstants {
       }
       break;
     default:
-      jj_la1[164] = jj_gen;
+      jj_la1[181] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3280,10 +3523,10 @@ public class JPortal implements JPortalConstants {
         jOutputType();
         break;
       default:
-        jj_la1[165] = jj_gen;
+        jj_la1[182] = jj_gen;
         ;
       }
-      label_57:
+      label_60:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
@@ -3291,8 +3534,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[166] = jj_gen;
-          break label_57;
+          jj_la1[183] = jj_gen;
+          break label_60;
         }
         jField();
         if (proc.isSProc == true)
@@ -3325,7 +3568,7 @@ public class JPortal implements JPortalConstants {
       }
       break;
     default:
-      jj_la1[167] = jj_gen;
+      jj_la1[184] = jj_gen;
       ;
     }
     if (isStdProc == true)
@@ -3336,7 +3579,7 @@ public class JPortal implements JPortalConstants {
       jOldCode();
       break;
     default:
-      jj_la1[168] = jj_gen;
+      jj_la1[185] = jj_gen;
       jNewCode();
     }
   }
@@ -3350,11 +3593,11 @@ public class JPortal implements JPortalConstants {
       proc.isSql = true;
       break;
     default:
-      jj_la1[169] = jj_gen;
+      jj_la1[186] = jj_gen;
       ;
     }
     jj_consume_token(CODE);
-    label_58:
+    label_61:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STRING:
@@ -3363,8 +3606,8 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[170] = jj_gen;
-        break label_58;
+        jj_la1[187] = jj_gen;
+        break label_61;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STRING:
@@ -3387,7 +3630,7 @@ public class JPortal implements JPortalConstants {
       }
         break;
       default:
-        jj_la1[171] = jj_gen;
+        jj_la1[188] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3400,15 +3643,15 @@ public class JPortal implements JPortalConstants {
   String s;
   Integer size;
   Line line;
-    label_59:
+    label_62:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CODELINE:
         ;
         break;
       default:
-        jj_la1[172] = jj_gen;
-        break label_59;
+        jj_la1[189] = jj_gen;
+        break label_62;
       }
       t = jj_consume_token(CODELINE);
         s = parseDynamics(t.image.trim() + " ");
@@ -3430,7 +3673,7 @@ public class JPortal implements JPortalConstants {
       jj_consume_token(RIGHTPAREN);
       break;
     default:
-      jj_la1[173] = jj_gen;
+      jj_la1[190] = jj_gen;
       ;
     }
     {if (true) return new Integer(n);}
@@ -3450,6 +3693,12 @@ public class JPortal implements JPortalConstants {
       jj_consume_token(RIGHTPAREN);
     proc.noRows = n;
     proc.isMultipleInput = true;
+    } else if (jj_2_5(2)) {
+      jj_consume_token(LEFTPAREN);
+      jj_consume_token(STANDARD);
+    for (int i=0; i<table.fields.size(); i++)
+      proc.inputs.addElement(table.fields.elementAt(i));
+      jj_consume_token(RIGHTPAREN);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
@@ -3458,7 +3707,22 @@ public class JPortal implements JPortalConstants {
 
   static final public void jOutputType() throws ParseException {
   int n;
-    if (jj_2_5(2)) {
+    if (jj_2_6(2)) {
+      jj_consume_token(LEFTPAREN);
+      jj_consume_token(SINGLE);
+    proc.isSingle = true;
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case STANDARD:
+        jj_consume_token(STANDARD);
+      for (int i=0; i<table.fields.size(); i++)
+        proc.outputs.addElement(table.fields.elementAt(i));
+        break;
+      default:
+        jj_la1[191] = jj_gen;
+        ;
+      }
+      jj_consume_token(RIGHTPAREN);
+    } else if (jj_2_7(2)) {
       jj_consume_token(LEFTPAREN);
       jj_consume_token(SINGLE);
     proc.isSingle = true;
@@ -3468,15 +3732,30 @@ public class JPortal implements JPortalConstants {
       proc.hasUpdates = true;
         break;
       default:
-        jj_la1[174] = jj_gen;
+        jj_la1[192] = jj_gen;
         ;
       }
       jj_consume_token(RIGHTPAREN);
-    } else if (jj_2_6(2)) {
+    } else if (jj_2_8(2)) {
       jj_consume_token(LEFTPAREN);
       n = jNumber();
       jj_consume_token(RIGHTPAREN);
     proc.noRows = n;
+    } else if (jj_2_9(2)) {
+      jj_consume_token(LEFTPAREN);
+      jj_consume_token(STANDARD);
+    for (int i=0; i<table.fields.size(); i++)
+      proc.outputs.addElement(table.fields.elementAt(i));
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case SINGLE:
+        jj_consume_token(SINGLE);
+      proc.isSingle = true;
+        break;
+      default:
+        jj_la1[193] = jj_gen;
+        ;
+      }
+      jj_consume_token(RIGHTPAREN);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
@@ -3487,15 +3766,15 @@ public class JPortal implements JPortalConstants {
     jj_consume_token(DATA);
     proc = new Proc();
     proc.isData = true;
-    label_60:
+    label_63:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STRING:
         ;
         break;
       default:
-        jj_la1[175] = jj_gen;
-        break label_60;
+        jj_la1[194] = jj_gen;
+        break label_63;
       }
       jLine();
       Line l1 = new Line(line);
@@ -3511,12 +3790,12 @@ public class JPortal implements JPortalConstants {
     proc.isData = true;
     Line l1 = new Line(t.image.trim());
     proc.lines.addElement(l1);
-    label_61:
+    label_64:
     while (true) {
-      if (jj_2_7(2)) {
+      if (jj_2_10(2)) {
         ;
       } else {
-        break label_61;
+        break label_64;
       }
       t = jj_consume_token(DATALINE);
       Line l2 = new Line(t.image.trim());
@@ -3531,12 +3810,12 @@ public class JPortal implements JPortalConstants {
     proc.isIdlCode = true;
     Line l1 = new Line(t.image.trim());
     proc.lines.addElement(l1);
-    label_62:
+    label_65:
     while (true) {
-      if (jj_2_8(2)) {
+      if (jj_2_11(2)) {
         ;
       } else {
-        break label_62;
+        break label_65;
       }
       t = jj_consume_token(IDLLINE);
       Line l2 = new Line(t.image.trim());
@@ -3600,130 +3879,44 @@ public class JPortal implements JPortalConstants {
     finally { jj_save(7, xla); }
   }
 
-  static private boolean jj_3R_102() {
-    if (jj_scan_token(SQL)) return true;
-    return false;
+  static private boolean jj_2_9(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_9(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(8, xla); }
   }
 
-  static private boolean jj_3R_73() {
-    if (jj_scan_token(SELECTONEBY)) return true;
-    Token xsp;
-    if (jj_3R_90()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_90()) { jj_scanpos = xsp; break; }
-    }
-    return false;
+  static private boolean jj_2_10(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_10(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(9, xla); }
   }
 
-  static private boolean jj_3_6() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_3R_65()) return true;
-    return false;
+  static private boolean jj_2_11(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_11(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(10, xla); }
   }
 
-  static private boolean jj_3R_97() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_102()) jj_scanpos = xsp;
-    if (jj_scan_token(CODE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_88() {
-    if (jj_3R_97()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_95() {
+  static private boolean jj_3R_92() {
     if (jj_3R_101()) return true;
     return false;
   }
 
-  static private boolean jj_3R_78() {
-    if (jj_scan_token(GRANT)) return true;
-    Token xsp;
-    if (jj_3R_95()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_95()) { jj_scanpos = xsp; break; }
-    }
+  static private boolean jj_3R_103() {
+    if (jj_3R_74()) return true;
     return false;
   }
 
-  static private boolean jj_3R_81() {
-    if (jj_scan_token(VIEW)) return true;
-    if (jj_3R_71()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_5() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_scan_token(SINGLE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_1() {
-    if (jj_3R_63()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_94() {
-    if (jj_3R_100()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_99() {
-    if (jj_3R_71()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_4() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_3R_65()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_3() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_scan_token(MULTIPLE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_82() {
-    if (jj_scan_token(CONST)) return true;
-    if (jj_3R_71()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_93() {
-    if (jj_3R_99()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_79() {
-    if (jj_scan_token(KEY)) return true;
-    if (jj_3R_71()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_92() {
-    if (jj_3R_99()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_84() {
-    if (jj_scan_token(LIDENTIFIER)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_87() {
-    if (jj_scan_token(OUTPUT)) return true;
+  static private boolean jj_3R_98() {
+    if (jj_3R_104()) return true;
     return false;
   }
 
   static private boolean jj_3R_77() {
-    if (jj_scan_token(UPDATEBY)) return true;
+    if (jj_scan_token(SELECTBY)) return true;
     Token xsp;
     if (jj_3R_94()) return true;
     while (true) {
@@ -3733,33 +3926,31 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static private boolean jj_3_8() {
-    if (jj_scan_token(IDLLINE)) return true;
+  static private boolean jj_3_7() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(SINGLE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_70() {
-    if (jj_3R_82()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_71() {
+  static private boolean jj_3R_81() {
+    if (jj_scan_token(GRANT)) return true;
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_83()) {
-    jj_scanpos = xsp;
-    if (jj_3R_84()) return true;
+    if (jj_3R_98()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_98()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  static private boolean jj_3R_83() {
-    if (jj_scan_token(IDENTIFIER)) return true;
+  static private boolean jj_3R_84() {
+    if (jj_scan_token(VIEW)) return true;
+    if (jj_3R_74()) return true;
     return false;
   }
 
   static private boolean jj_3R_76() {
-    if (jj_scan_token(UPDATEFOR)) return true;
+    if (jj_scan_token(SELECTONEBY)) return true;
     Token xsp;
     if (jj_3R_93()) return true;
     while (true) {
@@ -3769,225 +3960,352 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static private boolean jj_3R_69() {
-    if (jj_3R_81()) return true;
+  static private boolean jj_3R_105() {
+    if (jj_scan_token(SQL)) return true;
     return false;
   }
 
-  static private boolean jj_3R_109() {
-    if (jj_scan_token(EXECUTE)) return true;
+  static private boolean jj_3R_91() {
+    if (jj_3R_100()) return true;
     return false;
   }
 
-  static private boolean jj_3R_68() {
-    if (jj_3R_80()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_75() {
-    if (jj_scan_token(DELETEBY)) return true;
-    Token xsp;
-    if (jj_3R_92()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_92()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_67() {
-    if (jj_3R_79()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_108() {
-    if (jj_scan_token(UPDATE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_66() {
-    if (jj_3R_78()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_63() {
+  static private boolean jj_3R_100() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_66()) {
-    jj_scanpos = xsp;
-    if (jj_3R_67()) {
-    jj_scanpos = xsp;
-    if (jj_3R_68()) {
-    jj_scanpos = xsp;
-    if (jj_3R_69()) {
-    jj_scanpos = xsp;
-    if (jj_3R_70()) return true;
-    }
-    }
-    }
-    }
+    if (jj_3R_105()) jj_scanpos = xsp;
+    if (jj_scan_token(CODE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_107() {
-    if (jj_scan_token(SELECT)) return true;
+  static private boolean jj_3_1() {
+    if (jj_3R_66()) return true;
     return false;
   }
 
-  static private boolean jj_3_7() {
-    if (jj_scan_token(DATALINE)) return true;
+  static private boolean jj_3_6() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(SINGLE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_103() {
-    if (jj_scan_token(CODELINE)) return true;
+  static private boolean jj_3_11() {
+    if (jj_scan_token(IDLLINE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_65() {
-    if (jj_scan_token(NUMBER)) return true;
+  static private boolean jj_3R_85() {
+    if (jj_scan_token(CONST)) return true;
+    if (jj_3R_74()) return true;
     return false;
   }
 
-  static private boolean jj_3_2() {
-    if (jj_3R_64()) return true;
+  static private boolean jj_3R_82() {
+    if (jj_scan_token(KEY)) return true;
+    if (jj_3R_74()) return true;
     return false;
   }
 
-  static private boolean jj_3R_106() {
-    if (jj_scan_token(INSERT)) return true;
+  static private boolean jj_3_5() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(STANDARD)) return true;
     return false;
   }
 
-  static private boolean jj_3R_98() {
+  static private boolean jj_3R_97() {
+    if (jj_3R_103()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_87() {
+    if (jj_scan_token(LIDENTIFIER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_102() {
+    if (jj_3R_74()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_4() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_3R_68()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_73() {
+    if (jj_3R_85()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_74() {
     Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_103()) { jj_scanpos = xsp; break; }
+    xsp = jj_scanpos;
+    if (jj_3R_86()) {
+    jj_scanpos = xsp;
+    if (jj_3R_87()) return true;
     }
     return false;
   }
 
   static private boolean jj_3R_86() {
-    if (jj_scan_token(INPUT)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
-  static private boolean jj_3R_80() {
-    if (jj_scan_token(LINK)) return true;
-    if (jj_3R_96()) return true;
+  static private boolean jj_3R_96() {
+    if (jj_3R_102()) return true;
     return false;
   }
 
-  static private boolean jj_3R_105() {
-    if (jj_scan_token(DELETE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_85() {
-    if (jj_scan_token(STANDARD)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_91() {
-    if (jj_3R_99()) return true;
+  static private boolean jj_3_3() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(MULTIPLE)) return true;
     return false;
   }
 
   static private boolean jj_3R_72() {
-    if (jj_scan_token(SELECT)) return true;
+    if (jj_3R_84()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_10() {
+    if (jj_scan_token(DATALINE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_95() {
+    if (jj_3R_102()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_112() {
+    if (jj_scan_token(EXECUTE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_90() {
+    if (jj_scan_token(OUTPUT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_71() {
+    if (jj_3R_83()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_80() {
+    if (jj_scan_token(UPDATEBY)) return true;
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_85()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_86()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_87()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_88()) {
-    jj_scanpos = xsp;
-    if (jj_3R_89()) return true;
+    if (jj_3R_97()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_97()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  static private boolean jj_3R_104() {
+  static private boolean jj_3R_70() {
+    if (jj_3R_82()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_111() {
+    if (jj_scan_token(UPDATE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_79() {
+    if (jj_scan_token(UPDATEFOR)) return true;
+    Token xsp;
+    if (jj_3R_96()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_96()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_69() {
+    if (jj_3R_81()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_66() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_69()) {
+    jj_scanpos = xsp;
+    if (jj_3R_70()) {
+    jj_scanpos = xsp;
+    if (jj_3R_71()) {
+    jj_scanpos = xsp;
+    if (jj_3R_72()) {
+    jj_scanpos = xsp;
+    if (jj_3R_73()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_110() {
+    if (jj_scan_token(SELECT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_68() {
+    if (jj_scan_token(NUMBER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_78() {
+    if (jj_scan_token(DELETEBY)) return true;
+    Token xsp;
+    if (jj_3R_95()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_95()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3_2() {
+    if (jj_3R_67()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_109() {
+    if (jj_scan_token(INSERT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_83() {
+    if (jj_scan_token(LINK)) return true;
+    if (jj_3R_99()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_108() {
+    if (jj_scan_token(DELETE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_106() {
+    if (jj_scan_token(CODELINE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_107() {
     if (jj_scan_token(ALL)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_104() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_107()) {
+    jj_scanpos = xsp;
+    if (jj_3R_108()) {
+    jj_scanpos = xsp;
+    if (jj_3R_109()) {
+    jj_scanpos = xsp;
+    if (jj_3R_110()) {
+    jj_scanpos = xsp;
+    if (jj_3R_111()) {
+    jj_scanpos = xsp;
+    if (jj_3R_112()) return true;
+    }
+    }
+    }
+    }
+    }
     return false;
   }
 
   static private boolean jj_3R_101() {
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_104()) {
-    jj_scanpos = xsp;
-    if (jj_3R_105()) {
-    jj_scanpos = xsp;
-    if (jj_3R_106()) {
-    jj_scanpos = xsp;
-    if (jj_3R_107()) {
-    jj_scanpos = xsp;
-    if (jj_3R_108()) {
-    jj_scanpos = xsp;
-    if (jj_3R_109()) return true;
-    }
-    }
-    }
-    }
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_106()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  static private boolean jj_3R_96() {
-    if (jj_3R_71()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_90() {
-    if (jj_3R_99()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_64() {
-    if (jj_3R_71()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_72()) {
-    jj_scanpos = xsp;
-    if (jj_3R_73()) {
-    jj_scanpos = xsp;
-    if (jj_3R_74()) {
-    jj_scanpos = xsp;
-    if (jj_3R_75()) {
-    jj_scanpos = xsp;
-    if (jj_3R_76()) {
-    jj_scanpos = xsp;
-    if (jj_3R_77()) return true;
-    }
-    }
-    }
-    }
-    }
+  static private boolean jj_3R_99() {
+    if (jj_3R_74()) return true;
     return false;
   }
 
   static private boolean jj_3R_89() {
-    if (jj_3R_98()) return true;
+    if (jj_scan_token(INPUT)) return true;
     return false;
   }
 
-  static private boolean jj_3R_100() {
-    if (jj_3R_71()) return true;
+  static private boolean jj_3R_88() {
+    if (jj_scan_token(LEFTPAREN)) return true;
     return false;
   }
 
-  static private boolean jj_3R_74() {
-    if (jj_scan_token(SELECTBY)) return true;
+  static private boolean jj_3R_94() {
+    if (jj_3R_102()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_75() {
+    if (jj_scan_token(SELECT)) return true;
     Token xsp;
-    if (jj_3R_91()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_91()) { jj_scanpos = xsp; break; }
+    xsp = jj_scanpos;
+    if (jj_3R_88()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_89()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_90()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_91()) {
+    jj_scanpos = xsp;
+    if (jj_3R_92()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3_9() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(STANDARD)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_93() {
+    if (jj_3R_102()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_8() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_3R_68()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_67() {
+    if (jj_3R_74()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_75()) {
+    jj_scanpos = xsp;
+    if (jj_3R_76()) {
+    jj_scanpos = xsp;
+    if (jj_3R_77()) {
+    jj_scanpos = xsp;
+    if (jj_3R_78()) {
+    jj_scanpos = xsp;
+    if (jj_3R_79()) {
+    jj_scanpos = xsp;
+    if (jj_3R_80()) return true;
+    }
+    }
+    }
+    }
     }
     return false;
   }
@@ -4004,7 +4322,7 @@ public class JPortal implements JPortalConstants {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[176];
+  static final private int[] jj_la1 = new int[195];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -4018,21 +4336,21 @@ public class JPortal implements JPortalConstants {
       jj_la1_init_4();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200000,0x0,0x0,0x0,0x0,0x0,0x20240000,0x0,0x20240000,0x0,0x0,0x20240000,0x0,0x20240000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc127f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x0,0x0,0x40000080,0x0,0x40000080,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000,0x40000000,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x418000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x418000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400000,0x0,0x0,0x0,0x0,0x0,0x40480000,0x0,0x40480000,0x0,0x0,0x40480000,0x0,0x40480000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1824fd00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000000,0x0,0x0,0x80000080,0x0,0x80000080,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x100000,0x80000000,0x100000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x830000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x830000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x40,0x0,0x20000000,0x10000800,0x10000800,0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x0,0x3000000,0x1000000,0x3000000,0x0,0x0,0x3000000,0x1000000,0x3000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x84,0x0,0x290484,0x0,0x40000,0x0,0x0,0x0,0x40000,0x0,0x0,0x40000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000,0x0,0x2,0x0,0x60200,0x0,0x0,0x8010,0x0,0x8010,0x4000000,0x0,0x80000000,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x0,0x0,0x0,0x10000000,0x0,0x0,0x0,0x0,0x0,0x108023,0x0,0x0,0x0,0x0,0x0,0x0,0x100,0x0,0x100,0x1000,0x8001000,0x100,0x0,0x100,0x108023,0x4000000,0x0,0x0,0x0,0x0,0x4000,0x0,0x0,0x10000000,0x0,0x0,0x1000,0x8001000,0x100,0x0,0x100,0x0,0x1000,0x8001000,0x100,0x0,0x100,0x0,0x0,0x10000000,0x0,0x0,0x0,0x0,0x100,0x0,0x0,0x0,0x4000000,0x0,0x0,0x0,0x4000,0x0,0x0,0x2000,0x0,0x0,0x10000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x80,0x0,0x40000000,0x20001000,0x20001000,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000000,0x0,0x0,0x0,0x6000000,0x2000000,0x6000000,0x0,0x0,0x6000000,0x2000000,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x108,0x0,0x520908,0x0,0x80000,0x0,0x0,0x0,0x80000,0x0,0x0,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x4,0x0,0xc0400,0x0,0x0,0x10020,0x0,0x10020,0x8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000000,0x0,0x0,0x0,0x0,0x0,0x20000000,0x0,0x0,0x0,0x0,0x0,0x210046,0x0,0x0,0x0,0x0,0x0,0x0,0x200,0x0,0x200,0x0,0x0,0x2000,0x10002000,0x200,0x0,0x200,0x0,0x0,0x2000,0x10002000,0x200,0x0,0x200,0x0,0x0,0x20000000,0x2000,0x10002000,0x200,0x0,0x200,0x210046,0x8000000,0x0,0x0,0x0,0x0,0x8000,0x0,0x0,0x20000000,0x0,0x0,0x2000,0x10002000,0x200,0x0,0x200,0x0,0x2000,0x10002000,0x200,0x0,0x200,0x0,0x0,0x20000000,0x0,0x0,0x0,0x0,0x200,0x1,0x0,0x0,0x8000000,0x0,0x0,0x0,0x8000,0x0,0x0,0x4000,0x0,0x0,0x20000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x40000,0x0,0x8,0x20000000,0x0,0x0,0x0,0x40000,0x10001,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0b82800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x0,0x20,0x0,0x2000000,0x0,0x0,0x0,0x0,0x0,0x2000010,0x0,0x2000010,0x0,0x0,0x1000000,0x0,0x1000000,0x0,0x0,0x0,0x0,0x0,0x2000000,0x0,0x0,0x0,0x0,0x400000,0x0,0x0,0x0,0x0,0x0,0x10001,0x0,0x12000420,0x0,0x10001,0x4,0x0,0x0,0x20000,0x0,0x2000002,0x2000002,0x0,0x0,0x0,0x2000002,0x2000002,0x12000420,0x0,0x0,0x20000,0x0,0x0,0x0,0x0,0x0,0x0,0x8000,0x0,0x0,0x0,0x0,0x2000002,0x2000002,0x0,0x0,0x0,0x0,0x2000002,0x2000002,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc000250,0x20000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000,0x8000,0x0,0x0,0x0,0x0,0x2000000,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x80000,0x0,0x10,0x40000000,0x0,0x0,0x0,0x80000,0x20002,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x81705000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40,0x0,0x40,0x0,0x4000000,0x0,0x0,0x0,0x0,0x0,0x4000020,0x0,0x4000020,0x0,0x0,0x2000001,0x0,0x2000001,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x0,0x0,0x800000,0x0,0x0,0x0,0x0,0x0,0x20002,0x0,0x24000cc0,0x0,0x20002,0x8,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x0,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x0,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x0,0x0,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x24000cc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x180004a0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x40000,0x4000000,0x8000,0x0,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x40000000,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x40000000,0x0,0x0,0x4000,0x10,0x0,0x800000,0x1000000,0x1000000,0x0,0x20000,0x0,0x40000000,0x0,0x1000000,0x0,0x0,0x0,0x20000,0x1000000,0x0,0x0,0x0,0x20000,0x21800000,0x1400000,0x1400000,0x21800000,0x400000,0x21800000,0x21800000,0x400000,0x21800000,0x21800000,0x400000,0x1400000,0x1400000,0x1400000,0x1400000,0x21800000,0x21800000,0x21800000,0x0,0x1800000,0x20000e,0x1000000,0x0,0x100000,0x0,0x1800000,0x0,0x100000,0x0,0x20000000,0x21800000,0x21800000,0x100000,0x0,0x40000000,0x1fe0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1fe0,0x1,0x100000,0x0,0x0,0x0,0x0,0x0,0x40000000,0x0,0x0,0x0,0x0,0x1000000,0x0,0x0,0x0,0x0,0x0,0x40000000,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0x40000000,0x0,0x0,0x0,0x4000,0x4000,0x0,0x1000000,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40000000,0x0,0x1000000,0x0,0x0,0x1000000,0x0,0x0,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000,0x0,0x40000000,0x1000000,0x0,0x0,0x1000000,0x0,0x0,0x1000000,0x0,0x0,0x2000,0x0,0x40000000,0x40000000,0x0,0x1000000,0x0,0x40000000,};
+      jj_la1_3 = new int[] {0x0,0x80000000,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x80000000,0x0,0x0,0x8000,0x20,0x0,0x1000000,0x2000000,0x2000000,0x0,0x40000,0x0,0x80000000,0x0,0x2000000,0x0,0x0,0x0,0x40000,0x2000000,0x0,0x0,0x0,0x40000,0x43000000,0x2800000,0x2800000,0x43000000,0x800000,0x43000000,0x43000000,0x800000,0x43000000,0x43000000,0x800000,0x2800000,0x2800000,0x2800000,0x2800000,0x43000000,0x43000000,0x43000000,0x0,0x3000000,0x40001d,0x2000000,0x0,0x200000,0x0,0x3000000,0x0,0x200000,0x0,0x40000000,0x43000000,0x43000000,0x200000,0x0,0x80000000,0x3fc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fc0,0x2,0x200000,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x2000000,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x4000,0x0,0x80000000,0x0,0x0,0x0,0x8000,0x8000,0x0,0x2000000,0x2000000,0x2000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x2000000,0x2000000,0x0,0x0,0x2000000,0x0,0x0,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000000,0x40000,0x0,0x80000000,0x2000000,0x0,0x0,0x2000000,0x0,0x0,0x2000000,0x0,0x0,0x4000,0x0,0x80000000,0x80000000,0x0,0x2000000,0x0,0x0,0x0,0x80000000,};
    }
    private static void jj_la1_init_4() {
-      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x6,0x6,0x0,0x9000,0x0,0x6,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x0,0x0,0x0,0x6,0x6,0x0,0x0,0x0,0x6,0x0,0x0,0x6,0x6,0x6,0x6,0x6,0x6,0x6,0x6,0x0,0x0,0x0,0x6,0x0,0x6,0x0,0x0,0x0,0x0,0x6,0x0,0x6,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x6,0x0,0x6,0x0,0x0,0x200,0x0,0x0,0x6,0x6,0x9000,0x9000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x0,0x0,0x6,0x0,0x0,0x6,0x0,0x0,0x0,0x0,0x0,0x6,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x0,0x6,0x6,0x6,0x6,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x6,0x0,0x0,0x6,0x0,0x0,0x6,0x0,0x0,0x0,0x6,0x6,0x200,0x0,0x0,0x0,};
+      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000,0xc,0xc,0x0,0x12000,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0xc,0xc,0x0,0x0,0x0,0xc,0x0,0x0,0xc,0xc,0xc,0xc,0xc,0xc,0xc,0xc,0x0,0x0,0x0,0xc,0x0,0xc,0x0,0x0,0x0,0x0,0xc,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0xc,0x0,0xc,0x0,0x0,0x400,0x0,0x0,0xc,0xc,0x12000,0x12000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0xc,0xc,0xc,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0x0,0xc,0xc,0x400,0x0,0x0,0x0,0x0,0x0,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[8];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[11];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -4054,7 +4372,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 176; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 195; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4069,7 +4387,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 176; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 195; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4087,7 +4405,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 176; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 195; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4098,7 +4416,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 176; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 195; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4115,7 +4433,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 176; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 195; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4125,7 +4443,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 176; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 195; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4240,12 +4558,12 @@ public class JPortal implements JPortalConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[145];
+    boolean[] la1tokens = new boolean[146];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 176; i++) {
+    for (int i = 0; i < 195; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -4266,7 +4584,7 @@ public class JPortal implements JPortalConstants {
         }
       }
     }
-    for (int i = 0; i < 145; i++) {
+    for (int i = 0; i < 146; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -4293,7 +4611,7 @@ public class JPortal implements JPortalConstants {
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 11; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -4308,6 +4626,9 @@ public class JPortal implements JPortalConstants {
             case 5: jj_3_6(); break;
             case 6: jj_3_7(); break;
             case 7: jj_3_8(); break;
+            case 8: jj_3_9(); break;
+            case 9: jj_3_10(); break;
+            case 10: jj_3_11(); break;
           }
         }
         p = p.next;

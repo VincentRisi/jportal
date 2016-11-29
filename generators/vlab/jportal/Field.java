@@ -105,6 +105,7 @@ public class Field implements Serializable
   public Field()
   {
     name = "";
+    literalName = "";
     alias = "";
     checkValue = "";
     defaultValue = "";
@@ -121,13 +122,17 @@ public class Field implements Serializable
     isPrimaryKey = false;
     isSequence = false;
     isNull = false;
+    isLiteral = false;
+    isCalc = false;
     isIn = false;
     isExtStd = false;
+    isExtStdOut = false;
     isOut = false;
   }
   public void reader(DataInputStream ids) throws IOException
   {
     name = ids.readUTF();
+    literalName = ids.readUTF();
     alias = ids.readUTF();
     checkValue = ids.readUTF();
     defaultValue = ids.readUTF();
@@ -160,13 +165,17 @@ public class Field implements Serializable
     isPrimaryKey = ids.readBoolean();
     isSequence = ids.readBoolean();
     isNull = ids.readBoolean();
+    isLiteral = ids.readBoolean();
+    isCalc = ids.readBoolean();
     isIn = ids.readBoolean();
     isExtStd = ids.readBoolean();
+    isExtStdOut = ids.readBoolean();
     isOut = ids.readBoolean();
   }
   public void writer(DataOutputStream ods) throws IOException
   {
     ods.writeUTF(name);
+    ods.writeUTF(literalName);
     ods.writeUTF(alias);
     ods.writeUTF(checkValue);
     ods.writeUTF(defaultValue);
@@ -198,8 +207,11 @@ public class Field implements Serializable
     ods.writeBoolean(isPrimaryKey);
     ods.writeBoolean(isSequence);
     ods.writeBoolean(isNull);
+    ods.writeBoolean(isLiteral);
+    ods.writeBoolean(isCalc);
     ods.writeBoolean(isIn);
     ods.writeBoolean(isExtStd);
+    ods.writeBoolean(isExtStdOut);
     ods.writeBoolean(isOut);
   }
   /** If there is an alias uses that else returns name */
@@ -209,6 +221,14 @@ public class Field implements Serializable
       return alias;
     return name;
   }
+  /** If there is an literal uses that else returns name */
+  public String useLiteral()
+  {
+    if (isLiteral)
+      return literalName;
+    return name;
+  }
+
   /** If there is an alias uses that else returns name */
   public String useLowerName()
   {
@@ -296,13 +316,6 @@ public class Field implements Serializable
   public boolean isCharEmptyOrAnsiAsNull()
   {
     return isCharEmptyAsNull() || ansiIsNull();
-  }
-  /** If there is an literal uses that else returns name */
-  public String useLiteral()
-  {
-    if (isLiteral)
-      return literalName;
-    return name;
   }
 }
 

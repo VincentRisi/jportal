@@ -64,6 +64,13 @@ abstract public class Connector
     public String sequence = "";
     public String dropField = "";
     public boolean doesGeneratedKeys = false;
+    public String checkUse(String line)
+    {
+        // if (dropField.equalsIgnoreCase(line))
+        //     return "";
+        // return line;
+        return checkExclude(line,dropField);
+    }
   }
   abstract public Returning getReturning(String table, String field) throws SQLException;
   public String checkExclude(String line, String field)

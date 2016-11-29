@@ -13,6 +13,7 @@ PARSER_BEGIN(JPortal)
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
 ///    Vincent Risi
+///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
 
@@ -478,7 +479,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <SINGLE:       "single">
 | <SQL:          "sql">
 | <SPROC:       ("storedproc"|"sproc")>
-| <STANDARD:     "(standard)">
+| <STANDARD:     "standard">
 | <TABLE:        "table">
 | <TIME:         "time">
 | <TIMESTAMP:    "timestamp">
@@ -1051,7 +1052,7 @@ void jDatatype() :
   {
     field.type = Field.USERSTAMP;
     table.hasUserStamp = true;
-    field.length = 30;
+    field.length = 50;
   }
 |  <SEQUENCE>
   {
@@ -1803,7 +1804,7 @@ void jStdProc() :
     }
   | <DELETEONE>
 
-    ( <STANDARD>
+    ( <LEFTPAREN> <STANDARD> <RIGHTPAREN>
       {
         proc.isStd = true;
       }
@@ -1846,11 +1847,25 @@ void jStdProc() :
   | <SELECTONEBY> ( jProcColumn())+
       (<AS> s = jIdent()
       {        
-        proc.username = s;
+        //DGR: I think long term it would be better to follow the convention that when a user overrides (aliases)
+        //     a PROC, we store the original name in proc.name and the alias in proc.username. But the original SelectBy 
+        //     just overrides the proc.name, so I am sticking to the convention.
+        //proc.username = s;
+        proc.name = s;
       })?      
       ((<IN>)? <ORDER> {inOrder = true;})?
       ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       {
+  
+        //proc.name is set by <AS> clause above
+        if(proc.name == null || proc.name.trim().isEmpty())
+        {
+          proc.name = "SelectOneBy";
+          for (String fname : proc.fields)
+          {
+            proc.name += fname;
+          }
+        }
         proc.isSingle = true;
         table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
         table.hasStdProcs = true;
@@ -1858,13 +1873,26 @@ void jStdProc() :
   | <SELECTBY> ( jProcColumn())+
       (<AS> s = jIdent()
       {        
-        proc.username = s;
+        //DGR: I think long term it would be better to follow the convention that when a user overrides (aliases)
+        //     a PROC, we store the original name in proc.name and the alias in proc.username. But the original SelectBy 
+        //     just overrides the proc.name, so I am sticking to the convention.
+        //proc.username = s;
+        proc.name = s;
       })?      
       ((<IN>)? <ORDER> {inOrder = true;})?
       ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       ( <OUTPUT> (jOutputType())?
         ( jField()
           {
+            //proc.name is set by <AS> clause above
+            if(proc.name == null || proc.name.trim().isEmpty())
+            {
+              proc.name = "SelectBy";
+              for (String fname : proc.fields)
+              {
+                proc.name += fname;
+              }
+            }
             if (proc.isSProc == true)
             {
               if (proc.hasInput(field.name))
@@ -1969,7 +1997,7 @@ void jNewProc() :
     proc.name = s;
   }
   ( <SELECT>
-      ( <STANDARD>
+      ( <LEFTPAREN> <STANDARD> <RIGHTPAREN>
           {
             proc.isStd = true;
           }
@@ -2204,13 +2232,11 @@ void jUserProc() :
     proc.name = s;
   }
   (
-    <STANDARD>
+    <LEFTPAREN> <STANDARD> <RIGHTPAREN>
     {
       proc.extendsStd = true;
       proc.useStd = true;
       isStdProc = true;
-      for (int i=0; i<table.fields.size(); i++)
-        proc.outputs.addElement(table.fields.elementAt(i));
     }
   )?
   ( s = jComment()
@@ -2406,13 +2432,31 @@ void jInputType() :
     proc.noRows = n;
     proc.isMultipleInput = true;
   }
+| LOOKAHEAD(2) <LEFTPAREN> <STANDARD> 
+  {
+    for (int i=0; i<table.fields.size(); i++)
+      proc.inputs.addElement(table.fields.elementAt(i));
+  }
+  <RIGHTPAREN>
 }
 
 void jOutputType() :
 {
   int n;
 }
+{  LOOKAHEAD(2) <LEFTPAREN> <SINGLE>
+  {
+    proc.isSingle = true;
+
+  }
+  (<STANDARD>
 {
+      for (int i=0; i<table.fields.size(); i++)
+        proc.outputs.addElement(table.fields.elementAt(i));
+    }
+  )?
+  <RIGHTPAREN>
+|
   LOOKAHEAD(2) <LEFTPAREN> <SINGLE>
   {
     proc.isSingle = true;
@@ -2427,6 +2471,17 @@ void jOutputType() :
   {
     proc.noRows = n;
   }
+| LOOKAHEAD(2) <LEFTPAREN> <STANDARD> 
+  {
+    for (int i=0; i<table.fields.size(); i++)
+      proc.outputs.addElement(table.fields.elementAt(i));
+  }
+  (<SINGLE>
+    {
+      proc.isSingle = true;
+    }
+  )?
+  <RIGHTPAREN>
 }
 
 void jOldData() :
