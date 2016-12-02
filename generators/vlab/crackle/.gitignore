@@ -1,7 +1,7 @@
-/IDLTokenManager.java
-/IDLConstants.java
-/IDL.java
-/TokenMgrError.java
-/Token.java
-/SimpleCharStream.java
-/ParseException.java
+#/IDLTokenManager.java
+#/IDLConstants.java
+#/IDL.java
+#/TokenMgrError.java
+#/Token.java
+#/SimpleCharStream.java
+#/ParseException.java

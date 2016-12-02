@@ -2,6 +2,18 @@ project (main_jportal)
 
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
+find_package (PythonInterp)
+find_package (Java)
+if (WIN32)
+  set (ANT_EXECUTABLE C:/Ant/bin/ant.exe CACHE PATH "Ant Executable")
+  #set (JAVACC_SHELL C:/JavaCC/javacc.bat CACHE PATH "javacc shell")
+  set (POSTGRES_EXECUTABLE C:/PostgeSQL/bin/psql.exe CACHE PATH "postgresql executable")
+else ()
+  set (ANT_EXECUTABLE /usr/bin/ant       CACHE PATH "Ant Executable")
+  #set (JAVACC_SHELL /usr/bin/javacc      CACHE PATH "javacc shell")
+  set (POSTGRES_EXECUTABLE /usr/bin/psql CACHE PATH "postgresql executable")
+endif ()  
+
 set (TOOLS_DIR ${CMAKE_SOURCE_DIR}/tools)
 
 set (GENERATORS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/generators)

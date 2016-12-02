@@ -8,10 +8,10 @@ There are three code generator types written using the same mechanism:
 A generator that generates DALs (Data Access Layers) for various databases (Oracle, MS SQL Server, Postgres, SQLLite, DB2) in various languages (C#, Java, C++, Python, VB).  
   
 [Crackle](#cracklegenerator)  
-A generator that generates ???  
+A generator that generates IDL (Interface Definition Language) RPCs (Remote Procedure Calls) using Client/Server for various languages.  
   
 [Pickle](#picklegenerator)  
-A generator that generates ???  
+A generator that generates Parameter Control Table maintenace code. A front end written in C# that maintains any ADO.NET Database.  
 
 This mechanism or paradigm follow the same coding pattern. There is a
 parser generator or compiler compiler written using javacc for the tokenising

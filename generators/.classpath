@@ -2,6 +2,5 @@
 <classpath>
 	<classpathentry kind="src" path=""/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/opt/oracle/instantclient_11_2/jdbc/lib/ojdbc7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

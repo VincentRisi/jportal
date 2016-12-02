@@ -18,7 +18,7 @@ public class Prime
 {
   public static void main(String args[])
   {
-    int Primes[] = new int[100000];
+    int Primes[] = new int[100001];
     int DivIndex;
     int Index;
     int NoPrimes;
