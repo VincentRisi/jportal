@@ -1,7 +1,7 @@
-/JPortalConstants.java
-/JPortalTokenManager.java
-/JPortal.java
-/TokenMgrError.java
-/Token.java
-/SimpleCharStream.java
-/ParseException.java
+#/JPortalConstants.java
+#/JPortalTokenManager.java
+#/JPortal.java
+#/TokenMgrError.java
+#/Token.java
+#/SimpleCharStream.java
+#/ParseException.java
