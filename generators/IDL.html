@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for IDL.jj </TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for IDL.jj </H1>
+<H2 ALIGN=CENTER>TOKENS</H2>
+<TABLE>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SKIP : {
+" "
+| "\t"
+| "\n"
+| "\r"
+| &lt;"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt;
+| &lt;"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;INTEGER: ["1"-"9"] (["0"-"9"])* | "0"&gt;
+| &lt;QSTRING: "\"" (~["\"","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"]))* "\""&gt;
+| &lt;CHARACTER: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;BOOLEAN: "boolean" | "bool"&gt;
+| &lt;BYTE: "byte"&gt;
+| &lt;CHAR: "char"&gt;
+| &lt;DOUBLE: "double"&gt;
+| &lt;ENUM: "enum"&gt;
+| &lt;FLOAT: "float"&gt;
+| &lt;MODULE: "module"&gt;
+| &lt;PACKAGE: "package"&gt;
+| &lt;INT: "int"&gt;
+| &lt;INT8: "int8"&gt;
+| &lt;INT16: "int16"&gt;
+| &lt;INT32: "int32"&gt;
+| &lt;INT64: "int64"&gt;
+| &lt;LONG: "long"&gt;
+| &lt;MESSAGE: "message"&gt;
+| &lt;SHORT: "short"&gt;
+| &lt;SIZE: "size"&gt;
+| &lt;STRING: "string"&gt;
+| &lt;STRING2: "String"&gt;
+| &lt;STRUCT: "struct"&gt;
+| &lt;TABLE: "table"&gt;
+| &lt;UNSIGNED: "unsigned"&gt;
+| &lt;VERSION: "version"&gt;
+| &lt;VOID: "void"&gt;
+| &lt;WCHAR: "wchar"&gt;
+| &lt;POINTER: "*"&gt;
+| &lt;POINTERREF: "*&amp;"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN [IGNORE_CASE] : {
+&lt;INPUT: "input"&gt;
+| &lt;OUTPUT: "output"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;PRIVATE: "private"&gt;
+| &lt;PROTECTED: "protected"&gt;
+| &lt;PUBLIC: "public"&gt;
+| &lt;PRAGMA: "pragma" (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;IDENTIFIER: &lt;LETTER&gt; (&lt;LETTER&gt; | &lt;DIGIT&gt;)*&gt;
+| &lt;#LETTER: ["$","A"-"Z","_","a"-"z"]&gt;
+| &lt;#DIGIT: ["0"-"9"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SPECIAL [IGNORE_CASE] : {
+&lt;CODE: "code" (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt; : CODESTATE
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;CODESTATE&gt; SPECIAL [IGNORE_CASE] : {
+&lt;ENDCODE: (" " | "\t")* "endcode" (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;CODESTATE&gt; TOKEN : {
+&lt;LINENO: (" " | "\t")* "#line" (" " | "\t")+ &lt;INTEGER&gt; (" " | "\t")+ &lt;QSTRING&gt; (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;CODESTATE&gt; TOKEN : {
+&lt;CODELINE: (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+</TABLE>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">idlStart</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MODULE&gt; &lt;IDENTIFIER&gt; ( ";" )? ( &lt;PACKAGE&gt; <A HREF="#prod2">idlPackage</A> ( ";" )? )? ( &lt;VERSION&gt; &lt;QSTRING&gt; ( ";" )? )? ( <A HREF="#prod3">idlCodeBlock</A> | <A HREF="#prod4">idlStructure</A> | <A HREF="#prod5">idlEnum</A> | <A HREF="#prod6">idlPrototype</A> | <A HREF="#prod7">idlMessage</A> | <A HREF="#prod8">idlTable</A> | &lt;PRAGMA&gt; | <A HREF="#prod9">idlSubModule</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">idlSubModule</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MODULE&gt; &lt;IDENTIFIER&gt; ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">idlPackage</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt; )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">idlCodeBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LINENO&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CODELINE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">idlMessage</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MESSAGE&gt; ( "(" &lt;INTEGER&gt; ")" )? "{" ( <A HREF="#prod10">idlMsgElement</A> )+ "}" ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">idlMsgElement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; ( "=" )? &lt;QSTRING&gt; ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">idlTable</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TABLE&gt; &lt;IDENTIFIER&gt; "{" ( <A HREF="#prod10">idlMsgElement</A> )+ "}" ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">idlEnum</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ENUM&gt; &lt;IDENTIFIER&gt; "{" <A HREF="#prod11">idlEnumElement</A> ( "," <A HREF="#prod11">idlEnumElement</A> )* "}" ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">idlEnumElement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; ( "=" ( &lt;INTEGER&gt; | &lt;CHARACTER&gt; ) )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">idlStructure</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;PRIVATE&gt; | &lt;PUBLIC&gt; | &lt;PROTECTED&gt; )? &lt;STRUCT&gt; &lt;IDENTIFIER&gt; ( &lt;QSTRING&gt; ( "(" &lt;IDENTIFIER&gt; ")" )? )? ( "{" ( <A HREF="#prod12">idlFielddef</A> ";" )* ( &lt;LINENO&gt; | &lt;CODELINE&gt; )* "}" )? ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">idlFielddef</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">idlType</A> &lt;IDENTIFIER&gt; ( <A HREF="#prod14">idlArrayStuff</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">idlType</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod15">idlTypeLookup</A> ( <A HREF="#prod16">idlAccessType</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">idlAccessType</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;POINTERREF&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;POINTER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"[" "]"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">idlTypeLookup</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod17">idlUnsigned</A> ( &lt;BOOLEAN&gt; | &lt;CHAR&gt; | &lt;WCHAR&gt; | ( &lt;STRING&gt; | &lt;STRING2&gt; ) | ( &lt;BYTE&gt; | &lt;INT8&gt; ) | ( &lt;SHORT&gt; | &lt;INT16&gt; ) | ( &lt;INT&gt; | &lt;INT32&gt; ) | ( &lt;LONG&gt; | &lt;INT64&gt; ) | &lt;FLOAT&gt; | &lt;DOUBLE&gt; | &lt;VOID&gt; | &lt;IDENTIFIER&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">idlUnsigned</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;UNSIGNED&gt; )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">idlArrayStuff</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"[" ( &lt;INTEGER&gt; )? "]"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">idlPrototype</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;PRIVATE&gt; | &lt;PUBLIC&gt; | &lt;PROTECTED&gt; )? <A HREF="#prod13">idlType</A> &lt;IDENTIFIER&gt; "(" <A HREF="#prod18">idlPrototypeParameters</A> ")" "{" <A HREF="#prod19">idlPrototypeActions</A> "}" ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">idlPrototypeParameters</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod12">idlFielddef</A> ( "," <A HREF="#prod12">idlFielddef</A> )* )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">idlPrototypeActions</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;MESSAGE&gt; ":" ( ( &lt;IDENTIFIER&gt; | &lt;INTEGER&gt; ) | "#" ) ( ";" )? )? ( &lt;INPUT&gt; ( ":" )? ( <A HREF="#prod20">idlAction</A> )* )? ( &lt;OUTPUT&gt; ( ":" )? ( <A HREF="#prod20">idlAction</A> )* )? ( &lt;LINENO&gt; | &lt;CODELINE&gt; )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">idlAction</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; ( <A HREF="#prod21">idlOperation</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">idlOperation</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SIZE&gt; "(" ( &lt;IDENTIFIER&gt; | &lt;INTEGER&gt; ) ")"</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

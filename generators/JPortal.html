@@ -1,0 +1,863 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for JPortal.jj </TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for JPortal.jj </H1>
+<H2 ALIGN=CENTER>TOKENS</H2>
+<TABLE>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SKIP : {
+" "
+| "\t"
+| "\n"
+| "\r"
+| &lt;"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/"&gt;
+| &lt;"//" (~["\n","\r"])* ("\n" | "\r\n")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN [IGNORE_CASE] : {
+&lt;ALL: "all"&gt;
+| &lt;ANSICHAR: "ansi" | "ansichar"&gt;
+| &lt;AUTOTIMESTAMP: "autotimestamp"&gt;
+| &lt;BIGIDENTITY: "bigidentity"&gt;
+| &lt;BIGSEQUENCE: "bigsequence"&gt;
+| &lt;BIGXML: "bigxml"&gt;
+| &lt;BLOB: "blob"&gt;
+| &lt;BOOLEAN: "boolean" | "bit"&gt;
+| &lt;BULKINSERT: "bulkinsert"&gt;
+| &lt;BULKUPDATE: "bulkupdate"&gt;
+| &lt;BYTE: "byte"&gt;
+| &lt;CALC: "calc"&gt;
+| &lt;CASCADE: "cascade"&gt;
+| &lt;CHAR: "char"&gt;
+| &lt;CHECK: "check"&gt;
+| &lt;COUNT: "count"&gt;
+| &lt;CONST: "const" | "constant"&gt;
+| &lt;CURSOR: "cursor"&gt;
+| &lt;DATABASE: "database"&gt;
+| &lt;DATE: "date"&gt;
+| &lt;DATETIME: "datetime"&gt;
+| &lt;DECLARE: "declare"&gt;
+| &lt;DEFAULTV: "default"&gt;
+| &lt;DELETE: "delete"&gt;
+| &lt;DELETEBY: "deleteby"&gt;
+| &lt;DELETEALL: "deleteall"&gt;
+| &lt;DELETEONE: "deleteone"&gt;
+| &lt;DOUBLE: "double"&gt;
+| &lt;DYNAMIC: "dynamic"&gt;
+| &lt;EXECUTE: "execute"&gt;
+| &lt;EXISTS: "exists"&gt;
+| &lt;FLAGS: "flags"&gt;
+| &lt;FLOAT: "float"&gt;
+| &lt;FOR: "for"&gt;
+| &lt;GRANT: "grant"&gt;
+| &lt;IDENTITY: "identity"&gt;
+| &lt;IMPORT: "import"&gt;
+| &lt;IN: "in"&gt;
+| &lt;INOUT: "inout"&gt;
+| &lt;INPUT: "input"&gt;
+| &lt;INSERT: "insert"&gt;
+| &lt;INT: "int" | "integer"&gt;
+| &lt;KEY: "key"&gt;
+| &lt;LINK: "link"&gt;
+| &lt;LONG: "long"&gt;
+| &lt;MERGE: "merge"&gt;
+| &lt;MONEY: "money"&gt;
+| &lt;MULTIPLE: "multiple"&gt;
+| &lt;NAMES: "names"&gt;
+| &lt;NOT: "not"&gt;
+| &lt;NULL: "null"&gt;
+| &lt;OPTIONS: "options"&gt;
+| &lt;ORDER: "order" | "sorted"&gt;
+| &lt;OUTPUT: "output"&gt;
+| &lt;PACKAGE: "package"&gt;
+| &lt;PASSWORD: "password"&gt;
+| &lt;PRIMARY: "primary"&gt;
+| &lt;PROC: "proc"&gt;
+| &lt;READONLY: "readonly"&gt;
+| &lt;RETURNING: "returning"&gt;
+| &lt;SCHEMA: "schema"&gt;
+| &lt;SELECT: "select"&gt;
+| &lt;SELECTALL: "selectall"&gt;
+| &lt;SELECTBY: "selectby"&gt;
+| &lt;FROM: "from"&gt;
+| &lt;WHERE: "where"&gt;
+| &lt;SELECTONEBY: "selectoneby"&gt;
+| &lt;SELECTONE: "selectone"&gt;
+| &lt;SEQUENCE: "sequence"&gt;
+| &lt;SERVER: "server"&gt;
+| &lt;SHORT: "short"&gt;
+| &lt;SINGLE: "single"&gt;
+| &lt;SQL: "sql"&gt;
+| &lt;SPROC: "storedproc" | "sproc"&gt;
+| &lt;STANDARD: "(standard)"&gt;
+| &lt;TABLE: "table"&gt;
+| &lt;TIME: "time"&gt;
+| &lt;TIMESTAMP: "timestamp"&gt;
+| &lt;TLOB: "tlob" | "clob"&gt;
+| &lt;TO: "to"&gt;
+| &lt;UID: "uid"&gt;
+| &lt;UNIQUE: "unique"&gt;
+| &lt;UPDATE: "update"&gt;
+| &lt;UPDATEFOR: "updatefor"&gt;
+| &lt;UPDATEBY: "updateby"&gt;
+| &lt;MAXTMSTAMP: "maxtmstamp"&gt;
+| &lt;USERID: "userid"&gt;
+| &lt;USERSTAMP: "userstamp"&gt;
+| &lt;UTF8: "utf8"&gt;
+| &lt;VIEW: "view"&gt;
+| &lt;WANSICHAR: "wansi" | "wansichar"&gt;
+| &lt;WCHAR: "wchar"&gt;
+| &lt;XML: "xml"&gt;
+| &lt;PARM: "{parm}"&gt;
+| &lt;PARMSHOWS: "{shows}"&gt;
+| &lt;PARMVIEWONLY: "{viewonly}"&gt;
+| &lt;PARMCACHE: "{cache}"&gt;
+| &lt;PARMREADER: "{reader}"&gt;
+| &lt;PARMINSERT: "{insert}"&gt;
+| &lt;PARMDELETE: "{delete}"&gt;
+| &lt;PARMUPDATE: "{update}"&gt;
+| &lt;PARMSUPPLIED: "{supplied}"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN [IGNORE_CASE] : {
+&lt;CODE: "code"&gt;
+| &lt;DATA: "data"&gt;
+| &lt;ENDCODE: "endcode"&gt;
+| &lt;ENDDATA: "enddata"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;COMMENT: "**" (~["\n","\r"])* ("\n" | "\r\n")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;ATSIGN: "@"&gt;
+| &lt;COLON: ":"&gt;
+| &lt;COMMA: ","&gt;
+| &lt;EQUALS: "="&gt;
+| &lt;LEFTBRACE: "{"&gt;
+| &lt;LEFTBRACK: "["&gt;
+| &lt;LEFTPAREN: "("&gt;
+| &lt;RIGHTBRACE: "}"&gt;
+| &lt;RIGHTBRACK: "]"&gt;
+| &lt;RIGHTPAREN: ")"&gt;
+| &lt;SEMICOLON: ";"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;NUMBER: ("-")? ["1"-"9"] (["0"-"9"])* | "0"&gt;
+| &lt;STRING: &lt;DQUOTEDS&gt; | &lt;SQUOTEDS&gt;&gt;
+| &lt;#DQUOTEDS: "\"" (~["\"","\\"] | "\\" (["\\","\"","\'"])?)* "\""&gt;
+| &lt;#SQUOTEDS: "\'" (~["\'","\\"] | "\\" (["\\","\"","\'"])?)* "\'"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;IDENTIFIER: (&lt;LETTER&gt; | &lt;EXTRA&gt;) (&lt;LETTER&gt; | &lt;DIGIT&gt; | &lt;EXTRA&gt;)*&gt;
+| &lt;LIDENTIFIER: ("l" | "L") "\'" (&lt;LETTER&gt; | &lt;EXTRA&gt; | &lt;LITERAL&gt;) (&lt;LETTER&gt; | &lt;DIGIT&gt; | &lt;EXTRA&gt; | &lt;LITERAL&gt;)* "\'"&gt;
+| &lt;#LETTER: ["a"-"z","_","A"-"Z"]&gt;
+| &lt;#DIGIT: ["0"-"9"]&gt;
+| &lt;#EXTRA: ["#","$"]&gt;
+| &lt;#LITERAL: ["[","]","\'","\""," ","\\"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SPECIAL [IGNORE_CASE] : {
+&lt;SQLCODE: "sqlcode" (" " | "\t")* ("\n" | "\r" | "\r\n")&gt; : CODESTATE
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;CODESTATE&gt; SPECIAL [IGNORE_CASE] : {
+&lt;ENDSQLCODE: (" " | "\t")* "endcode" (" " | "\t")* ("\n" | "\r" | "\r\n")?&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;CODESTATE&gt; TOKEN : {
+&lt;CODELINE: (~["\n","\r"])* ("\r\n" | "\n" | "\r")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SPECIAL [IGNORE_CASE] : {
+&lt;SQLDATA: "sqldata" (" " | "\t")* ("\n" | "\r" | "\r\n")&gt; : DATASTATE
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DATASTATE&gt; SPECIAL [IGNORE_CASE] : {
+&lt;ENDSQLDATA: (" " | "\t")* "enddata" (" " | "\t")* ("\n" | "\r" | "\r\n")?&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DATASTATE&gt; TOKEN : {
+&lt;DATALINE: (~["\n","\r"])* ("\r\n" | "\n" | "\r")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SPECIAL [IGNORE_CASE] : {
+&lt;IDLCODE: "idlcode" (" " | "\t")* ("\n" | "\r" | "\r\n")&gt; : IDLSTATE
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;IDLSTATE&gt; SPECIAL [IGNORE_CASE] : {
+&lt;ENDIDLCODE: (" " | "\t")* "endcode" (" " | "\t")* ("\n" | "\r" | "\r\n")?&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;IDLSTATE&gt; TOKEN : {
+&lt;IDLLINE: (~["\n","\r"])* ("\r\n" | "\n" | "\r")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+</TABLE>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// Parser starting point
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">jInput</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DATABASE&gt; <A HREF="#prod2">jIdent</A> ( &lt;FLAGS&gt; ( <A HREF="#prod3">jString</A> )+ )* ( &lt;PACKAGE&gt; <A HREF="#prod4">jPackageIdent</A> )? ( ( &lt;OUTPUT&gt; <A HREF="#prod5">jIdentOrString</A> | &lt;IMPORT&gt; <A HREF="#prod5">jIdentOrString</A> ) )* <A HREF="#prod6">jConnect</A> ( <A HREF="#prod7">jTables</A> )+ ( <A HREF="#prod8">jView</A> )* &lt;EOF&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// This is only used for table generation code.
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">jConnect</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SERVER&gt; <A HREF="#prod5">jIdentOrString</A> ( &lt;SCHEMA&gt; <A HREF="#prod5">jIdentOrString</A> )? ( &lt;USERID&gt; <A HREF="#prod2">jIdent</A> &lt;PASSWORD&gt; <A HREF="#prod2">jIdent</A> )?</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// A package can contain dotted notation
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">jPackageIdent</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A> ( "." <A HREF="#prod2">jIdent</A> )*</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// The server may be a standard variable or a string
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">jIdentOrString</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// Identifiers may be DEF keywords if they are escaped using L'x'
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">jIdent</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LIDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">jTables</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod9">jTable</A> ( <A HREF="#prod10">jExtras</A> )* | <A HREF="#prod11">jTableImport</A> ) ( <A HREF="#prod12">jProc</A> )* ( &lt;PARM&gt; <A HREF="#prod13">jParm</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">jTableImport</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IMPORT&gt; <A HREF="#prod5">jIdentOrString</A> ( &lt;LEFTBRACK&gt; ( <A HREF="#prod2">jIdent</A> )+ &lt;RIGHTBRACK&gt; )? ( <A HREF="#prod14">jAlias</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">jTable</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TABLE&gt; <A HREF="#prod2">jIdent</A> ( <A HREF="#prod14">jAlias</A> )? ( &lt;CHECK&gt; &lt;STRING&gt; )? ( <A HREF="#prod15">jComment</A> )* ( &lt;OPTIONS&gt; ( <A HREF="#prod3">jString</A> )+ )* ( <A HREF="#prod16">jField</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">jPackageField</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod4">jPackageIdent</A> ( <A HREF="#prod14">jAlias</A> )? <A HREF="#prod18">jDatatype</A> ( &lt;DEFAULTV&gt; &lt;STRING&gt; | ( &lt;NOT&gt; )? &lt;NULL&gt; | &lt;CALC&gt; | &lt;CHECK&gt; &lt;STRING&gt; )* ( <A HREF="#prod15">jComment</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">jField</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A> ( <A HREF="#prod14">jAlias</A> )? <A HREF="#prod18">jDatatype</A> ( &lt;DEFAULTV&gt; &lt;STRING&gt; | ( &lt;NOT&gt; )? &lt;NULL&gt; | &lt;CALC&gt; | &lt;CHECK&gt; &lt;STRING&gt; )* ( <A HREF="#prod15">jComment</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">jAlias</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; <A HREF="#prod2">jIdent</A> &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">jDatatype</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BLOB&gt; ( <A HREF="#prod19">jCharsize</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BOOLEAN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BYTE&gt; ( <A HREF="#prod20">jEnumValue</A> | <A HREF="#prod21">jCharList</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CHAR&gt; ( <A HREF="#prod19">jCharsize</A> )? ( <A HREF="#prod21">jCharList</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ANSICHAR&gt; ( <A HREF="#prod22">jEnumChar</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WCHAR&gt; ( <A HREF="#prod19">jCharsize</A> )? ( <A HREF="#prod21">jCharList</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WANSICHAR&gt; ( <A HREF="#prod22">jEnumChar</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UTF8&gt; ( <A HREF="#prod19">jCharsize</A> )? ( <A HREF="#prod21">jCharList</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SHORT&gt; ( <A HREF="#prod20">jEnumValue</A> | <A HREF="#prod21">jCharList</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INT&gt; ( <A HREF="#prod20">jEnumValue</A> | <A HREF="#prod21">jCharList</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LONG&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UID&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DATE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DATETIME&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TIME&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TIMESTAMP&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;AUTOTIMESTAMP&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TLOB&gt; ( <A HREF="#prod19">jCharsize</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;XML&gt; ( <A HREF="#prod19">jCharsize</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BIGXML&gt; ( <A HREF="#prod19">jCharsize</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;USERSTAMP&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SEQUENCE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BIGSEQUENCE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTITY&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BIGIDENTITY&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;DOUBLE&gt; | &lt;FLOAT&gt; ) ( <A HREF="#prod23">jFloatsize</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MONEY&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod24">jLookup</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">jLookup</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EQUALS&gt; ( &lt;LEFTPAREN&gt; <A HREF="#prod2">jIdent</A> &lt;RIGHTPAREN&gt; )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">jEnumValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; ( ( &lt;LINK&gt; <A HREF="#prod2">jIdent</A> )? ( <A HREF="#prod2">jIdent</A> &lt;EQUALS&gt; <A HREF="#prod25">jNumber</A> ( &lt;COMMA&gt; )? )+ ) &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">jFloatsize</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTBRACK&gt; <A HREF="#prod25">jNumber</A> &lt;COMMA&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTBRACK&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; <A HREF="#prod25">jNumber</A> &lt;COMMA&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">jEnumChar</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;LEFTBRACK&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTBRACK&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;LEFTPAREN&gt; ( <A HREF="#prod25">jNumber</A> | ( &lt;LINK&gt; <A HREF="#prod2">jIdent</A> )? ( <A HREF="#prod2">jIdent</A> &lt;EQUALS&gt; <A HREF="#prod26">jAsciiChar</A> ( &lt;COMMA&gt; )? )+ ) &lt;RIGHTPAREN&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod25">jNumber</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">jCharsize</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;LEFTBRACK&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTBRACK&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;LEFTPAREN&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTPAREN&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod25">jNumber</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">jCharList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTBRACE&gt; ( <A HREF="#prod2">jIdent</A> ( &lt;COMMA&gt; )? )+ &lt;RIGHTBRACE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">jNumber</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;NUMBER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">jParm</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod3">jString</A> )? ( &lt;PARMSHOWS&gt; ( <A HREF="#prod2">jIdent</A> )+ | &lt;PARMVIEWONLY&gt; | &lt;PARMSUPPLIED&gt; ( <A HREF="#prod2">jIdent</A> )+ | &lt;PARMCACHE&gt; ( <A HREF="#prod2">jIdent</A> | &lt;SELECTALL&gt; ) ( <A HREF="#prod2">jIdent</A> )* | &lt;PARMREADER&gt; ( <A HREF="#prod2">jIdent</A> | &lt;SELECTALL&gt; ) | &lt;PARMINSERT&gt; ( <A HREF="#prod2">jIdent</A> | &lt;INSERT&gt; ) | &lt;PARMUPDATE&gt; ( <A HREF="#prod2">jIdent</A> | &lt;UPDATE&gt; ) | &lt;PARMDELETE&gt; ( <A HREF="#prod2">jIdent</A> | &lt;DELETEONE&gt; ) )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">jExtras</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod27">jGrant</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod28">jKey</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod29">jLink</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">jView</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod30">jConst</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod30">jConst</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CONST&gt; <A HREF="#prod2">jIdent</A> ( <A HREF="#prod2">jIdent</A> &lt;EQUALS&gt; <A HREF="#prod3">jString</A> ( &lt;COMMA&gt; )? )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">jGrant</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;GRANT&gt; ( <A HREF="#prod31">jPermission</A> )+ &lt;TO&gt; ( <A HREF="#prod32">jUser</A> )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod31">jPermission</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;ALL&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DELETE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INSERT&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SELECT&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UPDATE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXECUTE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod32">jUser</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod28">jKey</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;KEY&gt; <A HREF="#prod2">jIdent</A> ( &lt;OPTIONS&gt; ( <A HREF="#prod3">jString</A> )+ )* ( <A HREF="#prod33">jModifier</A> )* ( <A HREF="#prod34">jColumn</A> )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod33">jModifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UNIQUE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;PRIMARY&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod34">jColumn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod29">jLink</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LINK&gt; <A HREF="#prod4">jPackageIdent</A> ( &lt;LEFTPAREN&gt; ( <A HREF="#prod2">jIdent</A> )+ &lt;RIGHTPAREN&gt; )? ( &lt;DELETE&gt; ( &lt;CASCADE&gt; )? )? ( &lt;UPDATE&gt; ( &lt;CASCADE&gt; )? )? ( &lt;OPTIONS&gt; ( <A HREF="#prod3">jString</A> )+ )* ( <A HREF="#prod35">jLinkColumn</A> )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod35">jLinkColumn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">jView</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VIEW&gt; <A HREF="#prod2">jIdent</A> ( &lt;TO&gt; ( <A HREF="#prod32">jUser</A> )+ )? ( &lt;OUTPUT&gt; ( <A HREF="#prod36">jViewAlias</A> )+ )? ( <A HREF="#prod37">jOldViewCode</A> | <A HREF="#prod38">jNewViewCode</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod38">jNewViewCode</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;CODELINE&gt; ) )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod37">jOldViewCode</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CODE&gt; ( <A HREF="#prod39">jLine</A> )* &lt;ENDCODE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod36">jViewAlias</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod39">jLine</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">jString</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">jAsciiChar</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod3">jString</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">jProc</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;PROC&gt; | &lt;SPROC&gt; ) ( <A HREF="#prod40">jStdProc</A> | ( <A HREF="#prod41">jNewProc</A> | <A HREF="#prod42">jUserProc</A> ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod43">jOldData</A> | <A HREF="#prod44">jNewData</A> | <A HREF="#prod45">jIdlCode</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod40">jStdProc</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;INSERT&gt; ( &lt;RETURNING&gt; )? | &lt;UPDATE&gt; | &lt;BULKINSERT&gt; ( <A HREF="#prod46">jRowCount</A> )? | &lt;MAXTMSTAMP&gt; | &lt;BULKUPDATE&gt; ( <A HREF="#prod46">jRowCount</A> )? | &lt;DELETEONE&gt; ( &lt;STANDARD&gt; )? | &lt;DELETEALL&gt; | &lt;SELECTONE&gt; ( ( &lt;FOR&gt; )? ( &lt;UPDATE&gt; | &lt;READONLY&gt; ) )? | &lt;SELECTALL&gt; ( ( &lt;IN&gt; )? &lt;ORDER&gt; )? ( ( &lt;FOR&gt; )? ( &lt;UPDATE&gt; | &lt;READONLY&gt; ) )? | &lt;COUNT&gt; | &lt;EXISTS&gt; | &lt;MERGE&gt; ) ( &lt;OPTIONS&gt; ( <A HREF="#prod3">jString</A> )+ )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod41">jNewProc</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A> ( &lt;SELECT&gt; ( &lt;STANDARD&gt; )? ( &lt;INPUT&gt; ( <A HREF="#prod47">jInputType</A> )? ( <A HREF="#prod16">jField</A> )+ )? ( &lt;OUTPUT&gt; ( <A HREF="#prod48">jOutputType</A> )? ( <A HREF="#prod17">jPackageField</A> )* )? ( <A HREF="#prod49">jOldCode</A> | <A HREF="#prod50">jNewCode</A> ) | &lt;SELECTONEBY&gt; ( <A HREF="#prod51">jProcColumn</A> )+ ( ( &lt;IN&gt; )? &lt;ORDER&gt; )? ( ( &lt;FOR&gt; )? ( &lt;UPDATE&gt; | &lt;READONLY&gt; ) )? | &lt;SELECTBY&gt; ( <A HREF="#prod51">jProcColumn</A> )+ ( ( &lt;IN&gt; )? &lt;ORDER&gt; )? ( ( &lt;FOR&gt; )? ( &lt;UPDATE&gt; | &lt;READONLY&gt; ) )? ( &lt;OUTPUT&gt; ( <A HREF="#prod48">jOutputType</A> )? ( <A HREF="#prod16">jField</A> )* )? | &lt;DELETEBY&gt; ( <A HREF="#prod51">jProcColumn</A> )+ | &lt;UPDATEFOR&gt; ( <A HREF="#prod51">jProcColumn</A> )+ | &lt;UPDATEBY&gt; ( ( <A HREF="#prod52">jProcUpdateByColumn</A> )+ ( &lt;FOR&gt; ( <A HREF="#prod51">jProcColumn</A> )+ )? ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod51">jProcColumn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod53">jProcOutColumn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod52">jProcUpdateByColumn</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">jComment</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;COMMENT&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod46">jRowCount</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod42">jUserProc</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">jIdent</A> ( &lt;STANDARD&gt; )? ( <A HREF="#prod15">jComment</A> )* ( &lt;OPTIONS&gt; ( <A HREF="#prod3">jString</A> )+ )* ( &lt;INPUT&gt; ( <A HREF="#prod47">jInputType</A> )? ( <A HREF="#prod16">jField</A> )* )? ( &lt;INOUT&gt; ( <A HREF="#prod48">jOutputType</A> )? ( <A HREF="#prod16">jField</A> )* )? ( &lt;OUTPUT&gt; ( <A HREF="#prod48">jOutputType</A> )? ( <A HREF="#prod16">jField</A> )* )? ( <A HREF="#prod49">jOldCode</A> | <A HREF="#prod50">jNewCode</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod49">jOldCode</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;SQL&gt; )? &lt;CODE&gt; ( <A HREF="#prod39">jLine</A> | <A HREF="#prod2">jIdent</A> <A HREF="#prod54">jOptSize</A> )* &lt;ENDCODE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod50">jNewCode</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;CODELINE&gt; ) )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod54">jOptSize</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;LEFTPAREN&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTPAREN&gt; )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod47">jInputType</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; &lt;MULTIPLE&gt; &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod48">jOutputType</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; &lt;SINGLE&gt; ( &lt;UPDATE&gt; )? &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; <A HREF="#prod25">jNumber</A> &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod43">jOldData</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DATA&gt; ( <A HREF="#prod39">jLine</A> )* &lt;ENDDATA&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod44">jNewData</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DATALINE&gt; ( &lt;DATALINE&gt; )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod45">jIdlCode</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDLLINE&gt; ( &lt;IDLLINE&gt; )*</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
