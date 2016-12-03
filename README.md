@@ -4,13 +4,13 @@
 
 There are three code generator types written using the same mechanism: 
   
-[JPortal](#jportalgenerator)  
+[JPortal](generators/Jportal.html)  
 A generator that generates DALs (Data Access Layers) for various databases (Oracle, MS SQL Server, Postgres, SQLLite, DB2) in various languages (C#, Java, C++, Python, VB).  
   
-[Crackle](#cracklegenerator)  
+[Crackle](generators/Crackle.html)  
 A generator that generates IDL (Interface Definition Language) RPCs (Remote Procedure Calls) using Client/Server for various languages.  
   
-[Pickle](#picklegenerator)  
+[Pickle](generators/Pickle.html)  
 A generator that generates Parameter Control Table maintenace code. A front end written in C# that maintains any ADO.NET Database.  
 
 This mechanism or paradigm follow the same coding pattern. There is a
