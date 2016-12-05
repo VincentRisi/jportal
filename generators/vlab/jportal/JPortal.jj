@@ -12,7 +12,7 @@ PARSER_BEGIN(JPortal)
 /// which accompanies this distribution and is available at
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
-///    Vincent Risi
+///    Vincent Risi, Hennie Hammann
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
 
@@ -477,7 +477,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <SINGLE:       "single">
 | <SQL:          "sql">
 | <SPROC:       ("storedproc"|"sproc")>
-| <STANDARD:     "(standard)">
+| <STANDARD:     "standard">
 | <TABLE:        "table">
 | <TIME:         "time">
 | <TIMESTAMP:    "timestamp">
@@ -1050,7 +1050,7 @@ void jDatatype() :
   {
     field.type = Field.USERSTAMP;
     table.hasUserStamp = true;
-    field.length = 30;
+    field.length = 50;
   }
 |  <SEQUENCE>
   {
@@ -1771,7 +1771,7 @@ void jStdProc() :
         {
           proc.name = "Update";
           proc.isUpdate = true;
-          table.buildUpdate(proc, outLog);
+          table.buildUpdate(proc);
           table.hasStdProcs = true;
         }
       }
@@ -1796,13 +1796,13 @@ void jStdProc() :
       {
         proc.name = "BulkUpdate";
         proc.isUpdate = true;
-        table.buildBulkUpdate(proc, outLog);
+        table.buildBulkUpdate(proc);
         table.hasStdProcs = true;
       }
     }
   | <DELETEONE>
 
-    ( <STANDARD>
+    ( <LEFTPAREN> <STANDARD> <RIGHTPAREN>
       {
         proc.isStd = true;
       }
@@ -1912,7 +1912,7 @@ void jNewProc() :
     proc.name = s;
   }
   ( <SELECT>
-      ( <STANDARD>
+      ( <LEFTPAREN> <STANDARD> <RIGHTPAREN>
           {
             proc.isStd = true;
           }
@@ -2082,7 +2082,7 @@ void jProcOutColumn() :
     if (!table.hasField(s))
       outLog.println(proc.name+" field "+s+" not present in table");
     else
-      proc.outputs.addElement(table.getField(s));
+      proc.outputs.addElement(table.getField(s)); // why just s
   }
 }
 
@@ -2147,13 +2147,13 @@ void jUserProc() :
     proc.name = s;
   }
   (
-    <STANDARD>
+    <LEFTPAREN> <STANDARD> <RIGHTPAREN>
     {
       proc.extendsStd = true;
       proc.useStd = true;
       isStdProc = true;
-      for (int i=0; i<table.fields.size(); i++)
-        proc.outputs.addElement(table.fields.elementAt(i));
+      //for (int i=0; i<table.fields.size(); i++) // why removed?
+      //  proc.outputs.addElement(table.fields.elementAt(i));
     }
   )?
   ( s = jComment()
@@ -2349,13 +2349,31 @@ void jInputType() :
     proc.noRows = n;
     proc.isMultipleInput = true;
   }
+| LOOKAHEAD(2) <LEFTPAREN> <STANDARD> 
+  {
+    for (int i=0; i<table.fields.size(); i++)
+      proc.inputs.addElement(table.fields.elementAt(i));
+  }
+  <RIGHTPAREN>
 }
 
 void jOutputType() :
 {
   int n;
 }
+{  LOOKAHEAD(2) <LEFTPAREN> <SINGLE>
 {
+    proc.isSingle = true;
+
+  }
+  (<STANDARD>
+    {
+      for (int i=0; i<table.fields.size(); i++)
+        proc.outputs.addElement(table.fields.elementAt(i));
+    }
+  )?
+  <RIGHTPAREN>
+|
   LOOKAHEAD(2) <LEFTPAREN> <SINGLE>
   {
     proc.isSingle = true;
@@ -2370,6 +2388,17 @@ void jOutputType() :
   {
     proc.noRows = n;
   }
+| LOOKAHEAD(2) <LEFTPAREN> <STANDARD> 
+  {
+    for (int i=0; i<table.fields.size(); i++)
+      proc.outputs.addElement(table.fields.elementAt(i));
+  }
+  (<SINGLE>
+    {
+      proc.isSingle = true;
+    }
+  )?
+  <RIGHTPAREN>
 }
 
 void jOldData() :

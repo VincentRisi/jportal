@@ -8,7 +8,7 @@
 /// which accompanies this distribution and is available at
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
-///    Vincent Risi
+///    Vincent Risi, Hennie Hammann
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
 
@@ -388,7 +388,7 @@ public interface JPortalConstants {
     "\"single\"",
     "\"sql\"",
     "<SPROC>",
-    "\"(standard)\"",
+    "\"standard\"",
     "\"table\"",
     "\"time\"",
     "\"timestamp\"",

@@ -608,7 +608,7 @@ public class Table implements Serializable
   * Builds an update proc
   * generated as part of standard record class
   */
-  public void buildUpdate(Proc proc, PrintWriter outLog)
+  public void buildUpdate(Proc proc)
   {
     String name = tableName();
     int i, j, k;
@@ -619,8 +619,6 @@ public class Table implements Serializable
     proc.isSql = true;
     proc.lines.addElement(new Line("update " + name));
     proc.lines.addElement(new Line(" set"));
-    if (proc.fields.size() == 0)
-    {
       for (i = 0, j = 0; i < fields.size(); i++)
       {
         Field field = (Field)fields.elementAt(i);
@@ -635,31 +633,6 @@ public class Table implements Serializable
           proc.lines.addElement(new Line(line + field.name + " = ?"));
         }
       }
-    }
-    else
-    {
-      proc.name = "UpdateFor";
-      for (i = 0, j = 0; i < proc.fields.size(); i++)
-      {
-        String fieldName = (String)proc.fields.elementAt(i);
-        for (k = 0; k < fields.size(); k++)
-        {
-          Field field = (Field)fields.elementAt(k);
-          if (field.name.equalsIgnoreCase(fieldName))
-          {
-            proc.inputs.addElement(field);
-            if (j == 0)
-              line = "  ";
-            else
-              line = ", ";
-            j++;
-            forname = forname + field.name;
-            proc.lines.addElement(new Line(line + field.name + " = ?"));
-          }
-        }
-      }
-      AddTMstampUserName(proc);
-    }
     for (i = 0, j = 0; i < fields.size(); i++)
     {
       Field field = fields.elementAt(i);
@@ -673,20 +646,6 @@ public class Table implements Serializable
         j++;
         line = line + field.name + " = ?";
         proc.lines.addElement(new Line(line));
-      }
-    }
-    if (proc.username != "")
-    {
-      proc.name = proc.username;
-    }
-    else
-    {
-      if (forname.length() > 10)
-        forname = abbreviateString(forname);
-      proc.name = proc.name + forname;
-      if (proc.name.length() > 20)
-      {
-        outLog.println("Proc name to long " + proc.name + ". Consider using Uname \"customName\" ");
       }
     }
     if (proc.hasReturning)
@@ -890,10 +849,10 @@ public class Table implements Serializable
   * Builds an update proc
   * generated as part of standard record class
   */
-  public void buildBulkUpdate(Proc proc, PrintWriter outLog)
+  public void buildBulkUpdate(Proc proc)
   {
     proc.isMultipleInput = true;
-    buildUpdate(proc, outLog);
+    buildUpdate(proc);
   }
   /**
   * Builds a delete by primary key proc
