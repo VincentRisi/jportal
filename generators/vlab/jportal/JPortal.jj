@@ -2072,20 +2072,6 @@ void jProcColumn() :
   }
 }
 
-void jProcOutColumn() :
-{
-  String s;
-}
-{
-  s = jIdent()
-  {
-    if (!table.hasField(s))
-      outLog.println(proc.name+" field "+s+" not present in table");
-    else
-      proc.outputs.addElement(table.getField(s)); // why just s
-  }
-}
-
 void jProcUpdateByColumn() :
 {
   String s;
