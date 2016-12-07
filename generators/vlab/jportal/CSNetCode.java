@@ -55,24 +55,40 @@ public class CSNetCode extends Generator
     + "\r\n- \"use generics\" generate lists as generics"
     + "\r\n- \"use partials\" generate classes as partials"
     + "\r\n- \"use yields\" generate code for yields"
+    + "\r\n- \"no datatables\" do not generate code for datatables"
     + "\r\n- \"use C# 2.0\" generate classes with above uses"
+    + "\r\n- \"use C# 1.0\" generate classes compatable with C# 1.0"
     + "\r\n- \"use separate\" generate classes in separate files"
+    + "\r\n- \"use notify\" generate classes with INotifyPropertyChanged implemented"
       ;
   }
   protected static Vector<Flag> flagsVector;
   static boolean mSSqlStoredProcs;
+  static boolean hasStoredProcs;
   static boolean useGenerics;
   static boolean usePartials;
   static boolean useSeparate;
+  static boolean noDatatables;
   static boolean useYields;
   static boolean useCSharp2;
+  static boolean useCSharp1;
+  static boolean useNotify;
+  static boolean useFunc;
+  static String version = "4.0.";
+  static String runTimeVersion = "4.0.30319";
   private static void flagDefaults()
   {
+    hasStoredProcs = false;
     mSSqlStoredProcs = false;
     useGenerics = false;
     usePartials = false;
     useYields = false;
     useSeparate = false;
+    noDatatables = false;
+    useCSharp1 = false;
+    useCSharp2 = false;
+    useNotify = false;
+    useFunc = false;
   }
   public static Vector<Flag> flags()
   {
@@ -85,7 +101,11 @@ public class CSNetCode extends Generator
       flagsVector.addElement(new Flag("use partials", new Boolean(usePartials), "Generate C# 2.0 Partials"));
       flagsVector.addElement(new Flag("use yields", new Boolean(useYields), "Generate C# 2.0 Yields"));
       flagsVector.addElement(new Flag("use separate", new Boolean(useSeparate), "Generate Separate Files"));
+      flagsVector.addElement(new Flag("no datatables", new Boolean(noDatatables), "Do not Generate Datatables"));
       flagsVector.addElement(new Flag("use C#2.0", new Boolean(useCSharp2), "Generate for C#2.0"));
+      flagsVector.addElement(new Flag("use C#1.0", new Boolean(useCSharp1), "Generate for C#1.0"));
+      flagsVector.addElement(new Flag("use notify", new Boolean(useNotify), "Generate for INotifyPropertyChanged"));
+      flagsVector.addElement(new Flag("use func", new Boolean(useFunc), "Generate Functions"));
     }
     return flagsVector;
   }
@@ -101,6 +121,11 @@ public class CSNetCode extends Generator
       usePartials = toBoolean(((Flag)flagsVector.elementAt(2)).value);
       useYields = toBoolean(((Flag)flagsVector.elementAt(3)).value);
       useSeparate = toBoolean(((Flag)flagsVector.elementAt(4)).value);
+      noDatatables = toBoolean(((Flag)flagsVector.elementAt(5)).value);
+      useCSharp2 = toBoolean(((Flag)flagsVector.elementAt(6)).value);
+      useCSharp1 = toBoolean(((Flag)flagsVector.elementAt(7)).value);
+      useNotify = toBoolean(((Flag)flagsVector.elementAt(8)).value);
+      useFunc = toBoolean(((Flag)flagsVector.elementAt(9)).value);
     }
     else
       flagDefaults();
@@ -117,8 +142,20 @@ public class CSNetCode extends Generator
         useYields = true;
       else if (flag.equalsIgnoreCase("use separate"))
         useSeparate = true;
+      else if (flag.equalsIgnoreCase("no datatables"))
+        noDatatables = true;
       else if (flag.equalsIgnoreCase("use C#2.0"))
         useGenerics = usePartials = useYields = useCSharp2 = true;
+      else if (flag.equalsIgnoreCase("use C#1.0"))
+      {
+        useGenerics = usePartials = useYields = useCSharp2 = false;
+        useCSharp1 = true;
+        runTimeVersion = "1.1";
+      }
+      else if (flag.equalsIgnoreCase("use notify"))
+        useNotify = true;
+      else if (flag.equalsIgnoreCase("use func"))
+        useFunc = true;
     }
     if (mSSqlStoredProcs)
       outLog.println(" (mssql storedprocs)");
@@ -130,6 +167,12 @@ public class CSNetCode extends Generator
       outLog.println(" (use yields)");
     if (useSeparate)
       outLog.println(" (use separate)");
+    if (noDatatables)
+      outLog.println(" (no datatables)");
+    if (useNotify)
+      outLog.println(" (use notify)");
+    if (useFunc)
+      outLog.println(" (use func)");
   }
   public static void generate(Database database, String output, PrintWriter outLog)
   {
@@ -151,18 +194,26 @@ public class CSNetCode extends Generator
       if (useSeparate == true)
         added = "Structs";
       outFile = openOutputStream(table, output, outLog, added);
-      if (mSSqlStoredProcs == true)
+      hasStoredProcs = false;
+      if (mSSqlStoredProcs == false && isStoredProcs(table))
+      {
+        hasStoredProcs = true;
+      }
+
+      if (mSSqlStoredProcs == true || hasStoredProcs == true)
       {
         outLog.println("DDL: " + output + table.useName() + ".sproc.sql");
         procFile = new FileOutputStream(output + table.name + ".sproc.sql");
         procData = new PrintWriter(procFile);
-        procData.println("use " + table.database.name);
+        procData.println("USE " + table.database.name);
         procData.println();
       }
       try
       {
         PrintWriter outData = openWriterPuttingTop(table, outFile);
         generateStructs(table, outData);
+        if (!noDatatables)
+        {
         if (useSeparate == true)
         {
           outData.println("}");
@@ -172,6 +223,7 @@ public class CSNetCode extends Generator
           outData = openWriterPuttingTop(table, outFile);
         }
         generateDataTables(table, outData);
+        }
         if (useSeparate == true)
         {
           outData.println("}");
@@ -183,13 +235,17 @@ public class CSNetCode extends Generator
         generateCode(table, outData);
         outData.println("}");
         outData.flush();
-        if (mSSqlStoredProcs == true)
+        if (mSSqlStoredProcs == true || hasStoredProcs == true)
           procData.flush();
+      }
+      catch (Exception e)
+      {
+        outLog.println("Generate Procs IO Error" + e.toString());
       }
       finally
       {
         outFile.close();
-        if (mSSqlStoredProcs == true)
+        if (mSSqlStoredProcs == true || hasStoredProcs == true)
           procFile.close();
       }
     }
@@ -204,6 +260,19 @@ public class CSNetCode extends Generator
     String packageName = table.database.packageName;
     if (packageName.length() == 0)
       packageName = "vlab.jportal";
+    outData.println("//------------------------------------------------------------------------------");
+    outData.println("// <auto-generated>");
+    outData.println("//     This code was generated by a tool.");
+    outData.println("//     Runtime Version: " + runTimeVersion);
+    outData.println("//");
+    outData.println("//     Changes to this file may cause incorrect behavior and will be lost if");
+    outData.println("//     the code is regenerated.");
+    outData.println("// </auto-generated>");
+    outData.println("//------------------------------------------------------------------------------");
+    outData.println("");
+    outData.println("// ");
+    outData.println("// This source code was auto-generated by jportal.jar, Version=" + version);
+    outData.println("// ");
     outData.println("using System;");
     if (useGenerics)
       outData.println("using System.Collections.Generic;");
@@ -211,6 +280,11 @@ public class CSNetCode extends Generator
     {
       outData.println("using System.Collections;");
       outData.println("using System.Collections.Specialized;");
+    }
+    if (useNotify)
+    {
+      outData.println("using System.ComponentModel;");
+      outData.println("using System.Runtime.CompilerServices;");
     }
     outData.println("using System.Data;");
     outData.println("using vlab.jportal;");
@@ -238,30 +312,57 @@ public class CSNetCode extends Generator
     outData.println("        {");
     if (field.isNull == true)
     {
-      outData.println("          if (parent.Rows[row][c" + field.useUpperName() + "] == DBNull.Value)");
-      outData.println("            return " + validNull(field) + ";");
-      outData.println("          else");
-      outData.println("            return (" + fieldCastNo(field) + ")parent.Rows[row][c" + field.useUpperName() + "];");
+      outData.println(indent(5) + "if (parent.Rows[row][c" + field.useUpperName() + "] == DBNull.Value)");
+      outData.println(indent(5) + "{");
+      if (useCSharp1)
+      {
+        outData.println(indent(6) + "return " + validNull(field) + ";");
     }
     else
-      outData.println("            return (" + fieldCastNo(field) + ")parent.Rows[row][c" + field.useUpperName() + "];");
-    outData.println("        }");
-    outData.println("        set");
-    outData.println("        {");
-    outData.println("           parent.Rows[row][c" + field.useUpperName() + "] = value;");
-    outData.println("        }");
-    outData.println("      }");
+      {
+        outData.println(indent(6) + "return default(" + fieldCastNo(field) + ");");
+      }
+      outData.println(indent(5) + "}");
+      outData.println(indent(5) + "else");
+      outData.println(indent(5) + "{");
+      outData.println(indent(6) + "return (" + fieldCastNo(field) + ")parent.Rows[row][c" + field.useUpperName() + "];");
+      outData.println(indent(5) + "}");
+    }
+    else
+      outData.println(indent(5) + "return (" + fieldCastNo(field) + ")parent.Rows[row][c" + field.useUpperName() + "];");
+    outData.println(indent(4) + "}");
+    outData.println(indent(4) + "set");
+    outData.println(indent(4) + "{");
+    outData.println(indent(5) + "parent.Rows[row][c" + field.useUpperName() + "] = value;");
+    outData.println(indent(4) + "}");
+    outData.println(indent(3) + "}");
     if (field.isNull == true)
     {
-      outData.println("      public bool IsNull(int row){ return parent.Rows[row].IsNull(c" + field.useUpperName() + "); }");
-      outData.println("      public void SetNull(int row){ parent.Rows[row][c" + field.useUpperName() + "] = DBNull.Value; }");
+      outData.println(indent(3) + "public bool IsNull(int row){ return parent.Rows[row].IsNull(c" + field.useUpperName() + "); }");
+      outData.println(indent(3) + "public void SetNull(int row){ parent.Rows[row][c" + field.useUpperName() + "] = DBNull.Value; }");
     }
-    outData.println("      public Nfpp" + field.useUpperName() + "(DataTable parent) { this.parent = parent; }");
-    outData.println("    }");
-    outData.println("    private Nfpp" + field.useUpperName() + " m" + field.useUpperName() + ";");
-    outData.println("    public Nfpp" + field.useUpperName() + " " + field.useUpperName()
-                  + "{ get { return m" + field.useUpperName() + "; }"
-                  + " set { m" + field.useUpperName() + " = value; } }");
+    outData.println(indent(3) + "public Nfpp" + field.useUpperName() + "(DataTable parent) { this.parent = parent; }");
+    outData.println(indent(2) + "}");
+    outData.println(indent(2) + "private Nfpp" + field.useUpperName() + " m" + field.useUpperName() + ";");
+    outData.println(indent(2) + "public Nfpp" + field.useUpperName() + " " + field.useUpperName());
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "get { return m" + field.useUpperName() + "; }");
+    outData.println(indent(3) + "set { m" + field.useUpperName() + " = value; }");
+    outData.println(indent(2) + "}");
+  }
+
+  public static boolean isStoredProcs(Table table)
+  {
+    boolean hasStoredProcs = false;
+    for (int i = 0; i < table.procs.size(); i++)
+    {
+      Proc proc = (Proc)table.procs.elementAt(i);
+      if (proc.isSProc == true)
+        return true;
+      if (proc.outputs.size() == 0 || proc.isSingle)
+        continue;
+    }
+    return hasStoredProcs;
   }
   public static void generateDataTables(Table table, PrintWriter outData)
   {
@@ -272,14 +373,14 @@ public class CSNetCode extends Generator
       if (proc.outputs.size() == 0 || proc.isSingle)
         continue;
       hasDataTables = true;
-      outData.println("  [Serializable()]");
-      outData.println("  public " + (usePartials ? "partial " : "") + "class " + table.useName() + proc.upperFirst() + "DataTable : DataTable");
-      outData.println("  {");
+      outData.println(indent(1) + "[Serializable()]");
+      outData.println(indent(1) + "public " + (usePartials ? "partial " : "") + "class " + table.useName() + proc.upperFirst() + "DataTable : DataTable");
+      outData.println(indent(1) + "{");
       int noInDataSet = 0;
       for (int j = 0; j < proc.inputs.size(); j++)
       {
         Field field = (Field)proc.inputs.elementAt(j);
-        outData.println("    public const int c" + field.useUpperName() + " = " + noInDataSet + ";");
+        outData.println(indent(2) + "public const int c" + field.useUpperName() + " = " + noInDataSet + ";");
         noInDataSet++;
       }
       for (int j = 0; j < proc.outputs.size(); j++)
@@ -287,28 +388,28 @@ public class CSNetCode extends Generator
         Field field = (Field)proc.outputs.elementAt(j);
         if (proc.hasInput(field.name))
           continue;
-        outData.println("    public const int c" + field.useUpperName() + " = " + noInDataSet + ";");
+        outData.println(indent(2) + "public const int c" + field.useUpperName() + " = " + noInDataSet + ";");
         noInDataSet++;
       }
-      outData.println("    public static string ToString(int ordinal)");
-      outData.println("    {");
-      outData.println("      switch (ordinal)");
-      outData.println("      {");
+      outData.println(indent(2) + "public static string ToString(int ordinal)");
+      outData.println(indent(2) + "{");
+      outData.println(indent(3) + "switch (ordinal)");
+      outData.println(indent(3) + "{");
       for (int j = 0; j < proc.inputs.size(); j++)
       {
         Field field = (Field)proc.inputs.elementAt(j);
-        outData.println("      case c" + field.useUpperName() + ": return \"" + field.useUpperName() + "\";");
+        outData.println(indent(4) + "case c" + field.useUpperName() + ": return \"" + field.useUpperName() + "\";");
       }
       for (int j = 0; j < proc.outputs.size(); j++)
       {
         Field field = (Field)proc.outputs.elementAt(j);
         if (proc.hasInput(field.name))
           continue;
-        outData.println("      case c" + field.useUpperName() + ": return \"" + field.useUpperName() + "\";");
+        outData.println(indent(4) + "case c" + field.useUpperName() + ": return \"" + field.useUpperName() + "\";");
       }
-      outData.println("      }");
-      outData.println("      return \"<??\"+ordinal+\"??>\";");
-      outData.println("    }");
+      outData.println(indent(3) + "}");
+      outData.println(indent(3) + "return \"<??\"+ordinal+\"??>\";");
+      outData.println(indent(2) + "}");
       for (int j = 0; j < proc.inputs.size(); j++)
       {
         Field field = (Field)proc.inputs.elementAt(j);
@@ -324,69 +425,73 @@ public class CSNetCode extends Generator
       String mainName = table.useName();
       if (proc.isStd == false)
         mainName = mainName + proc.upperFirst();
-      outData.println("    public class RowBag");
-      outData.println("    {");
-      outData.println("      public " + mainName + "Rec mRec;");
-      outData.println("      public object tag = null;");
-      outData.println("      public RowBag(" + mainName + "Rec aRec)");
-      outData.println("      {");
-      outData.println("        mRec = aRec;");
-      outData.println("      }");
-      outData.println("    }");
+      outData.println(indent(2) + "public class RowBag");
+      outData.println(indent(2) + "{");
+      outData.println(indent(3) + "public " + mainName + "Rec mRec;");
+      outData.println(indent(3) + "public object tag = null;");
+      outData.println(indent(3) + "public RowBag(" + mainName + "Rec aRec)");
+      outData.println(indent(3) + "{");
+      outData.println(indent(4) + "mRec = aRec;");
+      outData.println(indent(3) + "}");
+      outData.println(indent(2) + "}");
       if (useGenerics)
-        outData.println("    public Dictionary<DataRow, RowBag> dictionary;");
+        outData.println(indent(2) + "public Dictionary<DataRow, RowBag> dictionary;");
       else
-        outData.println("    public HybridDictionary dictionary;");
+        outData.println(indent(2) + "public HybridDictionary dictionary;");
       if (useGenerics)
-        outData.println("    public " + table.useName() + proc.upperFirst() + "DataTable(List<" + mainName + "Rec> aList)");
+        outData.println(indent(2) + "public " + table.useName() + proc.upperFirst() + "DataTable(List<" + mainName + "Rec> aList)");
       else
-        outData.println("    public " + table.useName() + proc.upperFirst() + "DataTable(ArrayList aList)");
-      outData.println("    : base(\"" + table.useName() + proc.upperFirst() + "\")");
-      outData.println("    {");
+        outData.println(indent(2) + "public " + table.useName() + proc.upperFirst() + "DataTable(ArrayList aList)");
+      outData.println(indent(3) + ": base(\"" + table.useName() + proc.upperFirst() + "\")");
+      outData.println(indent(2) + "{");
       for (int j = 0; j < proc.inputs.size(); j++)
       {
         Field field = (Field)proc.inputs.elementAt(j);
-        outData.println("      Columns.Add(new DataColumn(\"" + field.useUpperName() + "\", typeof(" + dataTableType(field) + ")));");
+        outData.println(indent(3) + "Columns.Add(new DataColumn(\"" + field.useUpperName() + "\", typeof(" + dataTableType(field) + ")));");
       }
       for (int j = 0; j < proc.outputs.size(); j++)
       {
         Field field = (Field)proc.outputs.elementAt(j);
         if (proc.hasInput(field.name))
           continue;
-        outData.println("      Columns.Add(new DataColumn(\"" + field.useUpperName() + "\", typeof(" + dataTableType(field) + ")));");
+        outData.println(indent(3) + "Columns.Add(new DataColumn(\"" + field.useUpperName() + "\", typeof(" + dataTableType(field) + ")));");
       }
       for (int j = 0; j < proc.inputs.size(); j++)
       {
         Field field = (Field)proc.inputs.elementAt(j);
-        outData.println("      m" + field.useUpperName() + " = new Nfpp" + field.useUpperName() + "(this);");
+        outData.println(indent(3) + "m" + field.useUpperName() + " = new Nfpp" + field.useUpperName() + "(this);");
       }
       for (int j = 0; j < proc.outputs.size(); j++)
       {
         Field field = (Field)proc.outputs.elementAt(j);
         if (proc.hasInput(field.name))
           continue;
-        outData.println("      m" + field.useUpperName() + " = new Nfpp" + field.useUpperName() + "(this);");
+        outData.println(indent(3) + "m" + field.useUpperName() + " = new Nfpp" + field.useUpperName() + "(this);");
       }
       if (useGenerics)
-        outData.println("      dictionary = new Dictionary<DataRow, RowBag>();");
+        outData.println(indent(3) + "dictionary = new Dictionary<DataRow, RowBag>();");
       else
-        outData.println("      dictionary = new HybridDictionary();");
-      outData.println("      foreach (" + mainName + "Rec wRec in aList)");
-      outData.println("      {");
-      outData.println("        DataRow wRow = NewRow();");
-      outData.println("        dictionary.Add(wRow, new RowBag(wRec));");
+        outData.println(indent(3) + "dictionary = new HybridDictionary();");
+      outData.println(indent(3) + "foreach (" + mainName + "Rec wRec in aList)");
+      outData.println(indent(3) + "{");
+      outData.println(indent(4) + "DataRow wRow = NewRow();");
+      outData.println(indent(4) + "dictionary.Add(wRow, new RowBag(wRec));");
       for (int j = 0; j < proc.inputs.size(); j++)
       {
         Field field = (Field)proc.inputs.elementAt(j);
         if (field.isNull == true)
         {
-          outData.println("        if (wRec." + field.useLowerName() + "IsNull == true)");
-          outData.println("          wRow[c" + field.useUpperName() + "] = DBNull.Value;");
-          outData.println("        else");
-          outData.println("          wRow[c" + field.useUpperName() + "] = wRec." + field.useLowerName() + ";");
+          outData.println(indent(4) + "if (wRec." + field.useUpperName() + "IsNull == true)");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRow[c" + field.useUpperName() + "] = DBNull.Value;");
+          outData.println(indent(4) + "}");
+          outData.println(indent(4) + "else");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRow[c" + field.useUpperName() + "] = wRec." + field.useUpperName() + ";");
+          outData.println(indent(4) + "}");
         }
         else
-          outData.println("        wRow[c" + field.useUpperName() + "] = wRec." + field.useLowerName() + ";");
+          outData.println(indent(4) + "wRow[c" + field.useUpperName() + "] = wRec." + field.useUpperName() + ";");
       }
       for (int j = 0; j < proc.outputs.size(); j++)
       {
@@ -395,43 +500,51 @@ public class CSNetCode extends Generator
           continue;
         if (field.isNull == true)
         {
-          outData.println("        if (wRec." + field.useLowerName() + "IsNull == true)");
-          outData.println("          wRow[c" + field.useUpperName() + "] = DBNull.Value;");
-          outData.println("        else");
-          outData.println("          wRow[c" + field.useUpperName() + "] = wRec." + field.useLowerName() + ";");
+          outData.println(indent(4) + "if (wRec." + field.useUpperName() + "IsNull == true)");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRow[c" + field.useUpperName() + "] = DBNull.Value;");
+          outData.println(indent(4) + "}");
+          outData.println(indent(4) + "else");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRow[c" + field.useUpperName() + "] = wRec." + field.useUpperName() + ";");
+          outData.println(indent(4) + "}");
         }
         else
-          outData.println("        wRow[c" + field.useUpperName() + "] = wRec." + field.useLowerName() + ";");
+          outData.println(indent(4) + "wRow[c" + field.useUpperName() + "] = wRec." + field.useUpperName() + ";");
       }
-      outData.println("        Rows.Add(wRow);");
-      outData.println("      }");
-      outData.println("    }");
-      outData.println("    public RowBag GetRowBag(int row)");
-      outData.println("    {");
-      outData.println("      DataRow wRow = Rows[row];");
+      outData.println(indent(4) + "Rows.Add(wRow);");
+      outData.println(indent(3) + "}");
+      outData.println(indent(2) + "}");
+      outData.println(indent(2) + "public RowBag GetRowBag(int row)");
+      outData.println(indent(2) + "{");
+      outData.println(indent(3) + "DataRow wRow = Rows[row];");
       if (useGenerics)
-        outData.println("      return dictionary[wRow];");
+        outData.println(indent(3) + "return dictionary[wRow];");
       else
-        outData.println("      return (RowBag)dictionary[wRow];");
-      outData.println("    }");
-      outData.println("    public " + mainName + "Rec this[int row]");
-      outData.println("    {");
-      outData.println("      get");
-      outData.println("      {");
-      outData.println("        DataRow wRow = Rows[row];");
-      outData.println("        " + mainName + "Rec wRec = new " + mainName + "Rec();");
+        outData.println(indent(3) + "return (RowBag)dictionary[wRow];");
+      outData.println(indent(2) + "}");
+      outData.println(indent(2) + "public " + mainName + "Rec this[int row]");
+      outData.println(indent(2) + "{");
+      outData.println(indent(3) + "get");
+      outData.println(indent(3) + "{");
+      outData.println(indent(4) + "DataRow wRow = Rows[row];");
+      outData.println(indent(4) + mainName + "Rec wRec = new " + mainName + "Rec();");
       for (int j = 0; j < proc.inputs.size(); j++)
       {
         Field field = (Field)proc.inputs.elementAt(j);
         if (field.isNull == true)
         {
-          outData.println("        if (wRow.IsNull(c" + field.useUpperName() + "))");
-          outData.println("          wRec." + field.useLowerName() + "IsNull = true;");
-          outData.println("        else");
-          outData.println("          wRec." + field.useLowerName() + " = " + fieldCast(field) + "wRow[c" + field.useUpperName() + "];");
+          outData.println(indent(4) + "if (wRow.IsNull(c" + field.useUpperName() + "))");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRec." + field.useUpperName() + "IsNull = true;");
+          outData.println(indent(4) + "}");
+          outData.println(indent(4) + "else");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRec." + field.useUpperName() + " = " + fieldCast(field) + "wRow[c" + field.useUpperName() + "];");
+          outData.println(indent(4) + "}");
         }
         else
-          outData.println("        wRec." + field.useLowerName() + " = " + fieldCast(field) + "wRow[c" + field.useUpperName() + "];");
+          outData.println(indent(5) + "wRec." + field.useUpperName() + " = " + fieldCast(field) + "wRow[c" + field.useUpperName() + "];");
       }
       for (int j = 0; j < proc.outputs.size(); j++)
       {
@@ -440,31 +553,39 @@ public class CSNetCode extends Generator
           continue;
         if (field.isNull == true)
         {
-          outData.println("        if (wRow.IsNull(c" + field.useUpperName() + "))");
-          outData.println("          wRec." + field.useLowerName() + "IsNull = true;");
-          outData.println("        else");
-          outData.println("          wRec." + field.useLowerName() + " = " + fieldCast(field) + "wRow[c" + field.useUpperName() + "];");
+          outData.println(indent(4) + "if (wRow.IsNull(c" + field.useUpperName() + "))");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRec." + field.useUpperName() + "IsNull = true;");
+          outData.println(indent(4) + "}");
+          outData.println(indent(4) + "else");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRec." + field.useUpperName() + " = " + fieldCast(field) + "wRow[c" + field.useUpperName() + "];");
+          outData.println(indent(4) + "}");
         }
         else
-          outData.println("        wRec." + field.useLowerName() + " = " + fieldCast(field) + "wRow[c" + field.useUpperName() + "];");
+          outData.println(indent(4) + "wRec." + field.useUpperName() + " = " + fieldCast(field) + "wRow[c" + field.useUpperName() + "];");
       }
-      outData.println("        return wRec;");
-      outData.println("      }");
-      outData.println("      set");
-      outData.println("      {");
-      outData.println("        DataRow wRow = Rows[row];");
+      outData.println(indent(4) + "return wRec;");
+      outData.println(indent(3) + "}");
+      outData.println(indent(3) + "set");
+      outData.println(indent(3) + "{");
+      outData.println(indent(4) + "DataRow wRow = Rows[row];");
       for (int j = 0; j < proc.inputs.size(); j++)
       {
         Field field = (Field)proc.inputs.elementAt(j);
         if (field.isNull == true)
         {
-          outData.println("        if (value." + field.useLowerName() + "IsNull == true)");
-          outData.println("          wRow[c" + field.useUpperName() + "] = DBNull.Value;");
-          outData.println("        else");
-          outData.println("          wRow[c" + field.useUpperName() + "] = value." + field.useLowerName() + ";");
+          outData.println(indent(4) + "if (value." + field.useUpperName() + "IsNull == true)");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRow[c" + field.useUpperName() + "] = DBNull.Value;");
+          outData.println(indent(4) + "}");
+          outData.println(indent(4) + "else");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRow[c" + field.useUpperName() + "] = value." + field.useUpperName() + ";");
+          outData.println(indent(4) + "}");
         }
         else
-          outData.println("        wRow[c" + field.useUpperName() + "] = value." + field.useLowerName() + ";");
+          outData.println(indent(4) + "wRow[c" + field.useUpperName() + "] = value." + field.useUpperName() + ";");
       }
       for (int j = 0; j < proc.outputs.size(); j++)
       {
@@ -473,33 +594,40 @@ public class CSNetCode extends Generator
           continue;
         if (field.isNull == true)
         {
-          outData.println("        if (value." + field.useLowerName() + "IsNull == true)");
-          outData.println("          wRow[c" + field.useUpperName() + "] = DBNull.Value;");
-          outData.println("        else");
-          outData.println("          wRow[c" + field.useUpperName() + "] = value." + field.useLowerName() + ";");
+          outData.println(indent(4) + "if (value." + field.useUpperName() + "IsNull == true)");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRow[c" + field.useUpperName() + "] = DBNull.Value;");
+          outData.println(indent(4) + "}");
+          outData.println(indent(4) + "else");
+          outData.println(indent(4) + "{");
+          outData.println(indent(5) + "wRow[c" + field.useUpperName() + "] = value." + field.useUpperName() + ";");
+          outData.println(indent(4) + "}");
         }
         else
-          outData.println("        wRow[c" + field.useUpperName() + "] = value." + field.useLowerName() + ";");
+          outData.println(indent(4) + "wRow[c" + field.useUpperName() + "] = value." + field.useUpperName() + ";");
       }
-      outData.println("      }");
-      outData.println("    }");
-      outData.println("  }");
+      outData.println(indent(3) + "}");
+      outData.println(indent(2) + "}");
+      outData.println(indent(1) + "}");
     }
     if (hasDataTables == true && usePartials == true && useSeparate == true)
     {
       String mainName = table.useName();
       //outData.println("  [Serializable()]");
-      outData.println("  public partial class " + mainName);
-      outData.println("  {");
+      outData.println(indent(1) + "public partial class " + mainName);
+      outData.println(indent(1) + "{");
       for (int i = 0; i < table.procs.size(); i++)
       {
         Proc proc = (Proc)table.procs.elementAt(i);
         if (proc.isData == true || proc.isStd == false)
           continue;
+        if (!noDatatables)
+        {
         if (proc.outputs.size() > 0 && !proc.isSingle)
           generateFetchProcDataTables(proc, mainName, outData);
       }
-      outData.println("  }");
+      }
+      outData.println(indent(1) + "}");
       for (int i = 0; i < table.procs.size(); i++)
       {
         Proc proc = (Proc)table.procs.elementAt(i);
@@ -509,27 +637,98 @@ public class CSNetCode extends Generator
         {
           mainName = table.useName() + proc.upperFirst();
           //outData.println("  [Serializable()]");
-          outData.println("  public partial class " + mainName);
-          outData.println("  {");
+          outData.println(indent(1) + "public partial class " + mainName);
+          outData.println(indent(1) + "{");
+          if (!noDatatables)
+          {
           generateFetchProcDataTables(proc, mainName, outData);
-          outData.println("  }");
+          }
+          outData.println(indent(1) + "}");
         }
       }
-    }
-  }
-  public static void generateStructPairs(Vector<Field> fields, Vector<?> dynamics, String mainName, PrintWriter outData)
+        }
+      }
+  public static void generateStructPairs(Proc proc, Vector<Field> fields, Vector<?> dynamics, String mainName, PrintWriter outData, String tableName, boolean hasReturning)
   {
-    outData.println("  [Serializable()]");
-    outData.println("  public " + (usePartials ? "partial " : "") + "class " + mainName + "Rec");
-    outData.println("  {");
+    outData.println(indent(1) + "[Serializable()]");
+    String inherit = "";
+    if (proc != null && proc.extendsStd == true)
+    {
+      inherit = " : " + tableName + "Rec" + (useNotify ? ", INotifyPropertyChanged" : "");
+    }
+    else
+    {
+      inherit = useNotify ? " : INotifyPropertyChanged" : "";
+  }
+    outData.println(indent(1) + "public " + (usePartials ? "partial " : "") + "class " + mainName + "Rec" + inherit);
+    outData.println(indent(1) + "{");
+    if (useNotify && fields.size() > 0)
+  {
+      outData.println(indent(2) + "#region INotifyPropertyChanged Members ");
+      outData.println("");
+      outData.println(indent(2) + "public event PropertyChangedEventHandler PropertyChanged;");
+      outData.println("");
+      outData.println(indent(2) + "public void NotifyPropertyChanged([CallerMemberName] string propertyName = null)");
+      outData.println(indent(2) + "{");
+      outData.println(indent(3) + "if (this.PropertyChanged != null)");
+      outData.println(indent(3) + "{");
+      outData.println(indent(4) + "this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
+      outData.println(indent(3) + "}");
+      outData.println(indent(2) + "}");
+      outData.println("");
+      outData.println(indent(2) + "#endregion");
+      outData.println("");
+    }
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field)fields.elementAt(i);
-      outData.println("    " + fieldDef(field));
+      String temp = "[Column(MaxLength=" + field.length;
+      if (field.precision > 0)
+      {
+        temp = "[Column(MaxLength=" + field.precision + field.scale + 1;
+      }
+
       if (field.isNull)
-        outData.println("    public bool " + field.useLowerName() + "IsNull;");
+      {
+        temp = temp + ", CanBeNull=true";
+      }
+      if (field.isPrimaryKey)
+      {
+        temp = temp + ", IsPrimaryKey=true";
+      }
+      if (field.isSequence)
+      {
+        temp = temp + ", isSequence=true";
+      }
+      if (field.precision > 0)
+      {
+        temp = temp + ", Precision=" + field.precision + ", Scale=" + field.scale;
     }
-    outData.println("  }");
+
+      outData.println(fieldDef(field, temp));
+      if (field.isNull)
+      {
+        if (getDataType(field, new StringBuffer(), new StringBuffer()) == "string")
+        {
+          outData.println(indent(2) + "private bool " + field.useLowerName() + "IsNull;");
+          outData.println(indent(2) + "public bool " + field.useUpperName() + "IsNull");
+          outData.println(indent(2) + "{");
+          outData.println(indent(3) + "get { return this." + field.useLowerName() + " == null ? true : " + field.useLowerName() + "IsNull; }");
+          outData.println(indent(3) + "set { this." + field.useLowerName() + "IsNull = value; }");
+          outData.println(indent(2) + "}");
+        }
+        else
+        {
+          outData.println(indent(2) + "private bool " + field.useLowerName() + "IsNull;");
+          outData.println(indent(2) + "public bool " + field.useUpperName() + "IsNull");
+          outData.println(indent(2) + "{ ");
+          outData.println(indent(3) + "get { return this." + field.useLowerName() + "IsNull; }");
+          outData.println(indent(3) + "set { this." + field.useLowerName() + "IsNull = value; }");
+          outData.println(indent(2) + "}");
+        }
+      }
+    }
+    outData.println(indent(1) + "}");
   }
   public static void generateEnumOrdinals(Table table, PrintWriter outData)
   {
@@ -538,8 +737,8 @@ public class CSNetCode extends Generator
       Field field = (Field)table.fields.elementAt(i);
       if (field.enums.size() > 0)
       {
-        outData.println("  public class " + table.useName() + field.useUpperName() + "Ord");
-        outData.println("  {");
+        outData.println(indent(1) + "public class " + table.useName() + field.useUpperName() + "Ord");
+        outData.println(indent(1) + "{");
         String datatype = "int";
         if (field.type == Field.ANSICHAR && field.length == 1)
           datatype = "string";
@@ -549,24 +748,24 @@ public class CSNetCode extends Generator
           String evalue = "" + en.value;
           if (field.type == Field.ANSICHAR && field.length == 1)
             evalue = "\"" + (char)en.value + "\"";
-          outData.println("    public const " + datatype + " " + en.name + " = " + evalue + ";");
+          outData.println(indent(2) + "public const " + datatype + " " + en.name + " = " + evalue + ";");
         }
-        outData.println("    public static string ToString(" + datatype + " ordinal)");
-        outData.println("    {");
-        outData.println("      switch (ordinal)");
-        outData.println("      {");
+        outData.println(indent(2) + "public static string ToString(" + datatype + " ordinal)");
+        outData.println(indent(2) + "{");
+        outData.println(indent(3) + "switch (ordinal)");
+        outData.println(indent(3) + "{");
         for (int j = 0; j < field.enums.size(); j++)
         {
           Enum en = (Enum)field.enums.elementAt(j);
           String evalue = "" + en.value;
           if (field.type == Field.ANSICHAR && field.length == 1)
             evalue = "\"" + (char)en.value + "\"";
-          outData.println("      case " + evalue + ": return \"" + en.name + "\";");
+          outData.println(indent(4) + "case " + evalue + ": return \"" + en.name + "\";");
         }
-        outData.println("      }");
-        outData.println("      return \"unknown ordinal: \"+ordinal;");
-        outData.println("    }");
-        outData.println("  }");
+        outData.println(indent(3) + "}");
+        outData.println(indent(3) + "return \"unknown ordinal: \"+ordinal;");
+        outData.println(indent(2) + "}");
+        outData.println(indent(1) + "}");
       }
     }
   }
@@ -576,15 +775,25 @@ public class CSNetCode extends Generator
     {
       if (table.comments.size() > 0)
       {
-        outData.println("  /// <summary>");
+        outData.println(indent(1) + "/// <summary>");
         for (int i = 0; i < table.comments.size(); i++)
         {
           String s = (String)table.comments.elementAt(i);
-          outData.println("  /// " + s);
+          outData.println(indent(1) + "/// " + s);
         }
-        outData.println("  /// </summary>");
+        outData.println(indent(1) + "/// </summary>");
       }
-      generateStructPairs(table.fields, null, table.useName(), outData);
+      boolean hasReturning = false;
+      for (int i = 0; i < table.procs.size(); i++)
+      {
+        Proc proc = (Proc)table.procs.elementAt(i);
+        if (proc.hasReturning && proc.isStd)
+        {
+          hasReturning = true;
+          break;
+        }
+      }
+      generateStructPairs(null, table.fields, null, table.useName(), outData, null, hasReturning);
       generateEnumOrdinals(table, outData);
       for (int i = 0; i < table.procs.size(); i++)
       {
@@ -593,21 +802,22 @@ public class CSNetCode extends Generator
           continue;
         if (proc.comments.size() > 0)
         {
-          outData.println("  /// <summary>");
+          outData.println(indent(1) + "/// <summary>");
           for (int j = 0; j < proc.comments.size(); j++)
           {
             String s = (String)proc.comments.elementAt(j);
-            outData.println("  /// " + s);
+            outData.println(indent(1) + "/// " + s);
           }
-          outData.println("  /// </summary>");
+          outData.println(indent(1) + "/// </summary>");
         }
         Vector<Field> fields = new Vector<Field>();
+        if (!proc.extendsStd)
         for (int j = 0; j < proc.outputs.size(); j++)
           fields.addElement(proc.outputs.elementAt(j));
         for (int j = 0; j < proc.inputs.size(); j++)
         {
           Field field = (Field)proc.inputs.elementAt(j);
-          if (proc.hasOutput(field.name) == false)
+          if (proc.hasOutput(field.name) == false || field.isExtStd)
             fields.addElement(field);
         }
         for (int j = 0; j < proc.dynamics.size(); j++)
@@ -620,23 +830,28 @@ public class CSNetCode extends Generator
           field.length = n.intValue();
           fields.addElement(field);
         }
-        generateStructPairs(fields, proc.dynamics, table.useName() + proc.upperFirst(), outData);
+        generateStructPairs(proc, fields, proc.dynamics, table.useName() + proc.upperFirst(), outData, table.useName(), false);
       }
     }
   }
   public static void generateCode(Table table, PrintWriter outData)
   {
     boolean firsttime = true;
+    boolean isLoaded = true;
     for (int i = 0; i < table.procs.size(); i++)
     {
       Proc proc = (Proc)table.procs.elementAt(i);
       if (proc.isData == true || proc.isStd == false)
         continue;
-      generateStdCode(table, proc, outData, firsttime);
+      generateStdCode(table, proc, outData, firsttime, isLoaded);
+      if (proc.outputs.size() > 0 && !proc.isSingle)
+      {
+        isLoaded = false;
+      }
       firsttime = false;
     }
     if (firsttime == false)
-      outData.println("  }");
+      outData.println(indent(1) + "}");
     for (int i = 0; i < table.procs.size(); i++)
     {
       Proc proc = (Proc)table.procs.elementAt(i);
@@ -648,8 +863,9 @@ public class CSNetCode extends Generator
   static PlaceHolder placeHolder;
   static void generateStoredProc(Proc proc, String storedProcName, Vector<?> lines)
   {
-    procData.println("if exists (select * from sysobjects where id = object_id('dbo." + storedProcName + "') and sysstat & 0xf = 4)");
-    procData.println("drop procedure dbo." + storedProcName);
+    //procData.println("IF EXISTS (SELECT * FROM SYSOBJECTS WHERE ID = OBJECT_ID('dbo." + storedProcName + "') AND SYSSTAT & 0xf = 4)");
+    procData.println("IF OBJECT_ID('dbo." + storedProcName + "','P') IS NOT NULL");
+    procData.println(indent(1) + "DROP PROCEDURE dbo." + storedProcName);
     procData.println("GO");
     procData.println("");
     procData.println("CREATE PROCEDURE dbo." + storedProcName);
@@ -682,68 +898,69 @@ public class CSNetCode extends Generator
     String storedProcName = proc.table.useName() + proc.upperFirst();
     Vector<?> lines = placeHolder.getLines();
     generateStoredProc(proc, storedProcName, lines);
-    outData.println("    public string Command" + proc.upperFirst() + "()");
-    outData.println("    {");
+    outData.println(indent(2) + "public string Command" + proc.upperFirst() + "()");
+    outData.println(indent(2) + "{");
     for (int i = 0; i < lines.size(); i++)
     {
       String line = (String)lines.elementAt(i);
-      outData.println("      // " + line.substring(1, line.length() - 1));
+      outData.println(indent(3) + "// " + line.substring(1, line.length() - 1));
     }
-    outData.println("      return \"" + storedProcName + "\";");
-    outData.println("    }");
+    outData.println(indent(3) + "return \"" + storedProcName + "\";");
+    outData.println(indent(2) + "}");
   }
   static void generateCommand(Proc proc, PrintWriter outData)
   {
     if (proc.hasReturning)
     {
       placeHolder = new PlaceHolder(proc, PlaceHolder.CURLY, "");
-      outData.println("    public string Command" + proc.upperFirst() + "(Connect aConnect, string aTable, string aField)");
+      outData.println(indent(2) + "public string Command" + proc.upperFirst() + "(Connect aConnect, string aTable, string aField)");
     }
     else
     {
       placeHolder = new PlaceHolder(proc, PlaceHolder.CURLY, "Rec.");
-      outData.println("    public string Command" + proc.upperFirst() + "()");
+      outData.println(indent(2) + "public string Command" + proc.upperFirst() + "()");
     }
     Vector<?> lines = placeHolder.getLines();
-    outData.println("    {");
+    outData.println(indent(2) + "{");
     if (proc.hasReturning)
-      outData.println("      Returning _ret = new Returning(aConnect.TypeOfVendor, aTable, aField);");
-    outData.println("      return ");
-    String plus = "        ";
+      outData.println(indent(3) + "Returning _ret = new Returning(aConnect.TypeOfVendor, aTable, aField);");
+    outData.println(indent(3) + "return ");
+    String plus = indent(4);
     for (int i = 0; i < lines.size(); i++)
     {
       String line = (String)lines.elementAt(i);
-      if (proc.hasReturning)
-      {
-        String retName = returningField(proc);
-        int b = line.indexOf(retName);
-        if (b > 0 && line.charAt(b - 1) == ' ')
-        {
-          int e = line.indexOf(',');
-          if (e == -1) e = line.indexOf('"');
-          if (e - b == retName.length())
-            line = "_ret.checkUse(" + line + ")";
-        }
-      }
       outData.println(plus + line);
-      plus = "      + ";
+      plus = indent(4) + "+ ";
     }
-    outData.println("      ;");
-    outData.println("    }");
+    outData.println(indent(4) + ";");
+    outData.println(indent(2) + "}");
   }
   static void generateNonQueryProc(Proc proc, String mainName, PrintWriter outData)
   {
-    outData.println("    public void " + proc.upperFirst() + "(Connect aConnect)");
-    outData.println("    {");
-    outData.println("      using (Cursor wCursor = new Cursor(aConnect))");
-    outData.println("      {");
+    Field identity = null;
+    for (int i = 0; i < proc.table.fields.size(); i++)
+    {
+      Field field = (Field)proc.table.fields.elementAt(i);
+      if (field.isPrimaryKey)
+      {
+        identity = field;
+        break;
+      }
+    }
+    if (proc.hasReturning)
+      outData.println(indent(2) + "public bool " + proc.upperFirst() + "(Connect aConnect)");
+    else
+      outData.println(indent(2) + "public void " + proc.upperFirst() + "(Connect aConnect)");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "using (Cursor wCursor = new Cursor(aConnect))");
+    outData.println(indent(3) + "{");
     if (doMSSqlStoredProcs(proc))
-      outData.println("        wCursor.Procedure(Command" + proc.upperFirst() + "());");
+      outData.println(indent(4) + "wCursor.Procedure(Command" + proc.upperFirst() + "());");
     else
     {
       if (placeHolder.pairs.size() > 0)
-        outData.println("        // format command to change {n} to ?, @Pn or :Pn placeholders depending on Vendor");
-      outData.println("        wCursor.Format(Command" + proc.upperFirst() + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
+        outData.println(indent(4) + "// format command to change {n} to ?, @Pn or :Pn placeholders depending on Vendor");
+      outData.println(indent(4) + "wCursor.Format(Command" + proc.upperFirst() + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
     }
     for (int i = 0; i < placeHolder.pairs.size(); i++)
     {
@@ -754,19 +971,230 @@ public class CSNetCode extends Generator
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
-        tail = ", mRec." + field.useLowerName() + "IsNull";
+        tail = ", mRec." + field.useUpperName() + "IsNull";
       if (proc.isInsert && field.isSequence)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetSequence(\"" + proc.table.name + "\",\"" + field.name + "\", ref mRec." + field.useLowerName() + "));");
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + " = mRec." + field.useUpperName() + ";");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", wCursor.GetSequence(\"" + proc.table.name + "\",\"" + field.name + "\", ref " + field.useLowerName() + "));");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + ";");
+      }
       else if (field.type == Field.TIMESTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref mRec." + field.useLowerName() + "));");
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + i + " = mRec." + field.useUpperName() + ";");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref " + field.useLowerName() + i + "));");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + i + ";");
+      }
       else if (field.type == Field.USERSTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref mRec." + field.useLowerName() + "));");
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + i + " = mRec." + field.useUpperName() + ";");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref " + field.useLowerName() + i + "));");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + i + ";");
+      }
       else
-        outData.println("        wCursor.Parameter(" + i + ", mRec." + field.useLowerName() + member + tail + ");");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", mRec." + field.useUpperName() + member + tail + ");");
     }
-    outData.println("        wCursor.Exec();");
-    outData.println("      }");
-    outData.println("    }");
+    if (proc.hasReturning)
+    {
+      outData.println(indent(4) + "wCursor.Run();");
+      outData.println(indent(4) + "bool wResult = (wCursor.HasReader() && wCursor.Read());");
+      outData.println(indent(4) + "if (wResult == true)");
+      outData.println(indent(4) + "{");
+      if (identity.isNull && getDataType(identity, new StringBuffer(), new StringBuffer()) == "string")
+      {
+        outData.println(indent(5) + "var " + identity.useLowerName() + "IsNull = mRec." + identity.useUpperName() + "IsNull;");
+        outData.println(indent(5) + "mRec." + identity.useUpperName() + " = " + castOf(identity) + "wCursor.GetString(0, out " + identity.useLowerName() + "IsNull);");
+        outData.println(indent(5) + "mRec." + identity.useUpperName() + "IsNull = " + identity.useLowerName() + "IsNull;");
+      }
+      else if (identity.isNull)
+      {
+        outData.println(indent(5) + "var " + identity.useLowerName() + "IsNull = mRec." + identity.useUpperName() + "IsNull;");
+        outData.println(indent(5) + "mRec." + identity.useUpperName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
+        outData.println(indent(5) + "mRec." + identity.useUpperName() + "IsNull = " + identity.useLowerName() + "IsNull;");
+      }
+      else
+      {
+        outData.println(indent(5) + "mRec." + identity.useUpperName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
+      }
+      outData.println(indent(4) + "}");
+      outData.println(indent(4) + "if (wCursor.HasReader())");
+      outData.println(indent(4) + "{");
+      outData.println(indent(5) + "wCursor.Close();");
+      outData.println(indent(4) + "}");
+      outData.println(indent(4) + "return wResult;");
+      outData.println(indent(3) + "}");
+      outData.println(indent(2) + "}");
+    }
+    else
+    {
+      outData.println(indent(4) + "wCursor.Exec();");
+      outData.println(indent(3) + "}");
+      outData.println(indent(2) + "}");
+    }
+  }
+
+  static void generateFunc(Proc proc, String mainName, PrintWriter outData)
+  {
+    String line, input = "", postfix = "";
+    boolean isLoaded = false;
+    int ind = 0;
+    String placeHolder = "";
+    if (proc.outputs.size() > 0 && !proc.isSingle && !proc.isInsert)
+    {
+      isLoaded = true;
+    }
+
+    for (int i = 0; i < proc.inputs.size(); i++)
+    {
+
+      Field field = (Field)proc.inputs.elementAt(i);
+      if (field.isPrimaryKey || proc.updateFields.contains(field.name))
+      {
+        StringBuffer maker = new StringBuffer();
+        StringBuffer temp2 = new StringBuffer();
+        String result = returnNullableDataType(field, maker, temp2);
+        line = ", ";
+        input = input + line + result + " " + field.useLowerName();
+      }
+    }
+
+    for (int i = 0; i < proc.inputs.size(); i++)
+    {
+      Field field = (Field)proc.inputs.elementAt(i);
+      if (field.isExtStdOut)
+        continue;
+      if (field.type == Field.TIMESTAMP || field.type == Field.USERSTAMP)
+      {
+        continue;
+      }
+      if (!(field.isPrimaryKey || proc.updateFields.contains(field.name)))
+      {
+        StringBuffer maker = new StringBuffer();
+        StringBuffer temp2 = new StringBuffer();
+        String result = returnNullableDataType(field, maker, temp2);
+        line = ", ";
+        input = input + line + result + " " + field.useLowerName();
+      }
+    }
+    for (int j = 0; j < proc.dynamics.size(); j++)
+    {
+      String s = (String)proc.dynamics.elementAt(j);
+      Integer n = (Integer)proc.dynamicSizes.elementAt(j);
+      Field field = new Field();
+      field.name = s;
+      field.type = Field.DYNAMIC;
+      field.length = n.intValue();
+      line = ", ";
+      input = input + line + "string " + field.useLowerName();
+    }
+    input = input + ")";
+    if (input.equals(")"))
+    {
+      postfix = "Struct";
+    }
+
+    if (proc.isSingle)
+      outData.println(indent(2) + "public " + mainName + "Rec " + proc.upperFirst() + postfix + "(Connect aConnect" + input);
+    else if (!isLoaded)
+    {
+      if (proc.isMultipleInput)
+      {
+        outData.println(indent(2) + "public void " + proc.upperFirst() + postfix + "(Connect aConnect, List<" + mainName + "Rec> aList)");
+      }
+      else
+      {
+        outData.println(indent(2) + "public void " + proc.upperFirst() + postfix + "(Connect aConnect" + input);
+      }
+    }
+    else if (proc.hasReturning)
+    {
+      outData.println(indent(2) + "public bool " + proc.upperFirst() + postfix + "(Connect aConnect" + input);
+    }
+    else
+      outData.println(indent(2) + "public List<" + mainName + "Rec> " + proc.upperFirst() + postfix + "(Connect aConnect" + input);
+    outData.println(indent(2) + "{");
+    if (proc.isMultipleInput)
+    {
+      outData.println(indent(3) + "foreach (var item in aList)");
+      outData.println(indent(3) + "{");
+      placeHolder = "item.";
+      ind = 1;
+    }
+    for (int i = 0; i < proc.inputs.size(); i++)
+    {
+      Field field = (Field)proc.inputs.elementAt(i);
+      if (field.isExtStdOut)
+        continue;
+      if (field.type == Field.TIMESTAMP || field.type == Field.USERSTAMP)
+      {
+        continue;
+      }
+      placeHolder = field.useLowerName();
+        if (proc.isMultipleInput)
+        {
+          placeHolder = "item." + field.useUpperName();
+    }
+        if (field.isNull && getNullableType(field))
+        {
+
+          outData.println(indent(3 + ind) + "if (" + placeHolder + ".HasValue)");
+          outData.println(indent(3 + ind) + "{");
+          outData.println(indent(4 + ind) + "mRec." + field.useUpperName() + " = " + placeHolder + ".Value;");
+          outData.println(indent(3 + ind) + "}");
+          outData.println(indent(3 + ind) + "mRec." + field.useUpperName() + "IsNull = !" + placeHolder + ".HasValue;");
+
+        }
+        else
+        {
+          outData.println(indent(3 + ind) + "mRec." + field.useUpperName() + " = " + placeHolder + ";");
+        }
+    }
+    for (int j = 0; j < proc.dynamics.size(); j++)
+    {
+      String s = (String)proc.dynamics.elementAt(j);
+      Integer n = (Integer)proc.dynamicSizes.elementAt(j);
+      Field field = new Field();
+      field.name = s;
+      field.type = Field.DYNAMIC;
+      field.length = n.intValue();
+      line = ", ";
+      if (proc.isMultipleInput)
+        outData.println(indent(3 + ind) + "mRec." + field.useUpperName() + " = item." + field.useUpperName() + ";");
+      else
+        outData.println(indent(3 + ind) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + ";");
+    }
+    if (proc.isSingle)
+    {
+      outData.println(indent(3) + "if (" + proc.upperFirst() + "(aConnect))");
+      outData.println(indent(3) + "{");
+      outData.println(indent(4) + "return mRec;");
+      outData.println(indent(3) + "}");
+      outData.println(indent(3) + "else");
+      outData.println(indent(3) + "{");
+      outData.println(indent(4) + "return null;");
+      outData.println(indent(3) + "}");
+      outData.println(indent(2) + "}");
+    }
+    else if (!isLoaded)
+    {
+      outData.println(indent(3 + ind) + proc.upperFirst() + "(aConnect);");
+      if (proc.isMultipleInput)
+      {
+        outData.println(indent(3) + "}");
+      }
+      outData.println(indent(2) + "}");
+    }
+    else if (proc.hasReturning)
+    {
+      outData.println(indent(3) + "return " + proc.upperFirst() + "(aConnect);");
+      outData.println(indent(2) + "}");
+    }
+    else
+    {
+      outData.println(indent(3) + proc.upperFirst() + "Load(aConnect);");
+      outData.println(indent(3) + "return Loaded;");
+      outData.println(indent(2) + "}");
+    }
+
   }
   static void generateReturningProc(Proc proc, String mainName, PrintWriter outData)
   {
@@ -774,6 +1202,7 @@ public class CSNetCode extends Generator
     for (int i = 0; i < proc.table.fields.size(); i++)
     {
       Field field = (Field)proc.table.fields.elementAt(i);
+      //if (field.isPrimaryKey) -- not all primary keys are sequences or identities
       if (field.isSequence)
       {
         identity = field;
@@ -785,17 +1214,17 @@ public class CSNetCode extends Generator
       generateNonQueryProc(proc, mainName, outData);
       return;
     }
-    outData.println("    public bool " + proc.upperFirst() + "(Connect aConnect)");
-    outData.println("    {");
-    outData.println("      using (Cursor wCursor = new Cursor(aConnect))");
-    outData.println("      {");
+    outData.println(indent(2) + "public bool " + proc.upperFirst() + "(Connect aConnect)");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "using (Cursor wCursor = new Cursor(aConnect))");
+    outData.println(indent(3) + "{");
     if (doMSSqlStoredProcs(proc))
-      outData.println("        wCursor.Procedure(Command" + proc.upperFirst() + ");");
+      outData.println(indent(4) + "wCursor.Procedure(Command" + proc.upperFirst() + "());");
     else
     {
       if (placeHolder.pairs.size() > 0)
-        outData.println("        // format command to change {n} to ?, @Pn or :Pn placeholders depending on Vendor");
-      outData.println("        wCursor.Format(Command" + proc.upperFirst() + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
+        outData.println(indent(4) + "// format command to change {n} to ?, @Pn or :Pn placeholders depending on Vendor");
+      outData.println(indent(4) + "wCursor.Format(Command" + proc.upperFirst() + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
     }
     for (int i = 0; i < placeHolder.pairs.size(); i++)
     {
@@ -806,37 +1235,73 @@ public class CSNetCode extends Generator
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
-        tail = ", mRec." + field.useLowerName() + "IsNull";
+        tail = ", mRec." + field.useUpperName() + "IsNull";
       if (field.type == Field.TIMESTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref mRec." + field.useLowerName() + "));");
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + i + " = mRec." + field.useUpperName() + ";");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref " + field.useLowerName() + i + "));");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + i + ";");
+      }
       else if (field.type == Field.USERSTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref mRec." + field.useLowerName() + "));");
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + i + " = mRec." + field.useUpperName() + ";");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref " + field.useLowerName() + i + "));");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + i + ";");
+      }
       else
-        outData.println("        wCursor.Parameter(" + i + ", mRec." + field.useLowerName() + member + tail + ");");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", mRec." + field.useUpperName() + member + tail + ");");
     }
-    outData.println("        wCursor.Run();");
-    outData.println("        bool wResult = (wCursor.HasReader() && wCursor.Read());");
-    outData.println("        if (wResult == true)");
-    outData.println("          mRec." + identity.useLowerName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
-    outData.println("        if (wCursor.HasReader())");
-    outData.println("          wCursor.Close();");
-    outData.println("        return wResult;");
-    outData.println("      }");
-    outData.println("    }");
+    outData.println(indent(4) + "wCursor.Run();");
+    outData.println(indent(4) + "bool wResult = (wCursor.HasReader() && wCursor.Read());");
+    outData.println(indent(4) + "if (wResult == true)");
+    outData.println(indent(4) + "{");
+    if (identity.isNull && getDataType(identity, new StringBuffer(), new StringBuffer()) == "string")
+    {
+      outData.println(indent(5) + "var " + identity.useLowerName() + "IsNull = mRec." + identity.useUpperName() + "IsNull;");
+      outData.println(indent(5) + "mRec." + identity.useUpperName() + " = " + castOf(identity) + "wCursor.GetString(0, out " + identity.useLowerName() + "IsNull);");
+      outData.println(indent(5) + "mRec." + identity.useUpperName() + "IsNull = " + identity.useLowerName() + "IsNull;");
+    }
+    else if (identity.isNull)
+    {
+      outData.println(indent(4) + "var " + identity.useLowerName() + "IsNull = mRec." + identity.useUpperName() + "IsNull;");
+      outData.println(indent(4) + "mRec." + identity.useUpperName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
+      outData.println(indent(4) + "mRec." + identity.useUpperName() + "IsNull = " + identity.useLowerName() + "IsNull;");
+    }
+      else
+    {
+      outData.println(indent(5) + "mRec." + identity.useUpperName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
+    }
+//    outData.println("        wCursor.Run();");
+//    outData.println("        bool wResult = (wCursor.HasReader() && wCursor.Read());");
+//    outData.println("        if (wResult == true)");
+//    outData.println("          mRec." + identity.useLowerName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
+//    outData.println("        if (wCursor.HasReader())");
+//    outData.println("          wCursor.Close();");
+//    outData.println("        return wResult;");
+//    outData.println("      }");
+//    outData.println("    }");
+    outData.println(indent(4) + "}");
+    outData.println(indent(4) + "if (wCursor.HasReader())");
+    outData.println(indent(4) + "{");
+    outData.println(indent(5) + "wCursor.Close();");
+    outData.println(indent(4) + "}");
+    outData.println(indent(4) + "return wResult;");
+    outData.println(indent(3) + "}");
+    outData.println(indent(2) + "}");
   }
   static void generateReadOneProc(Proc proc, String mainName, PrintWriter outData)
   {
-    outData.println("    public bool " + proc.upperFirst() + "(Connect aConnect)");
-    outData.println("    {");
-    outData.println("      using (Cursor wCursor = new Cursor(aConnect))");
-    outData.println("      {");
+    outData.println(indent(2) + "public bool " + proc.upperFirst() + "(Connect aConnect)");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "using (Cursor wCursor = new Cursor(aConnect))");
+    outData.println(indent(3) + "{");
     if (doMSSqlStoredProcs(proc))
-      outData.println("        wCursor.Procedure(Command" + proc.upperFirst() + ");");
+      outData.println(indent(4) + "wCursor.Procedure(Command" + proc.upperFirst() + "());");
     else
     {
       if (placeHolder.pairs.size() > 0)
-        outData.println("        // format command to change {n} to ?, @Pn or :Pn placeholders depending on Vendor");
-      outData.println("        wCursor.Format(Command" + proc.upperFirst() + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
+        outData.println(indent(4) + "// format command to change {n} to ?, @Pn or :Pn placeholders depending on Vendor");
+      outData.println(indent(4) + "wCursor.Format(Command" + proc.upperFirst() + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
     }
     for (int i = 0; i < placeHolder.pairs.size(); i++)
     {
@@ -847,32 +1312,57 @@ public class CSNetCode extends Generator
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
-        tail = ", mRec." + field.useLowerName() + "IsNull";
+        tail = ", mRec." + field.useUpperName() + "IsNull";
       if (field.type == Field.TIMESTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref mRec." + field.useLowerName() + "));");
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + i + " = mRec." + field.useUpperName() + ";");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", wCursor.GetTimeStamp(ref " + field.useLowerName() + i + "));");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + i + ";");
+      }
       else if (field.type == Field.USERSTAMP)
-        outData.println("        wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref mRec." + field.useLowerName() + "));");
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + i + " = mRec." + field.useUpperName() + ";");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref " + field.useLowerName() + i + "));");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + i + ";");
+      }
       else 
-        outData.println("        wCursor.Parameter(" + i + ", mRec." + field.useLowerName() + member + tail + ");");
+        outData.println(indent(4) + "wCursor.Parameter(" + i + ", mRec." + field.useUpperName() + member + tail + ");");
     }
-    outData.println("        wCursor.Run();");
-    outData.println("        bool wResult = (wCursor.HasReader() && wCursor.Read());");
-    outData.println("        if (wResult == true)");
-    outData.println("        {");
+    outData.println(indent(4) + "wCursor.Run();");
+    outData.println(indent(4) + "bool wResult = (wCursor.HasReader() && wCursor.Read());");
+    outData.println(indent(4) + "if (wResult == true)");
+    outData.println(indent(4) + "{");
     for (int i = 0; i < proc.outputs.size(); i++)
     {
       Field field = (Field)proc.outputs.elementAt(i);
       String member = "";
       if (field.type == Field.BLOB)
         member = ".Buffer";
-      outData.println("          mRec." + field.useLowerName() + member + " = " + castOf(field) + "wCursor." + cursorGet(field, i) + ";");
+      if (field.isNull && getDataType(field, new StringBuffer(), new StringBuffer()) == "string")
+      {
+        outData.println(indent(5) + "var " + field.useLowerName() + "IsNull = mRec." + field.useUpperName() + "IsNull;");
+        outData.println(indent(5) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "wCursor.GetString(" + i + ", out " + field.useLowerName() + "IsNull);");
+        outData.println(indent(5) + "mRec." + field.useUpperName() + "IsNull = " + field.useLowerName() + "IsNull;");
     }
-    outData.println("        }");
-    outData.println("        if (wCursor.HasReader())");
-    outData.println("          wCursor.Close();");
-    outData.println("        return wResult;");
-    outData.println("      }");
-    outData.println("    }");
+      else if (field.isNull)
+      {
+        outData.println(indent(5) + "var " + field.useLowerName() + "IsNull = mRec." + field.useUpperName() + "IsNull;");
+        outData.println(indent(5) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "wCursor." + cursorGet(field, i) + ";");
+        outData.println(indent(5) + "mRec." + field.useUpperName() + "IsNull = " + field.useLowerName() + "IsNull;");
+      }
+      else
+      {
+        outData.println(indent(5) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "wCursor." + cursorGet(field, i) + ";");
+      }
+    }
+    outData.println(indent(4) + "}");
+    outData.println(indent(4) + "if (wCursor.HasReader())");
+    outData.println(indent(4) + "{");
+    outData.println(indent(5) + "wCursor.Close();");
+    outData.println(indent(4) + "}");
+    outData.println(indent(4) + "return wResult;");
+    outData.println(indent(3) + "}");
+    outData.println(indent(2) + "}");
   }
   static String returning(Proc proc)
   {
@@ -891,7 +1381,7 @@ public class CSNetCode extends Generator
     }
     return "aConnect, \"" + tableName + "\", \"" + fieldName + "\"";
   }
-  static String returningField(Proc proc)
+  /*static String returningField(Proc proc)
   {
     if (proc.hasReturning == false)
       return "";
@@ -906,19 +1396,18 @@ public class CSNetCode extends Generator
       }
     }
     return fieldName;
-  }
-  static void generateFetchProc(Proc proc, String mainName, PrintWriter outData)
+  }*/
+  static void generateFetchProc(Proc proc, String mainName, PrintWriter outData, boolean isLoaded)
   {
-    outData.println("    public void " + proc.upperFirst() + "(Connect aConnect)");
-    outData.println("    {");
-    outData.println("      mCursor = new Cursor(aConnect);");
+    outData.println(indent(2) + "private void " + proc.upperFirst() + "(Connect aConnect)");
+    outData.println(indent(2) + "{");
     if (doMSSqlStoredProcs(proc))
-      outData.println("      mCursor.Procedure(Command" + proc.upperFirst() + ");");
+      outData.println(indent(3) + "mCursor.Procedure(Command" + proc.upperFirst() + "());");
     else
     {
       if (placeHolder.pairs.size() > 0)
-        outData.println("      // format command to change {n} to ?, @Pn or :Pn placeholders depending on Vendor");
-      outData.println("      mCursor.Format(Command" + proc.upperFirst() + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
+        outData.println(indent(3) + "// format command to change {n} to ?, @Pn or :Pn placeholders depending on Vendor");
+      outData.println(indent(3) + "mCursor.Format(Command" + proc.upperFirst() + "(" + returning(proc) + "), " + placeHolder.pairs.size() + ");");
     }
     for (int i = 0; i < placeHolder.pairs.size(); i++)
     {
@@ -929,49 +1418,85 @@ public class CSNetCode extends Generator
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
-        tail = ", mRec." + field.useLowerName() + "IsNull";
-      outData.println("      mCursor.Parameter(" + i + ", mRec." + field.useLowerName() + member + tail + ");");
+        tail = ", mRec." + field.useUpperName() + "IsNull";
+      outData.println(indent(3) + "mCursor.Parameter(" + i + ", mRec." + field.useUpperName() + member + tail + ");");
     }
-    outData.println("      mCursor.Run();");
-    outData.println("    }");
-    outData.println("    public bool " + proc.upperFirst() + "Fetch()");
-    outData.println("    {");
-    outData.println("      bool wResult = (mCursor.HasReader() && mCursor.Read());");
-    outData.println("      if (wResult == true)");
-    outData.println("      {");
+    outData.println(indent(3) + "mCursor.Run();");
+    outData.println(indent(2) + "}");
+    outData.println(indent(2) + "private bool " + proc.upperFirst() + "Fetch()");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "bool wResult = (mCursor.HasReader() && mCursor.Read());");
+    outData.println(indent(3) + "if (wResult == true)");
+    outData.println(indent(3) + "{");
     for (int i = 0; i < proc.outputs.size(); i++)
     {
       Field field = (Field)proc.outputs.elementAt(i);
       String member = "";
       if (field.type == Field.BLOB)
         member = ".Buffer";
-      outData.println("        mRec." + field.useLowerName() + member + " = " + castOf(field) + "mCursor." + cursorGet(field, i) + ";");
+      if (field.isNull && getDataType(field, new StringBuffer(), new StringBuffer()) == "string")
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + "IsNull = mRec." + field.useUpperName() + "IsNull;");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "mCursor.GetString(" + i + ", out " + field.useLowerName() + "IsNull);");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + "IsNull = " + field.useLowerName() + "IsNull;");
+      }
+      else if (field.isNull)
+      {
+        outData.println(indent(4) + "var " + field.useLowerName() + "IsNull = mRec." + field.useUpperName() + "IsNull;");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "mCursor." + cursorGet(field, i) + ";");
+        outData.println(indent(4) + "mRec." + field.useUpperName() + "IsNull = " + field.useLowerName() + "IsNull;");
     }
-    outData.println("      }");
-    outData.println("      else if (mCursor.HasReader())");
-    outData.println("        mCursor.Close();");
-    outData.println("      return wResult;");
-    outData.println("    }");
-    outData.println("    public void " + proc.upperFirst() + "Load(Connect aConnect)");
-    outData.println("    {");
-    outData.println("      " + proc.upperFirst() + "(aConnect);");
-    outData.println("      while (" + proc.upperFirst() + "Fetch())");
-    outData.println("      {");
-    outData.println("        mList.Add(mRec);");
-    outData.println("        mRec = new " + mainName + "Rec();");
-    outData.println("      }");
-    outData.println("    }");
+      else
+      {
+        outData.println(indent(4) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "mCursor." + cursorGet(field, i) + ";");
+      }
+    }
+    outData.println(indent(3) + "}");
+    outData.println(indent(3) + "else if (mCursor.HasReader())");
+    outData.println(indent(3) + "{");
+    outData.println(indent(4) + "mCursor.Close();");
+    outData.println(indent(3) + "}");
+    outData.println(indent(3) + "return wResult;");
+    outData.println(indent(2) + "}");
+    outData.println(indent(2) + "public void " + proc.upperFirst() + "Load(Connect aConnect)");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "using (mCursor = new Cursor(aConnect))");
+    outData.println(indent(3) + "{");
+    outData.println(indent(4) + proc.upperFirst() + "(aConnect);");
+    outData.println(indent(4) + "while (" + proc.upperFirst() + "Fetch())");
+    outData.println(indent(4) + "{");
+    outData.println(indent(5) + "mList.Add(mRec);");
+    outData.println(indent(5) + "mRec = new " + mainName + "Rec();");
+    outData.println(indent(4) + "}");
+    outData.println(indent(3) + "}");
+    outData.println(indent(2) + "}");
+    outData.println(indent(2) + "public bool " + proc.upperFirst() + "First(Connect aConnect)");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "using (mCursor = new Cursor(aConnect))");
+    outData.println(indent(3) + "{");
+    outData.println(indent(4) + proc.upperFirst() + "(aConnect);");
+    outData.println(indent(4) + "if (" + proc.upperFirst() + "Fetch())");
+    outData.println(indent(4) + "{");
+    outData.println(indent(5) + "mCursor.Close();");
+    outData.println(indent(5) + "return true;");
+    outData.println(indent(4) + "}");
+    outData.println(indent(4) + "return false;");
+    outData.println(indent(3) + "}");
+    outData.println(indent(2) + "}");
+    if (isLoaded)
+    {
     if (useGenerics)
-      outData.println("    public List<" + mainName + "Rec> Loaded { get { return mList; } }");
+        outData.println(indent(2) + "public List<" + mainName + "Rec> Loaded { get { return mList; } }");
     else
-      outData.println("    public ArrayList Loaded { get { return mList; } }");
-    outData.println("    public class " + proc.upperFirst() + "Ord");
-    outData.println("    {");
+        outData.println(indent(2) + "public ArrayList Loaded { get { return mList; } }");
+    }
+    outData.println(indent(2) + "public class " + proc.upperFirst() + "Ord");
+    outData.println(indent(2) + "{");
     int noInDataSet = 0;
     for (int i = 0; i < proc.inputs.size(); i++)
     {
       Field field = (Field)proc.inputs.elementAt(i);
-      outData.println("      public const int " + field.useLowerName() + " = " + noInDataSet + ";");
+      outData.println(indent(3) + "public const int " + field.useUpperName() + " = " + noInDataSet + ";");
       noInDataSet++;
     }
     for (int i = 0; i < proc.outputs.size(); i++)
@@ -979,18 +1504,18 @@ public class CSNetCode extends Generator
       Field field = (Field)proc.outputs.elementAt(i);
       if (proc.hasInput(field.name))
         continue;
-      outData.println("      public const int " + field.useLowerName() + " = " + noInDataSet + ";");
+      outData.println(indent(3) + "public const int " + field.useUpperName() + " = " + noInDataSet + ";");
       noInDataSet++;
     }
-    outData.println("      public static string ToString(int ordinal)");
-    outData.println("      {");
-    outData.println("        switch (ordinal)");
-    outData.println("        {");
+    outData.println(indent(3) + "public static string ToString(int ordinal)");
+    outData.println(indent(3) + "{");
+    outData.println(indent(4) + "switch (ordinal)");
+    outData.println(indent(4) + "{");
     noInDataSet = 0;
     for (int i = 0; i < proc.inputs.size(); i++)
     {
       Field field = (Field)proc.inputs.elementAt(i);
-      outData.println("        case " + noInDataSet + ": return \"" + field.useLowerName() + "\";");
+      outData.println(indent(5) + "case " + noInDataSet + ": return \"" + field.useUpperName() + "\";");
       noInDataSet++;
     }
     for (int i = 0; i < proc.outputs.size(); i++)
@@ -998,145 +1523,155 @@ public class CSNetCode extends Generator
       Field field = (Field)proc.outputs.elementAt(i);
       if (proc.hasInput(field.name))
         continue;
-      outData.println("        case " + noInDataSet + ": return \"" + field.useLowerName() + "\";");
+      outData.println(indent(5) + "case " + noInDataSet + ": return \"" + field.useUpperName() + "\";");
       noInDataSet++;
     }
-    outData.println("        }");
-    outData.println("        return \"<??\"+ordinal+\"??>\";");
-    outData.println("      }");
-    outData.println("    }");
+    outData.println(indent(4) + "}");
+    outData.println(indent(4) + "return \"<??\"+ordinal+\"??>\";");
+    outData.println(indent(3) + "}");
+    outData.println(indent(2) + "}");
+    if (!noDatatables)
+    {
     if (useSeparate == false && usePartials == false)
       generateFetchProcDataTables(proc, mainName, outData);
   }
+  }
   static void generateFetchProcDataTables(Proc proc, String mainName, PrintWriter outData)
   {
-    outData.println("    public " + proc.table.useName() + proc.upperFirst() + "DataTable " + proc.upperFirst() + "DataTable()");
-    outData.println("    {");
-    outData.println("      " + proc.table.useName() + proc.upperFirst() + "DataTable wResult = new " + proc.table.useName() + proc.upperFirst() + "DataTable(mList);");
-    outData.println("      return wResult;");
-    outData.println("    }");
-    outData.println("    public " + proc.table.useName() + proc.upperFirst() + "DataTable " + proc.upperFirst() + "DataTable(Connect aConnect)");
-    outData.println("    {");
-    outData.println("      " + proc.upperFirst() + "Load(aConnect);");
-    outData.println("      return " + proc.upperFirst() + "DataTable();");
-    outData.println("    }");
+    outData.println(indent(2) + "public " + proc.table.useName() + proc.upperFirst() + "DataTable " + proc.upperFirst() + "DataTable()");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + proc.table.useName() + proc.upperFirst() + "DataTable wResult = new " + proc.table.useName() + proc.upperFirst() + "DataTable(mList);");
+    outData.println(indent(3) + "return wResult;");
+    outData.println(indent(2) + "}");
+    outData.println(indent(2) + "public " + proc.table.useName() + proc.upperFirst() + "DataTable " + proc.upperFirst() + "DataTable(Connect aConnect)");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "" + proc.upperFirst() + "Load(aConnect);");
+    outData.println(indent(3) + "return " + proc.upperFirst() + "DataTable();");
+    outData.println(indent(2) + "}");
   }
-  static void generateProcFunctions(Proc proc, String name, PrintWriter outData)
+  static void generateProcFunctions(Proc proc, String name, PrintWriter outData, boolean isLoaded)
   {
     if (proc.outputs.size() > 0 && !proc.isSingle)
-      generateFetchProc(proc, name, outData);
+      generateFetchProc(proc, name, outData, isLoaded);
     else if (proc.outputs.size() > 0)
       generateReadOneProc(proc, name, outData);
-    else if (proc.isInsert && proc.hasReturning && proc.table.hasIdentity)
+    else if (proc.isInsert && proc.hasReturning)
       generateReturningProc(proc, name, outData);
     else
       generateNonQueryProc(proc, name, outData);
+    if (useFunc)
+      generateFunc(proc, name, outData);
   }
   static void generateCClassTop(Proc proc, String mainName, PrintWriter outData, boolean doCursor)
   {
-    outData.println("  [Serializable()]");
-    outData.println("  public " + (usePartials ? "partial " : "") + "class " + mainName);
-    outData.println("  {");
+    outData.println(indent(1) + "[Serializable()]");
+    outData.println(indent(1) + "public " + (usePartials ? "partial " : "") + "class " + mainName);
+    outData.println(indent(1) + "{");
     if (doCursor == true || proc.hasNoData() == false)
     {
-      outData.println("    private " + mainName + "Rec mRec;");
-      outData.println("    public " + mainName + "Rec Rec { get { return mRec; } set { mRec = value; } }");
+      outData.println(indent(2) + "private " + mainName + "Rec mRec;");
+      outData.println(indent(2) + "public " + mainName + "Rec Rec { get { return mRec; } set { mRec = value; } }");
       if (doCursor == true || (proc.outputs.size() > 0 && !proc.isSingle))
       {
         if (useGenerics)
-          outData.println("    private List<" + mainName + "Rec> mList;");
+          outData.println(indent(2) + "private List<" + mainName + "Rec> mList;");
         else
-          outData.println("    private ArrayList mList;");
-        outData.println("    public int Count { get { return mList.Count; } }");
-        outData.println("    public Cursor mCursor;");
-        outData.println("    public " + mainName + "Rec this[int i]");
-        outData.println("    {");
-        outData.println("      get");
-        outData.println("      {");
-        outData.println("        if (i >= 0 && i < mList.Count)");
+          outData.println(indent(2) + "private ArrayList mList;");
+        outData.println(indent(2) + "public int Count { get { return mList.Count; } }");
+        outData.println(indent(2) + "public Cursor mCursor;");
+        outData.println(indent(2) + "public " + mainName + "Rec this[int i]");
+        outData.println(indent(2) + "{");
+        outData.println(indent(3) + "get");
+        outData.println(indent(3) + "{");
+        outData.println(indent(4) + "if (i >= 0 && i < mList.Count)");
+        outData.println(indent(4) + "{");
         if (useGenerics)
-          outData.println("          return mList[i];");
+          outData.println(indent(5) + "return mList[i];");
         else
-          outData.println("          return (" + mainName + "Rec)mList[i];");
-        outData.println("        throw new JPortalException(\"" + mainName + " index out of range\");");
-        outData.println("      }");
-        outData.println("      set");
-        outData.println("      {");
-        outData.println("        if (i < mList.Count)");
-        outData.println("          mList.RemoveAt(i);");
-        outData.println("        mList.Insert(i, value);");
-        outData.println("      }");
-        outData.println("    }");
+          outData.println(indent(5) + "return (" + mainName + "Rec)mList[i];");
+        outData.println(indent(4) + "}");
+        outData.println(indent(4) + "throw new JPortalException(\"" + mainName + " index out of range\");");
+        outData.println(indent(3) + "}");
+        outData.println(indent(3) + "set");
+        outData.println(indent(3) + "{");
+        outData.println(indent(4) + "if (i < mList.Count)");
+        outData.println(indent(4) + "{");
+        outData.println(indent(5) + "mList.RemoveAt(i);");
+        outData.println(indent(4) + "}");
+        outData.println(indent(4) + "mList.Insert(i, value);");
+        outData.println(indent(3) + "}");
+        outData.println(indent(2) + "}");
         if (useYields)
         {
           if (useGenerics)
-            outData.println("    public IEnumerable<" + mainName + "Rec> Yielded()");
+            outData.println(indent(2) + "public IEnumerable<" + mainName + "Rec> Yielded()");
           else
-            outData.println("    public IEnumerable Yielded()");
-          outData.println("    {");
-          outData.println("      for (int i=0; i<Count; i++)");
-          outData.println("        yield return this[i];");
-          outData.println("    }");
+            outData.println(indent(2) + "public IEnumerable Yielded()");
+          outData.println(indent(2) + "{");
+          outData.println(indent(3) + "for (int i=0; i<Count; i++)");
+          outData.println(indent(4) + "yield return this[i];");
+          outData.println(indent(2) + "}");
         }
       }
-      outData.println("    public void Clear()");
-      outData.println("    {");
+      outData.println(indent(2) + "public void Clear()");
+      outData.println(indent(2) + "{");
       if (doCursor == true || (proc.outputs.size() > 0 && !proc.isSingle))
         if (useGenerics)
-          outData.println("      mList = new List<" + mainName + "Rec>();");
+          outData.println(indent(3) + "mList = new List<" + mainName + "Rec>();");
         else
-          outData.println("      mList = new ArrayList();");
-      outData.println("      mRec = new " + mainName + "Rec();");
-      outData.println("    }");
-      outData.println("    public " + mainName + "()");
-      outData.println("    {");
-      outData.println("      Clear();");
-      outData.println("    }");
+          outData.println(indent(3) + "mList = new ArrayList();");
+      outData.println(indent(3) + "mRec = new " + mainName + "Rec();");
+      outData.println(indent(2) + "}");
+      outData.println(indent(2) + "public " + mainName + "()");
+      outData.println(indent(2) + "{");
+      outData.println(indent(3) + "Clear();");
+      outData.println(indent(2) + "}");
     }
   }
   static boolean doMSSqlStoredProcs(Proc proc)
   {
-    return mSSqlStoredProcs == true && proc.dynamics.size() == 0;
+    return (mSSqlStoredProcs == true && proc.dynamics.size() == 0) || (proc.isSProc == true && proc.dynamics.size() == 0);
   }
   static void generateCode(Table table, Proc proc, PrintWriter outData)
   {
     if (proc.comments.size() > 0)
     {
-      outData.println("  /// <summary>");
+      outData.println(indent(1) + "/// <summary>");
       for (int i = 0; i < proc.comments.size(); i++)
       {
         String comment = (String)proc.comments.elementAt(i);
-        outData.println("  /// " + comment);
+        outData.println(indent(1) + "/// " + comment);
       }
-      outData.println("  /// </summary>");
+      outData.println(indent(1) + "/// </summary>");
     }
+
     generateCClassTop(proc, table.useName() + proc.upperFirst(), outData, false);
     if (doMSSqlStoredProcs(proc) == true)
       generateStoredProcCommand(proc, outData);
     else
       generateCommand(proc, outData);
-    generateProcFunctions(proc, table.useName() + proc.upperFirst(), outData);
-    outData.println("  }");
+    generateProcFunctions(proc, table.useName() + proc.upperFirst(), outData, true);
+    outData.println(indent(1) + "}");
   }
-  static void generateStdCode(Table table, Proc proc, PrintWriter outData, boolean firsttime)
+  static void generateStdCode(Table table, Proc proc, PrintWriter outData, boolean firsttime, boolean isLoaded)
   {
     if (firsttime == true)
       generateCClassTop(proc, table.useName(), outData, table.hasCursorStdProc());
     if (proc.comments.size() > 0)
     {
-      outData.println("    /// <summary>");
+      outData.println(indent(2) + "/// <summary>");
       for (int i = 0; i < proc.comments.size(); i++)
       {
         String comment = (String)proc.comments.elementAt(i);
-        outData.println("    /// " + comment);
+        outData.println(indent(2) + "/// " + comment);
       }
-      outData.println("    /// </summary>");
+      outData.println(indent(2) + "/// </summary>");
     }
     if (doMSSqlStoredProcs(proc) == true)
       generateStoredProcCommand(proc, outData);
     else
       generateCommand(proc, outData);
-    generateProcFunctions(proc, table.useName(), outData);
+    generateProcFunctions(proc, table.useName(), outData, isLoaded);
   }
   static String castOf(Field field)
   {
@@ -1170,8 +1705,11 @@ public class CSNetCode extends Generator
       case Field.BIGIDENTITY:
       case Field.BIGSEQUENCE:
       case Field.SHORT:
+      case Field.MONEY:
       case Field.STATUS:
         return "0";
+      case Field.UID:
+        return "Guid.Empty";
     }
     return "null";
   }
@@ -1179,7 +1717,7 @@ public class CSNetCode extends Generator
   {
     String tail = ")";
     if (field.isNull)
-      tail = ", out mRec." + field.useLowerName() + "IsNull)";
+      tail = ", out " + field.useLowerName() + "IsNull)";
     switch (field.type)
     {
       case Field.ANSICHAR:
@@ -1226,7 +1764,10 @@ public class CSNetCode extends Generator
       case Field.TLOB:
         return "GetString(" + occurence + tail;
       case Field.XML:
+      case Field.BIGXML:
         return "GetString(" + occurence + tail;
+      case Field.UID:
+        return "GetGuid(" + occurence + tail;
       case Field.USERSTAMP:
         return "GetString(" + occurence + tail;
       default:
@@ -1282,7 +1823,10 @@ public class CSNetCode extends Generator
       case Field.TLOB:
         return "String";
       case Field.XML:
+      case Field.BIGXML:
         return "String";
+      case Field.UID:
+        return "Guid";
       case Field.USERSTAMP:
         return "String";
       default:
@@ -1290,10 +1834,44 @@ public class CSNetCode extends Generator
     }
     return "dataTableType";
   }
-  static String fieldDef(Field field)
+  static String fieldDef(Field field, String temp)
+  {
+    StringBuffer maker = new StringBuffer();
+    StringBuffer temp2 = new StringBuffer(temp);
+    String result = getDataType(field, maker, temp2);
+    String set = indent(3) + "set { this." + field.useLowerName() + " = value; } \r\n";
+
+    if (useNotify)
+    {
+      set = indent(3) + "set\r\n"
+          + indent(4) + "{\r\n"
+          + indent(5) + "this." + field.useLowerName() + " = value; \r\n"
+          + indent(5) + "NotifyPropertyChanged();\r\n"
+          + indent(4) + "}\r\n";
+
+    }
+
+    if (field.isNull && result == "string")
+    {
+      set = indent(3) + "set\r\n"
+          + indent(3) + "{\r\n"
+          + indent(4) + "this." + field.useLowerName() + " = value; \r\n"
+          + indent(4) + "this." + field.useUpperName() + "IsNull = value == null ? true : false;\r\n"
+          + (useNotify ? indent(4) + "NotifyPropertyChanged();\r\n" : "")
+          + indent(3)+ "}\r\n";
+    }
+    String ret = indent(2) + "private " + result + " " + field.useLowerName() + maker.toString() + ";\r\n"
+           + indent(2) + temp2.toString() + ")]\r\n"
+           + indent(2) + "public " + result + " " + field.useUpperName() + "\r\n"
+           + indent(2) + "{ \r\n"
+           + indent(3) + "get { return this." + field.useLowerName() + ";}\r\n"
+           + set
+           + indent(2) + "}";
+    return ret;
+  }
+  static String getDataType(Field field, StringBuffer maker, StringBuffer temp)
   {
     String result;
-    String maker = "";
     switch (field.type)
     {
       case Field.ANSICHAR:
@@ -1306,19 +1884,24 @@ public class CSNetCode extends Generator
         break;
       case Field.BLOB:
         result = "JPBlob";
-        maker = " = new JPBlob()";
+        maker.append(" = new JPBlob()");
         break;
       case Field.TLOB:
         result = "string";
         break;
       case Field.XML:
+      case Field.BIGXML:
         result = "string";
+        break;
+      case Field.UID:
+        result = "Guid";
         break;
       case Field.DATE:
       case Field.DATETIME:
       case Field.TIME:
       case Field.TIMESTAMP:
         result = "DateTime";
+        temp.append(", IsVersion=true");
         break;
       case Field.BOOLEAN:
         result = "bool";
@@ -1356,11 +1939,49 @@ public class CSNetCode extends Generator
         result = "whoknows";
         break;
     }
-    return "public " + result + " " + field.useLowerName() + maker + ";"
-      + " public " + result + " " + field.useUpperName()
-      + " { get { return this." + field.useLowerName() + ";}"
-      + " set { this." + field.useLowerName() + " = value; } }";
+    return result;
   }
+
+  static String returnNullableDataType(Field field, StringBuffer maker, StringBuffer temp)
+  {
+    String datatype = getDataType(field, maker, temp);
+    if (getNullableType(field) && field.isNull)
+      datatype = datatype + "?";
+    return datatype;
+  }
+
+  static boolean getNullableType(Field field)
+  {
+    boolean nullableType;
+    switch (field.type)
+    {
+
+      case Field.MONEY:
+      case Field.DATE:
+      case Field.DATETIME:
+      case Field.TIME:
+      case Field.TIMESTAMP:
+      case Field.BOOLEAN:
+      case Field.BYTE:
+      case Field.STATUS:
+      case Field.DOUBLE:
+      case Field.FLOAT:
+      case Field.INT:
+      case Field.SEQUENCE:
+      case Field.IDENTITY:
+      case Field.LONG:
+      case Field.BIGSEQUENCE:
+      case Field.BIGIDENTITY:
+      case Field.SHORT:
+        nullableType = true;
+        break;
+      default:
+        nullableType = false;
+        break;
+  }
+    return nullableType;
+  }
+
   static String fieldCastNo(Field field)
   {
     String result;
@@ -1382,7 +2003,11 @@ public class CSNetCode extends Generator
         result = "string";
         break;
       case Field.XML:
+      case Field.BIGXML:
         result = "string";
+        break;
+      case Field.UID:
+        result = "Guid";
         break;
       case Field.DATE:
       case Field.DATETIME:
@@ -1451,7 +2076,11 @@ public class CSNetCode extends Generator
       case Field.BIGIDENTITY:
         return "longint";
       case Field.CHAR:
-        return "varchar(" + String.valueOf(field.length) + ")";
+        if (field.length > 8000)
+        {
+          return field.name + " varchar(MAX)";
+        }
+        return field.name + " varchar(" + String.valueOf(field.length) + ")";
       case Field.ANSICHAR:
         return "char(" + String.valueOf(field.length) + ")";
       case Field.DATE:
@@ -1472,14 +2101,30 @@ public class CSNetCode extends Generator
       case Field.TLOB:
         return "text";
       case Field.XML:
+      case Field.BIGXML:
         return "xml";
+      case Field.UID:
+        return "uniqueidentifier";
       case Field.MONEY:
-        return "decimal";
+        return "money";
       case Field.USERSTAMP:
-        return "varchar(24)";
+        return "varchar(50)";
       default:
         break;
     }
     return "unknown";
+  }
+  static String indent(int lvl)
+  {
+    if (lvl == 0)
+    {
+      return "";
+    }
+    String ind = "";
+    for (int i = 0; i < lvl; i++)
+    {
+      ind = ind + "    ";
+    }
+    return ind;
   }
 }
