@@ -320,6 +320,7 @@ public class Lite3DDL extends Generator
     String notNull = (field.isNull == true) ? "" : " NOT NULL";
     String primeKey = "";
     String autoInc = "";
+    String defaultValue = "";
     if (field.isSequence && field.isPrimaryKey)
     {
       primeKey = " PRIMARY KEY";
@@ -334,17 +335,27 @@ public class Lite3DDL extends Generator
       case Field.LONG:
       case Field.IDENTITY:
       case Field.SEQUENCE:
+      case Field.BIGIDENTITY:
+      case Field.BIGSEQUENCE:
         work = "INTEGER"; 
         break;
-      case Field.CHAR:
+      case Field.BOOLEAN:
+        work = "BOOLEAN";
+        break;
       case Field.ANSICHAR:
-      case Field.DATE:
-      case Field.DATETIME:
-      case Field.TIME:
-      case Field.TIMESTAMP:
       case Field.TLOB:
-      case Field.USERSTAMP:
+      case Field.XML:
+      case Field.BIGXML:
         work = "TEXT";
+        break;
+      case Field.CHAR:
+        work =  " VARCHAR(" + String.valueOf(field.length) + ")";
+        break;
+      case Field.USERSTAMP:
+        work = " VARCHAR(50)";
+        break;
+      case Field.UID:
+        work = " VARCHAR(36)";
         break;
       case Field.FLOAT:
       case Field.DOUBLE:
@@ -352,9 +363,21 @@ public class Lite3DDL extends Generator
         work = "REAL";
         break;
       case Field.BLOB:
-        work = "blob";
+        work = "BLOB";
+        break;
+      case Field.DATE:
+        work = "DATE";
+        break;
+      case Field.DATETIME:
+        work = "DATETIME";
+        break;
+      case Field.TIME:
+        work = "TIME";
+        break;
+      case Field.TIMESTAMP:
+        work = "DATETIME";
         break;
     }
-    return work + notNull + primeKey + autoInc;
+    return work + notNull + defaultValue + primeKey + autoInc;
   }
 }

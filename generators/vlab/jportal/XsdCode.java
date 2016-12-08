@@ -29,8 +29,7 @@ class Dataset
   public Vector<Table> tables;
   public String connectionStringName;
   public String connectionStringProperty;
-  public Dataset(String name, String connectionStringName,
-      String connectionStringProperty)
+  public Dataset(String name, String connectionStringName, String connectionStringProperty)
   {
     this.name = name;
     this.connectionStringName = connectionStringName;
@@ -42,7 +41,7 @@ class Dataset
 public class XsdCode extends Generator
 {
   protected static Hashtable<?, ?> projectFlagsVector = null;
-  protected static Vector<Flag>     flagsVector;
+  protected static Vector<Flag> flagsVector;
   public static void main(String args[])
   {
     try
@@ -57,17 +56,18 @@ public class XsdCode extends Generator
         generate(database, "", outLog);
       }
       outLog.flush();
-    } catch (Exception e)
+    }
+    catch (Exception e)
     {
       e.printStackTrace();
     }
   }
   static boolean mSSqlStoredProcs;
   static boolean tableAdapters;
-  static String  dataSet;
-  static String  connectionString;
-  static String  connectionProperty;
-  static String  namespace;
+  static String dataSet;
+  static String connectionString;
+  static String connectionProperty;
+  static String namespace;
   private static void flagDefaults()
   {
     mSSqlStoredProcs = false;
@@ -83,18 +83,14 @@ public class XsdCode extends Generator
     {
       flagsVector = new Vector<Flag>();
       flagDefaults();
-      flagsVector.addElement(new Flag("mssql storedprocs", new Boolean(
-          mSSqlStoredProcs), "Generate MSSql Stored Procedures"));
-      flagsVector.addElement(new Flag("tableAdapters", new Boolean(
-          tableAdapters), "Generate Table Adapter Code"));
+      flagsVector.addElement(new Flag("mssql storedprocs", new Boolean(mSSqlStoredProcs), "Generate MSSql Stored Procedures"));
+      flagsVector.addElement(new Flag("tableAdapters", new Boolean(tableAdapters), "Generate Table Adapter Code"));
       flagsVector.addElement(new Flag("dataset", dataSet, "DataSet Name"));
-      flagsVector.addElement(new Flag("connectionstring", connectionString,
-          "Connection String"));
-      flagsVector.addElement(new Flag("connectionproperty", connectionProperty,
-          "Connection Property"));
+      flagsVector.addElement(new Flag("connectionstring", connectionString, "Connection String"));
+      flagsVector.addElement(new Flag("connectionproperty", connectionProperty, "Connection Property"));
       flagsVector.addElement(new Flag("namespace", namespace, "Namespace"));
-			flagsVector.addElement(new Flag("projectnamespace", namespace, "Project Namespace"));
-		}
+      flagsVector.addElement(new Flag("projectnamespace", namespace, "Project Namespace"));
+    }
     return flagsVector;
   }
 
@@ -105,18 +101,16 @@ public class XsdCode extends Generator
 
   public static String documentation()
   {
-    return "Generate Xsd Code for NET" + "\r\nDATABASE name FLAGS flag"
-        + "\r\n- \"mssql storedprocs\" generate stored procedures for MSSql"
+    return "Generate Xsd Code for NET" + "\r\nDATABASE name FLAGS flag" + "\r\n- \"mssql storedprocs\" generate stored procedures for MSSql"
         + "\r\n- \"tableAdapters\" generate table adapter code";
   }
 
   private static Hashtable<String, Dataset> datasets;
 
-  static void markDatasets(Table table, String option,
-      String connectionStringName, String connectionStringProperty)
+  static void markDatasets(Table table, String option, String connectionStringName, String connectionStringProperty)
   {
     String sets = option.substring(8);
-		boolean found;
+    boolean found;
     int position;
 
     position = sets.indexOf(" ");
@@ -138,26 +132,25 @@ public class XsdCode extends Generator
       Dataset dataset = (Dataset) datasets.get(set);
       if (dataset == null)
       {
-        dataset = new Dataset(curr, connectionStringName,
-            connectionStringProperty);
+        dataset = new Dataset(curr, connectionStringName, connectionStringProperty);
         datasets.put(set, dataset);
       }
-			// Only add the table if it is not already in the data set
-			found = false;
-			for (int i = 0; i < dataset.tables.size(); i++)
-			{
-				Table theTable;
+      // Only add the table if it is not already in the data set
+      found = false;
+      for (int i = 0; i < dataset.tables.size(); i++)
+      {
+        Table theTable;
 
-				theTable = (Table)dataset.tables.elementAt(i);
-				if (theTable.name == table.name)
-				{
-					found = true;
-					break;
-				}
-			}
+        theTable = (Table) dataset.tables.elementAt(i);
+        if (theTable.name == table.name)
+        {
+          found = true;
+          break;
+        }
+      }
 
-			if (!found)
-				dataset.tables.addElement(table);
+      if (!found)
+        dataset.tables.addElement(table);
       if (n <= 0)
         break;
     }
@@ -171,7 +164,8 @@ public class XsdCode extends Generator
     if (flagsVector != null)
     {
       mSSqlStoredProcs = toBoolean(((Flag) flagsVector.elementAt(0)).value);
-    } else
+    }
+    else
       flagDefaults();
     for (int i = 0; i < database.flags.size(); i++)
     {
@@ -187,38 +181,36 @@ public class XsdCode extends Generator
       outLog.println(" (tableAdapters)");
   }
 
-  public static void generate(Database database, String output,
-			PrintWriter outLog)
+  public static void generate(Database database, String output, PrintWriter outLog)
   {
     setFlags(database, outLog);
     datasets = new Hashtable<String, Dataset>();
 
-		if (projectFlagsVector != null)
-		{
-			if (projectFlagsVector.get ("Generate Xsd Code for NET:dataset") != null)
-			{
-				String dataSetName;
-				String connectionStringName = "";
-				String connectionStringProperty = "";
+    if (projectFlagsVector != null)
+    {
+      if (projectFlagsVector.get("Generate Xsd Code for NET:dataset") != null)
+      {
+        String dataSetName;
+        String connectionStringName = "";
+        String connectionStringProperty = "";
 
-				dataSetName = projectFlagsVector.get("Generate Xsd Code for NET:dataset").toString();
-				if (projectFlagsVector.get("Generate Xsd Code for NET:connectionstring") != null)
-					connectionStringName = projectFlagsVector.get("Generate Xsd Code for NET:connectionstring").toString();
-				if (projectFlagsVector.get("Generate Xsd Code for NET:connectionproperty") != null)
-					connectionStringProperty = projectFlagsVector.get("Generate Xsd Code for NET:connectionproperty").toString();
+        dataSetName = projectFlagsVector.get("Generate Xsd Code for NET:dataset").toString();
+        if (projectFlagsVector.get("Generate Xsd Code for NET:connectionstring") != null)
+          connectionStringName = projectFlagsVector.get("Generate Xsd Code for NET:connectionstring").toString();
+        if (projectFlagsVector.get("Generate Xsd Code for NET:connectionproperty") != null)
+          connectionStringProperty = projectFlagsVector.get("Generate Xsd Code for NET:connectionproperty").toString();
 
-				Dataset dataset = new Dataset(dataSetName, connectionStringName, connectionStringProperty);
-				datasets.put(dataSetName.toLowerCase(), dataset);
+        Dataset dataset = new Dataset(dataSetName, connectionStringName, connectionStringProperty);
+        datasets.put(dataSetName.toLowerCase(), dataset);
 
-				for (int i = 0; i < database.tables.size(); i++)
-				{
-					Table table = (Table)database.tables.elementAt(i);
+        for (int i = 0; i < database.tables.size(); i++)
+        {
+          Table table = (Table) database.tables.elementAt(i);
 
-					dataset.tables.addElement(table);
-				}
-			}
-		}
-
+          dataset.tables.addElement(table);
+        }
+      }
+    }
 
     for (int i = 0; i < database.tables.size(); i++)
     {
@@ -250,8 +242,7 @@ public class XsdCode extends Generator
             connectionStringName = option.substring(position1 + 1, position2);
             connectionStringProperty = option.substring(position2 + 1);
           }
-          markDatasets(table, option, connectionStringName,
-              connectionStringProperty);
+          markDatasets(table, option, connectionStringName, connectionStringProperty);
         }
       }
     }
@@ -270,88 +261,70 @@ public class XsdCode extends Generator
     }
   }
 
-	static void genDataset(Dataset dataset, String output, PrintWriter outLog)
+  static void genDataset(Dataset dataset, String output, PrintWriter outLog)
   {
     try
     {
-      //if (output.startsWith(".") || output.startsWith(".."))
-      //  output = System.IO.Directory.GetCurrentDirectory() + "\\" + output;
+      // if (output.startsWith(".") || output.startsWith(".."))
+      // output = System.IO.Directory.GetCurrentDirectory() + "\\" + output;
       outLog.println("Code: " + output + dataset.name + ".xsd");
-      OutputStream outFile = new FileOutputStream(output + dataset.name
-          + ".xsd");
+      OutputStream outFile = new FileOutputStream(output + dataset.name + ".xsd");
       try
       {
         PrintWriter outData = new PrintWriter(outFile);
         try
         {
-					String namespace = "http://tempuri.org/";
+          String namespace = "http://tempuri.org/";
 
-					if (projectFlagsVector != null)
-					{
-						if (projectFlagsVector.get("Generate Xsd Code for NET:namespace") != null)
-							namespace = projectFlagsVector.get("Generate Xsd Code for NET:namespace").toString();
-					}
+          if (projectFlagsVector != null)
+          {
+            if (projectFlagsVector.get("Generate Xsd Code for NET:namespace") != null)
+              namespace = projectFlagsVector.get("Generate Xsd Code for NET:namespace").toString();
+          }
 
-					outData.println("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
-					outData.println("<xs:schema");
-					outData.println(" id=\"" + dataset.name + "\"");
-					outData.println(" targetNamespace=\"" + namespace
-						+ dataset.name + ".xsd\"");
-					outData.println(" elementFormDefault=\"qualified\"");
-					outData.println(" attributeFormDefault=\"qualified\"");
-					outData.println(" xmlns=\"" + namespace + dataset.name
-						+ ".xsd\"");
-					outData.println(" xmlns:mstns=\"" + namespace + dataset.name
-						+ ".xsd\"");
-					outData.println(" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
-          outData
-              .println(" xmlns:msdata=\"urn:schemas-microsoft-com:xml-msdata\"");
-          outData
-              .println(" xmlns:msprop=\"urn:schemas-microsoft-com:xml-msprop\"");
+          outData.println("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+          outData.println("<xs:schema");
+          outData.println(" id=\"" + dataset.name + "\"");
+          outData.println(" targetNamespace=\"" + namespace + dataset.name + ".xsd\"");
+          outData.println(" elementFormDefault=\"qualified\"");
+          outData.println(" attributeFormDefault=\"qualified\"");
+          outData.println(" xmlns=\"" + namespace + dataset.name + ".xsd\"");
+          outData.println(" xmlns:mstns=\"" + namespace + dataset.name + ".xsd\"");
+          outData.println(" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
+          outData.println(" xmlns:msdata=\"urn:schemas-microsoft-com:xml-msdata\"");
+          outData.println(" xmlns:msprop=\"urn:schemas-microsoft-com:xml-msprop\"");
           outData.println(" >");
           outData.println("  " + "<xs:annotation>");
           outData.println("    " + "<xs:appinfo");
-          outData.println("    "
-              + "  source=\"urn:schemas-microsoft-com:xml-msdatasource\"");
+          outData.println("    " + "  source=\"urn:schemas-microsoft-com:xml-msdatasource\"");
           outData.println("    " + "  >");
           outData.println("      " + "<DataSource");
           outData.println("      " + "  DefaultConnectionIndex=\"0\"");
-          outData.println("      "
-              + "  FunctionsComponentName=\"QueriesTableAdapter\"");
-          outData.println("      "
-              + "  Modifier=\"AutoLayout, AnsiClass, Class, Public\"");
-          outData.println("      "
-              + "  SchemaSerializationMode=\"IncludeSchema\"");
-          outData.println("      "
-              + "  xmlns=\"urn:schemas-microsoft-com:xml-msdatasource\"");
+          outData.println("      " + "  FunctionsComponentName=\"QueriesTableAdapter\"");
+          outData.println("      " + "  Modifier=\"AutoLayout, AnsiClass, Class, Public\"");
+          outData.println("      " + "  SchemaSerializationMode=\"IncludeSchema\"");
+          outData.println("      " + "  xmlns=\"urn:schemas-microsoft-com:xml-msdatasource\"");
           outData.println("      " + "  >");
           if (tableAdapters == true)
           {
             outData.println("        " + "<Connections>");
             outData.println("          " + "<Connection");
-            outData.println("          "
-                + "  AppSettingsObjectName=\"Settings\"");
-            outData.println("          " + "  AppSettingsPropertyName=\""
-                + dataset.connectionStringName + "\"");
+            outData.println("          " + "  AppSettingsObjectName=\"Settings\"");
+            outData.println("          " + "  AppSettingsPropertyName=\"" + dataset.connectionStringName + "\"");
             outData.println("          " + "  ConnectionStringObject=\"\"");
             outData.println("          " + "  IsAppSettingsProperty=\"True\"");
             outData.println("          " + "  Modifier=\"Assembly\"");
-            outData.println("          " + "  Name=\""
-                + dataset.connectionStringName + " (Settings)\"");
+            outData.println("          " + "  Name=\"" + dataset.connectionStringName + " (Settings)\"");
             outData.println("          " + "  ParameterPrefix=\"@\"");
-            outData.println("          " + "  PropertyReference=\""
-                + dataset.connectionStringProperty + "\"");
-            outData.println("          "
-                + "  Provider = \"System.Data.SqlClient\"");
+            outData.println("          " + "  PropertyReference=\"" + dataset.connectionStringProperty + "\"");
+            outData.println("          " + "  Provider = \"System.Data.SqlClient\"");
             outData.println("          " + "  />");
             outData.println("        " + "</Connections>");
             outData.println("        " + "<Tables>");
             for (int i = 0; i < dataset.tables.size(); i++)
             {
               Table table = (Table) dataset.tables.elementAt(i);
-              genDatasetTableAdapter(dataset.connectionStringName,
-                  dataset.connectionStringProperty, dataset, table, output,
-                  outData, outLog);
+              genDatasetTableAdapter(dataset.connectionStringName, dataset.connectionStringProperty, dataset, table, output, outData, outLog);
             }
             outData.println("        " + "</Tables>");
             outData.println("        " + "<Sources>");
@@ -360,8 +333,7 @@ public class XsdCode extends Generator
           outData.println("      " + "</DataSource>");
           outData.println("    " + "</xs:appinfo>");
           outData.println("  " + "</xs:annotation>");
-          outData.println("  " + "<xs:element name=\"" + dataset.name
-              + "\" msdata:IsDataSet=\"true\">");
+          outData.println("  " + "<xs:element name=\"" + dataset.name + "\" msdata:IsDataSet=\"true\">");
           outData.println("    " + "<xs:complexType>");
           outData.println("      " + "<xs:choice maxOccurs=\"unbounded\">");
           for (int i = 0; i < dataset.tables.size(); i++)
@@ -405,9 +377,9 @@ public class XsdCode extends Generator
                 /*
                  * outData.println(" " + "<msdata:Relationship");
                  * outData.println(" " + "name=\"" + linkTable.name + "_" +
-                 * table.name + "\""); outData.println(" " + "msdata:parent=\"" +
-                 * table.name + "\""); outData.println(" " + "msdata:child=\"" +
-                 * linkTable.name + "\""); outData.print (" " +
+                 * table.name + "\""); outData.println(" " + "msdata:parent=\""
+                 * + table.name + "\""); outData.println(" " + "msdata:child=\""
+                 * + linkTable.name + "\""); outData.print (" " +
                  * "msdata:parentkey=\"");
                  */
 
@@ -427,16 +399,13 @@ public class XsdCode extends Generator
                   Key key = (Key) linkTable.keys.elementAt(k);
                   if (key.isPrimary)
                   {
-                    outData.println("        " + "refer=\"" + linkTable.name
-                        + key.name + "\"");
+                    outData.println("        " + "refer=\"" + linkTable.name + key.name + "\"");
                     break;
                   }
                 }
 
-                outData.println("        " + "msdata:parent=\"" + table.name
-                    + "\"");
-                outData.println("        " + "msdata:child=\"" + linkTable.name
-                    + "\"");
+                outData.println("        " + "msdata:parent=\"" + table.name + "\"");
+                outData.println("        " + "msdata:child=\"" + linkTable.name + "\"");
                 outData.print("        " + "msdata:parentkey=\"");
                 for (int f = 0; f < link.fields.size(); f++)
                 {
@@ -462,34 +431,20 @@ public class XsdCode extends Generator
                   }
                 }
                 outData.println("\"");
-                outData.println("        "
-                    + "msprop:Generator_UserRelationName=\"" + linkTable.name
-                    + "_" + table.name + "\"");
-                outData.println("        "
-                    + "msprop:Generator_RelationVarName=\"relation"
-                    + linkTable.name + "_" + table.name + "\"");
-                outData.println("        "
-                    + "msprop:Generator_UserChildTable=\"" + linkTable.name
-                    + "\"");
-                outData
-                    .println("        " + "msprop:Generator_UserParentTable=\""
-                        + table.name + "\"");
-                outData.println("        "
-                    + "msprop:Generator_ParentPropName=\"" + table.name
-                    + "Row\"");
-                outData.println("        "
-                    + "msprop:Generator_ChildPropName=\"Get" + linkTable.name
-                    + "Rows\"");
+                outData.println("        " + "msprop:Generator_UserRelationName=\"" + linkTable.name + "_" + table.name + "\"");
+                outData.println("        " + "msprop:Generator_RelationVarName=\"relation" + linkTable.name + "_" + table.name + "\"");
+                outData.println("        " + "msprop:Generator_UserChildTable=\"" + linkTable.name + "\"");
+                outData.println("        " + "msprop:Generator_UserParentTable=\"" + table.name + "\"");
+                outData.println("        " + "msprop:Generator_ParentPropName=\"" + table.name + "Row\"");
+                outData.println("        " + "msprop:Generator_ChildPropName=\"Get" + linkTable.name + "Rows\"");
                 outData.println("        " + "msdata:UpdateeRule=\"Cascade\"");
                 outData.println("        " + "msdata:DeleteRule=\"Cascade\"");
                 outData.println("      " + "  >");
 
-                outData.println("      " + "<xs:selector xpath=\".//mstns:"
-                    + table.name + "\" />");
+                outData.println("      " + "<xs:selector xpath=\".//mstns:" + table.name + "\" />");
 
                 for (int k = 0; k < link.fields.size(); k++)
-                  outData.println("      " + "<xs:field xpath=\"mstns:"
-                      + ((String) link.fields.elementAt(k)) + "\" />");
+                  outData.println("      " + "<xs:field xpath=\"mstns:" + ((String) link.fields.elementAt(k)) + "\" />");
 
                 outData.println("  " + "</xs:keyref>");
               }
@@ -497,53 +452,54 @@ public class XsdCode extends Generator
           }
           /*
            * if (hasLinks == true) { //outData.println(" " + "</xs:appinfo>");
-           * //outData.println(" " + "</xs:annotation>"); outData.println(" " + "</xs:keyref>"); }
+           * //outData.println(" " + "</xs:annotation>"); outData.println(" " +
+           * "</xs:keyref>"); }
            */
           outData.println("  " + "</xs:element>");
           outData.println("</xs:schema>");
-        } finally
+        }
+        finally
         {
           outData.flush();
         }
-      } finally
+      }
+      finally
       {
         outFile.close();
-				
-				try
-				{
-					Runtime runtime = Runtime.getRuntime();
-					String namespace = "";
 
-					File dest = new File(output, dataset.name
-						+ ".Designer.cs");
-					dest.delete();
+        try
+        {
+          Runtime runtime = Runtime.getRuntime();
+          String namespace = "";
 
-					File source = new File("c:\\Temp", "");
-					source.mkdir();
+          File dest = new File(output, dataset.name + ".Designer.cs");
+          dest.delete();
 
-					source = new File("c:\\Temp", dataset.name
-						+ ".cs");
+          File source = new File("c:\\Temp", "");
+          source.mkdir();
 
-					if (projectFlagsVector != null)
-					{
-						if (projectFlagsVector.get("Generate Xsd Code for NET:projectnamespace") != null)
-							namespace = "/namespace:" + projectFlagsVector.get("Generate Xsd Code for NET:projectnamespace").toString();
-					}
+          source = new File("c:\\Temp", dataset.name + ".cs");
 
-					Process process = runtime.exec("xsd.exe \"" + output + dataset.name
-						+ ".xsd\" /outputdir:C:\\Temp /dataset " + namespace);
-					process.waitFor();
+          if (projectFlagsVector != null)
+          {
+            if (projectFlagsVector.get("Generate Xsd Code for NET:projectnamespace") != null)
+              namespace = "/namespace:" + projectFlagsVector.get("Generate Xsd Code for NET:projectnamespace").toString();
+          }
 
-					source.renameTo(dest);
-				}
-				catch (Exception e)
-				{
-				}
+          Process process = runtime.exec("xsd.exe \"" + output + dataset.name + ".xsd\" /outputdir:C:\\Temp /dataset " + namespace);
+          process.waitFor();
+
+          source.renameTo(dest);
+        }
+        catch (Exception e)
+        {
+        }
       }
-    } catch (IOException e1)
+    }
+    catch (IOException e1)
     {
-			outLog.println("Cannot write to " + output + dataset.name + ".xsd. Please check it out or switch off its read-only attribute");
-		}
+      outLog.println("Cannot write to " + output + dataset.name + ".xsd. Please check it out or switch off its read-only attribute");
+    }
   }
 
   private static Table getTable(Dataset dataset, String name)
@@ -557,46 +513,45 @@ public class XsdCode extends Generator
     return null;
   }
 
-  private static void genProcedure(Proc proc, PrintWriter outData,
-      String connectionStringName, String connectionStringProperty, Table table)
+  private static void genProcedure(Proc proc, PrintWriter outData, String connectionStringName, String connectionStringProperty, Table table)
   {
     String commandType = "Text";
-		boolean found;
+    boolean found;
 
     if (table.isStoredProc)
       commandType = "StoredProcedure";
 
     outData.println("             " + "<SelectCommand>");
-    outData.println("               " + "<DbCommand CommandType=\""
-        + commandType + "\" ModifiedByUser=\"True\">");
+    outData.println("               " + "<DbCommand CommandType=\"" + commandType + "\" ModifiedByUser=\"True\">");
     outData.print("                 " + "<CommandText>");
     if (!table.isStoredProc)
       outData.println("");
 
-		// Go through the procedure options to determine the stored procedure name from there
-		// If the option is not found default to the content of the stored procedure
-		found = false;
-		for (int i = 0; i < proc.options.size(); i++)
-		{
-			String option = (String)proc.options.elementAt(i);
-			if (option.toLowerCase().startsWith("storedproc:"))
-			{
-				outData.print(option.substring(11));
-				found = true;
-				break;
-			}
-		}
+    // Go through the procedure options to determine the stored procedure name
+    // from there
+    // If the option is not found default to the content of the stored procedure
+    found = false;
+    for (int i = 0; i < proc.options.size(); i++)
+    {
+      String option = (String) proc.options.elementAt(i);
+      if (option.toLowerCase().startsWith("storedproc:"))
+      {
+        outData.print(option.substring(11));
+        found = true;
+        break;
+      }
+    }
 
-		if (!found)
-		{
-			for (int i = 0; i < proc.lines.size(); i++)
-			{
-				String line = ((Line) proc.lines.elementAt(i)).line.replace(':', '@');
-				outData.print(line);
-				if (!table.isStoredProc)
-					outData.println("");
-			}
-		}
+    if (!found)
+    {
+      for (int i = 0; i < proc.lines.size(); i++)
+      {
+        String line = ((Line) proc.lines.elementAt(i)).line.replace(':', '@');
+        outData.print(line);
+        if (!table.isStoredProc)
+          outData.println("");
+      }
+    }
 
     outData.println("                 " + "</CommandText>");
     outData.println("                 " + "<Parameters>");
@@ -610,25 +565,18 @@ public class XsdCode extends Generator
       // Field field = pair.field;
       Field field = (Field) proc.inputs.elementAt(i);
       outData.println("                 " + "<Parameter");
-      outData.println("                 " + "  AllowDbNull=\"" + adtNull(field)
-          + "\"");
+      outData.println("                 " + "  AllowDbNull=\"" + adtNull(field) + "\"");
       outData.println("                 " + "  AutogeneratedName=\"\"");
       outData.println("                 " + "  DataSourceName=\"\"");
-      outData.println("                 " + "  DbType=\"" + adtDbType(field)
-          + "\"");
+      outData.println("                 " + "  DbType=\"" + adtDbType(field) + "\"");
       outData.println("                 " + "  Direction=\"Input\"");
-      outData.println("                 " + "  ParameterName=\"@"
-          + field.useName() + "\"");
-      outData.println("                 " + "  Precision=\"" + field.precision
-          + "\"");
-      outData.println("                 " + "  ProviderType=\""
-          + adtProviderType(field) + "\"");
+      outData.println("                 " + "  ParameterName=\"@" + field.useName() + "\"");
+      outData.println("                 " + "  Precision=\"" + field.precision + "\"");
+      outData.println("                 " + "  ProviderType=\"" + adtProviderType(field) + "\"");
       outData.println("                 " + "  Scale=\"" + field.scale + "\"");
       outData.println("                 " + "  Size=\"" + field.length + "\"");
-      outData.println("                 " + "  SourceColumn=\""
-          + field.useName() + "\"");
-      outData.println("                 " + "  SourceColumnNullMapping=\""
-          + adtNull(field) + "\"");
+      outData.println("                 " + "  SourceColumn=\"" + field.useName() + "\"");
+      outData.println("                 " + "  SourceColumnNullMapping=\"" + adtNull(field) + "\"");
       outData.println("                 " + "  SourceVersion=\"Original\"");
       outData.println("                 " + "  />");
     }
@@ -638,26 +586,20 @@ public class XsdCode extends Generator
     outData.println("             " + "</SelectCommand>");
   }
 
-  static void genDatasetTableAdapter(String connectionStringName,
-      String connectionStringProperty, Dataset dataset, Table table,
-      String output, PrintWriter outData, PrintWriter outLog)
+  static void genDatasetTableAdapter(String connectionStringName, String connectionStringProperty, Dataset dataset, Table table, String output,
+      PrintWriter outData, PrintWriter outLog)
   {
     Proc defaultProc = null;
     String defaultProcName = "Fill";
     String defaultMethodName = "GetData";
 
     outData.println("         " + "<TableAdapter");
-    outData.println("         "
-        + "  BaseClass=\"System.ComponentModel.Component\"");
-    outData.println("         "
-        + "  DataAccessorModifier=\"AutoLayout, AnsiClass, Class, Public\"");
-    outData.println("         " + "  DataAccessorName=\"" + table.name
-        + "TableAdapter\"");
-    outData.println("         " + "  GeneratorDataComponentClassName=\""
-        + table.name + "TableAdapter\"");
+    outData.println("         " + "  BaseClass=\"System.ComponentModel.Component\"");
+    outData.println("         " + "  DataAccessorModifier=\"AutoLayout, AnsiClass, Class, Public\"");
+    outData.println("         " + "  DataAccessorName=\"" + table.name + "TableAdapter\"");
+    outData.println("         " + "  GeneratorDataComponentClassName=\"" + table.name + "TableAdapter\"");
     outData.println("         " + "  Name=\"" + table.name + "\"");
-    outData.println("         " + "  UserDataComponentName=\"" + table.name
-        + "TableAdapter\"");
+    outData.println("         " + "  UserDataComponentName=\"" + table.name + "TableAdapter\"");
     outData.println("         " + "  >");
     outData.println("           " + "<MainSource>");
 
@@ -692,39 +634,29 @@ public class XsdCode extends Generator
     }
 
     outData.println("             " + "<DbSource");
-    outData.println("             " + "  ConnectionRef=\""
-        + connectionStringName + " (Settings)\"");
+    outData.println("             " + "  ConnectionRef=\"" + connectionStringName + " (Settings)\"");
 
     if (table.isStoredProc)
       outData.println("             " + "  DbObjectType=\"StoredProcedure\"");
     else
       outData.println("             " + "  DbObjectType=\"Unknown\"");
     outData.println("             " + "  FillMethodModifier=\"Public\"");
-    outData.println("             " + "  FillMethodName=\"" + defaultProcName
-        + "\"");
+    outData.println("             " + "  FillMethodName=\"" + defaultProcName + "\"");
     outData.println("             " + "  GenerateMethods=\"Both\"");
     outData.println("             " + "  GenerateShortCommands=\"True\"");
-    outData.println("             " + "  GeneratorGetMethodName=\""
-        + defaultMethodName + "\"");
-    outData.println("             " + "  GeneratorSourceName=\""
-        + defaultProcName + "\"");
+    outData.println("             " + "  GeneratorGetMethodName=\"" + defaultMethodName + "\"");
+    outData.println("             " + "  GeneratorSourceName=\"" + defaultProcName + "\"");
     outData.println("             " + "  GetMethodModifier=\"Public\"");
-    outData.println("             " + "  GetMethodName=\"" + defaultMethodName
-        + "\"");
+    outData.println("             " + "  GetMethodName=\"" + defaultMethodName + "\"");
     outData.println("             " + "  QueryType=\"Rowset\"");
-    outData
-        .println("             "
-            + "  ScalarCallRetval=\"System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\"");
+    outData.println("             " + "  ScalarCallRetval=\"System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\"");
     outData.println("             " + "  UseOptimisticConcurrency=\"False\"");
-    outData.println("             " + "  UserGetMethodName=\""
-        + defaultMethodName + "\"");
-    outData.println("             " + "  UserSourceName=\"" + defaultProcName
-        + "\"");
+    outData.println("             " + "  UserGetMethodName=\"" + defaultMethodName + "\"");
+    outData.println("             " + "  UserSourceName=\"" + defaultProcName + "\"");
     outData.println("             " + "  >");
 
     if (defaultProc != null)
-      genProcedure(defaultProc, outData, connectionStringName,
-          connectionStringProperty, table);
+      genProcedure(defaultProc, outData, connectionStringName, connectionStringProperty, table);
 
     Proc proc = new Proc();
     table.buildDeleteOne(proc);
@@ -747,8 +679,7 @@ public class XsdCode extends Generator
       table.buildSelectAll(proc, false, false, true);
       placeHolder = genCommand(proc);
 
-      genCommand(table, placeHolder, "SelectCommand", commandType, outData,
-          outLog);
+      genCommand(table, placeHolder, "SelectCommand", commandType, outData, outLog);
       proc = new Proc();
       table.buildUpdate(proc);
       placeHolder = genCommand(proc);
@@ -762,10 +693,8 @@ public class XsdCode extends Generator
     {
       Field field = (Field) table.fields.elementAt(f);
       outData.println("             " + "<Mapping");
-      outData
-          .println("             " + "  SourceColumn=\"" + field.name + "\"");
-      outData.println("             " + "  DataSetColumn=\"" + field.useName()
-          + "\"");
+      outData.println("             " + "  SourceColumn=\"" + field.name + "\"");
+      outData.println("             " + "  DataSetColumn=\"" + field.useName() + "\"");
       outData.println("             " + "  />");
     }
     outData.println("           " + "</Mappings>");
@@ -794,8 +723,7 @@ public class XsdCode extends Generator
           continue;
       }
 
-      if (proc.name == "Insert" || proc.name == "Update"
-          || proc.name == "SelectOne" || proc.name == "")
+      if (proc.name == "Insert" || proc.name == "Update" || proc.name == "SelectOne" || proc.name == "")
         continue;
 
       procName = proc.name;
@@ -808,35 +736,20 @@ public class XsdCode extends Generator
       if (proc.name.toLowerCase().startsWith("fill"))
         methodName = proc.name.substring(4);
 
-      outData
-          .println("           "
-              + "<DbSource ConnectionRef=\""
-              + connectionStringName
-              + " (Settings)\" DbObjectName=\""
-              + table.name
-              + "\" DbObjectType=\"Table\" FillMethodModifier=\"Public\" FillMethodName=\""
-              + proc.name
-              + "\" GenerateMethods=\"Both\" GenerateShortCommands=\"True\" GeneratorGetMethodName=\"GetData"
-              + methodName
-              + "\" GeneratorSourceName=\""
-              + proc.name
-              + "\" GetMethodModifier=\"Public\" GetMethodName=\"GetData"
-              + methodName
-              + "\" QueryType=\""
-              + queryType
-              + "\" ScalarCallRetval=\"System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\" UseOptimisticConcurrency=\"False\" UserGetMethodName=\"GetData"
-              + methodName + "" + procName + "\" UserSourceName=\"" + procName
-              + "\">");
-      genProcedure(proc, outData, connectionStringName,
-          connectionStringProperty, table);
+      outData.println("           " + "<DbSource ConnectionRef=\"" + connectionStringName + " (Settings)\" DbObjectName=\"" + table.name
+          + "\" DbObjectType=\"Table\" FillMethodModifier=\"Public\" FillMethodName=\"" + proc.name
+          + "\" GenerateMethods=\"Both\" GenerateShortCommands=\"True\" GeneratorGetMethodName=\"GetData" + methodName + "\" GeneratorSourceName=\"" + proc.name
+          + "\" GetMethodModifier=\"Public\" GetMethodName=\"GetData" + methodName + "\" QueryType=\"" + queryType
+          + "\" ScalarCallRetval=\"System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\" UseOptimisticConcurrency=\"False\" UserGetMethodName=\"GetData"
+          + methodName + "" + procName + "\" UserSourceName=\"" + procName + "\">");
+      genProcedure(proc, outData, connectionStringName, connectionStringProperty, table);
       outData.println("           " + "</DbSource>");
     }
     outData.println("           " + "</Sources>");
     outData.println("         " + "</TableAdapter>");
   }
 
-  static void genCommand(Table table, PlaceHolder placeHolder, String name,
-      String commandType, PrintWriter outData, PrintWriter outLog)
+  static void genCommand(Table table, PlaceHolder placeHolder, String name, String commandType, PrintWriter outData, PrintWriter outLog)
   {
     Vector<Field> fields = new Vector<Field>();
     String line;
@@ -1034,13 +947,13 @@ public class XsdCode extends Generator
       {
         for (int i = 0; i < placeHolder.pairs.size(); i++)
         {
-          PlaceHolderPairs pair = (PlaceHolderPairs) placeHolder.pairs
-              .elementAt(i);
+          PlaceHolderPairs pair = (PlaceHolderPairs) placeHolder.pairs.elementAt(i);
           Field field = pair.field;
           fields.addElement(field);
         }
       }
-    } else
+    }
+    else
     {
       for (int i = 0; i < table.procs.size(); i++)
       {
@@ -1075,25 +988,18 @@ public class XsdCode extends Generator
     {
       Field field = (Field) fields.elementAt(i);
       outData.println("                 " + "<Parameter");
-      outData.println("                 " + "  AllowDbNull=\"" + adtNull(field)
-          + "\"");
+      outData.println("                 " + "  AllowDbNull=\"" + adtNull(field) + "\"");
       outData.println("                 " + "  AutogeneratedName=\"\"");
       outData.println("                 " + "  DataSourceName=\"\"");
-      outData.println("                 " + "  DbType=\"" + adtDbType(field)
-          + "\"");
+      outData.println("                 " + "  DbType=\"" + adtDbType(field) + "\"");
       outData.println("                 " + "  Direction=\"Input\"");
-      outData.println("                 " + "  ParameterName=\"@"
-          + field.useName() + "\"");
-      outData.println("                 " + "  Precision=\"" + field.precision
-          + "\"");
-      outData.println("                 " + "  ProviderType=\""
-          + adtProviderType(field) + "\"");
+      outData.println("                 " + "  ParameterName=\"@" + field.useName() + "\"");
+      outData.println("                 " + "  Precision=\"" + field.precision + "\"");
+      outData.println("                 " + "  ProviderType=\"" + adtProviderType(field) + "\"");
       outData.println("                 " + "  Scale=\"" + field.scale + "\"");
       outData.println("                 " + "  Size=\"0\"");
-      outData.println("                 " + "  SourceColumn=\""
-          + field.useName() + "\"");
-      outData.println("                 "
-          + "  SourceColumnNullMapping=\"false\"");
+      outData.println("                 " + "  SourceColumn=\"" + field.useName() + "\"");
+      outData.println("                 " + "  SourceColumnNullMapping=\"false\"");
       outData.println("                 " + "  SourceVersion=\"Current\"");
       outData.println("                 " + "  />");
     }
@@ -1107,52 +1013,36 @@ public class XsdCode extends Generator
           continue;
 
         outData.println("                 " + "<Parameter");
-        outData.println("                 " + "  AllowDbNull=\""
-            + adtNull(field) + "\"");
+        outData.println("                 " + "  AllowDbNull=\"" + adtNull(field) + "\"");
         outData.println("                 " + "  AutogeneratedName=\"\"");
         outData.println("                 " + "  DataSourceName=\"\"");
-        outData.println("                 " + "  DbType=\"" + adtDbType(field)
-            + "\"");
+        outData.println("                 " + "  DbType=\"" + adtDbType(field) + "\"");
         outData.println("                 " + "  Direction=\"Input\"");
-        outData.println("                 " + "  ParameterName=\"@Original_"
-            + field.useName() + "\"");
-        outData.println("                 " + "  Precision=\""
-            + field.precision + "\"");
-        outData.println("                 " + "  ProviderType=\""
-            + adtProviderType(field) + "\"");
-        outData
-            .println("                 " + "  Scale=\"" + field.scale + "\"");
+        outData.println("                 " + "  ParameterName=\"@Original_" + field.useName() + "\"");
+        outData.println("                 " + "  Precision=\"" + field.precision + "\"");
+        outData.println("                 " + "  ProviderType=\"" + adtProviderType(field) + "\"");
+        outData.println("                 " + "  Scale=\"" + field.scale + "\"");
         outData.println("                 " + "  Size=\"0\"");
-        outData.println("                 " + "  SourceColumn=\""
-            + field.useName() + "\"");
-        outData.println("                 "
-            + "  SourceColumnNullMapping=\"false\"");
+        outData.println("                 " + "  SourceColumn=\"" + field.useName() + "\"");
+        outData.println("                 " + "  SourceColumnNullMapping=\"false\"");
         outData.println("                 " + "  SourceVersion=\"Original\"");
         outData.println("                 " + "  />");
 
         if (field.isNull)
         {
           outData.println("                 " + "<Parameter");
-          outData.println("                 " + "  AllowDbNull=\""
-              + adtNull(field) + "\"");
+          outData.println("                 " + "  AllowDbNull=\"" + adtNull(field) + "\"");
           outData.println("                 " + "  AutogeneratedName=\"\"");
           outData.println("                 " + "  DataSourceName=\"\"");
-          outData.println("                 " + "  DbType=\""
-              + adtDbType(field) + "\"");
+          outData.println("                 " + "  DbType=\"" + adtDbType(field) + "\"");
           outData.println("                 " + "  Direction=\"Input\"");
-          outData.println("                 " + "  ParameterName=\"@IsNull_"
-              + field.useName() + "\"");
-          outData.println("                 " + "  Precision=\""
-              + field.precision + "\"");
-          outData.println("                 " + "  ProviderType=\""
-              + adtProviderType(field) + "\"");
-          outData.println("                 " + "  Scale=\"" + field.scale
-              + "\"");
+          outData.println("                 " + "  ParameterName=\"@IsNull_" + field.useName() + "\"");
+          outData.println("                 " + "  Precision=\"" + field.precision + "\"");
+          outData.println("                 " + "  ProviderType=\"" + adtProviderType(field) + "\"");
+          outData.println("                 " + "  Scale=\"" + field.scale + "\"");
           outData.println("                 " + "  Size=\"0\"");
-          outData.println("                 " + "  SourceColumn=\""
-              + field.useName() + "\"");
-          outData.println("                 "
-              + "  SourceColumnNullMapping=\"true\"");
+          outData.println("                 " + "  SourceColumn=\"" + field.useName() + "\"");
+          outData.println("                 " + "  SourceColumnNullMapping=\"true\"");
           outData.println("                 " + "  SourceVersion=\"Original\"");
           outData.println("                 " + "  />");
         }
@@ -1164,8 +1054,7 @@ public class XsdCode extends Generator
     outData.println("           " + "</" + name + ">");
   }
 
-  static void genDatasetTableUseProcs(Dataset dataset, Table table,
-			String output, PrintWriter outData, PrintWriter outLog)
+  static void genDatasetTableUseProcs(Dataset dataset, Table table, String output, PrintWriter outData, PrintWriter outLog)
   {
     OutputStream procFile = null;
     PrintWriter procData = null;
@@ -1188,7 +1077,8 @@ public class XsdCode extends Generator
             continue;
           genStdCode(table, proc, outData, procData);
         }
-      } finally
+      }
+      finally
       {
         if (mSSqlStoredProcs == true)
         {
@@ -1198,10 +1088,11 @@ public class XsdCode extends Generator
             procFile.close();
         }
       }
-    } catch (IOException e1)
+    }
+    catch (IOException e1)
     {
-			outLog.println("Cannot write to " + output + table.useName() + ".sproc.sql. Please check it out or switch off its read-only attribute");
-		}
+      outLog.println("Cannot write to " + output + table.useName() + ".sproc.sql. Please check it out or switch off its read-only attribute");
+    }
   }
 
   static boolean doMSSqlStoredProcs(Proc proc)
@@ -1209,8 +1100,7 @@ public class XsdCode extends Generator
     return mSSqlStoredProcs == true && proc.dynamics.size() == 0;
   }
 
-  static void genStdCode(Table table, Proc proc, PrintWriter outData,
-      PrintWriter procData)
+  static void genStdCode(Table table, Proc proc, PrintWriter outData, PrintWriter procData)
   {
     PlaceHolder placeHolder;
     if (doMSSqlStoredProcs(proc) == true)
@@ -1226,12 +1116,9 @@ public class XsdCode extends Generator
     return placeHolder;
   }
 
-  static void genStoredProc(String storedProcName, Vector<?> lines,
-      PrintWriter procData, PlaceHolder placeHolder)
+  static void genStoredProc(String storedProcName, Vector<?> lines, PrintWriter procData, PlaceHolder placeHolder)
   {
-    procData
-        .println("if exists (select * from sysobjects where id = object_id('dbo."
-            + storedProcName + "') and sysstat & 0xf = 4)");
+    procData.println("if exists (select * from sysobjects where id = object_id('dbo." + storedProcName + "') and sysstat & 0xf = 4)");
     procData.println("drop procedure dbo." + storedProcName);
     procData.println("GO");
     procData.println("");
@@ -1262,8 +1149,7 @@ public class XsdCode extends Generator
     procData.println("");
   }
 
-  static PlaceHolder genStoredProcCommand(Proc proc, PrintWriter outData,
-      PrintWriter procData)
+  static PlaceHolder genStoredProcCommand(Proc proc, PrintWriter outData, PrintWriter procData)
   {
     PlaceHolder placeHolder = new PlaceHolder(proc, PlaceHolder.AT_NAMED, "");
     String storedProcName = proc.table.useName() + proc.upperFirst();
@@ -1275,8 +1161,7 @@ public class XsdCode extends Generator
     return placeHolder;
   }
 
-  static void genDatasetTable(Dataset dataset, Table table,
-      PrintWriter outData, PrintWriter outLog)
+  static void genDatasetTable(Dataset dataset, Table table, PrintWriter outData, PrintWriter outLog)
   {
     outData.println("        " + "<xs:element name=\"" + table.name + "\">");
     outData.println("          " + "<xs:complexType>");
@@ -1290,24 +1175,21 @@ public class XsdCode extends Generator
     for (int i = 0; i < table.options.size(); i++)
     {
       String option = (String) table.options.elementAt(i);
-      //String[] options;
+      // String[] options;
 
       if (option.toLowerCase().startsWith("autoincrement:"))
       {
         option = option.substring(14).trim();
         int n = option.indexOf(' ');
-        //options = option.//Split(new char[] { ' ' });
+        // options = option.//Split(new char[] { ' ' });
         autoIncrement = "msdata:AutoIncrement=\"true\" ";
         if (n > 0)
         {
-          autoIncrement = autoIncrement + "msdata:AutoIncrementSeed=\""
-              + option.substring(0, n).trim() + "\" ";
-          autoIncrement = autoIncrement + "msdata:AutoIncrementStep=\""
-							+ option.substring(n).trim() + "\" ";
+          autoIncrement = autoIncrement + "msdata:AutoIncrementSeed=\"" + option.substring(0, n).trim() + "\" ";
+          autoIncrement = autoIncrement + "msdata:AutoIncrementStep=\"" + option.substring(n).trim() + "\" ";
         }
         else
-          autoIncrement = autoIncrement + "msdata:AutoIncrementSeed=\""
-          + option + "\" ";
+          autoIncrement = autoIncrement + "msdata:AutoIncrementSeed=\"" + option + "\" ";
         break;
       }
     }
@@ -1346,43 +1228,34 @@ public class XsdCode extends Generator
       if (!dataType.equals(""))
         dataType = " msdata:DataType=\"" + dataType + "\" ";
 
-      if (field.type == Field.ANSICHAR || field.type == Field.CHAR
-          || field.type == Field.DYNAMIC)
+      if (field.type == Field.ANSICHAR || field.type == Field.CHAR || field.type == Field.DYNAMIC)
       {
-        outData.println("              " + "<xs:element name=\"" + field.name
-            + "\"" + " " + isNullable + " " + theAutoIncrement + ">");
+        outData.println("              " + "<xs:element name=\"" + field.name + "\"" + " " + isNullable + " " + theAutoIncrement + ">");
         outData.println("                                <xs:simpleType>");
-        outData
-            .println("                                  <xs:restriction base=\"xs:string\">");
-        outData
-            .println("                                    <xs:maxLength value=\""
-                + field.length + "\" />");
+        outData.println("                                  <xs:restriction base=\"xs:string\">");
+        outData.println("                                    <xs:maxLength value=\"" + field.length + "\" />");
         outData.println("                                  </xs:restriction>");
         outData.println("                                </xs:simpleType>");
         outData.println("              " + "</xs:element>");
-      } else
-        outData.println("              " + "<xs:element name=\"" + field.name
-            + "\"" + " type=\"xs:" + xsdType(field) + "\" " + dataType
-            + isNullable + " " + theAutoIncrement + " />");
+      }
+      else
+        outData.println("              " + "<xs:element name=\"" + field.name + "\"" + " type=\"xs:" + xsdType(field) + "\" " + dataType + isNullable + " "
+            + theAutoIncrement + " />");
     }
     outData.println("            " + "</xs:sequence>");
     outData.println("          " + "</xs:complexType>");
     outData.println("        " + "</xs:element>");
   }
 
-  static void genDatasetTableKey(Dataset dataset, Table table, Key key,
-      PrintWriter outData, PrintWriter outLog)
+  static void genDatasetTableKey(Dataset dataset, Table table, Key key, PrintWriter outData, PrintWriter outLog)
   {
     if (key.isPrimary)
-      outData.println("    " + "<xs:unique name=\"" + table.name + key.name
-          + "\" msdata:PrimaryKey=\"true\">");
+      outData.println("    " + "<xs:unique name=\"" + table.name + key.name + "\" msdata:PrimaryKey=\"true\">");
     else if (key.isUnique)
-      outData.println("    " + "<xs:unique name=\"" + table.name + key.name
-          + "\" msdata:PrimaryKey=\"false\">");
+      outData.println("    " + "<xs:unique name=\"" + table.name + key.name + "\" msdata:PrimaryKey=\"false\">");
     else
       return;
-    outData.println("      " + "<xs:selector xpath=\".//mstns:" + table.name
-        + "\" />");
+    outData.println("      " + "<xs:selector xpath=\".//mstns:" + table.name + "\" />");
     for (int i = 0; i < key.fields.size(); i++)
     {
       String field = (String) key.fields.elementAt(i);
@@ -1391,8 +1264,7 @@ public class XsdCode extends Generator
     outData.println("    " + "</xs:unique>");
   }
 
-  static void generateProcFunctions(Proc proc, String name,
-      PrintWriter outData, PlaceHolder placeHolder)
+  static void generateProcFunctions(Proc proc, String name, PrintWriter outData, PlaceHolder placeHolder)
   {
     if (proc.outputs.size() > 0 && !proc.isSingle)
       genFetchProc(proc, name, outData, placeHolder);
@@ -1402,8 +1274,7 @@ public class XsdCode extends Generator
       genNonQueryProc(proc, name, outData, placeHolder);
   }
 
-  static void genFetchProc(Proc proc, String mainName, PrintWriter outData,
-      PlaceHolder placeHolder)
+  static void genFetchProc(Proc proc, String mainName, PrintWriter outData, PlaceHolder placeHolder)
   {
     outData.println("<!-- genFetchProc " + proc.name + " -->");
     // outData.println(" public void "+proc.upperFirst()+"(Connect
@@ -1530,8 +1401,7 @@ public class XsdCode extends Generator
     // outData.println(" }");
   }
 
-  static void genReadOneProc(Proc proc, String mainName, PrintWriter outData,
-      PlaceHolder placeHolder)
+  static void genReadOneProc(Proc proc, String mainName, PrintWriter outData, PlaceHolder placeHolder)
   {
     outData.println("<!-- genReadOneProc " + proc.name + " -->");
     // outData.println(" public bool "+proc.upperFirst()+"(Connect
@@ -1579,8 +1449,7 @@ public class XsdCode extends Generator
     // outData.println(" }");
   }
 
-  static void genNonQueryProc(Proc proc, String mainName, PrintWriter outData,
-      PlaceHolder placeHolder)
+  static void genNonQueryProc(Proc proc, String mainName, PrintWriter outData, PlaceHolder placeHolder)
   {
     outData.println("<!-- genNonQueryProc " + proc.name + " -->");
     // outData.println(" public void "+proc.upperFirst()+"(Connect
@@ -1614,209 +1483,209 @@ public class XsdCode extends Generator
     // outData.println(" }");
   }
 
-	static String xsdType(Field field)
-	{
-		switch (field.type)
-		{
-			case Field.ANSICHAR:
-				return "string";
-			case Field.BLOB:
-				return "base64Binary";
-			case Field.BOOLEAN:
-				return "boolean";
-			case Field.BYTE:
-				return "byte";
-			case Field.CHAR:
-				return "string";
-			case Field.DATE:
-				return "date";
-			case Field.DATETIME:
-				return "dateTime";
-			case Field.DYNAMIC:
-				return "string";
-			case Field.DOUBLE:
-				return "double";
-			case Field.FLOAT:
-				return "double";
-			case Field.IDENTITY:
-				return "int";
-			case Field.INT:
-				return "int";
-			case Field.LONG:
-				return "long";
-			case Field.MONEY:
-				return "decimal";
-			case Field.SEQUENCE:
-				return "int";
-			case Field.SHORT:
-				return "short";
-			case Field.TIME:
-				return "time";
-			case Field.TIMESTAMP:
-				return "dateTime";
-			case Field.TLOB:
-				return "string";
-			case Field.USERSTAMP:
-				return "string";
-			case Field.UID:
-				return "string";
-		}
-		return "<crap>";
-	}
-	/**
-	 * Translates field type to msdata:DataType in the data set
-	 * This attribute is only used for specific fields such as GUIDs
-	 * This should be stored in a configuration file
-	 */
-	static String sdataType(Field field)
-	{
-		switch (field.type)
-		{
-			case Field.UID:
-				return "System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-			default:
-				break;
-		}
-		return "";
-	}
-	/**
-	 * Translates field type to SQLServer SQL column types
-	 */
-	static String sprocType(Field field)
-	{
-		switch (field.type)
-		{
-			case Field.BOOLEAN:
-				return "bit";
-			case Field.BYTE:
-				return "tinyint";
-			case Field.SHORT:
-				return "smallint";
-			case Field.INT:
-			case Field.LONG:
-				return "integer";
-			case Field.SEQUENCE:
-				return "integer";
-			case Field.IDENTITY:
-				return "integer";
-			case Field.CHAR:
-				return "varchar(" + String.valueOf(field.length) + ")";
-			case Field.ANSICHAR:
-				return "char(" + String.valueOf(field.length) + ")";
-			case Field.DATE:
-				return "datetime";
-			case Field.DATETIME:
-				return "datetime";
-			case Field.TIME:
-				return "datetime";
-			case Field.TIMESTAMP:
-				return "datetime";
-			case Field.FLOAT:
-				return "float";
-			case Field.DOUBLE:
-				return "float";
-			case Field.BLOB:
-				return "base64Binary";
-			case Field.TLOB:
-				return "text";
-			case Field.MONEY:
-				return "float";
-			case Field.USERSTAMP:
-				return "varchar(24)";
-			case Field.UID:
-				return "Int";
-			default:
-				break;
-		}
-		return "unknown";
-	}
-	private static String adtNull(Field field)
-	{
-		return field.isNull ? "True" : "False";
-	}
-	private static String adtProviderType(Field field)
-	{
-		switch (field.type)
-		{
-			case Field.ANSICHAR:
-				return "Char";
-			case Field.BOOLEAN:
-				return "Bit";
-			case Field.BYTE:
-				return "Byte";
-			case Field.DATE:
-				return "Date";
-			case Field.DATETIME:
-			case Field.TIMESTAMP:
-				return "DateTime";
-			case Field.DOUBLE:
-			case Field.FLOAT:
-				return "Float";
-			case Field.IDENTITY:
-			case Field.INT:
-			case Field.SEQUENCE:
-				return "Int";
-			case Field.LONG:
-				return "Long";
-			case Field.MONEY:
-				return "string";
-			case Field.SHORT:
-				return "Short";
-			case Field.TIME:
-				return "Time";
-			case Field.BLOB:
-				return "VarBinary";
-			case Field.TLOB:
-			case Field.CHAR:
-				return "VarChar";
-			case Field.UID:
-				return "UniqueIdentifier";
-		}
-		return "<crap>";
-	}
-	private static String adtDbType(Field field)
-	{
-		switch (field.type)
-		{
-			case Field.ANSICHAR:
-				return "AnsiString";
-			case Field.BOOLEAN:
-				return "Boolean";
-			case Field.BYTE:
-				return "Int8";
-			case Field.CHAR:
-			case Field.MONEY:
-				return "string";
-			case Field.BLOB:
-				return "Binary";
-			case Field.TLOB:
-			case Field.USERSTAMP:
-				return "AnsiString";
-			case Field.DATE:
-				return "Date";
-			case Field.DATETIME:
-			case Field.TIMESTAMP:
-				return "DateTime";
-			case Field.DYNAMIC:
-				return "AnsiString";
-			case Field.DOUBLE:
-			case Field.FLOAT:
-				return "Double";
-			case Field.IDENTITY:
-			case Field.SEQUENCE:
-			case Field.INT:
-				return "Int32";
-			case Field.LONG:
-				return "Int64";
-			case Field.SHORT:
-				return "Int16";
-			case Field.TIME:
-				return "Time";
-			case Field.UID:
-				return "Guid";
-		}
-		return "<crap>";
-	}
+  static String xsdType(Field field)
+  {
+    switch (field.type)
+    {
+    case Field.ANSICHAR:
+      return "string";
+    case Field.BLOB:
+      return "base64Binary";
+    case Field.BOOLEAN:
+      return "boolean";
+    case Field.BYTE:
+      return "byte";
+    case Field.CHAR:
+      return "string";
+    case Field.DATE:
+      return "date";
+    case Field.DATETIME:
+      return "dateTime";
+    case Field.DYNAMIC:
+      return "string";
+    case Field.DOUBLE:
+      return "double";
+    case Field.FLOAT:
+      return "double";
+    case Field.IDENTITY:
+      return "int";
+    case Field.INT:
+      return "int";
+    case Field.LONG:
+      return "long";
+    case Field.MONEY:
+      return "decimal";
+    case Field.SEQUENCE:
+      return "int";
+    case Field.SHORT:
+      return "short";
+    case Field.TIME:
+      return "time";
+    case Field.TIMESTAMP:
+      return "dateTime";
+    case Field.TLOB:
+      return "string";
+    case Field.USERSTAMP:
+      return "string";
+    case Field.UID:
+      return "string";
+    }
+    return "<crap>";
+  }
+  /**
+   * Translates field type to msdata:DataType in the data set This attribute is
+   * only used for specific fields such as GUIDs This should be stored in a
+   * configuration file
+   */
+  static String sdataType(Field field)
+  {
+    switch (field.type)
+    {
+    case Field.UID:
+      return "System.Guid, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+    default:
+      break;
+    }
+    return "";
+  }
+  /**
+   * Translates field type to SQLServer SQL column types
+   */
+  static String sprocType(Field field)
+  {
+    switch (field.type)
+    {
+    case Field.BOOLEAN:
+      return "bit";
+    case Field.BYTE:
+      return "tinyint";
+    case Field.SHORT:
+      return "smallint";
+    case Field.INT:
+    case Field.LONG:
+      return "integer";
+    case Field.SEQUENCE:
+      return "integer";
+    case Field.IDENTITY:
+      return "integer";
+    case Field.CHAR:
+      return "varchar(" + String.valueOf(field.length) + ")";
+    case Field.ANSICHAR:
+      return "char(" + String.valueOf(field.length) + ")";
+    case Field.DATE:
+      return "datetime";
+    case Field.DATETIME:
+      return "datetime";
+    case Field.TIME:
+      return "datetime";
+    case Field.TIMESTAMP:
+      return "datetime";
+    case Field.FLOAT:
+      return "float";
+    case Field.DOUBLE:
+      return "float";
+    case Field.BLOB:
+      return "base64Binary";
+    case Field.TLOB:
+      return "text";
+    case Field.MONEY:
+      return "float";
+    case Field.USERSTAMP:
+      return "varchar(24)";
+    case Field.UID:
+      return "Int";
+    default:
+      break;
+    }
+    return "unknown";
+  }
+  private static String adtNull(Field field)
+  {
+    return field.isNull ? "True" : "False";
+  }
+  private static String adtProviderType(Field field)
+  {
+    switch (field.type)
+    {
+    case Field.ANSICHAR:
+      return "Char";
+    case Field.BOOLEAN:
+      return "Bit";
+    case Field.BYTE:
+      return "Byte";
+    case Field.DATE:
+      return "Date";
+    case Field.DATETIME:
+    case Field.TIMESTAMP:
+      return "DateTime";
+    case Field.DOUBLE:
+    case Field.FLOAT:
+      return "Float";
+    case Field.IDENTITY:
+    case Field.INT:
+    case Field.SEQUENCE:
+      return "Int";
+    case Field.LONG:
+      return "Long";
+    case Field.MONEY:
+      return "string";
+    case Field.SHORT:
+      return "Short";
+    case Field.TIME:
+      return "Time";
+    case Field.BLOB:
+      return "VarBinary";
+    case Field.TLOB:
+    case Field.CHAR:
+      return "VarChar";
+    case Field.UID:
+      return "UniqueIdentifier";
+    }
+    return "<crap>";
+  }
+  private static String adtDbType(Field field)
+  {
+    switch (field.type)
+    {
+    case Field.ANSICHAR:
+      return "AnsiString";
+    case Field.BOOLEAN:
+      return "Boolean";
+    case Field.BYTE:
+      return "Int8";
+    case Field.CHAR:
+    case Field.MONEY:
+      return "string";
+    case Field.BLOB:
+      return "Binary";
+    case Field.TLOB:
+    case Field.USERSTAMP:
+      return "AnsiString";
+    case Field.DATE:
+      return "Date";
+    case Field.DATETIME:
+    case Field.TIMESTAMP:
+      return "DateTime";
+    case Field.DYNAMIC:
+      return "AnsiString";
+    case Field.DOUBLE:
+    case Field.FLOAT:
+      return "Double";
+    case Field.IDENTITY:
+    case Field.SEQUENCE:
+    case Field.INT:
+      return "Int32";
+    case Field.LONG:
+      return "Int64";
+    case Field.SHORT:
+      return "Int16";
+    case Field.TIME:
+      return "Time";
+    case Field.UID:
+      return "Guid";
+    }
+    return "<crap>";
+  }
 }
 
 /*
@@ -1824,8 +1693,8 @@ public class XsdCode extends Generator
  * DataAccessorModifier="AutoLayout, AnsiClass, Class, Public"
  * DataAccessorName="UserOrganisationTableAdapter"
  * GeneratorDataComponentClassName="UserOrganisationTableAdapter"
- * Name="UserOrganisation" UserDataComponentName="UserOrganisationTableAdapter" >
- * <Mappings> <Mapping SourceColumn="UserOrganisationID"
+ * Name="UserOrganisation" UserDataComponentName="UserOrganisationTableAdapter"
+ * > <Mappings> <Mapping SourceColumn="UserOrganisationID"
  * DataSetColumn="UserOrganisationID" /> <Mapping SourceColumn="SystemUserID"
  * DataSetColumn="SystemUserID" /> <Mapping SourceColumn="EntityID"
  * DataSetColumn="EntityID" /> <Mapping SourceColumn="UserID"

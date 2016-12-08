@@ -196,7 +196,7 @@ public class MySqlCCode extends Generator
         }
         outData.println(" */");
       }
-      Vector<?> fields;
+      Vector<Field> fields;
       fields = proc.outputs;
       outData.println("typedef struct S_" + table.useName() + "_" + proc.name.toUpperCase());
       outData.println("{");
@@ -310,7 +310,7 @@ public class MySqlCCode extends Generator
   static void generateCommand(Proc proc, PrintWriter outData)
   {
     placeHolder = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
-    Vector<?> lines = placeHolder.getLines();
+    Vector<String> lines = placeHolder.getLines();
     if (lines.size() > 0)
     {
       outData.println("static char* "+proc.table.useName().toUpperCase()+"_"+proc.name.toUpperCase()+"_COMMAND =");
@@ -334,7 +334,7 @@ public class MySqlCCode extends Generator
   static void generateImplementation(Table table, Proc proc, PrintWriter outData)
   {
     generateCommand(proc, outData);
-    Vector<?> pairs = placeHolder.getPairs();
+    Vector<PlaceHolderPairs> pairs = placeHolder.getPairs();
     String NOBINDS = table.name.toUpperCase() + "_" + proc.name.toUpperCase() + "_NOBINDS";
     String NODEFINES = table.name.toUpperCase() + "_" + proc.name.toUpperCase() + "_NODEFINES";
     outData.println("#define " + NOBINDS + " " + pairs.size());
@@ -490,7 +490,7 @@ public class MySqlCCode extends Generator
     case Field.ANSICHAR:
       return "char   " + field.useName() + "[" + (field.length + 1) + "]";
     case Field.USERSTAMP:
-      return "char   " + field.useName() + "[9]";
+      return "char   " + field.useName() + "[51]";
     case Field.BLOB:
     case Field.TLOB:
       return "TJLob  " + field.useName();

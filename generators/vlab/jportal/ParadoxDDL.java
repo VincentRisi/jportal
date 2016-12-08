@@ -266,7 +266,7 @@ public class ParadoxDDL extends Generator
     case Field.TLOB:
       return "MEMO";
     case Field.USERSTAMP:
-      return "VARCHAR(8)";
+      return "VARCHAR(50)";
     case Field.IDENTITY:
       return "AUTOINC";
     }

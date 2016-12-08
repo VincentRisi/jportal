@@ -436,7 +436,7 @@ public class MySqlDDL extends Generator
       case Field.MONEY:
         return "decimal";
       case Field.USERSTAMP:
-        return "VARCHAR(16)";
+        return "VARCHAR(50)";
       case Field.IDENTITY:
         return "<not supported>";
     }

@@ -22,7 +22,7 @@ import java.io.PrintWriter;
 public class ParmCode extends Generator
 {
 
-	private static class ParmOptions
+  private static class ParmOptions
   {
     public String descr;
     public String lookup;

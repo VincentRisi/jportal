@@ -414,7 +414,7 @@ public class PostgreDDL extends Generator
       case Field.MONEY:
         return "numeric(18,2)";
       case Field.USERSTAMP:
-        return "VARCHAR(16)";
+        return "VARCHAR(50)";
       case Field.IDENTITY:
         return "<not supported>";
     }

@@ -303,13 +303,13 @@ public class CSNetCode extends Generator
   }
   private static void generateSelector(Field field, PrintWriter outData)
   {
-    outData.println("    public class Nfpp" + field.useUpperName() + " // NO _______ PARAMETER PROPERTIES ");
-    outData.println("    {");
-    outData.println("      DataTable parent;");
-    outData.println("      public " + fieldCastNo(field) + " this[int row]");
-    outData.println("      {");
-    outData.println("        get");
-    outData.println("        {");
+    outData.println(indent(2) + "public class Nfpp" + field.useUpperName() + " // NO _______ PARAMETER PROPERTIES ");
+    outData.println(indent(2) + "{");
+    outData.println(indent(3) + "DataTable parent;");
+    outData.println(indent(3) + "public " + fieldCastNo(field) + " this[int row]");
+    outData.println(indent(3) + "{");
+    outData.println(indent(4) + "get");
+    outData.println(indent(4) + "{");
     if (field.isNull == true)
     {
       outData.println(indent(5) + "if (parent.Rows[row][c" + field.useUpperName() + "] == DBNull.Value)");

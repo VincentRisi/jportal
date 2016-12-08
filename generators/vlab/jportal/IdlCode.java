@@ -112,7 +112,7 @@ public class IdlCode extends Generator
       buffer.append("pragma si enum " + field.useName());
       for (int j = 0; j < field.enums.size(); j++)
       {
-        Enum num = (Enum)field.enums.elementAt(j);
+        Enum num = field.enums.elementAt(j);
         buffer.append(" " + num.name + " " + num.value);
       }
       outData.println(buffer.toString());
@@ -127,7 +127,7 @@ public class IdlCode extends Generator
       buffer.append("pragma si enum " + field.useName());
       for (int j = 0; j < field.valueList.size(); j++)
       {
-        String name = (String)field.valueList.elementAt(j);
+        String name = field.valueList.elementAt(j);
         buffer.append(" " + name + " " + j);
       }
       outData.println(buffer.toString());
@@ -141,13 +141,13 @@ public class IdlCode extends Generator
                    );
     for (int i = 0; i < table.keys.size(); i++)
     {
-      Key key = (Key)table.keys.elementAt(i);
+      Key key = table.keys.elementAt(i);
       if (key.isPrimary == true)
       {
         outData.print("pragma si prime");
         for (int j = 0; j < key.fields.size(); j++)
         {
-          String name = (String)key.fields.elementAt(j);
+          String name = key.fields.elementAt(j);
           outData.print(" " + name);
         }
         outData.println();
@@ -155,7 +155,7 @@ public class IdlCode extends Generator
     }
     for (int i = 0; i < table.fields.size(); i++)
     {
-      Field field = (Field) table.fields.elementAt(i);
+      Field field = table.fields.elementAt(i);
       String name = field.useName();
       outData.println("pragma si field " 
                     + name
@@ -179,7 +179,7 @@ public class IdlCode extends Generator
                   );
     for (int i = 0; i < proc.inputs.size(); i++)
     {
-      Field field = (Field)proc.inputs.elementAt(i);
+      Field field = proc.inputs.elementAt(i);
       String name = field.useName();
       outData.println("pragma si input " 
                     + name
@@ -196,7 +196,7 @@ public class IdlCode extends Generator
     }
     for (int i = 0; i < proc.outputs.size(); i++)
     {
-      Field field = (Field)proc.outputs.elementAt(i);
+      Field field = proc.outputs.elementAt(i);
       String name = field.useName();
       outData.println("pragma si output " 
                     + name
@@ -213,8 +213,8 @@ public class IdlCode extends Generator
     }
     for (int i = 0; i < proc.dynamics.size(); i++)
     {
-      String name = (String)proc.dynamics.elementAt(i);
-      Integer size = (Integer)proc.dynamicSizes.elementAt(i);
+      String name = proc.dynamics.elementAt(i);
+      Integer size = proc.dynamicSizes.elementAt(i);
       outData.println("pragma si dynamic " 
                     + name
                     + " " + size.intValue()
@@ -248,7 +248,7 @@ public class IdlCode extends Generator
           }
           for (int i=0; i<table.procs.size(); i++)
           {
-            Proc proc = (Proc) table.procs.elementAt(i);
+            Proc proc = table.procs.elementAt(i);
             if (proc.isData || proc.isStd || proc.isStdExtended() || proc.hasNoData())
               continue;
             outData.println("struct D" + table.useName() + proc.upperFirst() + " \"" + table.useName().toLowerCase() + ".sh\"");
@@ -258,14 +258,14 @@ public class IdlCode extends Generator
           outData.println();
           for (int i=0; i<table.procs.size(); i++)
           {
-            Proc proc = (Proc) table.procs.elementAt(i);
+            Proc proc = table.procs.elementAt(i);
             if (proc.isData)
               continue;
             if (proc.options.size() > 0)
             {
               for (int j = 0; j < proc.options.size(); j++)
               {
-                String option = (String)proc.options.elementAt(j);
+                String option = proc.options.elementAt(j);
                 outData.println("pragma \"" + table.name + proc.name + ":" + option + "\"");
               }
             }
@@ -286,7 +286,7 @@ public class IdlCode extends Generator
             generatePragma(table, outData);
           for (int i = 0; i < table.procs.size(); i++)
           {
-            Proc proc = (Proc)table.procs.elementAt(i);
+            Proc proc = table.procs.elementAt(i);
             if (proc.isData || proc.isStd || proc.isStdExtended() || proc.hasNoData())
               continue;
             generatePragma(table, proc, outData);
@@ -380,7 +380,7 @@ public class IdlCode extends Generator
   {
     for (int i = 0; i < proc.options.size(); i++)
     {
-      String option = (String)proc.options.elementAt(i);
+      String option = proc.options.elementAt(i);
       if (option.compareTo("BL") == 0)
         return true;
     }
@@ -546,7 +546,7 @@ public class IdlCode extends Generator
         outData.println("  /// <summary>");
         for (int i = 0; i < table.comments.size(); i++)
         {
-          String s = (String)table.comments.elementAt(i);
+          String s = table.comments.elementAt(i);
           outData.println("  /// " + s);
         }
         outData.println("  /// </summary>");
@@ -556,7 +556,7 @@ public class IdlCode extends Generator
     }
     for (int i = 0; i < table.procs.size(); i++)
     {
-      Proc proc = (Proc)table.procs.elementAt(i);
+      Proc proc = table.procs.elementAt(i);
       if (proc.isData || proc.isStd || proc.isStdExtended() || proc.hasNoData())
         continue;
       if (proc.comments.size() > 0)
@@ -564,7 +564,7 @@ public class IdlCode extends Generator
         outData.println("  /// <summary>");
         for (int j = 0; j < proc.comments.size(); j++)
         {
-          String s = (String)proc.comments.elementAt(j);
+          String s = proc.comments.elementAt(j);
           outData.println("  /// " + s);
         }
         outData.println("  /// </summary>");
@@ -572,7 +572,7 @@ public class IdlCode extends Generator
       generateStructPairs(proc, table.useName() + proc.upperFirst(), outData);
     }
   }
-  private static void generateTableStructs(Vector<?> fields, String mainName, PrintWriter outData)
+  private static void generateTableStructs(Vector<Field> fields, String mainName, PrintWriter outData)
   {
     boolean usePartials = true;
     outData.println("  [Serializable()]");
@@ -580,7 +580,7 @@ public class IdlCode extends Generator
     outData.println("  {");
     for (int i = 0; i < fields.size(); i++)
     {
-      Field field = (Field)fields.elementAt(i);
+      Field field = fields.elementAt(i);
       outData.println("    " + fieldDef(field));
       if (field.isNull && isNull(field))
         outData.println("    public short " + field.useLowerName() + "IsNull;" + fillerNull());
@@ -595,7 +595,7 @@ public class IdlCode extends Generator
     boolean didO = false;
     boolean didD = false;
     String typeChar = "D";
-    Vector<?> fields = proc.outputs;
+    Vector<Field> fields = proc.outputs;
     if (fields.size() > 0)
     {
       if (proc.hasDiscreteInput() || (proc.inputs.size() + proc.dynamics.size()) == 0)
@@ -610,7 +610,7 @@ public class IdlCode extends Generator
       outData.println("  {");
       for (int i = 0; i < fields.size(); i++)
       {
-        Field field = (Field)fields.elementAt(i);
+        Field field = fields.elementAt(i);
         outData.println("    " + fieldDef(field));
         if (field.isNull && isNull(field))
           outData.println("    public short " + field.useLowerName() + "IsNull;" + fillerNull());
@@ -626,10 +626,10 @@ public class IdlCode extends Generator
         outData.println("  public " + (usePartials ? "partial " : "") + "class D" + mainName);
       didD = true;
       outData.println("  {");
-      Vector<?> inputs = proc.inputs;
+      Vector<Field> inputs = proc.inputs;
       for (int j = 0; j < inputs.size(); j++)
       {
-        Field field = (Field)inputs.elementAt(j);
+        Field field = inputs.elementAt(j);
         if (proc.hasOutput(field.name))
           continue;
         outData.println("    " + fieldDef(field));
@@ -638,8 +638,8 @@ public class IdlCode extends Generator
       }
       for (int j = 0; j < proc.dynamics.size(); j++)
       {
-        String s = (String)proc.dynamics.elementAt(j);
-        Integer n = (Integer)proc.dynamicSizes.elementAt(j);
+        String s = proc.dynamics.elementAt(j);
+        Integer n = proc.dynamicSizes.elementAt(j);
         Field field = new Field();
         field.name = s;
         field.type = Field.CHAR;
@@ -663,7 +663,7 @@ public class IdlCode extends Generator
   {
     for (int i = 0; i < table.fields.size(); i++)
     {
-      Field field = (Field)table.fields.elementAt(i);
+      Field field = table.fields.elementAt(i);
       if (field.enums.size() > 0)
       {
         outData.println("  public class " + table.useName() + field.useUpperName() + "Ord");
@@ -673,7 +673,7 @@ public class IdlCode extends Generator
           datatype = "string";
         for (int j = 0; j < field.enums.size(); j++)
         {
-          Enum en = (Enum)field.enums.elementAt(j);
+          Enum en = field.enums.elementAt(j);
           String evalue = "" + en.value;
           if (field.type == Field.ANSICHAR && field.length == 1)
             evalue = "\"" + (char)en.value + "\"";
@@ -685,7 +685,7 @@ public class IdlCode extends Generator
         outData.println("      {");
         for (int j = 0; j < field.enums.size(); j++)
         {
-          Enum en = (Enum)field.enums.elementAt(j);
+          Enum en = field.enums.elementAt(j);
           String evalue = "" + en.value;
           if (field.type == Field.ANSICHAR && field.length == 1)
             evalue = "\"" + (char)en.value + "\"";
@@ -702,7 +702,7 @@ public class IdlCode extends Generator
         outData.println("  {");
         for (int j = 0; j < field.valueList.size(); j++)
         {
-          String en = (String)field.valueList.elementAt(j);
+          String en = field.valueList.elementAt(j);
           outData.println("    public const int " + en + " = " + j + ";");
         }
         outData.println("    public static string ToString(int ordinal)");
@@ -711,7 +711,7 @@ public class IdlCode extends Generator
         outData.println("      {");
         for (int j = 0; j < field.valueList.size(); j++)
         {
-          String en = (String)field.valueList.elementAt(j);
+          String en = field.valueList.elementAt(j);
           outData.println("      case " + j + ": return \"" + en + "\";");
         }
         outData.println("      }");
@@ -876,7 +876,7 @@ public class IdlCode extends Generator
     boolean continued = false;
     for (int i = 0; i < field.comments.size(); i++)
     {
-      String comment = (String)field.comments.elementAt(i);
+      String comment = field.comments.elementAt(i);
       int last = comment.length() - 1;
       if (continued == true || comment.charAt(0) == '[')
       {

@@ -2138,8 +2138,6 @@ void jUserProc() :
       proc.extendsStd = true;
       proc.useStd = true;
       isStdProc = true;
-      //for (int i=0; i<table.fields.size(); i++) // why removed?
-      //  proc.outputs.addElement(table.fields.elementAt(i));
     }
   )?
   ( s = jComment()

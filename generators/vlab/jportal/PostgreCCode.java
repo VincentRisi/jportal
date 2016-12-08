@@ -630,7 +630,7 @@ public class PostgreCCode extends Generator
   }
   static void generateCommand(Proc proc, PrintWriter outData)
   {
-    Vector<?> lines = placeHolder.getLines();
+    Vector<String> lines = placeHolder.getLines();
     int size = 1;
     for (int i = 0; i < lines.size(); i++)
     {
@@ -1014,7 +1014,7 @@ public class PostgreCCode extends Generator
     case Field.TLOB:
       return "char   " + field.useName() + "[" + (field.length + 1) + "]";
     case Field.USERSTAMP:
-      return "char   " + field.useName() + "[17]";
+      return "char   " + field.useName() + "[" + (field.length + 1) + "]";
     case Field.BLOB:
       return "TJBlob<" + field.length + "> " + field.useName();
     case Field.DATE:
@@ -1055,7 +1055,7 @@ public class PostgreCCode extends Generator
     case Field.BLOB:
       return "sizeof(TJBlob<" + field.length + ">)";
     case Field.USERSTAMP:
-      return "17";
+      return "51";
     case Field.DATE:
       return "sizeof(TPGDate)";
     case Field.TIME:
@@ -1107,7 +1107,7 @@ public class PostgreCCode extends Generator
     case Field.ANSICHAR:
       return field.useName() + ", " + (field.length);
     case Field.USERSTAMP:
-      return "q_.UserStamp(" + field.useName() + ", sizeof(" + field.useName() + ")), 16";
+      return "q_.UserStamp(" + field.useName() + ", sizeof(" + field.useName() + ")), 50";
     case Field.DATE:
       return "q_.Date(" + field.useName() + "_PGDate, " + field.useName()
           + ")";
@@ -1149,7 +1149,7 @@ public class PostgreCCode extends Generator
         return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), "
             + (field.length + 1) + ", 1";
       case Field.USERSTAMP:
-        return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), 17";
+        return "(char*)   (q_.data+" + field.useName().toUpperCase() + "_POS), 51";
       case Field.DATE:
         return "(TPGDate*)(q_.data+" + field.useName().toUpperCase() + "_POS)";
       case Field.TIME:
@@ -1193,7 +1193,7 @@ public class PostgreCCode extends Generator
         return "(char*)  (q_.data+" + field.useName().toUpperCase() + "_POS), "
             + (field.length + 1) + ", 1";
       case Field.USERSTAMP:
-        return "(char*)  (q_.data+" + field.useName().toUpperCase() + "_POS), 17";
+        return "(char*)  (q_.data+" + field.useName().toUpperCase() + "_POS), 51";
       case Field.BLOB:
         return "(char*)  (q_.data+" + field.useName().toUpperCase() + "_POS), sizeof(" + field.useName() + ")";
       case Field.DATE:
@@ -1240,7 +1240,7 @@ public class PostgreCCode extends Generator
     case Field.TLOB:
       return field.useName() + ", " + (field.length + 1);
     case Field.USERSTAMP:
-      return field.useName() + ", 17";
+      return field.useName() + ", 51";
     case Field.BLOB:
       return field.useName() + ".len, " + field.useName()+".data, sizeof(" + field.useName() + ")";
     case Field.DATE:

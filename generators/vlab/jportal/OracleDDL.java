@@ -505,7 +505,7 @@ public class OracleDDL extends Generator
       case Field.MONEY:
         return "NUMBER(15,2)";
       case Field.USERSTAMP:
-        return "VARCHAR2(8)";
+        return "VARCHAR2(" + String.valueOf(field.length) + ")";
       case Field.IDENTITY:
         return "<not supported>";
     }

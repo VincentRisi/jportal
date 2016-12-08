@@ -244,14 +244,12 @@ public class Proc implements Serializable
       Field value = (Field) inputs.elementAt(i);
       value.writer(ods);
     }
-
     ods.writeInt(outputs.size());
     for (int i=0; i<outputs.size(); i++)
     {
       Field value = (Field) outputs.elementAt(i);
       value.writer(ods);
     }
-
     ods.writeInt(dynamics.size());
     for (int i=0; i<dynamics.size(); i++)
     {
@@ -282,8 +280,6 @@ public class Proc implements Serializable
       Line value = (Line) lines.elementAt(i);
       value.writer(ods);
     }
-
-
     ods.writeInt(comments.size());
     for (int i=0; i<comments.size(); i++)
     {
