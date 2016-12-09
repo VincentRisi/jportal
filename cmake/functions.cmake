@@ -5,7 +5,6 @@ set (anydbMake ${TOOLS_DIR}/anydbMake.py)
 
 set (antExe ${ANT_EXECUTABLE})
 set (javaExe ${Java_JAVA_EXECUTABLE})
-#set (javaccExe ${JAVACC_SHELL})
 set (jarExe ${Java_JAR_EXECUTABLE})
 set (psqlExe ${POSTGRES_EXECUTABLE})
 set (pythonExe ${PYTHON_EXECUTABLE})

@@ -121,10 +121,12 @@ user@localmachine:~/jportal> vagrant halt
 
 Assuming the repository has been checked out to */main/jportal*. The cmake is used from */main/jportal/build*, build is in .gitignore so initially one must do a *'mkdir'*  of it and from it do a *'cmake ..'*. Once the cmake has been made and as long as all the required tools are in place, *'make'* should complete an initial build.
 
+There is a wrinkle - the current source is /main/jportal based or on windows c:\main\jportal - this is not a cmake problem, but in the anydbmake having /main/jportal hardcoded - I will look into fixing this - but using c:\main\jportal should suffice for now.
+
 I am running on linux mint 17.3 Rosa, which is debian based. Installing oracle client software is quite trial and error. But I do now have the client connecting to the Developer Days stuff. Of course we use sudo alien -i ... to install the instantclient stuff. The linux mint is a superb desktop environment, IMNSHO it is the route Microsoft should have gone, but when you business model is Total Resale every 3-5 years, more the pity.
 
 I have quite good success on a Windows 7 VM - I am not using Visual Studio for the cmake, but using mingw - using unix build - I am also using git bash for the make terminal.
-
+ 
 ### JPortal RDBMS code generator <a id="jportalgenerator"></a>
 
 The class tree for *JPortal* starts with a single Database instance. As can be seen from
