@@ -1985,6 +1985,7 @@ void jNewProc() :
         proc.useStd = true;
         isStdProc = true;
       }
+    
   | <SELECTONEBY> ( jProcColumn())+
       ((<IN>)? <ORDER> {inOrder = true;})?
       ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
@@ -2050,9 +2051,8 @@ void jNewProc() :
         table.buildUpdateBy(proc, outLog);
         table.hasStdProcs = true;
       }
- )
+  )
 }
-
 
 void jProcColumn() :
 {

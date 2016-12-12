@@ -344,7 +344,7 @@ public class OracleRE
     proc = new Proc();
     proc.table = table;
     proc.name = "Update";
-    table.buildUpdate(proc, outLog);
+    table.buildUpdate(proc);
     table.procs.addElement(proc);
   }
   static void buildDeleteOne(PrintWriter outLog)
