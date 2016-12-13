@@ -10,8 +10,10 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-b", "--build",      dest="build",      default=False, action="store_true", help='build all anyway')
 parser.add_option("-c", "--crackle",    dest="crackle",    default='crackle.jar')
+parser.add_option("-f", "--fromdir",    dest="fromdir",    default='/main')
 parser.add_option("-j", "--jportal",    dest="jportal",    default='jportal.jar')
 parser.add_option("-p", "--pickle",     dest="pickle",     default='pickle.jar')
+parser.add_option("-t", "--todir",      dest="todir",      default='/main')
 parser.add_option("-v", "--verbose",    dest="verbose",    default=False, action="store_true", help="verbose")
 
 (options, args) = parser.parse_args()
@@ -25,6 +27,8 @@ def fixname(name):
   if len(result) > 2 and result[1] == ':':
     result = result[2:]
   result = result.replace('\\','/')
+  if options.fromdir != options.todir and result.find(options.fromdir) == 0:
+    result = '%s%s' % (options.todir, result[len(options.fromdir):])
   log(result)
   return result
 
