@@ -1,0 +1,165 @@
+database PCS FLAGS 'mssql storedprocs'
+package pcs
+output sprocs
+server boodle 
+schema dbo
+
+Table usp_
+
+PROC GetAFItems
+input
+  LoanID       INT
+output
+  ItemID       INT
+  CategoryID   INT
+  Amount       MONEY
+  LoanID       INT
+  PartyType    CHAR(1)
+sqlcode  
+  SELECT ItemID, CategoryID, Amount, LoanID, PartyType
+  FROM afItems
+  WHERE LoanID = :LoanID
+  ORDER BY ItemID
+endcode
+
+PROC GetBehaviour 
+input
+  IDNumber CHAR(13)
+output
+  BehaviourScore INT
+sqlcode
+  SELECT Top 1 
+    BehaviourScore -- this may need to be NULL BehaviourScore on BOODLE if this field is not in table
+  FROM BUR_BehaviourScoreImport
+  WHERE IDNumber = :IDNumber 
+  ORDER BY BehaviourScoreImportID desc
+endcode  
+
+PROC AddLoanPolicies 
+input
+  LoanID int
+sqlcode  
+  --- Delete now disabled policies
+  DELETE FROM lsLoanPolicy 
+  WHERE LoanID = :LoanID
+  AND PolicyID IN (SELECT PolicyID FROM lsPolicy WHERE Enabled = 0);
+  --- Insert missing policies
+  INSERT INTO lsLoanPolicy (LoanID, PolicyID, Result, EffectiveDate)
+    SELECT LD.LoanID, PL.PolicyID, 0, GETDATE()
+    FROM lsLoanDetail LD
+    LEFT JOIN lsPolicy PL ON PL.Enabled = 1
+    LEFT JOIN lsLoanPolicy LP ON PL.PolicyID = LP.PolicyID AND LD.LoanID = LP.LoanID
+    WHERE LD.LoanID = :LoanID
+    AND LP.PolicyID IS NULL;
+endcode
+
+/***
+CREATE PROCEDURE dbo.usp_GetClientLoanArrears
+  @LoanID INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+  
+  SELECT
+    CycleKey,
+    PeriodType,
+    CAST(Delinquency AS INT) Delinquency,
+    AmountPaid,
+    InstalmentDue,
+    EffectiveDate 
+  FROM LNS_ArrearsHistory
+  WHERE LoanID = @LoanID
+  ORDER BY CycleKey, PeriodType;
+
+CREATE PROCEDURE dbo.usp_GetClientLoanContract 
+  @LoanID INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    RecordID, 
+    TransactionDate, 
+    TransactionType, 
+    Amount
+  FROM lsLoanContract
+  WHERE LoanID = @LoanID
+  ORDER BY RecordID;
+
+CREATE PROCEDURE dbo.usp_GetClientLoans 
+  @RegNo VARCHAR(15)
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT 
+    ld.LoanID, 
+    ld.Status, 
+    ld.NoOfPay,
+    ab.CreditProviderID
+  FROM lsLoanDetail ld
+  INNER JOIN EntityData ed on ed.EntityID = ld.EntityID
+  INNER JOIN ACC_Book ab on ab.HostID = ld.HostID and ab.BookID = ld.BookID
+  WHERE ed.RegNo = @RegNo
+  AND (ld.Status in (10,15) OR ld.status >= 30)
+  ORDER BY ld.LoanID
+
+CREATE PROCEDURE dbo.usp_GetClientLoanStatuses
+  @LoanID INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+  
+  SELECT
+    DDID,
+    LoanStatus,
+    CreateDate StatusDate
+  FROM lsDDLoanStatus
+  WHERE LoanID = @LoanID
+  AND (LoanStatus in (10,15) OR LoanStatus >= 30)
+  ORDER BY DDID;
+
+CREATE PROCEDURE dbo.usp_GetClientLoanTransactions
+  @LoanID INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+  
+  SELECT
+    TransNo,
+    TransCode,
+    TransType,
+    TransDate,
+    EffectDate,
+    AmtPost,
+    Processed
+  FROM lsBatchHistory
+  WHERE LoanID = @LoanID
+  ORDER BY TransNo;  
+
+CREATE PROCEDURE dbo.usp_UpdateLoanPolicies 
+  @LoanID   INT,
+  @PolicyID INT,
+  @Result   BIT
+AS
+BEGIN
+  UPDATE lsLoanPolicy
+  SET result = @Result 
+  WHERE loanId = @LoanID 
+  AND PolicyID = @PolicyID;
+
+
+CREATE PROCEDURE dbo.usp_GetEmployerFlags 
+    @LoanID INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT 
+    ef.FlagID
+  FROM lsLoanDetail ld
+  INNER JOIN lsEntPsnAdd pa on pa.EntityID = ld.EntityID
+  INNER JOIN ENT_EntityFlag ef on ef.EntityID = pa.EntityID and ef.Enabled = 1
+  WHERE ld.LoanID = @LoanID
+
+***/
