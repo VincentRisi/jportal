@@ -430,6 +430,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <DELETEBY:     "deleteby">
 | <DELETEALL:    "deleteall">
 | <DELETEONE:    "deleteone">
+| <DESC:         "desc" >
 | <DOUBLE:       "double">
 | <DYNAMIC:      "dynamic">
 | <EXECUTE:      "execute">
@@ -1742,6 +1743,7 @@ void jStdProc() :
   boolean forUpdate = false;
   boolean forReadOnly = false;
   boolean inOrder = false;
+  boolean descending = false;
   boolean isStdProc = false;
   String s;
 }
@@ -1843,7 +1845,7 @@ void jStdProc() :
       }
     }
   | <SELECTALL>
-    ((<IN>)? <ORDER> {inOrder = true;})?
+    ((<IN>)? <ORDER> {inOrder = true;} (jOrderColumn())* (<DESC> {descending = true;}))?
     ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
     {
       if (table.hasBigXML)
@@ -1854,12 +1856,10 @@ void jStdProc() :
         if (inOrder) proc.name = proc.name+"Sorted";
         if (forUpdate) proc.name = proc.name+"Upd";
         else if (forReadOnly) proc.name = proc.name+"ReadOnly";
-        table.buildSelectAll(proc, forUpdate, forReadOnly, inOrder);
+        table.buildSelectAll(proc, forUpdate, forReadOnly, inOrder, descending);
         table.hasStdProcs = true;
       }
     }
-
-
   | <COUNT>
     {
       proc.name = "Count";
@@ -1905,6 +1905,7 @@ void jNewProc() :
   boolean forUpdate = false;
   boolean forReadOnly = false;
   boolean inOrder = false;
+  boolean descending = false;
 }
 {
  s = jIdent()
@@ -1981,21 +1982,20 @@ void jNewProc() :
       )?
       ( jOldCode() | jNewCode() )
       {
-        table.buildSelectFrom(proc,table, outLog);
+        table.buildSelectFrom(proc, table, outLog);
         proc.useStd = true;
         isStdProc = true;
       }
     
   | <SELECTONEBY> ( jProcColumn())+
-      ((<IN>)? <ORDER> {inOrder = true;})?
       ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       {
         proc.isSingle = true;
-        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, descending, outLog);
         table.hasStdProcs = true;
       }
   | <SELECTBY> ( jProcColumn())+
-      ((<IN>)? <ORDER> {inOrder = true;})?
+      ((<IN>)? <ORDER> {inOrder = true;} (jOrderColumn())* (<DESC> {descending = true;}))?
       ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       ( <OUTPUT> (jOutputType())?
         ( jField()
@@ -2031,7 +2031,7 @@ void jNewProc() :
         )*
       )?
       {
-        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, descending, outLog);
         table.hasStdProcs = true;
       }
   | <DELETEBY> ( jProcColumn())+
@@ -2069,6 +2069,22 @@ void jProcColumn() :
       outLog.println(proc.name+" field "+s+" cannot be set aswell, already present as input");
     else
       proc.fields.addElement(s);
+  }
+}
+
+void jOrderColumn() :
+{
+  String s;
+}
+{
+  s = jIdent()
+  {
+    if (!table.hasField(s))
+      outLog.println(proc.name+" field "+s+" not present in table");
+    else if (proc.hasOrders(s))
+      outLog.println(proc.name+" field "+s+" already present");
+    else
+      proc.orderFields.addElement(s);
   }
 }
 

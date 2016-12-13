@@ -32,14 +32,26 @@ proc SelectAll
 proc DeleteOne options "BL"
 proc DeleteAll
 proc Update    options "BL"
-proc ByCee SelectBy Cee
+
+proc SelectByCee 
+  SelectBy Cee in order
+output 
+  Xavier = 
+  Dee = 
+  Toppers =
+
+proc SelectOneByXavier
+  SelectOneBy Xavier in order
+
+proc DeleteByDee
+  DeleteBy Dee
 
 proc AtomTest
 input
   Xavier =
 sqlcode
 begin atomic
-  update ZedZed set A y = 5.4321  where Xavier = :Xavier;
+  update ZedZed set A y = 5.4321  where Xavier =  :Xavier;
   update ZedZed set Bee = 54.321  where Xavier = :Xavier;
   update ZedZed set Cee = '12.00' where Xavier = :Xavier;
 end  

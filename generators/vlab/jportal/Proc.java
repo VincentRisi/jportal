@@ -61,6 +61,8 @@ public class Proc implements Serializable
   public Vector<String> fields;
   /** SelectFor update fields   */
   public Vector<String> updateFields;
+  /** Select in order fields */
+  public Vector<String> orderFields;
   /** Indicates the procedure uses stored procedure logic Code */
   public boolean isProc;
   /** Indicates the procedure uses stored procedure logic Code */
@@ -116,6 +118,7 @@ public class Proc implements Serializable
     options         = new Vector<String>();
     fields          = new Vector<String>();
     updateFields    = new Vector<String>();
+    orderFields = new Vector<String>();
     isProc          = false;
     isSProc         = false;
     isData          = false;
@@ -523,6 +526,16 @@ public class Proc implements Serializable
     for (int i = 0; i < fields.size(); i++)
     {
       String option = (String)fields.elementAt(i);
+      if (option.toLowerCase().compareTo(value.toLowerCase()) == 0)
+        return true;
+    }
+    return false;
+  }
+  public boolean hasOrders(String value)
+  {
+    for (int i = 0; i < fields.size(); i++)
+    {
+      String option = (String)orderFields.elementAt(i);
       if (option.toLowerCase().compareTo(value.toLowerCase()) == 0)
         return true;
     }

@@ -7,7 +7,7 @@
 /// which accompanies this distribution and is available at 
 /// http://www.eclipse.org/legal/cpl-v10.html 
 /// Contributors:
-///    Vincent Risi
+///    Vincent Risi, Hennie Hammann
 /// ------------------------------------------------------------------
 
 package vlab.jportal;
@@ -996,10 +996,10 @@ public class Table implements Serializable
   /**
    * Builds a select all rows proc
    */
-  public void buildSelectAll(Proc proc, boolean update, boolean readonly, boolean inOrder)
+  public void buildSelectAll(Proc proc, boolean update, boolean readonly, boolean inOrder, boolean descending)
   {
     String name = tableName();
-    int i, n;
+    int i;
     String line;
     proc.isStd = true;
     proc.isSql = true;
@@ -1015,22 +1015,41 @@ public class Table implements Serializable
       proc.lines.addElement(new Line(line + field.useLiteral()));
     }
     proc.lines.addElement(new Line(" from " + name));
-    if (inOrder)
+    selectFor(proc, update, readonly);
+    selectOrderBy(proc, inOrder, descending);
+  }
+  private void selectOrderBy(Proc proc, boolean inOrder, boolean descending)
+  {
+    int i, n;
+    String line, tail;
+    if (inOrder == false)
+      return;
+    if (proc.orderFields.size() == 0)
     {
-      for (i = 0, n = 0; i < fields.size(); i++)
+      for (i=0; i < fields.size(); i++)
       {
         Field field = fields.elementAt(i);
         if (field.isPrimaryKey)
-        {
-          if (n == 0)
-            line = " order by ";
-          else
-            line = ", ";
-          n++;
-          proc.lines.addElement(new Line(line + field.useLiteral()));
-        }
+          proc.orderFields.addElement(field.useLiteral());
       }
     }
+    n = proc.orderFields.size();
+    for (i = 0; i < n; i++)
+    {
+      String fieldName = proc.orderFields.elementAt(i);
+      if (i == 0)
+        line = " order by ";
+      else
+        line = ", ";
+      if (descending == true && i+1 == n)
+        tail = " desc";
+      else
+        tail = "";
+      proc.lines.addElement(new Line(line + fieldName + tail));
+    }
+  }
+  private void selectFor(Proc proc, boolean update, boolean readonly)
+  {
     if (update)
       proc.lines.addElement(new Line(" for update"));
     else if (readonly)
@@ -1071,7 +1090,7 @@ public class Table implements Serializable
       throw new Error("Error generating buildDeleteBy");
     }
   }
-  public void buildSelectBy(Proc proc, boolean forUpdate, boolean forReadOnly, boolean inOrder, PrintWriter outLog)
+  public void buildSelectBy(Proc proc, boolean forUpdate, boolean forReadOnly, boolean inOrder, boolean descending, PrintWriter outLog)
   {
     String name = tableName();
     int i, j, k;
@@ -1079,38 +1098,40 @@ public class Table implements Serializable
     proc.isStd = true;
     proc.isSql = true;
     proc.lines.addElement(new Line("select"));
-    for (i = 0; i < proc.outputs.size(); i++)
+    if (proc.outputs.size() > 0)
     {
-      Field fieldOut = (Field)proc.outputs.elementAt(i);
-      for (k = 0; k < fields.size(); k++)
+      for (i = 0; i < proc.outputs.size(); i++)
       {
-        Field field = (Field)fields.elementAt(k);
-        if (field.name.equalsIgnoreCase(fieldOut.name))
+        Field fieldOut = (Field) proc.outputs.elementAt(i);
+        for (k = 0; k < fields.size(); k++)
         {
-          if (i == 0)
-            line = "  ";
-          else
-            line = ", ";
-          proc.lines.addElement(new Line(line + field.useLiteral()));
+          Field field = (Field) fields.elementAt(k);
+          if (field.name.equalsIgnoreCase(fieldOut.name))
+          {
+            if (i == 0)
+              line = "  ";
+            else
+              line = ", ";
+            proc.lines.addElement(new Line(line + field.useLiteral()));
+          }
         }
       }
     }
-    if (i == 0)
+    else
     {
-    for (i = 0; i < fields.size(); i++)
-    {
-      Field field = (Field) fields.elementAt(i);
-      proc.outputs.addElement(field);
-      if (i == 0)
-        line = "  ";
-      else
-        line = ", ";
+      for (i = 0; i < fields.size(); i++)
+      {
+        Field field = (Field) fields.elementAt(i);
+        proc.outputs.addElement(field);
+        if (i == 0)
+          line = "  ";
+        else
+          line = ", ";
         proc.lines.addElement(new Line(line + field.useLiteral()));
       }
     }
-
     proc.lines.addElement(new Line(" from " + name));
-
+    selectFor(proc, forUpdate, forReadOnly);
     for (i = 0, j = 0; i < proc.fields.size(); i++)
     {
       String fieldName = (String) proc.fields.elementAt(i);
@@ -1130,13 +1151,11 @@ public class Table implements Serializable
         }
       }
     }
-    if (inOrder) proc.name = proc.name + "Sorted";
-    if (forUpdate) proc.name = proc.name + "Upd";
-    else if (forReadOnly) proc.name = proc.name + "ReadOnly";
     if (j == 0)
     {
       throw new Error("Error in SelectBy");
     }
+    selectOrderBy(proc, inOrder, descending);
   }
   public void buildSelectFrom(Proc proc, Table table, PrintWriter outLog)
   {
@@ -1356,7 +1375,7 @@ public class Table implements Serializable
     case Field.MONEY:
       return "DECIMAL(18,2)";
     case Field.USERSTAMP:
-        return "VARCHAR(50)";
+      return "VARCHAR(50)";
     case Field.XML:
       return "XML";
     }

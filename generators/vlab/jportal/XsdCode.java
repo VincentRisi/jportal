@@ -676,7 +676,7 @@ public class XsdCode extends Generator
       if (!table.isStoredProc)
         genCommand(table, placeHolder, "InsertCommand", "Text", outData, outLog);
       proc = new Proc();
-      table.buildSelectAll(proc, false, false, true);
+      table.buildSelectAll(proc, false, false, true, false);
       placeHolder = genCommand(proc);
 
       genCommand(table, placeHolder, "SelectCommand", commandType, outData, outLog);

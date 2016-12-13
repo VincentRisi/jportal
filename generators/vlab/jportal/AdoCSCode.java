@@ -450,11 +450,10 @@ public class AdoCSCode extends Generator
 			}
       else
         outData.println("        wCursor.Parameter(" + i + ", mRec._" + field.useName() + member + tail + ");");
-
+    }
     outData.println("        wCursor.Exec();");
     outData.println("      }");
     outData.println("    }");
-		}
   }
   static void generateReturningProc(Proc proc, String mainName, PrintWriter outData)
   {
@@ -506,7 +505,7 @@ public class AdoCSCode extends Generator
 			}
       else
         outData.println("        wCursor.Parameter(" + i + ", mRec._" + field.useName() + member + tail + ");");
-
+    }
     outData.println("        wCursor.Run();");
     outData.println("        bool wResult = (wCursor.HasReader() && wCursor.Read());");
     outData.println("        if (wResult == true)");
@@ -516,7 +515,6 @@ public class AdoCSCode extends Generator
     outData.println("        return wResult;");
     outData.println("      }");
     outData.println("    }");
-  }
 	}
   static void generateReadOneProc(Proc proc, String mainName, PrintWriter outData)
   {
