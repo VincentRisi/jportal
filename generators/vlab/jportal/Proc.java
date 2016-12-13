@@ -533,7 +533,7 @@ public class Proc implements Serializable
   }
   public boolean hasOrders(String value)
   {
-    for (int i = 0; i < fields.size(); i++)
+    for (int i = 0; i < orderFields.size(); i++)
     {
       String option = (String)orderFields.elementAt(i);
       if (option.toLowerCase().compareTo(value.toLowerCase()) == 0)

@@ -672,7 +672,7 @@ public class AdoCSCode extends Generator
     outData.println("      }");
     outData.println("      else return null;");
     outData.println("    }");
-    outData.println("    public void Set" + mainName + "Rec(DataTable table, int row)");
+    outData.println("    public void Set" + upperFirst + "Rec(DataTable table, int row) // used to be " + mainName);
     outData.println("    {");
     outData.println("      mRec = new " + mainName + "Rec();");
     outData.println("      DataRowCollection rows = table.Rows;");

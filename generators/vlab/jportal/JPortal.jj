@@ -1845,7 +1845,7 @@ void jStdProc() :
       }
     }
   | <SELECTALL>
-    ((<IN>)? <ORDER> {inOrder = true;} (jOrderColumn())* (<DESC> {descending = true;}))?
+    ((<IN>)? <ORDER> {inOrder = true;} (jOrderColumn())* (<DESC> {descending = true;})?)?
     ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
     {
       if (table.hasBigXML)
@@ -1995,7 +1995,7 @@ void jNewProc() :
         table.hasStdProcs = true;
       }
   | <SELECTBY> ( jProcColumn())+
-      ((<IN>)? <ORDER> {inOrder = true;} (jOrderColumn())* (<DESC> {descending = true;}))?
+      ((<IN>)? <ORDER> {inOrder = true;} (jOrderColumn())* (<DESC> {descending = true;})?)?
       ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       ( <OUTPUT> (jOutputType())?
         ( jField()

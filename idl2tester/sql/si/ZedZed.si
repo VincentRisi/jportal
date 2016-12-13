@@ -34,14 +34,14 @@ proc DeleteAll
 proc Update    options "BL"
 
 proc SelectByCee 
-  SelectBy Cee in order
+  SelectBy Cee in order Dee Toppers desc
 output 
   Xavier = 
   Dee = 
   Toppers =
 
 proc SelectOneByXavier
-  SelectOneBy Xavier in order
+  SelectOneBy Xavier update
 
 proc DeleteByDee
   DeleteBy Dee

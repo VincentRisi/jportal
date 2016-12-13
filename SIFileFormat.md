@@ -102,9 +102,9 @@ Views are a powerful construct and allow for the simplification of queries in so
 `Added Standard Proc`
 
     PROC name
-    (SELECT (STANDARD)? (INPUT (InputType)? (Field)+ )? (OUTPUT (OutputType)? (PackageField)* )? (OldCode | NewCode) 
-    |SELECTONEBY (Column)+ ((IN)? ORDER)? ((FOR>)? (UPDATE | READONLY))? 
-    |SELECTBY (Column)+ ((IN)? ORDER)? ((FOR)? (UPDATE| READONLY))? (OUTPUT (OutputType)? (Field)*)? 
+    (SELECT ('(' STANDARD') ')? (INPUT (InputType)? (Field)+ )? (OUTPUT (OutputType)? (PackageField)* )? (OldCode | NewCode) 
+    |SELECTONEBY (Column)+  ((FOR>)? (UPDATE|READONLY))? 
+    |SELECTBY (Column)+ ((IN)? ORDER (Column)+ (DESC)? )? ((FOR)? (UPDATE|READONLY))? (OUTPUT (OutputType)? (Field)*)? 
     |DELETEBY (Column)+
     |UPDATEFOR (Column)+ 
     |UPDATEBY (Column)+ (FOR (Column)+)? 
@@ -126,3 +126,4 @@ Views are a powerful construct and allow for the simplification of queries in so
     SQLDATA  
     (lines)+  
     ENDDATA
+ 
