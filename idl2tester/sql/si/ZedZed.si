@@ -1,4 +1,4 @@
-DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8"
+DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8" "use func"
 PACKAGE  vlab
 OUTPUT   ZedZed
 SERVER   ssm
