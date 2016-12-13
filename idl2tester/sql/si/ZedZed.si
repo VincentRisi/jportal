@@ -46,6 +46,16 @@ proc SelectOneByXavier
 proc DeleteByDee
   DeleteBy Dee
 
+proc SelectSome Select (standard)
+input
+  Cee =
+output
+  Dee =
+sqlcode
+  select Dee from ZedZed where Cee >= :Cee
+endcode  
+
+
 proc AtomTest
 input
   Xavier =
