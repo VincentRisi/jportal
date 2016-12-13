@@ -4,7 +4,7 @@ output sprocs
 server boodle 
 schema dbo
 
-Table usp_
+Table Usp
 
 PROC GetAFItems
 input
@@ -22,7 +22,7 @@ sqlcode
   ORDER BY ItemID
 endcode
 
-PROC GetBehaviour 
+SPROC GetBehaviour 
 input
   IDNumber CHAR(13)
 output
@@ -53,13 +53,10 @@ sqlcode
     AND LP.PolicyID IS NULL;
 endcode
 
-/***
-CREATE PROCEDURE dbo.usp_GetClientLoanArrears
-  @LoanID INT
-AS
-BEGIN
-  SET NOCOUNT ON;
-  
+PROC GetClientLoanArrears
+input
+  LoanID INT
+sqlcode
   SELECT
     CycleKey,
     PeriodType,
@@ -70,13 +67,12 @@ BEGIN
   FROM LNS_ArrearsHistory
   WHERE LoanID = @LoanID
   ORDER BY CycleKey, PeriodType;
+endcode  
 
-CREATE PROCEDURE dbo.usp_GetClientLoanContract 
-  @LoanID INT
-AS
-BEGIN
-  SET NOCOUNT ON;
-
+PROC GetClientLoanContract 
+input
+  LoanID INT
+sqlcode  
   SELECT
     RecordID, 
     TransactionDate, 
@@ -85,13 +81,17 @@ BEGIN
   FROM lsLoanContract
   WHERE LoanID = @LoanID
   ORDER BY RecordID;
+endcode  
 
-CREATE PROCEDURE dbo.usp_GetClientLoans 
-  @RegNo VARCHAR(15)
-AS
-BEGIN
-  SET NOCOUNT ON;
-
+PROC GetClientLoans 
+input
+  RegNo CHAR(15)
+output
+  LoanID  INT
+  Status  INT
+  NoOfPay INT 
+  CreditProviderID INT
+sqlcode
   SELECT 
     ld.LoanID, 
     ld.Status, 
@@ -100,31 +100,41 @@ BEGIN
   FROM lsLoanDetail ld
   INNER JOIN EntityData ed on ed.EntityID = ld.EntityID
   INNER JOIN ACC_Book ab on ab.HostID = ld.HostID and ab.BookID = ld.BookID
-  WHERE ed.RegNo = @RegNo
+  WHERE ed.RegNo = :RegNo
   AND (ld.Status in (10,15) OR ld.status >= 30)
   ORDER BY ld.LoanID
+endcode  
 
-CREATE PROCEDURE dbo.usp_GetClientLoanStatuses
-  @LoanID INT
-AS
-BEGIN
-  SET NOCOUNT ON;
-  
+PROC GetClientLoanStatuses
+input
+  LoanID     int
+output
+  DDID       int  
+  LoanStatus byte
+  StatusDate datetime
+sqlcode
   SELECT
     DDID,
     LoanStatus,
     CreateDate StatusDate
   FROM lsDDLoanStatus
-  WHERE LoanID = @LoanID
+  WHERE LoanID = :LoanID
   AND (LoanStatus in (10,15) OR LoanStatus >= 30)
   ORDER BY DDID;
+endcode  
 
-CREATE PROCEDURE dbo.usp_GetClientLoanTransactions
-  @LoanID INT
-AS
-BEGIN
-  SET NOCOUNT ON;
-  
+PROC GetClientLoanTransactions
+input
+  LoanID INT
+output  
+  TransNo    int
+  TransCode  int
+  TransType  short
+  TransDate  datetime
+  EffectDate datetime
+  AmtPost    money
+  Processed  int
+sqlcode
   SELECT
     TransNo,
     TransCode,
@@ -134,32 +144,31 @@ BEGIN
     AmtPost,
     Processed
   FROM lsBatchHistory
-  WHERE LoanID = @LoanID
+  WHERE LoanID = :LoanID
   ORDER BY TransNo;  
+endcode  
 
-CREATE PROCEDURE dbo.usp_UpdateLoanPolicies 
-  @LoanID   INT,
-  @PolicyID INT,
-  @Result   BIT
-AS
-BEGIN
+PROC UpdateLoanPolicies
+input
+  LoanID   INT
+  PolicyID INT
+  Result   BIT
+sqlcode
   UPDATE lsLoanPolicy
-  SET result = @Result 
-  WHERE loanId = @LoanID 
-  AND PolicyID = @PolicyID;
+  SET result = :Result 
+  WHERE loanId = :LoanID 
+  AND PolicyID = :PolicyID;
+endcode
 
-
-CREATE PROCEDURE dbo.usp_GetEmployerFlags 
-    @LoanID INT
-AS
-BEGIN
-  SET NOCOUNT ON;
-
-  SELECT 
-    ef.FlagID
+PROC GetEmployerFlags 
+input
+  LoanID INT
+output
+  FlagId INT
+sqlcode
+  SELECT ef.FlagID
   FROM lsLoanDetail ld
   INNER JOIN lsEntPsnAdd pa on pa.EntityID = ld.EntityID
   INNER JOIN ENT_EntityFlag ef on ef.EntityID = pa.EntityID and ef.Enabled = 1
-  WHERE ld.LoanID = @LoanID
-
-***/
+  WHERE ld.LoanID = :LoanID
+endcode
