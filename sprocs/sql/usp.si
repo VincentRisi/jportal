@@ -22,7 +22,7 @@ sqlcode
   ORDER BY ItemID
 endcode
 
-SPROC GetBehaviour 
+PROC GetBehaviour 
 input
   IDNumber CHAR(13)
 output
