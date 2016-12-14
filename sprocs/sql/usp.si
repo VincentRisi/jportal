@@ -1,0 +1,174 @@
+database PCS FLAGS 'mssql storedprocs'
+package pcs
+output sprocs
+server boodle 
+schema dbo
+
+Table Usp
+
+PROC GetAFItems
+input
+  LoanID       INT
+output
+  ItemID       INT
+  CategoryID   INT
+  Amount       MONEY
+  LoanID       INT
+  PartyType    CHAR(1)
+sqlcode  
+  SELECT ItemID, CategoryID, Amount, LoanID, PartyType
+  FROM afItems
+  WHERE LoanID = :LoanID
+  ORDER BY ItemID
+endcode
+
+PROC GetBehaviour 
+input
+  IDNumber CHAR(13)
+output
+  BehaviourScore INT
+sqlcode
+  SELECT Top 1 
+    BehaviourScore -- this may need to be NULL BehaviourScore on BOODLE if this field is not in table
+  FROM BUR_BehaviourScoreImport
+  WHERE IDNumber = :IDNumber 
+  ORDER BY BehaviourScoreImportID desc
+endcode  
+
+PROC AddLoanPolicies 
+input
+  LoanID int
+sqlcode  
+  --- Delete now disabled policies
+  DELETE FROM lsLoanPolicy 
+  WHERE LoanID = :LoanID
+  AND PolicyID IN (SELECT PolicyID FROM lsPolicy WHERE Enabled = 0);
+  --- Insert missing policies
+  INSERT INTO lsLoanPolicy (LoanID, PolicyID, Result, EffectiveDate)
+    SELECT LD.LoanID, PL.PolicyID, 0, GETDATE()
+    FROM lsLoanDetail LD
+    LEFT JOIN lsPolicy PL ON PL.Enabled = 1
+    LEFT JOIN lsLoanPolicy LP ON PL.PolicyID = LP.PolicyID AND LD.LoanID = LP.LoanID
+    WHERE LD.LoanID = :LoanID
+    AND LP.PolicyID IS NULL;
+endcode
+
+PROC GetClientLoanArrears
+input
+  LoanID INT
+sqlcode
+  SELECT
+    CycleKey,
+    PeriodType,
+    CAST(Delinquency AS INT) Delinquency,
+    AmountPaid,
+    InstalmentDue,
+    EffectiveDate 
+  FROM LNS_ArrearsHistory
+  WHERE LoanID = @LoanID
+  ORDER BY CycleKey, PeriodType;
+endcode  
+
+PROC GetClientLoanContract 
+input
+  LoanID INT
+sqlcode  
+  SELECT
+    RecordID, 
+    TransactionDate, 
+    TransactionType, 
+    Amount
+  FROM lsLoanContract
+  WHERE LoanID = @LoanID
+  ORDER BY RecordID;
+endcode  
+
+PROC GetClientLoans 
+input
+  RegNo CHAR(15)
+output
+  LoanID  INT
+  Status  INT
+  NoOfPay INT 
+  CreditProviderID INT
+sqlcode
+  SELECT 
+    ld.LoanID, 
+    ld.Status, 
+    ld.NoOfPay,
+    ab.CreditProviderID
+  FROM lsLoanDetail ld
+  INNER JOIN EntityData ed on ed.EntityID = ld.EntityID
+  INNER JOIN ACC_Book ab on ab.HostID = ld.HostID and ab.BookID = ld.BookID
+  WHERE ed.RegNo = :RegNo
+  AND (ld.Status in (10,15) OR ld.status >= 30)
+  ORDER BY ld.LoanID
+endcode  
+
+PROC GetClientLoanStatuses
+input
+  LoanID     int
+output
+  DDID       int  
+  LoanStatus byte
+  StatusDate datetime
+sqlcode
+  SELECT
+    DDID,
+    LoanStatus,
+    CreateDate StatusDate
+  FROM lsDDLoanStatus
+  WHERE LoanID = :LoanID
+  AND (LoanStatus in (10,15) OR LoanStatus >= 30)
+  ORDER BY DDID;
+endcode  
+
+PROC GetClientLoanTransactions
+input
+  LoanID INT
+output  
+  TransNo    int
+  TransCode  int
+  TransType  short
+  TransDate  datetime
+  EffectDate datetime
+  AmtPost    money
+  Processed  int
+sqlcode
+  SELECT
+    TransNo,
+    TransCode,
+    TransType,
+    TransDate,
+    EffectDate,
+    AmtPost,
+    Processed
+  FROM lsBatchHistory
+  WHERE LoanID = :LoanID
+  ORDER BY TransNo;  
+endcode  
+
+PROC UpdateLoanPolicies
+input
+  LoanID   INT
+  PolicyID INT
+  Result   BIT
+sqlcode
+  UPDATE lsLoanPolicy
+  SET result = :Result 
+  WHERE loanId = :LoanID 
+  AND PolicyID = :PolicyID;
+endcode
+
+PROC GetEmployerFlags 
+input
+  LoanID INT
+output
+  FlagId INT
+sqlcode
+  SELECT ef.FlagID
+  FROM lsLoanDetail ld
+  INNER JOIN lsEntPsnAdd pa on pa.EntityID = ld.EntityID
+  INNER JOIN ENT_EntityFlag ef on ef.EntityID = pa.EntityID and ef.Enabled = 1
+  WHERE ld.LoanID = :LoanID
+endcode
