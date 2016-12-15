@@ -14,8 +14,8 @@ if (USE_ANYDBTEST)
     ${source_dir}/idl/wallap.ib
   )
   
-  anydbMake2(jportal_anydbtest ${ANYDBTEST_SOURCE_DIR}/tester.anydb)
-  add_custom_target (jportal_anydbtest_source ALL SOURCES ${sources})
-  add_dependencies (jportal_anydbtest jportal_anydbtest_source)
+  anydbMake2(jportal_anydbtest ${ANYDBTEST_SOURCE_DIR}/tester.anydb ${sources})
+  #add_custom_target (jportal_anydbtest_source ALL SOURCES ${sources})
+  #add_dependencies (jportal_anydbtest jportal_anydbtest_source)
 
 endif ()  

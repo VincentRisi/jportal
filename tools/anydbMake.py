@@ -12,9 +12,13 @@ parser.add_option("-b", "--build",      dest="build",      default=False, action
 parser.add_option("-c", "--crackle",    dest="crackle",    default='crackle.jar')
 parser.add_option("-f", "--fromdir",    dest="fromdir",    default='/main')
 parser.add_option("-j", "--jportal",    dest="jportal",    default='jportal.jar')
+parser.add_option("-n", "--nobuild",    dest="nobuild",    default=False, action="store_true", help="do not do the build")
+parser.add_option("-o", "--outfile",    dest="outfile",    default='')
 parser.add_option("-p", "--pickle",     dest="pickle",     default='pickle.jar')
 parser.add_option("-t", "--todir",      dest="todir",      default='/main')
 parser.add_option("-v", "--verbose",    dest="verbose",    default=False, action="store_true", help="verbose")
+parser.add_option("-S", "--sources",    dest="sources",    default=False, action="store_true", help="writes sources to outfile if set")
+parser.add_option("-T", "--targets",    dest="targets",    default=False, action="store_true", help="writes targets to outfile if set")
 
 (options, args) = parser.parse_args()
 
@@ -331,6 +335,30 @@ def derive_targets(project):
     name, _ = os.path.splitext(base)
     for mask in mask_keys:
       get_targets(source, name, mask, project)
+      
+def build_outfile(outfile_name):
+  outfile = open(fixname(outfile_name), 'wt')
+  if options.sources == True:
+    outfile.write('set (sources\n')  
+    for source in project.sources:
+      outfile.write('  %s\n' % (source.name))
+    for key in project.idls: 
+      #outfile.write('  # %s\n' % (key))
+      for source in project.idls[key]:
+        outfile.write('  %s\n' % (source.name))
+    for key in project.apps: 
+      #outfile.write('  # %s\n' % (key))
+      for source in project.apps[key]:
+        outfile.write('  %s\n' % (source.name))
+    outfile.write(')\n\n')
+  if options.targets == True:
+    outfile.write('set (targets\n')  
+    for source in project.sources:
+      for target in source.targets:  
+        outfile.write('  %s\n' % (target.name))
+    outfile.write(')\n\n')
+    outfile.write('set_property(SOURCE ${targets} GENERATED)\n\n')
+  outfile.close() 
 
 project = parse_anydb(sourceFile)
 derive_targets(project)
@@ -351,6 +379,11 @@ if 'prfile' not in project.apps:
   project.apps['prfile'] = []
 prFiles = project.apps['prfile']
 piFiles = project.apps['pifile']
+#-------------------------------------------------------
+if len(options.outfile) > 0:
+  build_outfile(options.outfile)
+if options.nobuild == True:
+  exit(0)
 #-------------------------------------------------------
 for source in project.sources:
   if source.noTargets == 0:
