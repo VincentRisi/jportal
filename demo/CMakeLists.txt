@@ -1,5 +1,11 @@
 project (jportal_demos)
 
-anydbMake(jportal_mcdemo ${CMAKE_CURRENT_SOURCE_DIR}/mcdemo.anydb "${CMAKE_CURRENT_BINARY_DIR}/kamcodes.cs")
+option (USE_DEMOS "Use demos" OFF)
 
-anydbMake(jportal_ojdemo ${CMAKE_CURRENT_SOURCE_DIR}/ojdemo.anydb "${CMAKE_CURRENT_BINARY_DIR}/Master.java")
+if (USE_DEMOS)
+
+  anydbMake2(jportal_mcdemo ${CMAKE_CURRENT_SOURCE_DIR}/mcdemo.anydb "${CMAKE_CURRENT_SOURCE_DIR}/kamcodes.si")
+  
+  anydbMake2(jportal_ojdemo ${CMAKE_CURRENT_SOURCE_DIR}/ojdemo.anydb "${CMAKE_CURRENT_SOURCE_DIR}/master.si")
+
+endif ()
