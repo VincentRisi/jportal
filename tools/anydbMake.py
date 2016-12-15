@@ -335,6 +335,9 @@ def derive_targets(project):
     name, _ = os.path.splitext(base)
     for mask in mask_keys:
       get_targets(source, name, mask, project)
+
+def add_to_group(type, file):
+  pass      
       
 def build_outfile(outfile_name):
   outfile = open(fixname(outfile_name), 'wt')
@@ -342,22 +345,25 @@ def build_outfile(outfile_name):
     outfile.write('set (sources\n')  
     for source in project.sources:
       outfile.write('  %s\n' % (source.name))
+      add_to_group('JPORTAL', source.name)
     for key in project.idls: 
-      #outfile.write('  # %s\n' % (key))
       for source in project.idls[key]:
         outfile.write('  %s\n' % (source.name))
+        add_to_group('CRACKLE', source.name)
     for key in project.apps: 
       #outfile.write('  # %s\n' % (key))
       for source in project.apps[key]:
         outfile.write('  %s\n' % (source.name))
+        add_to_group('PICKLE', source.name)
     outfile.write(')\n\n')
   if options.targets == True:
     outfile.write('set (targets\n')  
     for source in project.sources:
       for target in source.targets:  
         outfile.write('  %s\n' % (target.name))
+        add_to_group('TARGET', source.name)
     outfile.write(')\n\n')
-    outfile.write('set_property(SOURCE ${targets} GENERATED)\n\n')
+    outfile.write('set_source_files_properties (${targets} PROPERTIES GENERATED TRUE)\n\n')
   outfile.close() 
 
 project = parse_anydb(sourceFile)
