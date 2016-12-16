@@ -9,12 +9,15 @@ using System.Windows.Forms;
 using System.IO;
 using System.Configuration;
 using vlab.ParamControl;
+#if use_oracle
 using Oracle.DataAccess.Client;
+#elif use_plsql
+#elif use_mssql
+#endif
 using IronPython.Hosting;
 using IronPython.Runtime;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
-using Bbd.Security.SecurityPrincipleClient;
 
 namespace vlab.ParamControl
 {
@@ -23,19 +26,9 @@ namespace vlab.ParamControl
     private string[] args;
     private string ParamBinName = ConfigurationManager.AppSettings["binFileName"];
     private string ParamLogName = ConfigurationManager.AppSettings["logFileName"];
-#if do_check_timtam
-    private string ParamApplicationName = ConfigurationManager.AppSettings["applicationName"];
-    private string ParamOperationName = ConfigurationManager.AppSettings["operationName"];
-    private string ParamUrlName = ConfigurationManager.AppSettings["urlName"];
-#endif
     private string binFileName;
     private string registryName;
     private string logFileName;
-#if do_check_timtam
-    private string applicationName;
-    private string operationName;
-    private string urlName;
-#endif
     private string xuser, ypassword, zserver;
     private string connUserId, connPassword, connDataSource;
     private Registry registry;
@@ -67,11 +60,6 @@ namespace vlab.ParamControl
           case ' ':
             if (arg == "-b") state = 'b';
             else if (arg == "-l") state = 'l';
-#if do_check_timtam
-            else if (arg == "-a") state = 'a';
-            else if (arg == "-o") state = 'o';
-            else if (arg == "-u") state = 'u';
-#endif
             else if (arg == "-x") state = 'x';
             else if (arg == "-y") state = 'y';
             else if (arg == "-z") state = 'z';
@@ -86,20 +74,6 @@ namespace vlab.ParamControl
             logFileName = arg;
             state = ' ';
             break;
-#if do_check_timtam
-          case 'a':
-            applicationName = arg;
-            state = ' ';
-            break;
-          case 'o':
-            operationName = arg;
-            state = ' ';
-            break;
-          case 'u':
-            urlName = arg;
-            state = ' ';
-            break;
-#endif
           case 'x':
             xuser = arg;
             state = ' ';
@@ -116,11 +90,6 @@ namespace vlab.ParamControl
             System.Console.WriteLine("Valid command line arguments:");
             System.Console.WriteLine(" -b <binFileName>      : " + binFileName);
             System.Console.WriteLine(" -l <logFileName>      : " + logFileName);
-#if do_check_timtam
-            System.Console.WriteLine(" -a <applicationName>  : " + applicationName);
-            System.Console.WriteLine(" -o <operationName>    : " + operationName);
-            System.Console.WriteLine(" -u <urlName>          : " + urlName);
-#endif
             state = ' ';
             break;
         }
@@ -132,11 +101,6 @@ namespace vlab.ParamControl
       InitializeComponent();
       binFileName = ParamBinName;
       logFileName = ParamLogName;
-#if do_check_timtam
-      applicationName = ParamApplicationName;
-      operationName = ParamOperationName;
-      urlName = ParamUrlName;
-#endif
       thisForm = this;
       this.args = getArgs(args);
     }
@@ -145,51 +109,11 @@ namespace vlab.ParamControl
     public static string LogInfo  { set { Logger.Info = value;  } }
     public static string LogDebug { set { Logger.Debug = value; } }
     public bool ShowSql { get { return showSQL.Checked; } }
+
+    public object Resource1 { get; private set; }
+
     private ScriptEngine pyEngine = null;
     private ScriptScope pyScope = null;
-#if do_check_timtam
-    private bool timtamChecked = false;
-    private void checkTimTam()
-    {
-      if (timtamChecked == true) return;
-      timtamChecked = true;
-      using (AutoCursor.AppStart)
-      {
-        try
-        {
-          if (applicationName.Trim().Length != 0 && operationName.Trim().Length != 0)
-          {
-            LogInfo = string.Format("TimTam Application: {0} Operation: {1} Url: {2}", applicationName, operationName, urlName);
-            SecurityPrincipleClient client = new SecurityPrincipleClient(applicationName);
-            client.SetSecurityPrincipleProperties(urlName);
-            string[] operations = operationName.Split(';');
-            int id = 0;
-            bool access = false;
-            foreach (string op in operations)
-            {
-              client.AddToOperationList(op, id);
-              if (client.CheckAuthOperation(op) == true)
-              {
-                LogInfo = string.Format("Operation: {0} has access.", op);
-                access = true;
-              }
-              id++;
-            }
-            if (access == false)
-            {
-              LogInfo = string.Format("TimTam Application: {0} Operation: {1} Url: {2} Access Not Allowed", applicationName, operationName, urlName);
-              throw new Exception(string.Format("User does not have access to the {0} system", applicationName));
-            }
-          }
-        }
-        catch (Exception exception)
-        {
-          showException(exception);
-          Close();
-        }
-      }
-    }
-#endif
     private void applicationLoad(object sender, EventArgs e)
     {
       using (AutoCursor.AppStart)
@@ -267,7 +191,9 @@ namespace vlab.ParamControl
           string server = string.Format("Data Source={0};", connDataSource);
           string userData = string.Format("User Id={0};Password={1};", connUserId, connPassword);
           connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
+#if do_it_with_oracle
           connect = new JConnect(new OracleConnection(server + userData));
+#endif
           server = userData = "";
           connect.TypeOfVendor = VendorType.Oracle;
           connect.Open();
@@ -1626,9 +1552,6 @@ namespace vlab.ParamControl
     private void applicationActivated(object sender, EventArgs e)
     {
       positionForm();
-#if do_check_timtam
-      checkTimTam();
-#endif
     }
     private void clearLogButton_Click(object sender, EventArgs e)
     {

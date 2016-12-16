@@ -1210,7 +1210,6 @@
       // 
       // aboutPage
       // 
-      this.aboutPage.BackgroundImage = global::vlab.ParamControl.Properties.Resources.ZA_wp2;
       this.aboutPage.Location = new System.Drawing.Point(4, 25);
       this.aboutPage.Name = "aboutPage";
       this.aboutPage.Size = new System.Drawing.Size(1051, 608);

@@ -2,9 +2,13 @@ project (jportal_picktester)
 
 option (USE_PICKTESTER "Use picktester" OFF)
 if (USE_PICKTESTER)
-  anydbMake2(jportal_picktester ${PICKTESTER_SOURCE_DIR}/picktester.anydb)
+  execute_process(COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester.anydb)
+  include (${PICKTESTER_BINARY_DIR}/picktester.cmake)
+  anydbMake2(jportal_picktester ${PICKTESTER_SOURCE_DIR}/picktester.anydb ${sources})
 
-  anydbMake2(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb)
+  execute_process(COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktesterrest.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb)
+  include (${PICKTESTER_BINARY_DIR}/picktesterrest.cmake)
+  anydbMake2(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb ${sources})
   
   set (sql_list
     QueueType Drivers SourceSystem StreamFieldsDef StreamMessageFormat Staff
@@ -55,6 +59,18 @@ if (USE_PICKTESTER)
         DEPENDS ${logFile}
       )
     endforeach()
+  endif ()
+
+  if (WIN32)
+    option (USE_PICKTESTER_PARAM_CONTROL "Use picktester param control" OFF)
+    if (USE_PICKTESTER_PARAM_CONTROL)
+      include_external_msproject(ParamControl,
+        ${PICKTESTER_SOURCE_DIR}/ParamControl/ParamControl.csproj 
+        TYPE "935D56EF-171A-46DB-987E-23421FB992C5"
+        PLATFORM "Any CPU"
+        jportal_picktester
+      )
+    endif ()
   endif ()
 
 endif()

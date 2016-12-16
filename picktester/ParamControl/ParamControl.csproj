@@ -54,19 +54,11 @@
   <ItemGroup>
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files\IronPython 2.7\Platforms\Net40\IronPython.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\IronPython 2.7\Platforms\Net40\IronPython.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files\IronPython 2.7\Platforms\Net40\Microsoft.Scripting.dll</HintPath>
-    </Reference>
-    <Reference Include="Oracle.DataAccess, Version=4.112.3.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\tools\oracle11\odp.net\bin\4\Oracle.DataAccess.dll</HintPath>
-    </Reference>
-    <Reference Include="SecurityPrincipleClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\TimTam\SecurityPrincipleClient.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\IronPython 2.7\Platforms\Net40\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
