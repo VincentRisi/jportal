@@ -63,6 +63,15 @@ public class DelphiCode extends Generator
       generate(table, output, outLog);
     }
   }
+  static void println(PrintWriter pw)
+  {
+    pw.println();
+  }
+  static void println(PrintWriter pw, String line)
+  {
+    String newline = line.replace("`", "    ");
+    pw.println(newline);
+  }
   /**
   * Build of standard and user defined procedures
   */
@@ -75,13 +84,13 @@ public class DelphiCode extends Generator
       try
       {
         PrintWriter outData = new PrintWriter(outFile);
-        outData.println("unit "+table.useName()+";");
-        outData.println("// This code was generated, do not modify it, modify it at source and regenerate it.");
-        outData.println();
-        outData.println("interface");
-        outData.println();
-        outData.println("uses  SysUtils, Db, DbTables, Connector;");
-        outData.println();
+        println(outData, "unit "+table.useName()+";");
+        println(outData, "// This code was generated, do not modify it, modify it at source and regenerate it.");
+        println(outData);
+        println(outData, "interface");
+        println(outData);
+        println(outData, "uses  SysUtils, Db, DbTables, Connector;");
+        println(outData);
         if (table.hasStdProcs)
           generateStdInterface(table, outData);
         generateOtherInterface(table, outData);
@@ -92,18 +101,18 @@ public class DelphiCode extends Generator
             continue;
           if (proc.dynamics.size() < 1)
           {
-            outData.println("var");
-            outData.println("  "+table.useName()+proc.upperFirst()+" : String =");
+            println(outData, "var");
+            println(outData, "`"+table.useName()+proc.upperFirst()+" : String =");
             generateSQLCode(proc, outData);
-            outData.println();
+            println(outData);
           }
         }
-        outData.println("implementation");
-        outData.println();
+        println(outData, "implementation");
+        println(outData);
         if (table.hasStdProcs)
           generateStdImplementation(table, outData);
         generateOtherImplementation(table, outData);
-        outData.println("end.");
+        println(outData, "end.");
         outData.flush();
       }
       finally
@@ -124,10 +133,10 @@ public class DelphiCode extends Generator
     for (int i=0; i < table.comments.size(); i++)
     {
       String s = (String) table.comments.elementAt(i);
-      outData.println("//"+s);
+      println(outData, "//"+s);
     }
-    outData.println("type T"+table.useName()+" = Class");
-    outData.println("  Conn : TConnector;");
+    println(outData, "type T"+table.useName()+" = Class");
+    println(outData, "`Conn : TConnector;");
     for (int i=0; i<table.fields.size(); i++)
     {
       Field field = (Field) table.fields.elementAt(i);
@@ -136,14 +145,14 @@ public class DelphiCode extends Generator
         for (int c=0; c < field.comments.size(); c++)
         {
           String s = (String) field.comments.elementAt(c);
-          outData.println("  //"+s);
+          println(outData, "`//"+s);
         }
       }
-      outData.println("  "+delphiVar(field)+";");
+      println(outData, "`"+delphiVar(field)+";");
       if (field.isNull) // && notString(field))
-        outData.println("  "+field.useName()+"IsNull : boolean;");
+        println(outData, "`"+field.useName()+"IsNull : boolean;");
     }
-    outData.println("  constructor Create(const aConnector : TConnector);");
+    println(outData, "`constructor Create(const aConnector : TConnector);");
     for (int i=0; i<table.procs.size(); i++)
     {
       Proc proc = (Proc) table.procs.elementAt(i);
@@ -152,26 +161,26 @@ public class DelphiCode extends Generator
       if (proc.isStd || proc.hasNoData())
         generateInterface(proc, outData);
     }
-    outData.println("end;");
-    outData.println();
+    println(outData, "end;");
+    println(outData);
   }
   /**
   * Build of all required standard procedures
   */
   static void generateStdImplementation(Table table, PrintWriter outData)
   {
-    outData.println("constructor T"+table.useName()+".Create(const aConnector : TConnector);");
-    outData.println("begin");
-    outData.println("  Conn := aConnector;");
+    println(outData, "constructor T"+table.useName()+".Create(const aConnector : TConnector);");
+    println(outData, "begin");
+    println(outData, "`Conn := aConnector;");
     for (int i=0; i<table.fields.size(); i++)
     {
       Field field = (Field) table.fields.elementAt(i);
-      outData.println("  "+initDelphiVar(field));
+      println(outData, "`"+initDelphiVar(field));
       if (field.isNull) // && notString(field))
-        outData.println("  "+field.useName()+"IsNull := false;");
+        println(outData, "`"+field.useName()+"IsNull := false;");
     }
-    outData.println("end;");
-    outData.println();
+    println(outData, "end;");
+    println(outData);
     for (int i=0; i<table.procs.size(); i++)
     {
       Proc proc = (Proc) table.procs.elementAt(i);
@@ -194,21 +203,21 @@ public class DelphiCode extends Generator
       for (int j=0; j<proc.comments.size(); j++)
       {
         String comment = (String) proc.comments.elementAt(j);
-        outData.println("//"+comment);
+        println(outData, "//"+comment);
       }
-      outData.println("type T" + table.useName() + proc.upperFirst() + " = Class");
-      outData.println("  Conn : TConnector;");
+      println(outData, "type T" + table.useName() + proc.upperFirst() + " = Class");
+      println(outData, "`Conn : TConnector;");
       for (int j=0; j<proc.inputs.size(); j++)
       {
         Field field = (Field) proc.inputs.elementAt(j);
         for (int c=0; c < field.comments.size(); c++)
         {
           String s = (String) field.comments.elementAt(c);
-          outData.println("  //"+s);
+          println(outData, "`//"+s);
         }
-        outData.println("  "+delphiVar(field)+";");
+        println(outData, "`"+delphiVar(field)+";");
         if (field.isNull) // && notString(field))
-          outData.println("  "+field.useName()+"IsNull : boolean;");
+          println(outData, "`"+field.useName()+"IsNull : boolean;");
       }
       for (int j=0; j<proc.outputs.size(); j++)
       {
@@ -218,22 +227,22 @@ public class DelphiCode extends Generator
           for (int c=0; c < field.comments.size(); c++)
           {
             String s = (String) field.comments.elementAt(c);
-            outData.println("  //"+s);
+            println(outData, "`//"+s);
           }
-          outData.println("  "+delphiVar(field)+";");
+          println(outData, "`"+delphiVar(field)+";");
           if (field.isNull) // && notString(field))
-            outData.println("  "+field.useName()+"IsNull : boolean;");
+            println(outData, "`"+field.useName()+"IsNull : boolean;");
         }
       }
       for (int j=0; j<proc.dynamics.size(); j++)
       {
         String s = (String) proc.dynamics.elementAt(j);
-        outData.println("  "+s+" : String;");
+        println(outData, "`"+s+" : String;");
       }
-      outData.println("  constructor Create(const aConnector : TConnector);");
+      println(outData, "`constructor Create(const aConnector : TConnector);");
       generateInterface(proc, outData);
-      outData.println("end;");
-      outData.println();
+      println(outData, "end;");
+      println(outData);
     }
   }
   static void generateOtherImplementation(Table table, PrintWriter outData)
@@ -243,31 +252,31 @@ public class DelphiCode extends Generator
       Proc proc = (Proc) table.procs.elementAt(i);
       if (proc.isData || proc.isStd || proc.hasNoData())
         continue;
-      outData.println("constructor T"+table.useName()+proc.name+".Create(const aConnector : TConnector);");
-      outData.println("begin");
-      outData.println("  Conn := aConnector;");
+      println(outData, "constructor T"+table.useName()+proc.name+".Create(const aConnector : TConnector);");
+      println(outData, "begin");
+      println(outData, "`Conn := aConnector;");
       for (int j=0; j<proc.inputs.size(); j++)
       {
         Field field = (Field) proc.inputs.elementAt(j);
-        outData.println("  "+initDelphiVar(field));
+        println(outData, "`"+initDelphiVar(field));
         if (field.isNull) // && notString(field))
-          outData.println("  "+field.useName()+"IsNull := false;");
+          println(outData, "`"+field.useName()+"IsNull := false;");
       }
       for (int j=0; j<proc.outputs.size(); j++)
       {
         Field field = (Field) proc.outputs.elementAt(j);
         if (!proc.hasInput(field.name))
-          outData.println("  "+initDelphiVar(field));
+          println(outData, "`"+initDelphiVar(field));
         if (field.isNull) // && notString(field))
-          outData.println("  "+field.useName()+"IsNull := false;");
+          println(outData, "`"+field.useName()+"IsNull := false;");
       }
       for (int j=0; j<proc.dynamics.size(); j++)
       {
         String s = (String) proc.dynamics.elementAt(j);
-        outData.println("  "+s+" := '';");
+        println(outData, "`"+s+" := '';");
       }
-      outData.println("end;");
-      outData.println();
+      println(outData, "end;");
+      println(outData);
       generateImplementation(proc, outData, table.useName(), table.useName()+proc.name);
     }
   }
@@ -277,15 +286,15 @@ public class DelphiCode extends Generator
     for (int j=0; j<proc.inputs.size(); j++)
     {
       Field field = (Field) proc.inputs.elementAt(j);
-      outData.println("  "+semicolon+"const a"+delphiVar(field));
+      println(outData, "`"+semicolon+"const a"+delphiVar(field));
       semicolon = "; ";
       if (field.isNull) // && notString(field))
-        outData.println("  "+semicolon+"const a"+field.useName()+"IsNull : boolean");
+        println(outData, "`"+semicolon+"const a"+field.useName()+"IsNull : boolean");
     }
     for (int j=0; j<proc.dynamics.size(); j++)
     {
       String s = (String) proc.dynamics.elementAt(j);
-      outData.println("  "+semicolon+"const a"+s+" : String");
+      println(outData, "`"+semicolon+"const a"+s+" : String");
     }
   }
   /** Emits class method for processing the database activity */
@@ -296,43 +305,43 @@ public class DelphiCode extends Generator
       for (int i=0; i<proc.comments.size(); i++)
       {
         String comment = (String) proc.comments.elementAt(i);
-        outData.println("  //"+comment);
+        println(outData, "`//"+comment);
       }
     }
     if (proc.hasNoData())
     {
-      outData.println("  class procedure "+proc.upperFirst()+"(const Conn : TConnector);");
+      println(outData, "`class procedure "+proc.upperFirst()+"(const Conn : TConnector);");
     }
     else if (proc.outputs.size() == 0)
     {
-      outData.println("  procedure "+proc.upperFirst()+";");
+      println(outData, "`procedure "+proc.upperFirst()+";");
       if ((proc.inputs.size() > 0) || proc.dynamics.size() > 0)
       {
-        outData.println("  procedure wp"+proc.upperFirst()+"(");
+        println(outData, "`procedure wp"+proc.upperFirst()+"(");
         generateWithParms(proc, outData);
-        outData.println("  );");
+        println(outData, "`);");
       }
     }
     else if (proc.isSingle)
     {
-      outData.println("  function "+proc.upperFirst()+" : Boolean;");
+      println(outData, "`function "+proc.upperFirst()+" : Boolean;");
       if ((proc.inputs.size() > 0) || proc.dynamics.size() > 0)
       {
-        outData.println("  function wp"+proc.upperFirst()+"(");
+        println(outData, "`function wp"+proc.upperFirst()+"(");
         generateWithParms(proc, outData);
-        outData.println("  ) : Boolean;");
+        println(outData, "`) : Boolean;");
       }
     }
     else
     {
-      outData.println("  function "+proc.upperFirst()+" : TQuery;");
+      println(outData, "`function "+proc.upperFirst()+" : TQuery;");
       if ((proc.inputs.size() > 0) || proc.dynamics.size() > 0)
       {
-        outData.println("  function wp"+proc.upperFirst()+"(");
+        println(outData, "`function wp"+proc.upperFirst()+"(");
         generateWithParms(proc, outData);
-        outData.println("  ) : tQuery;");
+        println(outData, "`) : tQuery;");
       }
-      outData.println("  function next"+proc.upperFirst()+"(const Query : TQuery) : Boolean;");
+      println(outData, "`function next"+proc.upperFirst()+"(const Query : TQuery) : Boolean;");
     }
   }
   static int questionsSeen;
@@ -363,108 +372,108 @@ public class DelphiCode extends Generator
   {
     String with;
     if (proc.hasNoData())
-      outData.println("class procedure T"+fullName+"."+proc.upperFirst()+";");
+      println(outData, "class procedure T"+fullName+"."+proc.upperFirst()+";");
     else if (proc.outputs.size() == 0)
-      outData.println("procedure T"+fullName+"."+proc.upperFirst()+";");
+      println(outData, "procedure T"+fullName+"."+proc.upperFirst()+";");
     else if (proc.isSingle)
-      outData.println("function T"+fullName+"."+proc.upperFirst()+" : Boolean;");
+      println(outData, "function T"+fullName+"."+proc.upperFirst()+" : Boolean;");
     else
-      outData.println("function T"+fullName+"."+proc.upperFirst()+" : TQuery;");
+      println(outData, "function T"+fullName+"."+proc.upperFirst()+" : TQuery;");
     if (proc.dynamics.size() > 0 || proc.outputs.size() == 0 || proc.isSingle)
-      outData.println("var");
+      println(outData, "var");
     if (proc.outputs.size() == 0 || proc.isSingle)
-      outData.println("  Query : TQuery;");
+      println(outData, "`Query : TQuery;");
     if (proc.dynamics.size() > 0)
-      outData.println("  "+tableName+proc.upperFirst()+" : String;");
-    outData.println("begin");
+      println(outData, "`"+tableName+proc.upperFirst()+" : String;");
+    println(outData, "begin");
     if (proc.dynamics.size() > 0)
     {
-      outData.println("  "+tableName+proc.upperFirst()+" :=");
+      println(outData, "`"+tableName+proc.upperFirst()+" :=");
       generateSQLCode(proc, outData);
     }
     if (proc.outputs.size() == 0 || proc.isSingle)
     {
-      outData.println("  Query := TQuery.Create(nil);");
-      outData.println("  try");
-      //outData.println("    with Query do begin");
+      println(outData, "`Query := TQuery.Create(nil);");
+      println(outData, "`try");
+      //println(outData, "``with Query do begin");
       with = "Query";
     }
     else
     {
-      outData.println("  result := TQuery.Create(nil);");
-      outData.println("  try");
-      //outData.println("    with result do begin");
+      println(outData, "`result := TQuery.Create(nil);");
+      println(outData, "`try");
+      //println(outData, "``with result do begin");
       with = "result";
     }
-    outData.println("    "+with+".DatabaseName := Conn.DatabaseName;");
-    outData.println("    "+with+".SQL.Add("+tableName+proc.upperFirst()+");");
+    println(outData, "``"+with+".DatabaseName := Conn.DatabaseName;");
+    println(outData, "``"+with+".SQL.Add("+tableName+proc.upperFirst()+");");
     for (int j=0; j<proc.inputs.size(); j++)
     {
       Field field = (Field) proc.inputs.elementAt(j);
       if (proc.isInsert)
       {
         if (field.isSequence)
-          outData.println("    "+field.useName()+" := Conn.getSequence('"+proc.table.name+"');");
+          println(outData, "``"+field.useName()+" := Conn.getSequence('"+proc.table.name+"');");
       }
       if (field.type == Field.TIMESTAMP)
-        outData.println("    "+field.useName()+" := Conn.getTimeStamp;");
+        println(outData, "``"+field.useName()+" := Conn.getTimeStamp;");
       if (field.type == Field.USERSTAMP)
-        outData.println("    "+field.useName()+" := Conn.getUserStamp;");
+        println(outData, "``"+field.useName()+" := Conn.getUserStamp;");
       if (field.isNull) // && notString(field))
       {
-        outData.println("    if not "+field.useName()+"IsNull then begin");
-        outData.println("      "+with+"."+delphiInputs(field));
-        outData.println("    end else begin");
-        outData.println("      Query.Params.ParamByName('"+field.name+"').Clear;");
-        outData.println("      Query.Params.ParamByName('"+field.name+"').DataType := "+delphiDataType(field)+";");
-        outData.println("      Query.Params.ParamByName('"+field.name+"').Bound := true;");
-        outData.println("    end;");
+        println(outData, "``if not "+field.useName()+"IsNull then begin");
+        println(outData, "```"+with+"."+delphiInputs(field));
+        println(outData, "``end else begin");
+        println(outData, "```Query.Params.ParamByName('"+field.name+"').Clear;");
+        println(outData, "```Query.Params.ParamByName('"+field.name+"').DataType := "+delphiDataType(field)+";");
+        println(outData, "```Query.Params.ParamByName('"+field.name+"').Bound := true;");
+        println(outData, "``end;");
       }
       else
-        outData.println("    "+with+"."+delphiInputs(field));
+        println(outData, "``"+with+"."+delphiInputs(field));
     }
     if (proc.outputs.size() == 0)
-      outData.println("    "+with+".ExecSQL;");
+      println(outData, "``"+with+".ExecSQL;");
     else
     {
-      outData.println("    "+with+".Open;");
+      println(outData, "``"+with+".Open;");
       if (proc.isSingle)
       {
-        outData.println("    if not "+with+".eof then begin");
+        println(outData, "``if not "+with+".eof then begin");
         for (int j=0; j<proc.outputs.size(); j++)
         {
           Field field = (Field) proc.outputs.elementAt(j);
-          generateDelphiOutput(field, outData, "  ", with);
+          generateDelphiOutput(field, outData, "`", with);
         }
-        outData.println("      result := true;");
-        outData.println("    end");
-        outData.println("    else");
-        outData.println("      result := false;");
+        println(outData, "```result := true;");
+        println(outData, "``end");
+        println(outData, "``else");
+        println(outData, "```result := false;");
       }
     }
-    //outData.println("    end;");
+    //println(outData, "``end;");
     if (proc.outputs.size() == 0 || proc.isSingle)
     {
-      outData.println("  finally");
-      outData.println("    Query.free;");
+      println(outData, "`finally");
+      println(outData, "``Query.free;");
     }
     else
     {
-      outData.println("  except");
-      outData.println("    result.free;");
+      println(outData, "`except");
+      println(outData, "``result.free;");
     }
-    outData.println("  end;");
-    outData.println("end;");
-    outData.println();
+    println(outData, "`end;");
+    println(outData, "end;");
+    println(outData);
     if (proc.inputs.size() > 0 || proc.dynamics.size() > 0)
     {
       if (proc.outputs.size() == 0)
-        outData.println("procedure T"+fullName+".wp"+proc.upperFirst()+";");
+        println(outData, "procedure T"+fullName+".wp"+proc.upperFirst()+";");
       else if (proc.isSingle)
-        outData.println("function T"+fullName+".wp"+proc.upperFirst()+";");
+        println(outData, "function T"+fullName+".wp"+proc.upperFirst()+";");
       else
-        outData.println("function T"+fullName+".wp"+proc.upperFirst()+";");
-      outData.println("begin");
+        println(outData, "function T"+fullName+".wp"+proc.upperFirst()+";");
+      println(outData, "begin");
       for (int j=0; j<proc.inputs.size(); j++)
       {
         String Indent;
@@ -472,41 +481,41 @@ public class DelphiCode extends Generator
         Indent = "";
         if (field.isNull) // && notString(field))
         {
-          outData.println("  "+field.useName()+"IsNull := a"+field.useName()+"IsNull;");
-          outData.println("  if not "+field.useName()+"IsNull then");
+          println(outData, "`"+field.useName()+"IsNull := a"+field.useName()+"IsNull;");
+          println(outData, "`if not "+field.useName()+"IsNull then");
           Indent = "  ";
         }
-        outData.println("  "+Indent+field.useName()+" := a"+field.useName()+";");
+        println(outData, "`"+Indent+field.useName()+" := a"+field.useName()+";");
       }
       for (int j=0; j<proc.dynamics.size(); j++)
       {
         String s = (String) proc.dynamics.elementAt(j);
-        outData.println("  "+s+" := a"+s+";");
+        println(outData, "`"+s+" := a"+s+";");
       }
       if (proc.outputs.size() == 0)
-        outData.println("  "+proc.upperFirst()+";");
+        println(outData, "`"+proc.upperFirst()+";");
       else
-        outData.println("  result := "+proc.upperFirst()+";");
-      outData.println("end;");
-      outData.println();
+        println(outData, "`result := "+proc.upperFirst()+";");
+      println(outData, "end;");
+      println(outData);
     }
     if (proc.outputs.size() != 0 && !proc.isSingle)
     {
-      outData.println("function T"+fullName+".next"+proc.upperFirst()+"(const Query : TQuery) : Boolean;");
-      outData.println("begin");
-      outData.println("  if not Query.eof then begin");
+      println(outData, "function T"+fullName+".next"+proc.upperFirst()+"(const Query : TQuery) : Boolean;");
+      println(outData, "begin");
+      println(outData, "`if not Query.eof then begin");
       for (int j=0; j<proc.outputs.size(); j++)
       {
         Field field = (Field) proc.outputs.elementAt(j);
         generateDelphiOutput(field, outData, "", "Query");
       }
-      outData.println("    result := true;");
-      outData.println("    Query.next;");
-      outData.println("  end");
-      outData.println("  else");
-      outData.println("    result := false;");
-      outData.println("end;");
-      outData.println();
+      println(outData, "``result := true;");
+      println(outData, "``Query.next;");
+      println(outData, "`end");
+      println(outData, "`else");
+      println(outData, "``result := false;");
+      println(outData, "end;");
+      println(outData);
     }
   }
   /**
@@ -516,12 +525,12 @@ public class DelphiCode extends Generator
   {
     if (field.isNull) // && notString(field))
     {
-      outData.println(gap+"    "+field.useName()+"IsNull := "+with+".FieldByName('"+field.name+"').isNull;");
-      outData.println(gap+"    if not "+field.useName()+"IsNull then");
-      outData.println(gap+"      "+delphiOutputs(field, with));
+      println(outData, gap+"``"+field.useName()+"IsNull := "+with+".FieldByName('"+field.name+"').isNull;");
+      println(outData, gap+"``if not "+field.useName()+"IsNull then");
+      println(outData, gap+"```"+delphiOutputs(field, with));
     }
     else
-      outData.println(gap+"    "+delphiOutputs(field, with));
+      println(outData, gap+"``"+delphiOutputs(field, with));
   }
   /**
   * Emits SQL Code
@@ -538,11 +547,11 @@ public class DelphiCode extends Generator
         x = ";";
       Line l = (Line) proc.lines.elementAt(i);
       if (l.isVar)
-        outData.println("    "+l.line+x);
+        println(outData, "``"+l.line+x);
       else
       {
-        String out = "    '"+question(proc, l.line)+"'"+x;
-        outData.println(out);
+        String out = "``'"+question(proc, l.line)+"'"+x;
+        println(outData, out);
       }
     }
   }
