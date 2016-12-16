@@ -336,34 +336,42 @@ def derive_targets(project):
     for mask in mask_keys:
       get_targets(source, name, mask, project)
 
-def add_to_group(type, file):
-  pass      
+def add_to_group(outfile, groups, type, filename):
+  flist = filename.lower().split('/')
+  if type == 'TARGET':
+    groups.append(r'source_group(target\\%s\\%s FILES %s)' % (flist[-3], flist[-2], filename))
+  else:
+    groups.append(r'source_group(%s\\%s FILES %s)' % (type.lower(), flist[-2], filename))
+    
       
 def build_outfile(outfile_name):
   outfile = open(fixname(outfile_name), 'wt')
+  groups=[]
   if options.sources == True:
     outfile.write('set (sources\n')  
     for source in project.sources:
       outfile.write('  %s\n' % (source.name))
-      add_to_group('JPORTAL', source.name)
+      add_to_group(outfile, groups, 'JPORTAL', source.name)
     for key in project.idls: 
       for source in project.idls[key]:
         outfile.write('  %s\n' % (source.name))
-        add_to_group('CRACKLE', source.name)
+        add_to_group(outfile, groups, 'CRACKLE', source.name)
     for key in project.apps: 
       #outfile.write('  # %s\n' % (key))
       for source in project.apps[key]:
         outfile.write('  %s\n' % (source.name))
-        add_to_group('PICKLE', source.name)
+        add_to_group(outfile, groups, 'PICKLE', source.name)
     outfile.write(')\n\n')
   if options.targets == True:
     outfile.write('set (targets\n')  
     for source in project.sources:
       for target in source.targets:  
         outfile.write('  %s\n' % (target.name))
-        add_to_group('TARGET', source.name)
+        add_to_group(outfile, groups, 'TARGET', target.name)
     outfile.write(')\n\n')
     outfile.write('set_source_files_properties (${targets} PROPERTIES GENERATED TRUE)\n\n')
+    for group in groups:
+      outfile.write('%s\n' % (group))
   outfile.close() 
 
 project = parse_anydb(sourceFile)
