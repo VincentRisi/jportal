@@ -352,15 +352,32 @@ def build_outfile(outfile_name):
     for source in project.sources:
       outfile.write('  %s\n' % (source.name))
       add_to_group(outfile, groups, 'JPORTAL', source.name)
-    for key in project.idls: 
-      for source in project.idls[key]:
-        outfile.write('  %s\n' % (source.name))
-        add_to_group(outfile, groups, 'CRACKLE', source.name)
-    for key in project.apps: 
-      #outfile.write('  # %s\n' % (key))
-      for source in project.apps[key]:
-        outfile.write('  %s\n' % (source.name))
-        add_to_group(outfile, groups, 'PICKLE', source.name)
+    if 'idlTarget' in switches:
+      target_name = fixname(switches['idlTarget'])
+      if 'idlModule' in switches:
+        module_name = fixname(switches['idlModule'])    
+        outfile.write('  %s\n' % (module_name))
+        add_to_group(outfile, groups, 'CRACKLE', module_name)
+      else:
+        outfile.write('  %s\n' % (target_name)) 
+        add_to_group(outfile, groups, 'CRACKLE', target_name)
+      for key in project.idls: 
+        for source in project.idls[key]:
+          outfile.write('  %s\n' % (source.name))
+          add_to_group(outfile, groups, 'CRACKLE', source.name)
+    if 'appTarget' in switches:          
+      target_name = fixname(switches['appTarget'])  
+      if 'appModule' in switches:
+        module_name = fixname(switches['appModule'])    
+        outfile.write('  %s\n' % (module_name))
+        add_to_group(outfile, groups, 'PICKLE', module_name)
+      else:
+        outfile.write('  %s\n' % (target_name)) 
+        add_to_group(outfile, groups, 'PICKLE', target_name)
+      for key in project.apps: 
+        for source in project.apps[key]:
+          outfile.write('  %s\n' % (source.name))
+          add_to_group(outfile, groups, 'PICKLE', source.name)
     outfile.write(')\n\n')
   if options.targets == True:
     outfile.write('set (targets\n')  
@@ -369,6 +386,14 @@ def build_outfile(outfile_name):
         if os.path.exists(target.name) ==  True:  
           outfile.write('  %s\n' % (target.name))
           add_to_group(outfile, groups, 'TARGET', target.name)
+    if 'idlTarget' in switches and 'idlModule' in switches:
+      target_name = fixname(switches['idlTarget'])
+      outfile.write('  %s\n' % (target_name)) 
+      add_to_group(outfile, groups, 'CRACKLE', target_name)
+    if 'appModule' in switches and 'appTarget' in switches:
+      target_name = fixname(switches['appTarget'])
+      outfile.write('  %s\n' % (target_name)) 
+      add_to_group(outfile, groups, 'PICKLE', target_name)
     outfile.write(')\n\n')
     outfile.write('set_source_files_properties (${targets} PROPERTIES GENERATED TRUE)\n\n')
     for group in sorted(groups):
