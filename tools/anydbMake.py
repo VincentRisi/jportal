@@ -337,12 +337,12 @@ def derive_targets(project):
       get_targets(source, name, mask, project)
 
 def add_to_group(outfile, groups, type, filename):
-  flist = filename.lower().split('/')
-  if type == 'TARGET':
-    groups.append(r'source_group(target\\%s\\%s FILES %s)' % (flist[-3], flist[-2], filename))
-  else:
-    groups.append(r'source_group(%s\\%s FILES %s)' % (type.lower(), flist[-2], filename))
-    
+  if os.path.exists(filename) ==  True:
+    flist = filename.upper().split('/')
+    if type == 'TARGET':
+      groups.append(r'source_group(TARGET\\%s_%s FILES %s)' % (flist[-3], flist[-2], filename))
+    else:
+      groups.append(r'source_group(%s\\%s FILES %s)' % (type.upper(), flist[-2], filename))
       
 def build_outfile(outfile_name):
   outfile = open(fixname(outfile_name), 'wt')
@@ -366,11 +366,12 @@ def build_outfile(outfile_name):
     outfile.write('set (targets\n')  
     for source in project.sources:
       for target in source.targets:  
-        outfile.write('  %s\n' % (target.name))
-        add_to_group(outfile, groups, 'TARGET', target.name)
+        if os.path.exists(target.name) ==  True:  
+          outfile.write('  %s\n' % (target.name))
+          add_to_group(outfile, groups, 'TARGET', target.name)
     outfile.write(')\n\n')
     outfile.write('set_source_files_properties (${targets} PROPERTIES GENERATED TRUE)\n\n')
-    for group in groups:
+    for group in sorted(groups):
       outfile.write('%s\n' % (group))
   outfile.close() 
 
