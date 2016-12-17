@@ -10,7 +10,7 @@ source_dir=/main/jportal/picktester
 binary_dir=/main/jportal/build/picktester
 
 jportal
-  ParmCode   ${binary_dir}/app/parm    %a.pi
+  ParmCode   ${binary_dir}/app/pi      %l.pi
   PostgreDDL ${binary_dir}/sql/pgDDL   %a.sql
   MSSqlDDL   ${binary_dir}/sql/msDDL   %a.sql
   OracleDDL  ${binary_dir}/sql/oraDDL  %a.sql
@@ -18,7 +18,7 @@ jportal
   MySqlDDL   ${binary_dir}/sql/myDDL   %a.sql
   MySqlCCode ${binary_dir}/code/myc    %l.c
   AdoCSCode  ${binary_dir}/code/adocs  %a.cs
-  JavaRWCode ${binary_dir}/code/rwjava vlab/%aRec.java
+  JavaRWCode ${binary_dir}/code/rwjava vlab/%aRec.java vlab/%aTab.java
 
 pickle
   GenFrontEndBin ${binary_dir}/app/parm %a.bin
