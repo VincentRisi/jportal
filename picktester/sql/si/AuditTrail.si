@@ -1,10 +1,10 @@
 DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
-OUTPUT   Audittrail
+OUTPUT   AuditTrail
 SERVER   npu
 SCHEMA   vlab
 
-TABLE   Audittrail
+TABLE   AuditTrail
   ID            sequence
   MessageID     int
   Action        byte (StatusChange=1 Comment=2)
