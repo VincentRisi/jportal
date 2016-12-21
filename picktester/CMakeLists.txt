@@ -55,7 +55,26 @@ if (USE_PICKTESTER)
         COMMAND ${sqlplusExe} ${conn_str} @${srcFile} > ${logFile}
       )
       add_custom_target(
-        sqlname_${name}_build ALL  
+        sqlplus_${name}_build ALL  
+        DEPENDS ${logFile}
+      )
+    endforeach()
+  endif ()
+
+  option (USE_PICKTESTER_SQLITE "Use picktester SQLITE" OFF)
+  if (USE_PICKTESTER_SQLITE)
+    set (sqliteExe sqlite3)
+    message (STATUS "COMMAND ${sqliteExe} vlab -init @${srcFile} > ${logFile}")
+    foreach (name ${sql_list})
+      set (logFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.log)
+      set (srcFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.sql)
+      add_custom_command(
+        OUTPUT  ${logFile}
+        DEPENDS ${srcFile}
+        COMMAND ${sqliteExe} vlab -init @${srcFile} > ${logFile}
+      )
+      add_custom_target(
+        sqlite3_${name}_build ALL  
         DEPENDS ${logFile}
       )
     endforeach()
