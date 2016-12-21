@@ -87,8 +87,8 @@ endcode
 
 sqldata
 start transaction;
-insert into vlab.StaffGroup values ('PUTTYIDE', 'INTRSYS', 'PUTTYIDE', current_timestamp);
-insert into vlab.StaffGroup (select Staff.ID, 'NEDPAYM', 'PUTTYIDE', current_timestamp from vlab.Staff);
-insert into vlab.StaffGroup (select Staff.ID, 'ZARPAYM', 'PUTTYIDE', current_timestamp from vlab.Staff);
+INSERT INTO StaffGroup values ('PUTTYIDE', 'INTRSYS', 'PUTTYIDE', current_timestamp);
+INSERT INTO StaffGroup (select Staff.ID, 'NEDPAYM', 'PUTTYIDE', current_timestamp from vlab.Staff);
+INSERT INTO StaffGroup (select Staff.ID, 'ZARPAYM', 'PUTTYIDE', current_timestamp from vlab.Staff);
 commit;
 enddata

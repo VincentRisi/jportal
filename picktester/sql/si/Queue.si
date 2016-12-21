@@ -38,25 +38,25 @@ PROC Count
 
 sqldata
 start transaction;
-insert into vlab.Queue values ('EXCEPTION', 'EXCEPTION'    , 'EXCEPTION', 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('SAFFY-TP' , 'SAFFY-TP'     , 'SAFFY-TP' , 'SAFFYRCV', 'NONE'    , 2, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('SAFFY-FP' , 'SAFFY-FP'     , 'SAFFY-FP' , 'NONE'    , 'SAFFYSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('SWIFT'    , 'SWIFT'        , 'SWIFT'    , 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('TEST1'    , 'TEST!'        , 'TEST!'    , 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('TIBOS-FP' , 'TIBOS-FROMPUTTY'     , 'TIBOS-FP' , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('TIBOS-TP' , 'TIBOS-TOPUTTY'     , 'TIBOS-TP' , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('WASTE-FP' , 'WASTE-FP'     , 'WASTE'    , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('WASTE-TP' , 'WASTE-TP'     , 'WASTE'    , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('DT-TP'    , 'DT-TOPUTTY'  , 'DT'       , 'TCPIN'   , 'ROUTER'  , 0, 17, 1, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('DT-FP'    , 'DT-FROMPUTTY', 'DT'       , 'TCPOUT'  , 'NONE'    , 3, 17, 1, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('DATE-EXCEPTION'  , 'DATE-EXCEPTION' , 'DATE-EXCEPTION', 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('EXCEPTCHGDEBAMT' , 'NEDPAYMENT1'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('EXCEPTION-TXNTYP', 'NEDPAYMENT2'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('EXCEPTIONCHDEBTY', 'NEDPAYMENT3'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('EXCPTCHGDEBACCCY', 'NEDPAYMENT4'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('EXCPTN-GLDEBBRNO', 'NEDPAYMENT5'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('EXCPTNCHGDEBCCY' , 'NEDPAYMENT6'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
-insert into vlab.Queue values ('NEDEVOLVE'       , 'NEDEVOLVE'      , 'NEDEVOLVE'     , 'NONE', 'NONE', 1, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCEPTION', 'EXCEPTION'    , 'EXCEPTION', 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('SAFFY-TP' , 'SAFFY-TP'     , 'SAFFY-TP' , 'SAFFYRCV', 'NONE'    , 2, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('SAFFY-FP' , 'SAFFY-FP'     , 'SAFFY-FP' , 'NONE'    , 'SAFFYSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('SWIFT'    , 'SWIFT'        , 'SWIFT'    , 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('TEST1'    , 'TEST!'        , 'TEST!'    , 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('TIBOS-FP' , 'TIBOS-FROMPUTTY'     , 'TIBOS-FP' , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('TIBOS-TP' , 'TIBOS-TOPUTTY'     , 'TIBOS-TP' , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('WASTE-FP' , 'WASTE-FP'     , 'WASTE'    , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('WASTE-TP' , 'WASTE-TP'     , 'WASTE'    , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('DT-TP'    , 'DT-TOPUTTY'  , 'DT'       , 'TCPIN'   , 'ROUTER'  , 0, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('DT-FP'    , 'DT-FROMPUTTY', 'DT'       , 'TCPOUT'  , 'NONE'    , 3, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('DATE-EXCEPTION'  , 'DATE-EXCEPTION' , 'DATE-EXCEPTION', 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCEPTCHGDEBAMT' , 'NEDPAYMENT1'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCEPTION-TXNTYP', 'NEDPAYMENT2'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCEPTIONCHDEBTY', 'NEDPAYMENT3'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCPTCHGDEBACCCY', 'NEDPAYMENT4'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCPTN-GLDEBBRNO', 'NEDPAYMENT5'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCPTNCHGDEBCCY' , 'NEDPAYMENT6'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('NEDEVOLVE'       , 'NEDEVOLVE'      , 'NEDEVOLVE'     , 'NONE', 'NONE', 1, 17, 1, 'PREDEFINED', current_timestamp);
 COMMIT;
 enddata
 

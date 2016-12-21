@@ -52,7 +52,7 @@ public class Lite3DDL extends Generator
   {
     return "Generate Lite3 DDL.";
   }
-  private static String tableOwner;
+  //private static String tableOwner;
   /**
    * Generates the SQL for Lite3 Table creation.
    */
@@ -65,10 +65,10 @@ public class Lite3DDL extends Generator
         fileName = database.output;
       else
         fileName = database.name;
-      if (database.schema.length() > 0)
-        tableOwner = database.schema + ".";
-      else
-        tableOwner = "";
+      //if (database.schema.length() > 0)
+      //  tableOwner = database.schema + ".";
+      //else
+      //tableOwner = "";
       outLog.println("DDL: " + output + fileName + ".sql");
       OutputStream outFile = new FileOutputStream(output + fileName + ".sql");
       try
@@ -97,14 +97,14 @@ public class Lite3DDL extends Generator
   {
     if (table.fields.size() > 0)
     {
-      outData.println("DROP TABLE IF EXISTS " + tableOwner + table.name +";");
+      outData.println("DROP TABLE IF EXISTS " /*+ tableOwner*/ + table.name +";");
       outData.println();
     }
     String comma = "( ";
     boolean primeDone = false;
     if (table.fields.size() > 0)
     {
-      outData.println("CREATE TABLE " + tableOwner + table.name);
+      outData.println("CREATE TABLE " /*+ tableOwner*/ + table.name);
       for (int i = 0; i < table.fields.size(); i++, comma = ", ")
       {
         Field field = (Field)table.fields.elementAt(i);
@@ -128,7 +128,7 @@ public class Lite3DDL extends Generator
           Link link = (Link)table.links.elementAt(i);
           if (link.linkName.length() == 0)
             link.linkName = table.name + "_FK" + bSO(i);
-          generateLink(link, outData, table.name, tableOwner, i);
+          generateLink(link, outData, table.name, /*tableOwner,*/ i);
         }
       }
       if (table.options.size() > 0)
@@ -153,7 +153,7 @@ public class Lite3DDL extends Generator
     for (int i = 0; i < table.views.size(); i++)
     {
       View view = (View)table.views.elementAt(i);
-      generateView(view, outData, table.name, tableOwner);
+      generateView(view, outData, table.name/*, tableOwner*/);
     }
     for (int i = 0; i < table.procs.size(); i++)
     {
@@ -212,7 +212,7 @@ public class Lite3DDL extends Generator
   /**
   * Generates foreign key SQL Code for DB2
   */
-  static void generateLink(Link link, PrintWriter outData, String tableName, String owner, int no)
+  static void generateLink(Link link, PrintWriter outData, String tableName/*, String owner*/, int no)
   {
     String comma = "( ";
     String linkname = "FK" + no + link.linkName.toUpperCase();
@@ -222,7 +222,7 @@ public class Lite3DDL extends Generator
       String name = (String)link.fields.elementAt(i);
       outData.println(comma + name);
     }
-    outData.print(") REFERENCES " + owner + link.name);
+    outData.print(") REFERENCES " /*+ owner*/ + link.name);
     if (link.linkFields.size() > 0)
     {
       comma = "(";
@@ -271,13 +271,13 @@ public class Lite3DDL extends Generator
    * @param view
    * @param outData
    * @param name
-   * @param tableOwner
+   //* @param tableOwner
    */
-  private static void generateView(View view, PrintWriter outData, String tableName, String tableOwner)
+  private static void generateView(View view, PrintWriter outData, String tableName/*, String tableOwner*/)
   {
-    outData.println("DROP VIEW IF EXISTS " + tableOwner + tableName + view.name);
+    outData.println("DROP VIEW IF EXISTS " /*+ tableOwner*/ + tableName + view.name);
     outData.println("");
-    outData.println("CREATE VIEW " + tableOwner + tableName + view.name);
+    outData.println("CREATE VIEW " /*+ tableOwner*/ + tableName + view.name);
     outData.println("AS (");
     for (int i = 0; i < view.lines.size(); i++)
     {
@@ -298,9 +298,9 @@ public class Lite3DDL extends Generator
     String keyname = key.name.toUpperCase();
     if (keyname.indexOf(table.name.toUpperCase()) == -1)
       keyname = table.name.toUpperCase() + "_" + keyname;
-    outData.println("DROP INDEX IF EXISTS " + tableOwner + table.name + keyname + ";");
+    outData.println("DROP INDEX IF EXISTS " /*+ tableOwner*/ + table.name + keyname + ";");
     outData.println("");
-    outData.print("CREATE INDEX " + table.name + keyname +" ON " + tableOwner + table.name );
+    outData.print("CREATE INDEX " + table.name + keyname +" ON " /*+ tableOwner*/ + table.name );
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
       String name = (String)key.fields.elementAt(i);

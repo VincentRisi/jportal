@@ -36,7 +36,7 @@ endcode
 
 sqldata
 start transaction;
-insert into vlab.Staff values ('PUTTYIDE', 'Super Snooper', 'Main Super user', 'PUTTYIDE', current_timestamp);
+INSERT INTO Staff values ('PUTTYIDE', 'Super Snooper', 'Main Super user', 'PUTTYIDE', current_timestamp);
 commit;
 enddata
 

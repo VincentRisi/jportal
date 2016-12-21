@@ -92,9 +92,9 @@ sqlcode
     select to_char(sysdate, 'YYYYMMDDHH24MISS') into :OutTmStamp from dual;
     select nvl(max(Version)+1,1) into :OutVersion from vlab.Scripts where Name = :InName;
     delete from vlab.ScriptVersion where Name = :InName and VersionType = :InVersionType;
-    insert into vlab.ScriptVersion values (:InName, :InVersionType, :OutVersion, 0, :InUsid, to_date(:OutTmStamp, 'YYYYMMDDHH24MISS'));
+    INSERT INTO ScriptVersion values (:InName, :InVersionType, :OutVersion, 0, :InUsid, to_date(:OutTmStamp, 'YYYYMMDDHH24MISS'));
     delete from vlab.Scripts where Name = :InName and Version = :OutVersion;
-    insert into vlab.Scripts values (:InName, :InVersionType, :OutVersion, 0, 1, 1, '', :InUsId, to_date(:OutTmStamp, 'YYYYMMDDHH24MISS'));
+    INSERT INTO Scripts values (:InName, :InVersionType, :OutVersion, 0, 1, 1, '', :InUsId, to_date(:OutTmStamp, 'YYYYMMDDHH24MISS'));
   end;
 endcode
 

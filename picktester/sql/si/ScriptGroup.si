@@ -104,18 +104,18 @@ endcode
 
 sqldata
   start transaction;
-  insert into vlab.ScriptGroup 
+  INSERT INTO ScriptGroup 
     (select distinct name, 'INTRSYS', 0, 'PUTTYIDE', current_timestamp 
      from vlab.ScriptVersion 
      where name like 'DB_%' 
      or name like 'SYS_%');
-  insert into vlab.ScriptGroup 
+  INSERT INTO ScriptGroup 
     (select distinct name, 'NEDPAYM', 0, 'PUTTYIDE', current_timestamp 
      from vlab.ScriptVersion 
      where name not like 'DB_%' 
      and name not like 'SYS_%'
      and name not like 'ZAR_%');
-  insert into vlab.ScriptGroup 
+  INSERT INTO ScriptGroup 
     (select distinct name, 'ZARPAYM', 0, 'PUTTYIDE', current_timestamp 
      from vlab.ScriptVersion 
      where name like 'ZAR_%');

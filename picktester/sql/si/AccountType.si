@@ -22,10 +22,10 @@ PROC DeleteOne
 
 SQLDATA
 start transaction;
-INSERT INTO vlab.AccountType VALUES ('CURRENT'    , 'CURRENT'    , 0, 'PreDefined', CURRENT_TIMESTAMP);
-INSERT INTO vlab.AccountType VALUES ('NOSTRO'     , 'NOSTRO'     , 0, 'PreDefined', CURRENT_TIMESTAMP);
-INSERT INTO vlab.AccountType VALUES ('VOSTRO'     , 'VOSTRO'     , 0, 'PreDefined', CURRENT_TIMESTAMP);
-INSERT INTO vlab.AccountType VALUES ('NOSTRODRAFT', 'NOSTRODRAFT', 0, 'PreDefined', CURRENT_TIMESTAMP);
-INSERT INTO vlab.AccountType VALUES ('ZAPS'       , 'ZAPS'       , 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('CURRENT'    , 'CURRENT'    , 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('NOSTRO'     , 'NOSTRO'     , 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('VOSTRO'     , 'VOSTRO'     , 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('NOSTRODRAFT', 'NOSTRODRAFT', 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('ZAPS'       , 'ZAPS'       , 0, 'PreDefined', CURRENT_TIMESTAMP);
 commit;
 ENDDATA
