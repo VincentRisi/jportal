@@ -33,7 +33,7 @@ public class Lite3DDL extends Generator
       {
         outLog.println(args[i] + ": generating Lite3 DDL");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
-        Database database = (Database)in.readObject();
+        Database database = (Database) in.readObject();
         in.close();
         generate(database, "", outLog);
       }
@@ -52,7 +52,7 @@ public class Lite3DDL extends Generator
   {
     return "Generate Lite3 DDL.";
   }
-  //private static String tableOwner;
+  // private static String tableOwner;
   /**
    * Generates the SQL for Lite3 Table creation.
    */
@@ -65,17 +65,17 @@ public class Lite3DDL extends Generator
         fileName = database.output;
       else
         fileName = database.name;
-      //if (database.schema.length() > 0)
-      //  tableOwner = database.schema + ".";
-      //else
-      //tableOwner = "";
+      // if (database.schema.length() > 0)
+      // tableOwner = database.schema + ".";
+      // else
+      // tableOwner = "";
       outLog.println("DDL: " + output + fileName + ".sql");
       OutputStream outFile = new FileOutputStream(output + fileName + ".sql");
       try
       {
         PrintWriter outData = new PrintWriter(outFile);
         for (int i = 0; i < database.tables.size(); i++)
-          generateTable(database, (Table)database.tables.elementAt(i), outData);
+          generateTable(database, (Table) database.tables.elementAt(i), outData);
         outData.flush();
       }
       finally
@@ -97,17 +97,17 @@ public class Lite3DDL extends Generator
   {
     if (table.fields.size() > 0)
     {
-      outData.println("DROP TABLE IF EXISTS " /*+ tableOwner*/ + table.name +";");
+      outData.println("DROP TABLE IF EXISTS " /* + tableOwner */ + table.name + ";");
       outData.println();
     }
     String comma = "( ";
     boolean primeDone = false;
     if (table.fields.size() > 0)
     {
-      outData.println("CREATE TABLE " /*+ tableOwner*/ + table.name);
+      outData.println("CREATE TABLE " /* + tableOwner */ + table.name);
       for (int i = 0; i < table.fields.size(); i++, comma = ", ")
       {
-        Field field = (Field)table.fields.elementAt(i);
+        Field field = (Field) table.fields.elementAt(i);
         if (field.isSequence && field.isPrimaryKey)
           primeDone = true;
         outData.println(comma + field.name + " " + varType(field));
@@ -115,7 +115,7 @@ public class Lite3DDL extends Generator
       }
       for (int i = 0; i < table.keys.size(); i++)
       {
-        Key key = (Key)table.keys.elementAt(i);
+        Key key = (Key) table.keys.elementAt(i);
         if (key.isPrimary == true && primeDone == false)
           generatePrimary(table, key, outData);
         if (key.isUnique == true)
@@ -125,17 +125,17 @@ public class Lite3DDL extends Generator
       {
         for (int i = 0; i < table.links.size(); i++)
         {
-          Link link = (Link)table.links.elementAt(i);
+          Link link = (Link) table.links.elementAt(i);
           if (link.linkName.length() == 0)
             link.linkName = table.name + "_FK" + bSO(i);
-          generateLink(link, outData, table.name, /*tableOwner,*/ i);
+          generateLink(link, outData, table.name, /* tableOwner, */ i);
         }
       }
       if (table.options.size() > 0)
       {
         for (int i = 0; i < table.options.size(); i++)
         {
-          String option = (String)table.options.elementAt(i);
+          String option = (String) table.options.elementAt(i);
           if (option.toLowerCase().indexOf("constraint") == 0)
             outData.println(", " + option);
         }
@@ -145,19 +145,19 @@ public class Lite3DDL extends Generator
       outData.println();
       for (int i = 0; i < table.keys.size(); i++)
       {
-        Key key = (Key)table.keys.elementAt(i);
+        Key key = (Key) table.keys.elementAt(i);
         if (!key.isPrimary && !key.isUnique)
           generateIndex(table, key, outData);
       }
     }
     for (int i = 0; i < table.views.size(); i++)
     {
-      View view = (View)table.views.elementAt(i);
-      generateView(view, outData, table.name/*, tableOwner*/);
+      View view = (View) table.views.elementAt(i);
+      generateView(view, outData, table.name/* , tableOwner */);
     }
     for (int i = 0; i < table.procs.size(); i++)
     {
-      Proc proc = (Proc)table.procs.elementAt(i);
+      Proc proc = (Proc) table.procs.elementAt(i);
       if (proc.isData)
         generateProc(proc, outData);
     }
@@ -187,7 +187,7 @@ public class Lite3DDL extends Generator
     outData.print(", UNIQUE");
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
-      String name = (String)key.fields.elementAt(i);
+      String name = (String) key.fields.elementAt(i);
       outData.print(comma + name);
     }
     outData.println(")");
@@ -204,31 +204,32 @@ public class Lite3DDL extends Generator
     outData.print(", PRIMARY KEY");
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
-      String name = (String)key.fields.elementAt(i);
+      String name = (String) key.fields.elementAt(i);
       outData.print(comma + name);
     }
     outData.println(")");
   }
   /**
-  * Generates foreign key SQL Code for DB2
-  */
-  static void generateLink(Link link, PrintWriter outData, String tableName/*, String owner*/, int no)
+   * Generates foreign key SQL Code for DB2
+   */
+  static void generateLink(Link link, PrintWriter outData,
+      String tableName/* , String owner */, int no)
   {
     String comma = "( ";
     String linkname = "FK" + no + link.linkName.toUpperCase();
     outData.println(", CONSTRAINT " + make18(linkname) + " FOREIGN KEY");
     for (int i = 0; i < link.fields.size(); i++, comma = "    , ")
     {
-      String name = (String)link.fields.elementAt(i);
+      String name = (String) link.fields.elementAt(i);
       outData.println(comma + name);
     }
-    outData.print(") REFERENCES " /*+ owner*/ + link.name);
+    outData.print(") REFERENCES " /* + owner */ + link.name);
     if (link.linkFields.size() > 0)
     {
       comma = "(";
       for (int i = 0; i < link.linkFields.size(); i++)
       {
-        String name = (String)link.linkFields.elementAt(i);
+        String name = (String) link.linkFields.elementAt(i);
         outData.print(comma + name);
         comma = ", ";
       }
@@ -271,17 +272,18 @@ public class Lite3DDL extends Generator
    * @param view
    * @param outData
    * @param name
-   //* @param tableOwner
+   *          //* @param tableOwner
    */
-  private static void generateView(View view, PrintWriter outData, String tableName/*, String tableOwner*/)
+  private static void generateView(View view, PrintWriter outData,
+      String tableName/* , String tableOwner */)
   {
-    outData.println("DROP VIEW IF EXISTS " /*+ tableOwner*/ + tableName + view.name);
+    outData.println("DROP VIEW IF EXISTS " /* + tableOwner */ + tableName + view.name);
     outData.println("");
-    outData.println("CREATE VIEW " /*+ tableOwner*/ + tableName + view.name);
+    outData.println("CREATE VIEW " /* + tableOwner */ + tableName + view.name);
     outData.println("AS (");
     for (int i = 0; i < view.lines.size(); i++)
     {
-      String line = (String)view.lines.elementAt(i);
+      String line = (String) view.lines.elementAt(i);
       outData.println(line);
     }
     outData.println(");");
@@ -298,12 +300,13 @@ public class Lite3DDL extends Generator
     String keyname = key.name.toUpperCase();
     if (keyname.indexOf(table.name.toUpperCase()) == -1)
       keyname = table.name.toUpperCase() + "_" + keyname;
-    outData.println("DROP INDEX IF EXISTS " /*+ tableOwner*/ + table.name + keyname + ";");
+    outData.println("DROP INDEX IF EXISTS " /* + tableOwner */ + table.name + keyname + ";");
     outData.println("");
-    outData.print("CREATE INDEX " + table.name + keyname +" ON " /*+ tableOwner*/ + table.name );
+    outData.print(
+        "CREATE INDEX " + table.name + keyname + " ON " /* + tableOwner */ + table.name);
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
-      String name = (String)key.fields.elementAt(i);
+      String name = (String) key.fields.elementAt(i);
       outData.println(comma + name);
     }
     outData.println(");");
@@ -315,8 +318,8 @@ public class Lite3DDL extends Generator
    */
   private static String varType(Field field)
   {
-    //if (field.isNull == true)
-    //  return "NULL";
+    // if (field.isNull == true)
+    // return "NULL";
     String notNull = (field.isNull == true) ? "" : " NOT NULL";
     String primeKey = "";
     String autoInc = "";
@@ -329,54 +332,54 @@ public class Lite3DDL extends Generator
     String work = "unknown";
     switch (field.type)
     {
-      case Field.BYTE:
-      case Field.SHORT:
-      case Field.INT:
-      case Field.LONG:
-      case Field.IDENTITY:
-      case Field.SEQUENCE:
-      case Field.BIGIDENTITY:
-      case Field.BIGSEQUENCE:
-        work = "INTEGER"; 
-        break;
-      case Field.BOOLEAN:
-        work = "BOOLEAN";
-        break;
-      case Field.ANSICHAR:
-      case Field.TLOB:
-      case Field.XML:
-      case Field.BIGXML:
-        work = "TEXT";
-        break;
-      case Field.CHAR:
-        work =  " VARCHAR(" + String.valueOf(field.length) + ")";
-        break;
-      case Field.USERSTAMP:
-        work = " VARCHAR(50)";
-        break;
-      case Field.UID:
-        work = " VARCHAR(36)";
-        break;
-      case Field.FLOAT:
-      case Field.DOUBLE:
-      case Field.MONEY:
-        work = "REAL";
-        break;
-      case Field.BLOB:
-        work = "BLOB";
-        break;
-      case Field.DATE:
-        work = "DATE";
-        break;
-      case Field.DATETIME:
-        work = "DATETIME";
-        break;
-      case Field.TIME:
-        work = "TIME";
-        break;
-      case Field.TIMESTAMP:
-        work = "DATETIME";
-        break;
+    case Field.BYTE:
+    case Field.SHORT:
+    case Field.INT:
+    case Field.LONG:
+    case Field.IDENTITY:
+    case Field.SEQUENCE:
+    case Field.BIGIDENTITY:
+    case Field.BIGSEQUENCE:
+      work = "INTEGER";
+      break;
+    case Field.BOOLEAN:
+      work = "BOOLEAN";
+      break;
+    case Field.ANSICHAR:
+    case Field.TLOB:
+    case Field.XML:
+    case Field.BIGXML:
+      work = "TEXT";
+      break;
+    case Field.CHAR:
+      work = " VARCHAR(" + String.valueOf(field.length) + ")";
+      break;
+    case Field.USERSTAMP:
+      work = " VARCHAR(50)";
+      break;
+    case Field.UID:
+      work = " VARCHAR(36)";
+      break;
+    case Field.FLOAT:
+    case Field.DOUBLE:
+    case Field.MONEY:
+      work = "REAL";
+      break;
+    case Field.BLOB:
+      work = "BLOB";
+      break;
+    case Field.DATE:
+      work = "DATE";
+      break;
+    case Field.DATETIME:
+      work = "DATETIME";
+      break;
+    case Field.TIME:
+      work = "TIME";
+      break;
+    case Field.TIMESTAMP:
+      work = "DATETIME";
+      break;
     }
     return work + notNull + defaultValue + primeKey + autoInc;
   }
