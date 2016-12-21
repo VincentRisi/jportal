@@ -2,6 +2,7 @@ set (jportalJar ${GENERATORS_SOURCE_DIR}/bin/jportal.jar)
 set (crackleJar ${GENERATORS_SOURCE_DIR}/bin/crackle.jar)
 set (pickleJar  ${GENERATORS_SOURCE_DIR}/bin/pickle.jar)
 set (anydbMake ${TOOLS_DIR}/anydbMake.py)
+set (lite3SQL  ${CMAKE_SOURCE_DIR}/pyutils/lite3SQL.py)
 
 set (antExe ${ANT_EXECUTABLE})
 set (javaExe ${Java_JAVA_EXECUTABLE})

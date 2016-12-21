@@ -37,12 +37,20 @@ def main():
     for line in sql:
       if len(line.strip()) == 0:
         continue
+      if line.upper().find('START') == 0:
+        continue
       buff += line
       if ';' in buff:
         execute(conn, cursor, buff)
         buff = ''
     if len(buff) > 0:
-      execute(conn, cursor, buff)
+      try:
+        execute(conn, cursor, buff)
+      except Exception as inst:
+        print type(inst)
+        print inst.args
+      else:
+        continue
     sql.close()
   cursor.close()
   conn.close()

@@ -58,19 +58,19 @@ endcode
 
 sqldata
 start transaction;
-INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'CA'     , '001'  , USER, current_timestamp);
-INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'GL'     , '009'  , USER, current_timestamp);
-INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'MCA'    , '?'    , USER, current_timestamp);
-INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'SA'     , '002'  , USER, current_timestamp);
-INSERT INTO lookup values ('TRANSACTION TYPE', 'DT'     , 'YES'  , USER, current_timestamp);
-INSERT INTO lookup values ('TRANSACTION TYPE', 'MCT'    , 'YES'  , USER, current_timestamp);
-INSERT INTO lookup values ('TRANSACTION TYPE', 'OT'     , 'YES'  , USER, current_timestamp);
-INSERT INTO lookup values ('TRANSACTION TYPE', 'PRODCHG', 'YES'  , USER, current_timestamp);
-INSERT INTO lookup values ('VAT'             , 'NOVAT'  , '0.00%', USER, current_timestamp);
-INSERT INTO lookup values ('VAT'             , 'VAT'    , '14.00', USER, current_timestamp);
-INSERT INTO lookup values ('WASTE TRAN CODE' , 'DT'     , '1234' , USER, current_timestamp);
-INSERT INTO lookup values ('WASTE TRAN CODE' , 'OT'     , '5678' , USER, current_timestamp);
-INSERT INTO lookup values ('WASTE TRAN CODE' , 'RT'     , '8765' , USER, current_timestamp);
+INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'CA'     , '001'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'GL'     , '009'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'MCA'    , '?'    , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'SA'     , '002'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('TRANSACTION TYPE', 'DT'     , 'YES'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('TRANSACTION TYPE', 'MCT'    , 'YES'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('TRANSACTION TYPE', 'OT'     , 'YES'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('TRANSACTION TYPE', 'PRODCHG', 'YES'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('VAT'             , 'NOVAT'  , '0.00%', 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('VAT'             , 'VAT'    , '14.00', 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('WASTE TRAN CODE' , 'DT'     , '1234' , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('WASTE TRAN CODE' , 'OT'     , '5678' , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('WASTE TRAN CODE' , 'RT'     , '8765' , 'INITIAL', current_timestamp);
 commit;
 enddata
 
