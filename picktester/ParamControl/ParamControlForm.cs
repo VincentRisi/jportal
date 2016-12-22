@@ -9,10 +9,13 @@ using System.Windows.Forms;
 using System.IO;
 using System.Configuration;
 using vlab.ParamControl;
-#if use_oracle
+#if do_it_with_oracle
 using Oracle.DataAccess.Client;
-#elif use_plsql
-#elif use_mssql
+#elif do_it_with_plsql
+#elif do_it_with_mssql
+using System.Data.SqlClient;
+#elif do_it_with_lite3 
+using System.Data.SQLite;
 #endif
 using IronPython.Hosting;
 using IronPython.Runtime;
@@ -141,7 +144,7 @@ namespace vlab.ParamControl
           pcLinks = BinTables.PCLinks;
           pcLinkPairs = BinTables.PCLinkPairs;
           registryName = pcApplication.registry;
-          string ironPythonSetup = Resource1.IronPythonSetup;
+          string ironPythonSetup = Resource1.ToString();
           string pythonCode = "";
           if (BinTables.HasValidation() == true)
           {
@@ -193,6 +196,10 @@ namespace vlab.ParamControl
           connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
 #if do_it_with_oracle
           connect = new JConnect(new OracleConnection(server + userData));
+#elif do_it_with_plsql
+#elif do_it_with_mssql
+#elif do_it_with_lite3
+          connect = new JConnect(new SQLiteConnection(server + userData));
 #endif
           server = userData = "";
           connect.TypeOfVendor = VendorType.Oracle;
