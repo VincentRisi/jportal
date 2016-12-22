@@ -144,7 +144,7 @@ namespace vlab.ParamControl
           pcLinks = BinTables.PCLinks;
           pcLinkPairs = BinTables.PCLinkPairs;
           registryName = pcApplication.registry;
-          string ironPythonSetup = Resource1.ToString();
+          string ironPythonSetup = Resource1.IronPythonSetup;
           string pythonCode = "";
           if (BinTables.HasValidation() == true)
           {
