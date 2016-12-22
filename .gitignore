@@ -9,3 +9,4 @@ Debug
 *.csproj.user
 *.user
 .vagrant/
+packages

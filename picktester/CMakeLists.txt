@@ -63,15 +63,16 @@ if (USE_PICKTESTER)
 
   option (USE_PICKTESTER_SQLITE "Use picktester SQLITE" OFF)
   if (USE_PICKTESTER_SQLITE)
+    set (conn_str ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/vlab.db)
     set (lite3SQL ${CMAKE_SOURCE_DIR}/pyutils/lite3SQL.py)
-    message (STATUS "COMMAND ${pythonExe} ${lite3SQL} -d vlab -v [srcFile] > [logFile]")
+    message (STATUS "COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -v [srcFile] > [logFile]")
     foreach (name ${sql_list})
       set (logFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.log)
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.sql)
       add_custom_command(
         OUTPUT  ${logFile}
         DEPENDS ${srcFile}
-        COMMAND COMMAND ${pythonExe} ${lite3SQL} -d vlab -v ${srcFile} > ${logFile}
+        COMMAND COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -v ${srcFile} > ${logFile}
       )
       add_custom_target(
         lite3SQL_${name}_build ALL
