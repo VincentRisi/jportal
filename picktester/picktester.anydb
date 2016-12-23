@@ -20,9 +20,6 @@ jportal
   AdoCSCode  ${binary_dir}/code/adocs  %a.cs
   JavaRWCode ${binary_dir}/code/rwjava vlab/%aRec.java vlab/%aTab.java
 
-pickle
-  GenFrontEndBin ${binary_dir}/app/parm %a.bin
-
 source
   ${source_dir}/sql/si/AccountType.si
   ${source_dir}/sql/si/AlmanacBank.si
@@ -53,8 +50,3 @@ source
   ${source_dir}/sql/si/StreamMessageFormat.si
   ${source_dir}/sql/si/StreamType.si
   ${source_dir}/sql/si/TestPack.si
-
-app        
-  appfile  ${binary_dir}/app/parm/picktester.app
-  pmfile   ${source_dir}/app/parm/picktester.pm
-  prfile   ${source_dir}/app/parm/picktester.pr
