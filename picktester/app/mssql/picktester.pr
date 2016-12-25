@@ -1,0 +1,104 @@
+// -------------------------------------------------------------------------------
+// -- This is an example of how to use VALIDATE in ParamControl --
+// VALIDATE __INIT__ is for defining common procs and value for later use 
+// VALIDATE ALL      is always called and is useful for audits and texting changes
+// VALIDATE OTHER    is called for tables that do not have a VALIDATE <table>
+// VALIDATE <table>  where <table> is a table name eg. Staff is for specific table
+//                   validations
+// Other than __INIT__ the python code should impliment a 
+// def validate(name, action, fields, old, new):
+//   ...
+// which returns True or False, a False return will rollback any database updates
+// for the transaction. The validation is the last line validation invoked.
+//
+//   import clr
+//   clr.AddReference('vlab.ParamControl')
+//   from vlab.ParamControl import Logger, ParamControlForm
+//   def loginfo(*parts):
+//     Logger.Info = '%s ' * len(parts) % parts
+//   def logwarn(*parts):
+//     Logger.Warn = '%s ' * len(parts) % parts
+//   def logerror(*parts):
+//     Logger.Error = '%s ' * len(parts) % parts
+//   def logdebug(*parts):
+//     Logger.Debug = '%s ' * len(parts) % parts
+//   def sqlaction(code):
+//     ParamControlForm.SQLAction(code)
+//   def sqlquery(code):"
+//     return ParamControlForm.SQLQuery(code)
+//   userName = '...'
+//   class Class(): pass
+//   button = Class();button.OK=0;button.OKCancel=1;button.AbortRetryIgnore=2;button.YesNoCancel=3;button.YesNo=4;button.RetryCancel=5
+//   def show_message(message, title='Message', oftype=button.OK):
+//     return ParamControlForm.ShowMessage(message, title, oftype)
+//
+// -------------------------------------------------------------------------------
+                    
+VALIDATE __INIT__
+--CODE--
+actions = ['ADD', 'CHANGE', 'DELETE']
+
+def make_dict(name, action, fields, old, new):
+  d = {}
+  d['name'] = name
+  d['action'] = action
+  for i, field in enumerate(fields):
+    oldvalue = old[i] if len(old) == len(fields) else ''
+    newvalue = new[i] if len(new) == len(fields) else ''
+    d[field+'.old'] = oldvalue
+    d[field+'.new'] = newvalue
+  return d
+
+def make_class(name, action, fields, old, new):
+  c = Class()
+  c._name = name
+  c._action = actions[action] if action < len(actions) else action
+  for i, field in enumerate(fields):
+    f = Class()
+    exec("c.%s=f" % (field))
+    f.old = old[i] if len(old) == len(fields) else ''
+    f.new = new[i] if len(new) == len(fields) else ''
+  return c
+
+def make_xml(name, action, fields, old, new):
+  xml = '<%s action="%s">' % (name, actions[action])
+  for i, field in enumerate(fields):
+    old_value = old[i] if len(old) == len(fields) else ''
+    new_value = new[i] if len(new) == len(fields) else ''
+    xml += '<%s old="%s" new="%s"/>' % (fields[i], old_value, new_value)
+  xml += '</%s>' % (name)
+  return xml
+--ENDCODE--
+
+VALIDATE ALL
+--CODE--
+def validate(name, action, fields, old, new):
+  loginfo('all', name, action, fields, old, new)
+  xml = make_xml(name, action, fields, old, new)
+  sqlaction("INSERT INTO AUDITS VALUES (AuditsSeq.NextVal, '%s', %s, '%s', 'AUDIT', sysdate)" % (name, action, xml))  
+  result = sqlquery("SELECT DateType, Description from Dates")
+  show_message(result, 'query') 
+  return True
+--ENDCODE--
+
+VALIDATE OTHER
+--CODE--
+def validate(name, action, fields, old, new):
+  loginfo('other', name, action, fields, old, new)
+  return True
+--ENDCODE--
+
+VALIDATE Dates
+--CODE--
+def validate(name, action, fields, old, new):
+  loginfo('Dates', name, action, fields, old, new)
+  return True
+--ENDCODE--
+
+VALIDATE Staff
+--CODE--
+def validate(name, action, fields, old, new):
+  loginfo('Staff', name, action, fields, old, new)
+  return True
+--ENDCODE--
+

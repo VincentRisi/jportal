@@ -1,0 +1,6 @@
+APPLICATION ParamControl 'PickTester Parameter Control Application'
+SERVER   'TBD'
+USER     'TBD'
+PASSWORD 'TBD'
+REGISTRY 'VLab\ParamControl\PickTester\MySql'
+VERSION  '1.0'

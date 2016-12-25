@@ -112,7 +112,7 @@
       this.Controls.Add(this.capturePanel);
       this.Controls.Add(this.panel7);
       this.Controls.Add(this.buttonPanel);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      //this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MaximumSize = new System.Drawing.Size(1024, 768);
       this.MinimumSize = new System.Drawing.Size(350, 110);
       this.Name = "ScaffoldForm";

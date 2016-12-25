@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Configuration;
-using vlab.ParamControl;
+using vlab.jportal;
 #if do_it_with_oracle
 using Oracle.DataAccess.Client;
-#elif do_it_with_plsql
 #elif do_it_with_mssql
 using System.Data.SqlClient;
 #elif do_it_with_lite3 
 using System.Data.SQLite;
 #endif
 using IronPython.Hosting;
-using IronPython.Runtime;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 
@@ -93,6 +89,9 @@ namespace vlab.ParamControl
             System.Console.WriteLine("Valid command line arguments:");
             System.Console.WriteLine(" -b <binFileName>      : " + binFileName);
             System.Console.WriteLine(" -l <logFileName>      : " + logFileName);
+            System.Console.WriteLine(" -x <user>             : " + xuser);
+            System.Console.WriteLine(" -y <password>         : ");
+            System.Console.WriteLine(" -z <server>           : " + zserver);
             state = ' ';
             break;
         }
@@ -193,16 +192,19 @@ namespace vlab.ParamControl
           connPassword = ypassword == null ? decrypt(pcApplication.password) : ypassword;
           string server = string.Format("Data Source={0};", connDataSource);
           string userData = string.Format("User Id={0};Password={1};", connUserId, connPassword);
-          connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
 #if do_it_with_oracle
+          connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
           connect = new JConnect(new OracleConnection(server + userData));
-#elif do_it_with_plsql
-#elif do_it_with_mssql
 #elif do_it_with_lite3
-          connect = new JConnect(new SQLiteConnection(server + userData));
+          connectionStripLabel.Text = string.Format("{0}", connDataSource);
+          connect = new JConnect(new SQLiteConnection(server));
 #endif
           server = userData = "";
+#if do_it_with_oracle
           connect.TypeOfVendor = VendorType.Oracle;
+#elif do_it_with_lite3
+          connect.TypeOfVendor = VendorType.Lite3;
+#endif
           connect.Open();
         }
         catch (Exception exception)
@@ -382,8 +384,10 @@ namespace vlab.ParamControl
           string MR = "5000";
           if (maxRowsEdit.Value > 0)
             MR = maxRowsEdit.Value.ToString();
+#if do_it_with_oracle
           db.Lookup += C + "RowNum <= " + MR;
           C = "AND ";
+#endif
           string value = likeEdit.Text.Trim();
           if (value.Length > 0)
           {
@@ -395,6 +399,9 @@ namespace vlab.ParamControl
             if (p == 0) p = value.IndexOf('_');
             db.Lookup += string.Format("{0} {1} {2} '{3}'", C, pcFields[f].name, p == 0 ? "=" : "LIKE", value);
           }
+#if do_it_with_lite3
+          db.Lookup += " LIMIT " + MR;
+#endif
           dbLookupLabel.Text = registry["Lookup", pcTable.name] = db.Lookup;
           db.GetTable(pcTable.name,
             pcFields, pcTable.offsetFields, pcTable.noFields,
@@ -421,14 +428,19 @@ namespace vlab.ParamControl
           string MR = "5000";
           if (maxRowsEdit.Value > 0)
             MR = maxRowsEdit.Value.ToString();
+#if do_it_with_oracle
           db.Lookup += C + "RowNum <= " + MR;
           C = "AND ";
+#endif
           string value = valueCombo.Text.Trim();
           value = value.Replace("'", "''");
           int p = value.IndexOf('%');
           if (p == 0) p = value.IndexOf('_');
           if (value.Length > 0)
             db.Lookup += string.Format("{0} {1} {2} '{3}'", C, lookupCombo.Text, p == 0 ? "=" : "LIKE", value);
+#if do_it_with_lite3
+          db.Limit += " LIMIT " + MR;
+#endif
           db.GetTable(pcTable.name,
             pcFields, pcTable.offsetFields, pcTable.noFields,
             pcOrderFields, pcTable.offsetOrderFields, pcTable.noOrderFields);
@@ -851,6 +863,7 @@ namespace vlab.ParamControl
         case DBHandler.PC_CHAR:
         case DBHandler.PC_USERSTAMP:
           return "'" + escape(data) + "'";
+#if do_it_with_oracle
         case DBHandler.PC_DATE:
           return "to_date('" + data + "','YYYYMMDD')";
         case DBHandler.PC_DATETIME:
@@ -859,6 +872,15 @@ namespace vlab.ParamControl
           return "to_date('" + data + "','HH24MISS')";
         case DBHandler.PC_TIMESTAMP:
           return "to_date('" + data + "','YYYYMMDDHH24MISS')";
+#elif do_it_with_lite3
+        case DBHandler.PC_DATE:
+          return String.Format("'{0}-{1}-{2}'", data.Substring(0,4), data.Substring(4,2), data.Substring(6,2));
+        case DBHandler.PC_DATETIME:
+        case DBHandler.PC_TIMESTAMP:
+          return String.Format("'{0}-{1}-{2} {3}:{4}:{5}'", data.Substring(0, 4), data.Substring(4, 2), data.Substring(6, 2), data.Substring(8, 2), data.Substring(10, 2), data.Substring(12, 2));
+        case DBHandler.PC_TIME:
+          return String.Format("'{0}:{1}:{2}'", data.Substring(0, 2), data.Substring(2, 2), data.Substring(4, 2));
+#endif
       }
       return "";
     }
@@ -1350,6 +1372,11 @@ namespace vlab.ParamControl
       {
         DBHandler db = new DBHandler(connect);
         string sysdate = DateTime.Now.ToString("yyyyMMddhhmmss");
+#if do_it_with_oracle
+        string CurrentDate = "SydDate";
+#elif do_it_with_lite3
+        string CurrentDate = "'" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "'"; 
+#endif
         switch (how)
         {
           case EHow.ADD:
@@ -1363,7 +1390,7 @@ namespace vlab.ParamControl
               query += c + sqlReady(pcFields[offset + field], cells[field], true, pcTable.name);
               c = ", ";
             }
-            query += ", '" + userName + "', Sysdate)";
+            query += ", '" + userName + "', " + CurrentDate + ")";
             break;
           case EHow.CHANGE:
             newUsId = userName;
@@ -1379,7 +1406,7 @@ namespace vlab.ParamControl
                          + sqlReady(pcFields[offset + field], cells[field]);
               c = ", ";
             }
-            query += ", " + db.UsId + " = '" + userName + "', " + db.TmStamp + " = Sysdate";
+            query += ", " + db.UsId + " = '" + userName + "', " + db.TmStamp + " = " + CurrentDate;
             query += " " + where;
             break;
           case EHow.DELETE:

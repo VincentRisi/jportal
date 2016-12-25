@@ -15,7 +15,7 @@ pickle
 app        
   appfile  ${binary_dir}/app/oracle/picktester.app
   pmfile   ${source_dir}/app/oracle/picktester.pm
-  prfile   ${source_dir}/app/parm/picktester.pr
+  prfile   ${source_dir}/app/oracle/picktester.pr
   pifile   ${binary_dir}/app/pi/accounttype.pi
   pifile   ${binary_dir}/app/pi/almanacbank.pi
   pifile   ${binary_dir}/app/pi/almanaccorrespondent.pi

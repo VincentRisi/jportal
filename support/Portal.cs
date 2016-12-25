@@ -191,7 +191,7 @@ namespace vlab.jportal
         #endregion Properties
     }
 
-    public class Connect : PortalHandlerBase, IDisposable
+    public class JConnect : PortalHandlerBase, IDisposable
     {
         #region Fields
 
@@ -221,7 +221,7 @@ namespace vlab.jportal
         /// <param name="connection">Db Connection</param>
         /// <param name="handler">Handel logging and credentials</param>
         /// <param name="queryToLong">Will log long running queries as warning</param>
-        public Connect(IDbConnection connection, PortalHandlerBase handler = null, int queryToLong = 5)
+        public JConnect(IDbConnection connection, PortalHandlerBase handler = null, int queryToLong = 5)
         {
             this.connection = connection;
             this.handler = handler;
@@ -418,7 +418,7 @@ namespace vlab.jportal
 
         public void OracleSequence(string tableName, string fieldName, ref int value)
         {
-            Cursor cursor = new Cursor(this);
+            JCursor cursor = new JCursor(this);
             cursor.Format(string.Format("select {0}Seq.NextVal from dual)", tableName), 0);
             cursor.Run();
             cursor.Read();
@@ -432,7 +432,7 @@ namespace vlab.jportal
 
         public void PostgreSQLSequence(string tableName, string fieldName, ref int value)
         {
-            Cursor cursor = new Cursor(this);
+            JCursor cursor = new JCursor(this);
             cursor.Format(string.Format("select nextval('{0}_{1}_seq')::int", tableName.ToLower(), fieldName.ToLower()), 0);
             cursor.Run();
             cursor.Read();
@@ -453,7 +453,7 @@ namespace vlab.jportal
 
         public void SqliteSequence(string tableName, string fieldName, ref int value)
         {
-            Cursor cursor = new Cursor(this);
+            JCursor cursor = new JCursor(this);
             cursor.Format(string.Format("select seq from sqlite_sequence where name = '{0}'", tableName), 0);
             cursor.Run();
             cursor.Read();
@@ -493,11 +493,11 @@ namespace vlab.jportal
         #endregion Methods
     }
 
-    public class Cursor : IDisposable
+    public class JCursor : IDisposable
     {
         #region Fields
 
-        public Connect connect;
+        public JConnect connect;
         protected IDbCommand command;
         protected IDbConnection connection;
         protected PortalHandlerBase handler;
@@ -510,7 +510,7 @@ namespace vlab.jportal
 
         #region Constructors
 
-        public Cursor(Connect connect)
+        public JCursor(JConnect connect)
         {
             this.connect = connect;
             this.handler = connect.handler;
@@ -940,7 +940,7 @@ namespace vlab.jportal
                 command.CommandTimeout = connect.CommandTimeout;
                 startTimeFetch = DateTime.Now;
                 reader = command.ExecuteReader();
-                TestTime();
+                //TestTime();
             }
             catch (Exception ex)
             {
@@ -1015,12 +1015,11 @@ namespace vlab.jportal
             }
             var elapsedTime = (DateTime.Now - startTimeFetch);
 
-            if (elapsedTime.Seconds > queryToLong)
+            if (handler != null)
             {
+              if (elapsedTime.Seconds > queryToLong)
                 handler.OnWarning(message, elapsedTime.Seconds == 0 ? "" : elapsedTime.Seconds + "s", elapsedTime.Milliseconds, ReplaceParameters(comm));
-            }
-            else
-            {
+              else
                 handler.OnDebug(message, elapsedTime.Seconds == 0 ? "" : elapsedTime.Seconds + "s", elapsedTime.Milliseconds, ReplaceParameters(comm));
             }
         }

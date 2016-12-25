@@ -22,29 +22,6 @@ if (USE_PICKTESTER)
     Queue Streams Audittrail Fields FieldSearch
   )
   
-  option (USE_PICKTESTER_PSQL "Use picktester POSTGRES" OFF)
-  if (USE_PICKTESTER_PSQL)
-  	message (STATUS "COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_postgres.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_postgres.anydb")
-    execute_process(COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_postgres.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_postgres.anydb)
-    include (${PICKTESTER_BINARY_DIR}/picktester_postgres.cmake)
-    anydbMake2(jportal_picktester_postgres ${PICKTESTER_SOURCE_DIR}/picktester_postgres.anydb ${sources} ${targets})
-    set (user_name $ENV{USER})
-    message (STATUS "COMMAND ${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ... -o ...")
-    foreach (name ${sql_list})
-      set (logFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.log)
-      set (srcFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.sql)
-      add_custom_command(
-        OUTPUT  ${logFile}
-        DEPENDS ${srcFile}
-        COMMAND ${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ${srcFile} -o ${logFile} >> ${logFile}
-      )
-      add_custom_target(
-        psql_${name}_build ALL  
-        DEPENDS ${logFile}
-      )
-    endforeach()
-  endif ()
-  
   option (USE_PICKTESTER_ORACLE "Use picktester ORACLE" OFF)
   if (USE_PICKTESTER_ORACLE)
   	message (STATUS "COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_oracle.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_oracle.anydb")
@@ -69,8 +46,30 @@ if (USE_PICKTESTER)
     endforeach()
   endif ()
 
+  option (USE_PICKTESTER_PSQL "Use picktester POSTGRES" OFF)
+  if (USE_PICKTESTER_PSQL)
+  	message (STATUS "COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_postgres.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_postgres.anydb")
+    execute_process(COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_postgres.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_postgres.anydb)
+    include (${PICKTESTER_BINARY_DIR}/picktester_postgres.cmake)
+    anydbMake2(jportal_picktester_postgres ${PICKTESTER_SOURCE_DIR}/picktester_postgres.anydb ${sources} ${targets})
+    set (user_name $ENV{USER})
+    message (STATUS "COMMAND ${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ... -o ...")
+    foreach (name ${sql_list})
+      set (logFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.log)
+      set (srcFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.sql)
+      add_custom_command(
+        OUTPUT  ${logFile}
+        DEPENDS ${srcFile}
+        COMMAND ${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ${srcFile} -o ${logFile} >> ${logFile}
+      )
+      add_custom_target(
+        psql_${name}_build ALL  
+        DEPENDS ${logFile}
+      )
+    endforeach()
+  endif ()
+  
   option (USE_PICKTESTER_SQLITE "Use picktester SQLITE" OFF)
-
   if (USE_PICKTESTER_SQLITE)
   	message (STATUS "COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_sqlite.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_sqlite.anydb")
     execute_process(COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_sqlite.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_sqlite.anydb)
@@ -92,6 +91,54 @@ if (USE_PICKTESTER)
         DEPENDS ${logFile}
       )
     endforeach()
+  endif ()
+
+  option (USE_PICKTESTER_MSSQL "Use picktester MSSQL" OFF)
+  if (USE_PICKTESTER_MSSQL)
+  	message (STATUS "COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_mssql.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_mssql.anydb")
+    execute_process(COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_mssql.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_mssql.anydb)
+    include (${PICKTESTER_BINARY_DIR}/picktester_mssql.cmake)
+    anydbMake2(jportal_picktester_mssql ${PICKTESTER_SOURCE_DIR}/picktester_mssql.anydb ${sources} ${targets})
+    # set (conn_str ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/vlab.db)
+    # set (lite3SQL ${CMAKE_SOURCE_DIR}/pyutils/lite3SQL.py)
+    # message (STATUS "COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -v [srcFile] > [logFile]")
+    # foreach (name ${sql_list})
+    #   set (logFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.log)
+    #   set (srcFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.sql)
+    #   add_custom_command(
+    #     OUTPUT  ${logFile}
+    #     DEPENDS ${srcFile}
+    #     COMMAND COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -v ${srcFile} > ${logFile}
+    #   )
+    #   add_custom_target(
+    #     lite3SQL_${name}_build ALL
+    #     DEPENDS ${logFile}
+    #   )
+    # endforeach()
+  endif ()
+
+  option (USE_PICKTESTER_MYSQL "Use picktester MYSQL" OFF)
+  if (USE_PICKTESTER_MYSQL)
+  	message (STATUS "COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_mysql.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_mysql.anydb")
+    execute_process(COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_mysql.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_mysql.anydb)
+    include (${PICKTESTER_BINARY_DIR}/picktester_mysql.cmake)
+    anydbMake2(jportal_picktester_mysql ${PICKTESTER_SOURCE_DIR}/picktester_mysql.anydb ${sources} ${targets})
+    # set (conn_str ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/vlab.db)
+    # set (lite3SQL ${CMAKE_SOURCE_DIR}/pyutils/lite3SQL.py)
+    # message (STATUS "COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -v [srcFile] > [logFile]")
+    # foreach (name ${sql_list})
+    #   set (logFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.log)
+    #   set (srcFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.sql)
+    #   add_custom_command(
+    #     OUTPUT  ${logFile}
+    #     DEPENDS ${srcFile}
+    #     COMMAND COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -v ${srcFile} > ${logFile}
+    #   )
+    #   add_custom_target(
+    #     lite3SQL_${name}_build ALL
+    #     DEPENDS ${logFile}
+    #   )
+    # endforeach()
   endif ()
 
   if (WIN32)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using vlab.jportal;
 
 namespace vlab.ParamControl
 {
@@ -236,6 +237,7 @@ namespace vlab.ParamControl
     public int noFields;
     public int maxRows;
     public string Lookup;
+    public string Limit;
     public string UsId;
     public string TmStamp;
     public TPCField[] fields;
@@ -251,6 +253,7 @@ namespace vlab.ParamControl
       noRows = 32;
       noFields = 0;
       maxRows = 0;
+      Limit = "";
       Lookup = "";
       UsId = "UsId";
       TmStamp = "TmStamp";
@@ -289,10 +292,12 @@ namespace vlab.ParamControl
       dataTableGrid = new DataTableGrid(tableName);
       dataTableGrid.MakeTableColumns(fields);
       query += comma + UsId + ", " + TmStamp + " FROM " + tableName;
+#if do_it_with_oracle
       if (Lookup.Length > 0)
         query += " " + Lookup;
       else
         query += " WHERE ROWNUM <= 1000";
+#endif
       if (noOrderFields > 0)
       {
         string orderBy = " ORDER BY";
@@ -306,6 +311,12 @@ namespace vlab.ParamControl
         }
         query += orderBy;
       }
+#if do_it_with_lite3
+      if (Limit.Length > 0)
+        query += " " + Limit;
+      else
+        query += " LIMIT 1000";
+#endif
       cursor.Format(query, 0);
       if (ShowSQL)
         LogDebug = query;
