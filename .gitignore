@@ -1,6 +1,5 @@
 build
 bin
-#*.resx
 *.log
 *.suo
 Debug
