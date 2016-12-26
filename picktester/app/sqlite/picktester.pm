@@ -1,4 +1,4 @@
-APPLICATION ParamControl 'PickTester Parameter Control Application'
+APPLICATION ParamControl 'PickTester Parameter Control (SQLITE)'
 SERVER   'vlab'
 USER     'none'
 PASSWORD 'none'

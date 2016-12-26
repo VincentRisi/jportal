@@ -400,7 +400,7 @@ namespace vlab.ParamControl
             db.Lookup += string.Format("{0} {1} {2} '{3}'", C, pcFields[f].name, p == 0 ? "=" : "LIKE", value);
           }
 #if do_it_with_lite3
-          db.Lookup += " LIMIT " + MR;
+          db.Limit = " LIMIT " + MR;
 #endif
           dbLookupLabel.Text = registry["Lookup", pcTable.name] = db.Lookup;
           db.GetTable(pcTable.name,
@@ -439,7 +439,7 @@ namespace vlab.ParamControl
           if (value.Length > 0)
             db.Lookup += string.Format("{0} {1} {2} '{3}'", C, lookupCombo.Text, p == 0 ? "=" : "LIKE", value);
 #if do_it_with_lite3
-          db.Limit += " LIMIT " + MR;
+          db.Limit = " LIMIT " + MR;
 #endif
           db.GetTable(pcTable.name,
             pcFields, pcTable.offsetFields, pcTable.noFields,
@@ -1181,7 +1181,7 @@ namespace vlab.ParamControl
       int editWidth = comboWidth - 18;
       // The next 3 lines are indicative of why properties are at best second class.
       Size size = form.MinimumSize;
-      size.Height = pcTable.noFields * 24 + 66;
+      size.Height = pcTable.noFields * 24 + 66 + 12;
       form.MinimumSize = size;
       Dictionary<int, ComboBox> combos = new Dictionary<int, ComboBox>();
       for (field = 0; field < pcTable.noFields; field++)

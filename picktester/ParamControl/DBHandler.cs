@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using vlab.jportal;
@@ -275,7 +273,11 @@ namespace vlab.ParamControl
       cursor.Run();
       DataTable table = new DataTable();
       table.Load(cursor.Reader);
-      Decimal d = (Decimal)table.Rows[0][0];
+#if do_it_with_oracle
+      decimal d = (decimal)table.Rows[0][0];
+#elif do_it_with_lite3
+      long d = (long)table.Rows[0][0];
+#endif
       return int.Parse(d.ToString());
     }
     public void GetTable(string tableName, TPCField[] allFields, int offsetFields, int noFields, TPCIndexField[] orderFields, int offsetOrderFields, int noOrderFields)
@@ -292,10 +294,10 @@ namespace vlab.ParamControl
       dataTableGrid = new DataTableGrid(tableName);
       dataTableGrid.MakeTableColumns(fields);
       query += comma + UsId + ", " + TmStamp + " FROM " + tableName;
-#if do_it_with_oracle
       if (Lookup.Length > 0)
         query += " " + Lookup;
-      else
+#if do_it_with_oracle
+      if (Lookup.Length == 0)
         query += " WHERE ROWNUM <= 1000";
 #endif
       if (noOrderFields > 0)

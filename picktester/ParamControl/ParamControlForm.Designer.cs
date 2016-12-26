@@ -465,6 +465,7 @@
       // doValueButton
       // 
       this.doValueButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.doValueButton.BackColor = System.Drawing.Color.Azure;
       this.doValueButton.Cursor = System.Windows.Forms.Cursors.Hand;
       this.doValueButton.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
       this.doValueButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.RoyalBlue;
@@ -481,6 +482,7 @@
       // doButton
       // 
       this.doButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.doButton.BackColor = System.Drawing.Color.LavenderBlush;
       this.doButton.Cursor = System.Windows.Forms.Cursors.Hand;
       this.doButton.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
       this.doButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.RoyalBlue;
