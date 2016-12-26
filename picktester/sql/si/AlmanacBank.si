@@ -1,8 +1,7 @@
-DATABASE putty FLAGS 'user=USId' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   AlmanacBank
-SERVER   npu
-SCHEMA   vlab
+SERVER   vlab
 
 TABLE AlmanacBank options 'descr=Almanac Bank'
   FinId            int

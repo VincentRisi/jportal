@@ -1,8 +1,7 @@
-DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   BankFile
-SERVER   npu
-SCHEMA   vlab
+SERVER   vlab
 
 TABLE BankFile
     OPTIONS "lookup=SwiftAddress BankName BankTown BankType PhysicalCountry Status" "nodomain" "descr=Bank File" "show=BankName BankTown BankType"
@@ -133,7 +132,7 @@ WHERE
 endcode
 
 sqldata
-start transaction;
+--start transaction;
 INSERT INTO bankfile( swiftaddress, bankname, banktown, banktype, physicalcountry, authkeysexchd, tgtestkeysexchd, deleteind, status, usid, tmstamp) VALUES ('ROYCCAT2', 'bankname', 'banktown', 'banktype', 'CANADA',  'A', 'T', 0, 0, 'PREDEFINED', current_timestamp);
 INSERT INTO bankfile( swiftaddress, bankname, banktown, banktype, physicalcountry, authkeysexchd, tgtestkeysexchd, deleteind, status, usid, tmstamp) VALUES ('BOFMCAT2', 'bankname', 'banktown', 'banktype', 'CANADA',  'A', 'T', 0, 0, 'PREDEFINED', current_timestamp);
 INSERT INTO bankfile( swiftaddress, bankname, banktown, banktype, physicalcountry, authkeysexchd, tgtestkeysexchd, deleteind, status, usid, tmstamp) VALUES ('HASEHKHH', 'bankname', 'banktown', 'banktype', 'HONG KONG',  'A', 'T', 0, 0, 'PREDEFINED', current_timestamp);

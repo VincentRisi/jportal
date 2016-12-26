@@ -1,8 +1,7 @@
-DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   Staff
-SERVER   npu
-SCHEMA   vlab
+SERVER   vlab
 
 TABLE Staff
     OPTIONS "descr=Staff" "show=Name"
@@ -35,8 +34,8 @@ sqlcode
 endcode
 
 sqldata
-start transaction;
-INSERT INTO Staff values ('PUTTYIDE', 'Super Snooper', 'Main Super user', 'PUTTYIDE', current_timestamp);
+--start transaction;
+INSERT INTO Staff values ('vlabIDE', 'Super Snooper', 'Main Super user', 'vlabIDE', current_timestamp);
 commit;
 enddata
 

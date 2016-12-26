@@ -1,11 +1,10 @@
-DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   Drivers
-SERVER   npu
-SCHEMA   vlab
+SERVER   vlab
 
 TABLE Drivers
-    OPTIONS "descr=Input and Output Putty Drivers" "show=Descr"
+    OPTIONS "descr=Input and Output vlab Drivers" "show=Descr"
   Id      Char(16)
   Descr   Char(256)
   Status  byte    (Active=0 Inactive=1 MarkForDelete=2)
@@ -21,7 +20,7 @@ PROC SelectOne
 PROC DeleteOne
 
 sqldata
-start transaction;
+--start transaction;
 INSERT INTO Drivers VALUES ('TCPIN'   , 'TCPIN'   , 0, 'PreDefined', current_timestamp);
 INSERT INTO Drivers VALUES ('NONE'    , 'NONE'    , 0, 'PreDefined', current_timestamp);
 INSERT INTO Drivers VALUES ('TCPOUT'  , 'TCPOUT'  , 0, 'PreDefined', current_timestamp);

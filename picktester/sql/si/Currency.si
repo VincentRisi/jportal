@@ -1,8 +1,7 @@
-DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   Currency
-SERVER   npu
-SCHEMA   vlab
+SERVER   vlab
 
 TABLE Currency
     OPTIONS "descr=Currencies" "show=Id"
@@ -38,7 +37,7 @@ sqlcode
 endcode
 
 sqldata
-START TRANSACTION;
+--start transaction;
 INSERT INTO Currency VALUES('***', 'ANY', ' ', 1, 'DEFINED', current_timestamp);
 INSERT INTO Currency VALUES('ADP', 'ANDORRA'                                                        , 'ANDORRA'                                                        , 0, 'PREDEFINED', current_timestamp);
 INSERT INTO Currency VALUES('AED', 'UNITED ARAB EMIRATES'                                           , 'UNITED ARAB EMIRATES'                                           , 0, 'PREDEFINED', current_timestamp);

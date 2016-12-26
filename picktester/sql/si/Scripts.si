@@ -1,8 +1,7 @@
-DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   Scripts
-SERVER   npu
-SCHEMA   vlab
+SERVER   vlab
 
 TABLE Scripts
   Name        char(64)

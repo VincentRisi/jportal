@@ -1,8 +1,7 @@
-DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   Country
-SERVER   npu
-SCHEMA   vlab
+SERVER   vlab
 
 TABLE Country
     OPTIONS "descr=Countries" "show=Id"
@@ -63,7 +62,7 @@ endcode
 
 
 sqldata
-start transaction;
+--start transaction;
 INSERT INTO Country Values('AFGHANISTAN'                                                    ,'AF'          ,'AFA' , 0, 'Predefined', current_timestamp);
 INSERT INTO Country Values('ALBANIA'                                                        ,'AL'          ,'ALL' , 0, 'Predefined', current_timestamp);
 INSERT INTO Country Values('ALGERIA'                                                        ,'DZ'          ,'DZD' , 0, 'Predefined', current_timestamp);

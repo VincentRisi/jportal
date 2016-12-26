@@ -1,8 +1,7 @@
-DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
 PACKAGE  vlab
 OUTPUT   Lookup
-SERVER   npu
-SCHEMA   vlab
+SERVER   vlab
 
 TABLE Lookup
     OPTIONS "lookup=Name Ref" "descr=User Lookup Table"
@@ -57,7 +56,7 @@ sqlcode
 endcode
 
 sqldata
-start transaction;
+--start transaction;
 INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'CA'     , '001'  , 'INITIAL', current_timestamp);
 INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'GL'     , '009'  , 'INITIAL', current_timestamp);
 INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'MCA'    , '?'    , 'INITIAL', current_timestamp);
