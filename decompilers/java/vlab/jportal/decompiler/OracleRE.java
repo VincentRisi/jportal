@@ -384,7 +384,7 @@ public class OracleRE
     proc = new Proc();
     proc.table = table;
     proc.name = "SelectAll";
-    table.buildSelectAll(proc, false, false, false);
+    table.buildSelectAll(proc, false, false, false, false);
     table.procs.addElement(proc);
   }
   static void buildCount(PrintWriter outLog)
