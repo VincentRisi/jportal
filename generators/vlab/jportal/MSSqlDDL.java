@@ -419,7 +419,7 @@ public class MSSqlDDL extends Generator
     {
       Proc proc = (Proc) table.procs.elementAt(i);
       if (proc.isData)
-        generateProc(proc, outData);
+        generateData(proc, outData);
     }
   }
   /**
@@ -606,12 +606,15 @@ public class MSSqlDDL extends Generator
       outData.println();
     }
   }
-  static void generateProc(Proc proc, PrintWriter outData)
+  static void generateData(Proc proc, PrintWriter outData)
   {
     for (int i = 0; i < proc.lines.size(); i++)
     {
       Line l = proc.lines.elementAt(i);
-      outData.println(l.line);
+      if (l.line.startsWith("--start"))
+        outData.println("BEGIN TRANSACTION;");
+      else
+        outData.println(l.line);
     }
     outData.println();
   }

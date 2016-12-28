@@ -451,7 +451,10 @@ for source in project.sources:
     for target in source.targets:
       if os.path.exists(target.name) == True:
         print('removing %s' % (target.name))
-        os.remove(target.name)
+        try:
+          os.remove(target.name)
+        except:
+          log('failed to remove %s' % (target.name))  
   else:
     log(source.name, 'up to date')
     for target in  source.targets:
