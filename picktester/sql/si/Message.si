@@ -28,31 +28,28 @@ GRANT UPDATE TO PUBLIC
 
 KEY MessageKey
 PRIMARY
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   Id
 
 KEY KEY01
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   QueueId
 
-KEY KEY01
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+KEY KEY02
   QueueId
   Reference
 
-link Queue
+link Queue DELETE CASCADE
    QueueId
 
-link Queue
+link Queue DELETE CASCADE
    ResponseQueue
 
-link Queue
+link Queue DELETE CASCADE
    EventQueueId
 
-link Queue
+link Queue DELETE CASCADE
    SourceQueue
 
-link SourceSystem
+link SourceSystem DELETE CASCADE
    SourceSysId
 
 PROC    Insert

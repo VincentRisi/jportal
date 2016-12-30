@@ -39,7 +39,7 @@ KEY KEY02
 KEY KEY03
   Country
 
-Link BankFile
+Link BankFile DELETE CASCADE
   SwiftAddress
 
 PROC Insert

@@ -11,111 +11,80 @@ parser.add_option("-l", "--logName",    dest="logName",    default="/main/jporta
 parser.add_option("-d", "--dbName",     dest="dbName",     default="postgres")
 (options, args) = parser.parse_args()
 
-tableList  = {}
-tableDone  = []
-linksTo    = {}
-linksFrom  = {}
-tableLink  = {}
-dropList   = []
-subsetList = []
-outputName = ''
-tableName  = ''
-linkName   = ''
-skip       = False
+class Table(object):
+  def __init__(self, name, fullpath):
+    self.name = name
+    self.fullpath = fullpath
+    self.links = []
+    self.froms = []
 
-def process(line, in_filename):
-    global tableName, outputName, linkName, skip
-    if skip == True:
-        return
-    words = line.lower().split()
-    if len(words) < 2:
-        return
-    if words[0] == 'output':
-        outputName = line.split()[1]
-        return
-    if words[0] == 'table':
-        tableName = words[1]
-        if outputName != 'Domain':
-            tableList[tableName] = [in_filename, outputName]
-            print in_filename, outputName
-    elif words[0] == 'link':
-        linkName = words[1]
-        if tableName != linkName:
-            if linksTo.has_key(tableName) == False:
-                linksTo[tableName] = []
-            if linksTo[tableName].__contains__(linkName) == False:
-                linksTo[tableName].append(linkName)
-            if linksFrom.has_key(linkName) == False:
-                linksFrom[linkName] = []
-            if linksFrom[linkName].__contains__(tableName) == False:
-                linksFrom[linkName].append(tableName)
-            tableLink[tableName] = in_filename
+class Tables(object):
+  def __init__(self, parser):
+    (self.options, self.args) = parser.parse_args()
+    self.tables = []
+    self.builds = []
+    for si_file in glob.glob(self.options.wildCard):
+      _, filename = os.path.split(si_file)
+      if filename.upper() in ['SIMON.SI', 'DOMAIN.SI']:
+        continue
+      in_file = open(si_file, 'rt')
+      for line in in_file:
+        words = line.lower().split()
+        if len(words) < 2:
+          continue
+        if words[0] == 'output':
+          output = line.split()[1]
+          continue
+        if words[0] == 'table':
+          name = words[1]
+          table = Table(name, filename)
+          table.output = output
+          self.tables.append(table)
+          continue
+        if words[0] == 'link':
+          link_name = words[1]
+          if link_name != name and not link_name in table.links:
+            table.links.append(link_name)
+      in_file.close()
+  def move(self):
+    for table in self.tables:
+      if len(table.links) == 0:
+        self.builds.append(table)
+        self.tables.remove(table)
+        for left in self.tables:
+          if table.name in left.links:
+            left.links.remove(table.name)
+    return len(self.tables)
+  def not_done(self):
+    for table in self.tables:
+      print '%s ** not done' % (table.name), table.links
+  def build_list(self):
+    buildorder = open('%s/buildorder.lst' % (self.options.buildPath), 'wt')
+    for table in self.builds:
+      filename = table.fullpath[:-3]
+      buildorder.write("%s\n" % (filename))
+    buildorder.close()
+    droporder = open('%s/droporder.lst' % (self.options.buildPath), 'wt')
+    no = len(self.builds)
+    while no > 0:
+      no -= 1
+      table = self.builds[no]
+      filename = table.fullpath[:-3]
+      droporder.write("%s\n" % (filename))
+    droporder.close()
 
-opts = {}
-opts['host']=options.hostName
-opts['db']=options.dbName
-opts['user']=options.userName
-#opts['log']=options.logName
-postgres = 'psql -h %(host)s -d %(db)s -U %(user)s -a -f %(sql)s -o %(log)s >> %(log)s\n'
+def main():
+  tables = Tables(parser)
+  count = 20
+  left = 0
+  while count > 0:
+    count -= 1
+    left = tables.move()
+    if left == 0:
+      break
+  if left != 0:
+    tables.not_done()
+  tables.build_list()
 
-def printOut(tableName):
-    if tableDone.__contains__(tableName):
-        return
-    tableDone.append(tableName)
-    if tableList.has_key(tableName) == True:
-        listName = tableList[tableName][0][:-3].upper()
-        if len(subsetList) == 0 or listName in subsetList:
-            buildorder.write("%s\n" % listName)
-            dropList.append(listName)
-            opts['sql']='%s/sql/pgDDL/%s.sql' % (options.buildPath, tableList[tableName][1])
-            opts['log']='%s/%s.log' % (options.buildPath, tableName)
-            builder.write(postgres % opts)
-    else:
-        for fromName in linksFrom[tableName]:
-            print "### error ### --- table %s does not exist for %s" % (tableName, fromName)
-
-def descend(tableName, no):
-    global linksTo, tableDone
-    if linksTo.has_key(tableName) == False:
-        printOut(tableName)
-        return
-    for linkName in linksTo[tableName]:
-        if tableDone.__contains__(linkName) == False:
-            if linkName != tableName and no < 10:
-                descend(linkName, no+1)
-
-if os.path.exists('subset.txt') == True:
-    subsetFile = open('subset.txt', 'rt')
-    for line in subsetFile:
-        subsetList.append(line.strip())
-    subsetFile.close()
-
-buildorder = open('%s/buildorder.lst' % (options.buildPath), 'wt')
-builder    = open('%s/builder' % (options.buildPath), 'wt')
-droporder  = open('%s/droporder.lst'  % (options.buildPath), 'wt')
-
-allsi = []
-for si_file in glob.glob(options.wildCard):
-    allsi.append(si_file)
-for in_filename in allsi:
-    head, tail = os.path.split(in_filename)
-    skip = False
-    infile = open(in_filename, 'rt')
-    for line in infile:
-        process(line, tail)
-    infile.close()
-
-for tableName in tableLink.keys():
-    descend(tableName, 0)
-
-for tableName in tableList.keys():
-    printOut(tableName)
-
-buildorder.close()
-for name in subsetList:
-    if name not in dropList:
-        print name, 'not found'
-for name in reversed(dropList):
-    droporder.write('%s\n' % (name));
-droporder.close()
-
+if __name__ == '__main__':
+  main()

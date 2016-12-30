@@ -277,6 +277,8 @@ namespace vlab.ParamControl
       decimal d = (decimal)table.Rows[0][0];
 #elif do_it_with_lite3
       long d = (long)table.Rows[0][0];
+#elif do_it_with_mssql
+      decimal d = (decimal)table.Rows[0][0];
 #endif
       return int.Parse(d.ToString());
     }
@@ -314,6 +316,11 @@ namespace vlab.ParamControl
         query += orderBy;
       }
 #if do_it_with_lite3
+      if (Limit.Length > 0)
+        query += " " + Limit;
+      else
+        query += " LIMIT 1000";
+#elif do_it_with_mssql
       if (Limit.Length > 0)
         query += " " + Limit;
       else

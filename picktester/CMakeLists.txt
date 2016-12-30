@@ -10,17 +10,31 @@ if (USE_PICKTESTER)
   include (${PICKTESTER_BINARY_DIR}/picktesterrest.cmake)
   anydbMake2(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb ${sources} ${targets})
   
-  ## This list was manually created using depends.py - see pyutils
-  set (depends_list
-    QueueType Drivers SourceSystem StreamFieldsDef StreamMessageFormat Staff
-    Currency BankFile AccountType Grps StreamType FieldSearchDef BlobData
-    StreamFieldMsgRel StaffQueuePerm FileOutput FileInput StaffQueueConfig Message
-    CountryCurrency Audits BankAccount QueueRecovery ScriptGroup StaffConfigName
-    ScriptVersion Comments Lookup Routing FinidCorrespondentRouting Reply
-    TestMessage StaffGroup BankCorrespondents AlmanacBank AlmanacCorrespondent
-    FigCorrespondentBank StaffProfile TestPackMessage TestpackPayment TestPayment
-    Scripts TestPack Response Dates StreamFields Country Persistent Summary
-    Queue Streams Audittrail Fields FieldSearch
+  ## These list was manually created using depends.py - see pyutils
+  set (buildorder_list
+    AccountType Audits BankFile Currency Drivers FieldSearch FileInput Grps
+    Persistent QueueType ScriptGroup Scripts SourceSystem StreamFields
+    StreamMessageFormat StreamType TestMessage TestPackMessage TestPayment
+    AlmanacBank BankAccount Country Dates FieldSearchDef FileOutput Lookup Queue
+    Routing ScriptVersion StreamFieldsDef TestPack AlmanacCorrespondent
+    BankCorrespondents CountryCurrency FigCorrespondentBank Message Reply
+    ScriptProcs StreamFieldMsgRel Summary AuditTrail Comments
+    FinidCorrespondentRouting Staff StaffGroup StaffQueueConfig Streams BlobData
+    QueueRecovery StaffConfigName StaffQueuePerm Fields StaffProfile Response
+    TestpackPayment
+  )
+
+  set (droporder_list
+    TestpackPayment Response StaffProfile Fields StaffQueuePerm StaffConfigName
+    QueueRecovery BlobData Streams StaffQueueConfig StaffGroup Staff
+    FinidCorrespondentRouting Comments AuditTrail Summary StreamFieldMsgRel
+    ScriptProcs Reply Message FigCorrespondentBank CountryCurrency
+    BankCorrespondents AlmanacCorrespondent TestPack StreamFieldsDef ScriptVersion
+    Routing Queue Lookup FileOutput FieldSearchDef Dates Country BankAccount
+    AlmanacBank TestPayment TestPackMessage TestMessage StreamType
+    StreamMessageFormat StreamFields SourceSystem Scripts ScriptGroup QueueType
+    Persistent Grps FileInput FieldSearch Drivers Currency BankFile Audits
+    AccountType
   )
   
   option (USE_PICKTESTER_ORACLE "Use picktester ORACLE" OFF)
@@ -34,7 +48,7 @@ if (USE_PICKTESTER)
     set (sqlplusExe sqlplus)
     set (depends ${PICKTESTER_BINARY_DIR}/sql/oraDDL/depends.sql)
     file(WRITE ${depends})
-    foreach (name ${depends_list})
+    foreach (name ${buildorder_list})
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/oraDDL/${name}.sql)
       file(APPEND ${depends} "@@ ${srcFile}\n")
     endforeach()
@@ -54,7 +68,7 @@ if (USE_PICKTESTER)
     set_source_files_properties (${sources} PROPERTIES GENERATED TRUE)
     set (depends ${PICKTESTER_BINARY_DIR}/sql/pgDDL/depends.sql)
     file(WRITE ${depends})
-    foreach (name ${depends_list})
+    foreach (name ${buildorder_list})
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.sql)
       file(APPEND ${depends} "\\i ${srcFile}\n")
     endforeach()
@@ -81,7 +95,7 @@ if (USE_PICKTESTER)
     message (STATUS "COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -f ${filelist} -v > ${filelog}")
     file(WRITE ${filelist})
     set (sources)
-    foreach (name ${depends_list})
+    foreach (name ${buildorder_list})
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.sql)
       file(APPEND ${filelist} "${srcFile}\n")
       list(APPEND sources ${srcFile})
@@ -100,11 +114,17 @@ if (USE_PICKTESTER)
     set_source_files_properties (${sources} PROPERTIES GENERATED TRUE)
     set (depends ${PICKTESTER_BINARY_DIR}/sql/msDDL/depends.sql)
     file(WRITE ${depends} "USE vlab;\n")
-    foreach (name ${depends_list})
+    foreach (name ${buildorder_list})
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/msDDL/${name}.sql)
       file(APPEND ${depends} ":r ${srcFile}\n")
     endforeach()
-    anydbMake2(jportal_picktester_mssql_bin ${PICKTESTER_SOURCE_DIR}/picktester_mssql.anydb ${sources} ${targets} ${depends})
+    set (drops ${PICKTESTER_BINARY_DIR}/sql/msDDL/drops.sql)
+    file(WRITE ${drops} "USE vlab;\n")
+    foreach (name ${droporder_list})
+      file(APPEND ${drops} "IF OBJECT_ID('${name}','U') IS NOT NULL\n")
+      file(APPEND ${drops} "  DROP TABLE ${name};\n")      
+    endforeach()
+    anydbMake2(jportal_picktester_mssql_bin ${PICKTESTER_SOURCE_DIR}/picktester_mssql.anydb ${sources} ${targets} ${depends} ${drops})
   endif ()
 
   option (USE_PICKTESTER_MYSQL "Use picktester MYSQL" OFF)
@@ -116,7 +136,7 @@ if (USE_PICKTESTER)
     anydbMake2(jportal_picktester_mysql_bin ${PICKTESTER_SOURCE_DIR}/picktester_mysql.anydb ${sources} ${targets})
     set (depends ${PICKTESTER_BINARY_DIR}/sql/myDDL/depends.sql)
     file(WRITE ${depends})
-    foreach (name ${depends_list})
+    foreach (name ${buildorder_list})
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/myDDL/${name}.sql)
       file(APPEND ${depends} "\\. ${srcFile};\n")
     endforeach()

@@ -18,26 +18,21 @@ GRANT UPDATE TO PUBLIC
 
 KEY     SYS_C00809
 PRIMARY
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   MessageID
   TAG
 
 KEY KEY01
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   TAG
   Content
 
 KEY KEY01
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   Content
 
-link Message
+link Message DELETE CASCADE
    MessageID
-//    DELETE CASCADE  // to be added
 
-link FieldSearchDef
+link FieldSearchDef DELETE CASCADE
    Fieldsearchid
-//    DELETE CASCADE  // to be added
 
 PROC    Insert
 PROC    DeleteOne 

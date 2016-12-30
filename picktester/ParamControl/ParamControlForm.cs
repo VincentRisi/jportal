@@ -188,22 +188,29 @@ namespace vlab.ParamControl
             listOfTables.Items.Add(new ListItem(values, descr, i));
           }
           connDataSource = zserver == null ? decrypt(pcApplication.server) : zserver;
-          connUserId = xuser == null ? decrypt(pcApplication.user) : xuser;
-          connPassword = ypassword == null ? decrypt(pcApplication.password) : ypassword;
+          connUserId = xuser == null ? decrypt(pcApplication.user) : xuser == "NONE" ? "" : xuser;
+          connPassword = ypassword == null ? decrypt(pcApplication.password) : ypassword == "NONE" ? "" : ypassword;
           string server = string.Format("Data Source={0};", connDataSource);
-          string userData = string.Format("User Id={0};Password={1};", connUserId, connPassword);
+          string userData = "";
+          if (connUserId != "") userData += string.Format("User Id={0};", connUserId);
+          if (connPassword != "") userData += string.Format("Password={1};", connPassword);
 #if do_it_with_oracle
           connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
           connect = new JConnect(new OracleConnection(server + userData));
 #elif do_it_with_lite3
           connectionStripLabel.Text = string.Format("{0}", connDataSource);
           connect = new JConnect(new SQLiteConnection(server));
+#elif do_it_with_mssql
+          connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
+          connect = new JConnect(new SqlConnection(server));
 #endif
           server = userData = "";
 #if do_it_with_oracle
           connect.TypeOfVendor = VendorType.Oracle;
 #elif do_it_with_lite3
           connect.TypeOfVendor = VendorType.Lite3;
+#elif do_it_with_mssql
+          connect.TypeOfVendor = VendorType.SqlServer;
 #endif
           connect.Open();
         }
@@ -400,6 +407,8 @@ namespace vlab.ParamControl
             db.Lookup += string.Format("{0} {1} {2} '{3}'", C, pcFields[f].name, p == 0 ? "=" : "LIKE", value);
           }
 #if do_it_with_lite3
+          db.Limit = " LIMIT " + MR;
+#elif do_it_with_mssql
           db.Limit = " LIMIT " + MR;
 #endif
           dbLookupLabel.Text = registry["Lookup", pcTable.name] = db.Lookup;
@@ -880,6 +889,14 @@ namespace vlab.ParamControl
           return String.Format("'{0}-{1}-{2} {3}:{4}:{5}'", data.Substring(0, 4), data.Substring(4, 2), data.Substring(6, 2), data.Substring(8, 2), data.Substring(10, 2), data.Substring(12, 2));
         case DBHandler.PC_TIME:
           return String.Format("'{0}:{1}:{2}'", data.Substring(0, 2), data.Substring(2, 2), data.Substring(4, 2));
+#elif do_it_with_mssql
+        case DBHandler.PC_DATE:
+          return "CONVERT(DATETIME, " + String.Format("'{0}-{1}-{2}')", data.Substring(0,4), data.Substring(4,2), data.Substring(6,2));
+        case DBHandler.PC_DATETIME:
+        case DBHandler.PC_TIMESTAMP:
+          return "CONVERT(DATETIME, " + String.Format("'{0}-{1}-{2} {3}:{4}:{5}')", data.Substring(0, 4), data.Substring(4, 2), data.Substring(6, 2), data.Substring(8, 2), data.Substring(10, 2), data.Substring(12, 2));
+        case DBHandler.PC_TIME:
+          return "CONVERT(DATETIME, " + String.Format("'0001-01-01 {0}:{1}:{2}')", data.Substring(0, 2), data.Substring(2, 2), data.Substring(2, 2));
 #endif
       }
       return "";
@@ -1373,9 +1390,11 @@ namespace vlab.ParamControl
         DBHandler db = new DBHandler(connect);
         string sysdate = DateTime.Now.ToString("yyyyMMddhhmmss");
 #if do_it_with_oracle
-        string CurrentDate = "SydDate";
+        string CurrentDate = "SysDate";
 #elif do_it_with_lite3
         string CurrentDate = "'" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "'"; 
+#elif do_it_with_mssql
+        string CurrentDate = "current_date";
 #endif
         switch (how)
         {
