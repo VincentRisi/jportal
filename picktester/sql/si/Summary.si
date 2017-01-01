@@ -12,11 +12,6 @@ TABLE   Summary
   USId          char (16)
   Tmstamp       timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 // caz added this for cvs
 
 
@@ -29,7 +24,7 @@ KEY  KEY01
 link Message DELETE CASCADE
    MessageID
 
-PROC    Insert 
+PROC    Insert
 PROC    Update
 PROC    DeleteOne
 PROC    SelectOne
@@ -66,7 +61,7 @@ sqlcode
 endcode
 
 // Used By Router End
-PROC ByDayAndQueueId 
+PROC ByDayAndQueueId
 INPUT
    InDate           char(8)
    QueueId          char(16)
@@ -88,7 +83,7 @@ sqlcode
      ,s.USId
      ,to_char(s.Tmstamp, 'YYYYMMDDHH24MISS')
      FROM
-      summary s, message m 
+      summary s, message m
    WHERE
       s.tmstamp >= to_date(:InDate,'YYYYMMDD') and s.tmstamp-1 < to_date(:InDate,'YYYYMMDD')
       and m.id = s.messageid and m.queueid = :QueueId

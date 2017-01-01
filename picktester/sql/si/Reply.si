@@ -16,32 +16,26 @@ TABLE   Reply
   USId          char (16)
   Tmstamp       timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 KEY SYS_C00808 PRIMARY
   ID
 
-KEY key1 
+KEY key1
   MessageID
 
-KEY key2 
+KEY key2
   QueueId
   Status
 
-link Message DELETE CASCADE
+link Message (Id) DELETE CASCADE
    MessageID
 
-link Queue
+link Queue (Id)
    Queueid
-
 
 PROC    Insert
 PROC    Update
 PROC    DeleteOne
-PROC    SelectOne 
+PROC    SelectOne
 PROC    SelectOneUpd
 PROC    Exists
 PROC    SelectAll
@@ -81,7 +75,7 @@ INPUT
   Queue         char  (16)
   DayInterval   int
   Status        byte
-OUTPUT 
+OUTPUT
   Id            Int
 sqlcode
   SELECT
@@ -117,7 +111,7 @@ INPUT
   DateFrom     DateTime
   DateTo       DateTime
   MaxRows      int
-OUTPUT 
+OUTPUT
   Id           int
   SourceSysid  char(16)
   Reference    char(64)
@@ -142,7 +136,7 @@ INPUT
   DateFrom     DateTime
   DateTo       DateTime
   MaxRows      int
-OUTPUT 
+OUTPUT
   Id           int
   QueueId      char(16)
   SourceSysid  char(16)
@@ -166,7 +160,7 @@ PROC Queues
 INPUT
   DateFrom     DateTime
   DateTo       DateTime
-OUTPUT 
+OUTPUT
   Id Char(16)
   Name Char(64)
   Descr Char(256)
@@ -279,7 +273,7 @@ OUTPUT
    MessageLen     short
    MessageType    byte  (AsXML=0 Text=1)
    DateCreated    datetime
-   UserCreated   char (16) 
+   UserCreated   char (16)
    Status         byte  (None=0 Pending=1 Complete=2 Error=3)
    USId           char (16)
    Tmstamp        timestamp
@@ -291,7 +285,7 @@ sqlcode
      ,MessageLen
      ,MessageType
      ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
-     ,UserCreated 
+     ,UserCreated
      ,Status
      ,USId
      ,to_char(Tmstamp, 'YYYYMMDDHH24MISS')
@@ -355,7 +349,7 @@ OUTPUT
    MessageLen     short
    MessageType    byte  (AsXML=0 Text=1)
    DateCreated    datetime
-   UserCreated   char (16) 
+   UserCreated   char (16)
    Status         byte  (None=0 Pending=1 Complete=2 Error=3)
    USId           char (16)
    Tmstamp        timestamp
@@ -430,7 +424,7 @@ OUTPUT
   MessageLen    short
   MessageType   byte  (AsXML=0 Text=1)
   DateCreated   datetime
-  UserCreated   char (16) 
+  UserCreated   char (16)
   Status        byte  (None=0 Pending=1 Complete=2 Error=3)
   USId          char (16)
   Tmstamp       timestamp

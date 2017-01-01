@@ -11,11 +11,6 @@ TABLE BlobData
   USId         char(16)
   TmStamp      timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 KEY     SYS_C00822
 PRIMARY
 // //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
@@ -23,7 +18,7 @@ PRIMARY
   ID
   BlobType
 
-Link Message 
+Link Message
   MessageId
 
 Proc Insert
@@ -32,7 +27,7 @@ Proc Insert
 PROC GetId
 INPUT
   ExtractDate  Date
-OUTPUT 
+OUTPUT
   Id            Int
 sqlcode
   SELECT
@@ -66,7 +61,7 @@ endcode
 PROC GetChildData
 INPUT
   MessageId   int
-OUTPUT 
+OUTPUT
   Id            int
   MessageLen    short
   MessageData   blob  (16000)

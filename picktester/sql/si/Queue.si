@@ -20,12 +20,14 @@ KEY QueueKey PRIMARY
   Id
 
 KEY KEY01
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   Name
 
-LINK QueueType QueueType
-LINK Drivers   InputDriver
-LINK Drivers   OutputDriver
+LINK QueueType (Id)
+  QueueType
+LINK Drivers (Id)
+  InputDriver
+LINK Drivers (Id)
+  OutputDriver
 
 PROC Insert
 PROC Update

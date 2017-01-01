@@ -14,32 +14,24 @@ TABLE   Routing
   USId          char (16)
   Tmstamp       timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 KEY     SYS_C00812
 PRIMARY
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   ID
 
 KEY KEY01
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   MessageID
 
-
-link Queue
+link Queue (Id)
    QueueFrom
 
-link Queue
+link Queue (Id)
    QueueTo
 
 
 PROC    Insert
 PROC    Update
 PROC    DeleteOne
-PROC    SelectOne 
+PROC    SelectOne
 PROC    Exists
 PROC    DeleteAll
 PROC    SelectAll

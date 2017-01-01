@@ -10,11 +10,6 @@ TABLE   Comments
   USId          char (16)
   Tmstamp       timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 KEY     SYS_C00810
 PRIMARY
 // //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
@@ -27,10 +22,10 @@ KEY  KEY01
 link Message
    MessageID
 
-PROC    Insert 
+PROC    Insert
 PROC    Update
-PROC    DeleteOne 
-PROC    SelectOne 
+PROC    DeleteOne
+PROC    SelectOne
 PROC    Exists
 PROC    DeleteAll
 PROC    SelectAll

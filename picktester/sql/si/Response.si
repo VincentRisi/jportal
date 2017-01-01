@@ -18,11 +18,6 @@ TABLE   Response
   USId          char (16)
   Tmstamp       timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 KEY     SYS_C00808 PRIMARY
   ID
 
@@ -38,7 +33,7 @@ link Message DELETE CASCADE
 PROC    Insert
 PROC    Update
 PROC    DeleteOne
-PROC    SelectOne 
+PROC    SelectOne
 PROC    SelectOneUpd
 PROC    Exists
 PROC    SelectAll
@@ -51,7 +46,7 @@ INPUT
   DateFrom     DateTime
   DateTo       DateTime
   MaxRows      int
-OUTPUT 
+OUTPUT
   Id           int
   SourceSysid  char(16)
   Reference    char(64)
@@ -76,7 +71,7 @@ INPUT
   DateFrom     DateTime
   DateTo       DateTime
   MaxRows      int
-OUTPUT 
+OUTPUT
   Id           int
   QueueId      char(16)
   SourceSysid  char(16)
@@ -100,7 +95,7 @@ PROC Queues
 INPUT
   DateFrom     DateTime
   DateTo       DateTime
-OUTPUT 
+OUTPUT
   Id Char(16)
   Name Char(64)
   Descr Char(256)
@@ -558,7 +553,7 @@ endcode
 
 // Used By PE Front End
 // Used by router
-PROC ByStreamID 
+PROC ByStreamID
 INPUT
    InStreamID    int
 OUTPUT
@@ -598,13 +593,13 @@ endcode
 
 // used by IDE
 PROC TVSlurpIDs
-OUTPUT 
+OUTPUT
   Id            Sequence
   Reference     char  (64)
 sqlcode
   SELECT
-    Id,         
-    StreamRef   
+    Id,
+    StreamRef
   FROM
      Response
   Where
@@ -614,7 +609,7 @@ endcode
 // used by IDE
 PROC TVCount
 OUTPUT (Single)
-  ans       Int 
+  ans       Int
 sqlcode
   SELECT
      count(*)

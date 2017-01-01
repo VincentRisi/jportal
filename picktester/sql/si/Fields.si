@@ -11,11 +11,6 @@ TABLE   Fields
   USId          char (16)
   Tmstamp       timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 KEY     SYS_C00809
 PRIMARY
   MessageID
@@ -25,7 +20,7 @@ KEY KEY01
   TAG
   Content
 
-KEY KEY01
+KEY KEY02
   Content
 
 link Message DELETE CASCADE
@@ -35,8 +30,8 @@ link FieldSearchDef DELETE CASCADE
    Fieldsearchid
 
 PROC    Insert
-PROC    DeleteOne 
-PROC    SelectOne 
+PROC    DeleteOne
+PROC    SelectOne
 PROC    Exists
 PROC    SelectAll
 PROC    Count

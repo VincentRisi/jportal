@@ -9,11 +9,6 @@ TABLE   TestPack
   USId          char(16)
   TMStamp       timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 KEY Key1
 PRIMARY
 // //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
@@ -29,7 +24,7 @@ PROC    SelectAll
 PROC    Count
 
 //PROC List
-//OUTPUT 
+//OUTPUT
 //  Name          char(50)
 //sqlcode
 //  Select Name from TestPack Order By Name
@@ -38,7 +33,7 @@ PROC    Count
 //PROC ByPack
 //INPUT
 //  PackName        char(50)
-//OUTPUT 
+//OUTPUT
 //  Id            int
 //  SourceSysid   char  (16)
 //  Reference     char  (64)

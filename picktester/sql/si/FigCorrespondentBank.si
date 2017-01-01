@@ -22,13 +22,13 @@ KEY FigCorrespondentBankKey PRIMARY
   RankType
   SwiftAddress
 
-LINK Country
+LINK Country (Id)
   Country
 
-LINK BankFile
+LINK BankFile (SwiftAddress)
   SwiftAddress
 
-LINK Currency
+LINK Currency (Id)
   CurrId
 
 PROC Insert
@@ -38,8 +38,8 @@ PROC SelectAll
 PROC DeleteOne
 
 //used by router,ide
-PROC GetBySwiftList 
-OUTPUT 
+PROC GetBySwiftList
+OUTPUT
   Country   Char(35)
   CurrId  Char(4)
   RankType  Char(1)
@@ -63,10 +63,10 @@ sqlcode
 endcode
 
 //used by router,ide
-PROC GetByCountry 
+PROC GetByCountry
 INPUT
   Country   Char(35)
-OUTPUT 
+OUTPUT
   CurrId  Char(4)
   RankType  Char(1)
   Rank    Int

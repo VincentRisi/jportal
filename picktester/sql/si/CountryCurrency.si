@@ -14,10 +14,10 @@ KEY CountryKey PRIMARY
   CountryId
   CurrencyId
 
-LINK Country
+LINK Country (Id)
   CountryId
 
-LINK Currency
+LINK Currency (Id)
   CurrencyId
 
 PROC Insert

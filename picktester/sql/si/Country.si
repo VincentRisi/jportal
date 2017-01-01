@@ -16,14 +16,12 @@ KEY CountryKey PRIMARY
   Id
 
 KEY KEY01
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   CodeId
 
 KEY KEY02
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   CurrId
 
-LINK Currency
+LINK Currency (Id)
   CurrId
 
 PROC Insert
@@ -32,7 +30,7 @@ PROC SelectOne
 PROC DeleteOne
 
 //Used By Router, IDE
-PROC Get 
+PROC Get
 INPUT
   Id      Char(64)
 OUTPUT (Single)
@@ -46,7 +44,7 @@ sqlcode
 endcode
 
 //Used By Router, IDE
-PROC GetByCurrency 
+PROC GetByCurrency
 INPUT
   CurrId  Char(4)
 OUTPUT (Single)
@@ -58,8 +56,6 @@ sqlcode
   From Country
   Where CurrId = :CurrId
 endcode
-
-
 
 sqldata
 --start transaction;

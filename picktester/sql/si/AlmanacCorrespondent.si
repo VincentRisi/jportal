@@ -27,14 +27,14 @@ KEY BankFileKey PRIMARY
   CorrFinId
   CorrBranchId
 
-link Bankfile DELETE CASCADE
+link Bankfile (SwiftAddress) DELETE CASCADE
   CorrSwiftAddress
 
-PROC Insert 
-PROC Update 
-PROC SelectOne 
-PROC DeleteOne 
-PROC Exists 
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+PROC Exists
 
 // used by almanacto
 PROC UpdateAllStatus
@@ -51,7 +51,7 @@ sqlcode
 endcode
 
 //Used By Router, IDE
-PROC Get 
+PROC Get
 INPUT
    FinId            int
    CorrCurrency     Char(4)
@@ -82,11 +82,11 @@ sqlcode
 endcode
 
 //Used By Router, IDE
-PROC GetSwiftList 
+PROC GetSwiftList
 INPUT
    FinId            int
    CorrCurrency     Char(4)
-OUTPUT 
+OUTPUT
    CorrSwiftAddress Char(11)
    Status           byte     // (Active=0 Inactive=1 MarkForDelete=2)
 sqlcode

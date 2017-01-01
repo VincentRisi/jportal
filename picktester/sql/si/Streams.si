@@ -20,11 +20,6 @@ TABLE   Streams
   USId         char(16)
   TmStamp      timestamp
 
-GRANT DELETE TO PUBLIC
-GRANT INSERT TO PUBLIC
-GRANT SELECT TO PUBLIC
-GRANT UPDATE TO PUBLIC
-
 KEY SYS_C00822 PRIMARY
   ID
 
@@ -66,7 +61,7 @@ INPUT
   Queue         char(16)
   DayInterval   int
   Status        byte
-OUTPUT 
+OUTPUT
   Id            Int
 sqlcode
   SELECT
@@ -87,19 +82,19 @@ INPUT
   Queue         char(16)
   Status        byte
   DateFrom      DateTime
-OUTPUT 
+OUTPUT
   Id            Int
   TmStamp   DateTime
 sqlcode
   SELECT
      Id,
-     to_char(TmStamp, 'YYYYMMDDHH24MISS')     
+     to_char(TmStamp, 'YYYYMMDDHH24MISS')
   FROM
      Streams
   Where
          Queueid = :Queue
      and Status = :Status
-     and TmStamp >= to_date(:DateFrom, 'YYYYMMDDHH24MISS') 
+     and TmStamp >= to_date(:DateFrom, 'YYYYMMDDHH24MISS')
 endcode
 
 
@@ -120,7 +115,7 @@ sqlcode
 endcode
 
 // used by SaffySnd,tibossnd, router
-PROC UpdateStatus 
+PROC UpdateStatus
 INPUT
   Id            Int
   StreamRef     char(255)
@@ -208,7 +203,7 @@ INPUT
   StreamRef    char (255)
   QueueId      char (16)
   Status       byte
-  
+
   ID           int
   MessageID    int
   EventQueueID char (16)
@@ -217,18 +212,18 @@ INPUT
   StreamCount  byte
 sqlcode
 begin
-  Select max(Id) 
+  Select max(Id)
   into :ID
-  From Streams 
+  From Streams
   Where QueueId = :QueueId
-  And   StreamRef = :StreamRef 
+  And   StreamRef = :StreamRef
   And   Status = :Status;
 
   Select MessageID, EventQueueID
   into :MessageID, :EventQueueID
-  From Streams 
+  From Streams
   Where Id = :ID
-  For Update;          
+  For Update;
 
   Select ResponseQueue, StreamCount
   Into :ReplyQueueID, :StreamCount
@@ -275,7 +270,7 @@ endcode
 PROC GetMsgStatus
 INPUT
   MessageID    int
-OUTPUT 
+OUTPUT
   MyCount      Int
   Status       byte  // 0 - None, 1-Sent, 2-NAK, 3-ACK
 sqlcode
@@ -320,7 +315,7 @@ OUTPUT (single)
   MessageID     int
   ReplyQueueID  char(16)
 sqlcode
-  select 
+  select
     (SELECT Count( *) FROM  Streams
      Where
          MessageID = Message.Id
@@ -332,12 +327,12 @@ sqlcode
      StreamCount,
      Message.ID,
      Message.ResponseQueue
-  from 
+  from
      Message,Streams
   where
       Streams.ID = :StreamId
   and Message.Id = Streams.MessageID
-   
+
 endcode
 
 // Used by front end tester
@@ -347,7 +342,7 @@ INPUT
   DateFrom     DateTime
   DateTo       DateTime
   MaxRows      int
-OUTPUT 
+OUTPUT
   Id           int
   SourceSysid  char(16)
   Reference    char(64)
@@ -372,7 +367,7 @@ INPUT
   DateFrom     DateTime
   DateTo       DateTime
   MaxRows      int
-OUTPUT 
+OUTPUT
   Id           int
   QueueId      char(16)
   SourceSysid  char(16)
@@ -396,7 +391,7 @@ PROC Queues
 INPUT
   DateFrom     DateTime
   DateTo       DateTime
-OUTPUT 
+OUTPUT
   Id Char(16)
   Name Char(64)
   Descr Char(256)
@@ -411,7 +406,7 @@ sqlcode
 endcode
 
 // Used by front end tester
-PROC GetData 
+PROC GetData
 INPUT
   Id           int
 OUTPUT (Single)
@@ -475,7 +470,7 @@ endcode
 
 // Used By Front End
 // Used by router
-PROC ByMessageID 
+PROC ByMessageID
 INPUT
   InMessageId   int
 OUTPUT
@@ -516,7 +511,7 @@ endcode
 
 // Used By Front End
 // Used by router
-PROC ByMessageIDData 
+PROC ByMessageIDData
 INPUT
   InMessageId   int
 OUTPUT
@@ -623,7 +618,7 @@ sqlcode
 endcode
 
 // Used By PE Front End
-PROC ByQueueAll 
+PROC ByQueueAll
 INPUT
    InQueue      char(16)
    InDateFrom   DateTime
@@ -894,7 +889,7 @@ sqlcode
 endcode
 
 //used by router scripts
-PROC UpdateStreamRef 
+PROC UpdateStreamRef
 INPUT
   Id            Int
   StreamRef     char(255)
@@ -911,7 +906,7 @@ sqlcode
 endcode
 
 // Used by router-ACB batching for ProBanker
-PROC GetByQStatusDataForUpd 
+PROC GetByQStatusDataForUpd
 INPUT
   Status   int
   QueueId  char(16)
@@ -954,7 +949,7 @@ sqlcode
 endcode
 
 // Used by router-ACB batching for ProBanker
-PROC CountByQStatus 
+PROC CountByQStatus
 INPUT
   Status   int
   QueueId  char(16)

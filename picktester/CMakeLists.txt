@@ -9,7 +9,7 @@ if (USE_PICKTESTER)
   execute_process(COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktesterrest.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb)
   include (${PICKTESTER_BINARY_DIR}/picktesterrest.cmake)
   anydbMake2(jportal_picktester_rest ${PICKTESTER_SOURCE_DIR}/picktesterrest.anydb ${sources} ${targets})
-  
+
   ## These list was manually created using depends.py - see pyutils
   set (buildorder_list
     AccountType Audits BankFile Currency Drivers FieldSearch FileInput Grps
@@ -36,7 +36,7 @@ if (USE_PICKTESTER)
     Persistent Grps FileInput FieldSearch Drivers Currency BankFile Audits
     AccountType
   )
-  
+
   option (USE_PICKTESTER_ORACLE "Use picktester ORACLE" OFF)
   if (USE_PICKTESTER_ORACLE)
   	message (STATUS "COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_oracle.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_oracle.anydb")
@@ -72,15 +72,25 @@ if (USE_PICKTESTER)
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.sql)
       file(APPEND ${depends} "\\i ${srcFile}\n")
     endforeach()
-    anydbMake2(jportal_picktester_postgres_bin ${PICKTESTER_SOURCE_DIR}/picktester_postgres.anydb ${sources} ${targets})
-    set (user_name $ENV{USER})
-    set (logFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/${name}.log)
+    set (drops ${PICKTESTER_BINARY_DIR}/sql/pgDDL/drops.sql)
+    file(WRITE ${drops})
+    foreach (name ${droporder_list})
+      file(APPEND ${drops} "DROP TABLE ${name} CASCADE;\n")
+    endforeach()
+    anydbMake2(jportal_picktester_postgres_bin ${PICKTESTER_SOURCE_DIR}/picktester_postgres.anydb ${sources} ${targets} ${drops})
+    set(ENV{PGPASSWORD} postgres)
+    set (user_name "postgres")
+    set (logFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/build.log)
+    file (WRITE ${logFile})
+    set (lstFile ${PICKTESTER_BINARY_DIR}/sql/pgDDL/build.lst)
+    file (WRITE ${lstFile})
+    message (STATUS "${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ${depends} -o ${logFile}")
     add_custom_target (jportal_picktester_postgres_sql ALL
-      ${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ${filelist} -o ${logFile} >> ${logFile}	
-      SOURCES ${depends} ${logfile}
+      ${psqlExe} -h localhost -d postgres -U ${user_name} -a -e -f ${depends} -o ${logFile} >> ${lstFile}
+      SOURCES ${depends} ${logfile} ${lstFile}
     )
   endif ()
-  
+
   option (USE_PICKTESTER_SQLITE "Use picktester SQLITE" OFF)
   if (USE_PICKTESTER_SQLITE)
   	message (STATUS "COMMAND ${pythonExe} ${anydbMake} -n -o  ${PICKTESTER_BINARY_DIR}/picktester_sqlite.cmake -S -T ${PICKTESTER_SOURCE_DIR}/picktester_sqlite.anydb")
@@ -90,19 +100,19 @@ if (USE_PICKTESTER)
     anydbMake2(jportal_picktester_sqlite3_bin ${PICKTESTER_SOURCE_DIR}/picktester_sqlite.anydb ${sources} ${targets})
     set (conn_str ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/vlab.db)
     set (lite3SQL ${CMAKE_SOURCE_DIR}/pyutils/lite3SQL.py)
-    set (filelist ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/file.lst)
-    set (filelog ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/file.log)
-    message (STATUS "COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -f ${filelist} -v > ${filelog}")
-    file(WRITE ${filelist})
+    set (depends ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/file.lst)
+    set (lstfile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/file.log)
+    message (STATUS "COMMAND ${pythonExe} ${lite3SQL} -d ${conn_str} -f ${depends} -v > ${lstfile}")
+    file(WRITE ${depends})
     set (sources)
     foreach (name ${buildorder_list})
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/lt3DDL/${name}.sql)
-      file(APPEND ${filelist} "${srcFile}\n")
+      file(APPEND ${depends} "${srcFile}\n")
       list(APPEND sources ${srcFile})
     endforeach()
     add_custom_target (jportal_picktester_sqlite3_sql ALL
-      ${pythonExe} ${lite3SQL} -d ${conn_str} -f ${filelist} -v > ${filelog}
-      SOURCES ${sources} ${filelist} ${filelog}
+      ${pythonExe} ${lite3SQL} -d ${conn_str} -f ${depends} -v > ${lstfile}
+      SOURCES ${sources} ${depends} ${lstfile}
     )
   endif ()
 
@@ -122,7 +132,7 @@ if (USE_PICKTESTER)
     file(WRITE ${drops} "USE vlab;\n")
     foreach (name ${droporder_list})
       file(APPEND ${drops} "IF OBJECT_ID('${name}','U') IS NOT NULL\n")
-      file(APPEND ${drops} "  DROP TABLE ${name};\n")      
+      file(APPEND ${drops} "  DROP TABLE ${name};\n")
     endforeach()
     anydbMake2(jportal_picktester_mssql_bin ${PICKTESTER_SOURCE_DIR}/picktester_mssql.anydb ${sources} ${targets} ${depends} ${drops})
   endif ()
@@ -138,11 +148,21 @@ if (USE_PICKTESTER)
     file(WRITE ${depends})
     foreach (name ${buildorder_list})
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/myDDL/${name}.sql)
-      file(APPEND ${depends} "\\. ${srcFile};\n")
+      file(APPEND ${depends} "\\. ${srcFile}\n")
     endforeach()
+    set (drops ${PICKTESTER_BINARY_DIR}/sql/myDDL/drops.sql)
+    file(WRITE ${drops})
+    foreach (name ${droporder_list})
+      file(APPEND ${drops} "DROP TABLE IF EXISTS ${name};\n")
+    endforeach()
+    set (lstFile ${PICKTESTER_BINARY_DIR}/sql/myDDL/build.lst)
+    file (WRITE ${lstFile})
+    set (mysqlExe "C:/MariaDB/bin/mysql.exe")
+    message (STATUS "${mysqlExe} --user=root --password=mariadb mysql < ${drops} >> ${lstFile}")
+    message (STATUS "${mysqlExe} --user=root --password=mariadb mysql < ${depends} >> ${lstFile}")
     add_custom_target (jportal_picktester_mysql_sql ALL
-      echo "TBD mysql db_name < ${depends} > output.tab"
-      SOURCES ${depends}
+      ${mysqlExe} --user=root --password=mariadb mysql < ${depends} >> ${lstFile}
+      SOURCES ${depends} ${drops}
     )
   endif ()
 
@@ -150,7 +170,7 @@ if (USE_PICKTESTER)
     option (USE_PICKTESTER_PARAM_CONTROL "Use picktester param control" OFF)
     if (USE_PICKTESTER_PARAM_CONTROL)
       include_external_msproject(ParamControl,
-        ${PICKTESTER_SOURCE_DIR}/ParamControl/ParamControl.csproj 
+        ${PICKTESTER_SOURCE_DIR}/ParamControl/ParamControl.csproj
         TYPE "935D56EF-171A-46DB-987E-23421FB992C5"
         PLATFORM "Any CPU"
         jportal_picktester

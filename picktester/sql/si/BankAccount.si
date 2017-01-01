@@ -17,13 +17,13 @@ KEY BankAccountKey PRIMARY
   CurrId
   AccountTypeId
 
-LINK BankFile DELETE CASCADE
+LINK BankFile (SwiftAddress) DELETE CASCADE
   SwiftAddress
 
-LINK Currency
+LINK Currency (Id)
   CurrId
 
-LINK AccountType
+LINK AccountType (Id)
   AccountTypeId
 
 PROC Insert

@@ -17,13 +17,13 @@ KEY BankCorrespondentsKey PRIMARY
   CurrId
   Correspondent
 
-LINK BankFile DELETE CASCADE
+LINK BankFile (SwiftAddress) DELETE CASCADE
   SwiftAddress
 
-LINK Currency DELETE CASCADE
+LINK Currency (Id) DELETE CASCADE
   CurrId
 
-LINK BankFile DELETE CASCADE
+LINK BankFile (SwiftAddress) DELETE CASCADE
   Correspondent
 
 PROC Insert
@@ -32,11 +32,11 @@ PROC SelectOne
 PROC DeleteOne
 
 // used by Router,IDE
-PROC Get 
+PROC Get
 INPUT
   SwiftAddress  Char(11)
   CurrId        Char(4)
-OUTPUT 
+OUTPUT
   Correspondent Char(11)
 sqlcode
   SELECT

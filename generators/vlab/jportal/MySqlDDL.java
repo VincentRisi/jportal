@@ -248,6 +248,9 @@ public class MySqlDDL extends Generator
         name = (String)link.linkFields.elementAt(i);
       outData.println(comma + name);
       outData.println("  )");
+    }
+    if (link.isDeleteCascade)
+    {
       outData.println("  ON DELETE CASCADE");
     }
   }
@@ -390,6 +393,8 @@ public class MySqlDDL extends Generator
       for (int j = 0; j < grant.users.size(); j++)
       {
         String user = (String)grant.users.elementAt(j);
+        if (user.toLowerCase().compareTo("public") == 0)
+          continue;
         outData.println("GRANT " + perm + " ON " + on + " TO " + user + ";");
         outData.println();
       }

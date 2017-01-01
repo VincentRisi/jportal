@@ -9,13 +9,14 @@ set (javaExe ${Java_JAVA_EXECUTABLE})
 set (jarExe ${Java_JAR_EXECUTABLE})
 set (psqlExe ${POSTGRES_EXECUTABLE})
 set (pythonExe ${PYTHON_EXECUTABLE})
+set (mysqlExe ${MYSQL_EXECUTABLE})
 
 function (pathed result ext_dir)
   foreach (arg ${ARGN})
     if (${ARGN} STREQUAL REMOVE)
       file (GLOB remFiles ${ext_dir}/*.*)
       list (LENGTH remFiles count)
-      if (0 LESS count) 
+      if (0 LESS count)
         message (STATUS "Removing all files in ${ext_dir}")
         file (REMOVE ${remFiles})
       endif ()
@@ -46,7 +47,7 @@ function (jportal projectName siFiles)
   endforeach ()
   set (sqlFiles ${sqlFiles} PARENT_SCOPE)
   add_custom_target (${projectName} ALL
-    DEPENDS ${sqlFiles} 
+    DEPENDS ${sqlFiles}
     SOURCES ${siFiles}
   )
 endfunction()
@@ -68,7 +69,7 @@ function (crackle projectName imFile idlDir iiDir ibDir)
     VERBATIM
   )
   add_custom_target (${projectName} ALL
-    DEPENDS ${idlFile} 
+    DEPENDS ${idlFile}
     SOURCES ${imFile} ${ibFiles} ${iiFiles} ${idlFile}
   )
 endfunction()
@@ -81,21 +82,21 @@ function (anydbMake projectName anydbMakeFile targetFiles)
     VERBATIM
   )
   add_custom_target (${projectName} ALL
-    DEPENDS ${targetFiles} 
+    DEPENDS ${targetFiles}
     SOURCES ${anydbMakeFile}
   )
 endfunction ()
 
 function (anydbMake2 projectName anydbMakeFile)
   add_custom_target (${projectName} ALL
-    ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -p ${pickleJar} -v ${anydbMakeFile} 
+    ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -p ${pickleJar} -v ${anydbMakeFile}
     SOURCES ${anydbMakeFile} ${ARGN}
   )
 endfunction ()
 
 function (antMake projectName buildFile)
   add_custom_target (${projectName} ALL
-    ${antExe} -f ${buildFile} 
+    ${antExe} -f ${buildFile}
     SOURCES ${buildFile}
   )
 endfunction ()
