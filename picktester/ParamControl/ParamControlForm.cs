@@ -13,6 +13,9 @@ using Oracle.DataAccess.Client;
 using System.Data.SqlClient;
 #elif do_it_with_lite3 
 using System.Data.SQLite;
+#elif do_it_with_mysql 
+using MySql.Data;
+#elif do_it_with_postgres 
 #endif
 using IronPython.Hosting;
 using Microsoft.Scripting;
@@ -187,22 +190,27 @@ namespace vlab.ParamControl
             descr[0] = pcTables[i].descr;
             listOfTables.Items.Add(new ListItem(values, descr, i));
           }
+          string server;
+          string userData = "";
+#if do_it_with_mssql
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = server;
+          connect = new JConnect(new SqlConnection(server));
+#else
           connDataSource = zserver == null ? decrypt(pcApplication.server) : zserver;
           connUserId = xuser == null ? decrypt(pcApplication.user) : xuser == "NONE" ? "" : xuser;
           connPassword = ypassword == null ? decrypt(pcApplication.password) : ypassword == "NONE" ? "" : ypassword;
-          string server = string.Format("Data Source={0};", connDataSource);
-          string userData = "";
+          server = string.Format("Data Source={0};", connDataSource);
+          userData = "";
           if (connUserId != "") userData += string.Format("User Id={0};", connUserId);
           if (connPassword != "") userData += string.Format("Password={1};", connPassword);
+#endif
 #if do_it_with_oracle
           connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
           connect = new JConnect(new OracleConnection(server + userData));
 #elif do_it_with_lite3
           connectionStripLabel.Text = string.Format("{0}", connDataSource);
           connect = new JConnect(new SQLiteConnection(server));
-#elif do_it_with_mssql
-          connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
-          connect = new JConnect(new SqlConnection(server));
 #endif
           server = userData = "";
 #if do_it_with_oracle
@@ -409,7 +417,7 @@ namespace vlab.ParamControl
 #if do_it_with_lite3
           db.Limit = " LIMIT " + MR;
 #elif do_it_with_mssql
-          db.Limit = " LIMIT " + MR;
+          db.Limit = " TOP " + MR;
 #endif
           dbLookupLabel.Text = registry["Lookup", pcTable.name] = db.Lookup;
           db.GetTable(pcTable.name,
@@ -658,7 +666,14 @@ namespace vlab.ParamControl
               values += comma + "'" + toList[c] + "'";
               command += "'" + toList[c] + "', ";
             }
-            command += "'" + userName + "', SysDate)";
+#if do_it_with_oracle
+           string CurrentDate = "SysDate";
+#elif do_it_with_lite3
+            string CurrentDate = "'" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "'"; 
+#elif do_it_with_mssql
+            string CurrentDate = "GetDate()";
+#endif
+            command += "'" + userName + "', " + CurrentDate + ")";
             fieldNames += "]";
             values += "]";
             DBHandler db = new DBHandler(connect);
@@ -1394,7 +1409,7 @@ namespace vlab.ParamControl
 #elif do_it_with_lite3
         string CurrentDate = "'" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "'"; 
 #elif do_it_with_mssql
-        string CurrentDate = "current_date";
+        string CurrentDate = "GetDate()";
 #endif
         switch (how)
         {

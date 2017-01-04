@@ -15,139 +15,141 @@ public interface PickleConstants {
   /** RegularExpression Id. */
   int APPLICATION = 9;
   /** RegularExpression Id. */
-  int BOOLEAN = 10;
+  int BIGSEQUENCE = 10;
   /** RegularExpression Id. */
-  int BYTE = 11;
+  int BOOLEAN = 11;
   /** RegularExpression Id. */
-  int CASCADE = 12;
+  int BYTE = 12;
   /** RegularExpression Id. */
-  int CHAR = 13;
+  int CASCADE = 13;
   /** RegularExpression Id. */
-  int CHECK = 14;
+  int CHAR = 14;
   /** RegularExpression Id. */
-  int DATE = 15;
+  int CHECK = 15;
   /** RegularExpression Id. */
-  int DATETIME = 16;
+  int DATE = 16;
   /** RegularExpression Id. */
-  int DELETE = 17;
+  int DATETIME = 17;
   /** RegularExpression Id. */
-  int DOUBLE = 18;
+  int DELETE = 18;
   /** RegularExpression Id. */
-  int FLAGS = 19;
+  int DOUBLE = 19;
   /** RegularExpression Id. */
-  int INIT = 20;
+  int FLAGS = 20;
   /** RegularExpression Id. */
-  int INT = 21;
+  int INIT = 21;
   /** RegularExpression Id. */
-  int KEY = 22;
+  int INT = 22;
   /** RegularExpression Id. */
-  int LINK = 23;
+  int KEY = 23;
   /** RegularExpression Id. */
-  int LONG = 24;
+  int LINK = 24;
   /** RegularExpression Id. */
-  int MONEY = 25;
+  int LONG = 25;
   /** RegularExpression Id. */
-  int NOT = 26;
+  int MONEY = 26;
   /** RegularExpression Id. */
-  int NODOMAIN = 27;
+  int NOT = 27;
   /** RegularExpression Id. */
-  int NULL = 28;
+  int NODOMAIN = 28;
   /** RegularExpression Id. */
-  int OPTIONS = 29;
+  int NULL = 29;
   /** RegularExpression Id. */
-  int ORDER = 30;
+  int OPTIONS = 30;
   /** RegularExpression Id. */
-  int OTHER = 31;
+  int ORDER = 31;
   /** RegularExpression Id. */
-  int OUTPUT = 32;
+  int OTHER = 32;
   /** RegularExpression Id. */
-  int PASSWORD = 33;
+  int OUTPUT = 33;
   /** RegularExpression Id. */
-  int PRIMARY = 34;
+  int PASSWORD = 34;
   /** RegularExpression Id. */
-  int REGISTRY = 35;
+  int PRIMARY = 35;
   /** RegularExpression Id. */
-  int RELATION = 36;
+  int REGISTRY = 36;
   /** RegularExpression Id. */
-  int SEQUENCE = 37;
+  int RELATION = 37;
   /** RegularExpression Id. */
-  int SERVER = 38;
+  int SEQUENCE = 38;
   /** RegularExpression Id. */
-  int SHORT = 39;
+  int SERVER = 39;
   /** RegularExpression Id. */
-  int SHOW = 40;
+  int SHORT = 40;
   /** RegularExpression Id. */
-  int SIZES = 41;
+  int SHOW = 41;
   /** RegularExpression Id. */
-  int SUPPLIED = 42;
+  int SIZES = 42;
   /** RegularExpression Id. */
-  int TABLE = 43;
+  int SUPPLIED = 43;
   /** RegularExpression Id. */
-  int TIME = 44;
+  int TABLE = 44;
   /** RegularExpression Id. */
-  int TIMESTAMP = 45;
+  int TIME = 45;
   /** RegularExpression Id. */
-  int UNIQUE = 46;
+  int TIMESTAMP = 46;
   /** RegularExpression Id. */
-  int UPPERCASE = 47;
+  int UNIQUE = 47;
   /** RegularExpression Id. */
-  int USE = 48;
+  int UPPERCASE = 48;
   /** RegularExpression Id. */
-  int USER = 49;
+  int USE = 49;
   /** RegularExpression Id. */
-  int USERSTAMP = 50;
+  int USER = 50;
   /** RegularExpression Id. */
-  int VALIDATE = 51;
+  int USERSTAMP = 51;
   /** RegularExpression Id. */
-  int VALUE = 52;
+  int VALIDATE = 52;
   /** RegularExpression Id. */
-  int VERSION = 53;
+  int VALUE = 53;
   /** RegularExpression Id. */
-  int VIEWONLY = 54;
+  int VERSION = 54;
   /** RegularExpression Id. */
-  int COMMENT = 55;
+  int VIEWONLY = 55;
   /** RegularExpression Id. */
-  int ATSIGN = 56;
+  int COMMENT = 56;
   /** RegularExpression Id. */
-  int COLON = 57;
+  int ATSIGN = 57;
   /** RegularExpression Id. */
-  int LEFTPAREN = 58;
+  int COLON = 58;
   /** RegularExpression Id. */
-  int RIGHTPAREN = 59;
+  int LEFTPAREN = 59;
   /** RegularExpression Id. */
-  int LEFTBRACE = 60;
+  int RIGHTPAREN = 60;
   /** RegularExpression Id. */
-  int RIGHTBRACE = 61;
+  int LEFTBRACE = 61;
   /** RegularExpression Id. */
-  int SLASH = 62;
+  int RIGHTBRACE = 62;
   /** RegularExpression Id. */
-  int ASSIGN = 63;
+  int SLASH = 63;
   /** RegularExpression Id. */
-  int NUMBER = 64;
+  int ASSIGN = 64;
   /** RegularExpression Id. */
-  int FLOATING = 65;
+  int NUMBER = 65;
   /** RegularExpression Id. */
-  int EXPONENT = 66;
+  int FLOATING = 66;
   /** RegularExpression Id. */
-  int STRING = 67;
+  int EXPONENT = 67;
   /** RegularExpression Id. */
-  int DQUOTEDS = 68;
+  int STRING = 68;
   /** RegularExpression Id. */
-  int SQUOTEDS = 69;
+  int DQUOTEDS = 69;
   /** RegularExpression Id. */
-  int IDENTIFIER = 70;
+  int SQUOTEDS = 70;
   /** RegularExpression Id. */
-  int LIDENTIFIER = 71;
+  int IDENTIFIER = 71;
   /** RegularExpression Id. */
-  int LETTER = 72;
+  int LIDENTIFIER = 72;
   /** RegularExpression Id. */
-  int DIGIT = 73;
+  int LETTER = 73;
   /** RegularExpression Id. */
-  int CODE = 74;
+  int DIGIT = 74;
   /** RegularExpression Id. */
-  int ENDCODE = 75;
+  int CODE = 75;
   /** RegularExpression Id. */
-  int CODELINE = 76;
+  int ENDCODE = 76;
+  /** RegularExpression Id. */
+  int CODELINE = 77;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -166,6 +168,7 @@ public interface PickleConstants {
     "<token of kind 7>",
     "\"all\"",
     "\"application\"",
+    "\"bigsequence\"",
     "\"boolean\"",
     "<BYTE>",
     "\"cascade\"",

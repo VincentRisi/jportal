@@ -12,7 +12,7 @@ binary_dir=/main/jportal/build/picktester
 pickle
   GenFrontEndBin ${binary_dir}/app/mssql/bin %a.bin
 
-app        
+app
   appfile  ${binary_dir}/app/mssql/picktester.app
   pmfile   ${source_dir}/app/mssql/picktester.pm
   prfile   ${source_dir}/app/mssql/picktester.pr
@@ -24,8 +24,8 @@ app
   pifile   ${binary_dir}/app/pi/bankcorrespondents.pi
   pifile   ${binary_dir}/app/pi/bankfile.pi
   pifile   ${binary_dir}/app/pi/country.pi
-  pifile   ${binary_dir}/app/pi/countrycurrency.pi
   pifile   ${binary_dir}/app/pi/currency.pi
+  pifile   ${binary_dir}/app/pi/countrycurrency.pi
   pifile   ${binary_dir}/app/pi/dates.pi
   pifile   ${binary_dir}/app/pi/drivers.pi
   pifile   ${binary_dir}/app/pi/fieldsearchdef.pi

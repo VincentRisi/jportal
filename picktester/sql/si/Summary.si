@@ -4,8 +4,8 @@ OUTPUT   Summary
 SERVER   vlab
 
 TABLE   Summary
-  ID            Sequence
-  MessageID     int
+  ID            BigSequence
+  MessageID     long
   SummaryLen    short
   SummaryData   blob  (16000)
   SummaryType   byte   (AsXML=0 Text=1)

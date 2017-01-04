@@ -221,23 +221,45 @@ public class ParmCode extends Generator
   {
     outData.print(String.format("RELATION %s", table.name));
     if (opts.descr.length() > 0)
-      outData.print(String.format(" %s", opts.descr));
+      outData.print(String.format(" '%s'", opts.descr));
     outData.println();
     Link link0 = table.links.get(0);
     Link link1 = table.links.get(1);
-    outData.print(String.format("  %s", link0.linkName));
-    for (int i=0; i < link0.fields.size(); i++)
+    outData.print(String.format("  %s", link0.name));
+    // if (link0.linkFields.size() > 0)
+    // {
+    // for (int i=0; i < link0.linkFields.size(); i++)
+    // {
+    // String field = link0.linkFields.get(i);
+    // outData.print(String.format("%s%s", i==0?"(":" ", field));
+    // }
+    // }
+    // else
+    // {
+    for (int i = 0; i < link0.fields.size(); i++)
     {
       String field = link0.fields.get(i);
-      outData.print(String.format("%s%s", i==0?"(":" ", field));
+      outData.print(String.format("%s%s", i == 0 ? "(" : " ", field));
     }
+    // }
     outData.println(")");
-    outData.print(String.format("  %s", link1.linkName));
-    for (int i=0; i < link1.fields.size(); i++)
+    outData.print(String.format("  %s", link1.name));
+    // if (link1.linkFields.size() > 0)
+    // {
+    // for (int i=0; i < link1.linkFields.size(); i++)
+    // {
+    // String field = link1.linkFields.get(i);
+    // outData.print(String.format("%s%s", i==0?"(":" ", field));
+    // }
+    // }
+    // else
+    // {
+    for (int i = 0; i < link1.fields.size(); i++)
     {
       String field = link1.fields.get(i);
-      outData.print(String.format("%s%s", i==0?"(":" ", field));
+      outData.print(String.format("%s%s", i == 0 ? "(" : " ", field));
     }
+    // }
     outData.println(")");
     outData.println();
   }

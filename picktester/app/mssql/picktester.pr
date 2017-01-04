@@ -1,11 +1,11 @@
 // -------------------------------------------------------------------------------
 // -- This is an example of how to use VALIDATE in ParamControl --
-// VALIDATE __INIT__ is for defining common procs and value for later use 
+// VALIDATE __INIT__ is for defining common procs and value for later use
 // VALIDATE ALL      is always called and is useful for audits and texting changes
 // VALIDATE OTHER    is called for tables that do not have a VALIDATE <table>
 // VALIDATE <table>  where <table> is a table name eg. Staff is for specific table
 //                   validations
-// Other than __INIT__ the python code should impliment a 
+// Other than __INIT__ the python code should impliment a
 // def validate(name, action, fields, old, new):
 //   ...
 // which returns True or False, a False return will rollback any database updates
@@ -33,7 +33,7 @@
 //     return ParamControlForm.ShowMessage(message, title, oftype)
 //
 // -------------------------------------------------------------------------------
-                    
+
 VALIDATE __INIT__
 --CODE--
 actions = ['ADD', 'CHANGE', 'DELETE']
@@ -75,9 +75,9 @@ VALIDATE ALL
 def validate(name, action, fields, old, new):
   loginfo('all', name, action, fields, old, new)
   xml = make_xml(name, action, fields, old, new)
-  sqlaction("INSERT INTO AUDITS VALUES (AuditsSeq.NextVal, '%s', %s, '%s', 'AUDIT', sysdate)" % (name, action, xml))  
+  sqlaction("INSERT INTO AUDITS (TableName, Action, XmlText, USId, TmStamp) VALUES ('%s', %s, '%s', 'AUDIT', GetDate())" % (name, action, xml))
   result = sqlquery("SELECT DateType, Description from Dates")
-  show_message(result, 'query') 
+  show_message(result, 'query')
   return True
 --ENDCODE--
 

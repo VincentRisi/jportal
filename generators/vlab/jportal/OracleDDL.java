@@ -478,6 +478,7 @@ public class OracleDDL extends Generator
       case Field.SEQUENCE:
         return "NUMBER(10)";
       case Field.LONG:
+      case Field.BIGSEQUENCE:
         return "NUMBER(18)";
       case Field.CHAR:
         return "VARCHAR2(" + String.valueOf(field.length) + ")";

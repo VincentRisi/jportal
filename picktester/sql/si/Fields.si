@@ -4,7 +4,7 @@ OUTPUT   Fields
 SERVER   vlab
 
 TABLE   Fields
-  MessageID     int
+  MessageID     long
   Tag           char (256)
   Content       char (256)
   Fieldsearchid char (16)

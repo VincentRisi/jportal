@@ -4,8 +4,8 @@ OUTPUT   AuditTrail
 SERVER   vlab
 
 TABLE   AuditTrail
-  ID            sequence
-  MessageID     int
+  ID            bigsequence
+  MessageID     long
   Action        byte (StatusChange=1 Comment=2)
   FromStatus    byte (None=0 Pending=1 Complete=2 Error=3)
   ToStatus      byte (None=0 Pending=1 Complete=2 Error=3)

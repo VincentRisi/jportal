@@ -161,7 +161,8 @@ if (USE_PICKTESTER)
     message (STATUS "${mysqlExe} --user=root --password=mariadb mysql < ${drops} >> ${lstFile}")
     message (STATUS "${mysqlExe} --user=root --password=mariadb mysql < ${depends} >> ${lstFile}")
     add_custom_target (jportal_picktester_mysql_sql ALL
-      ${mysqlExe} --user=root --password=mariadb mysql < ${depends} >> ${lstFile}
+      COMMAND ${mysqlExe} --user=root --password=mariadb mysql < ${drops} >> ${lstFile}
+      COMMAND ${mysqlExe} --user=root --password=mariadb mysql < ${depends} >> ${lstFile}
       SOURCES ${depends} ${drops}
     )
   endif ()

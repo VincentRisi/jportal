@@ -415,6 +415,7 @@ public class MySqlDDL extends Generator
       case Field.INT:
         return "integer";
       case Field.SEQUENCE:
+      case Field.BIGSEQUENCE:
         return "serial";
       case Field.LONG:
         return "bigint";

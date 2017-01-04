@@ -4,7 +4,7 @@ OUTPUT   TestPackMessage
 SERVER   vlab
 
 TABLE TestPackMessage
-  MessageId     int
+  MessageId     long
   PackName      char(50)
   USId          char(16)
   TMStamp       timestamp

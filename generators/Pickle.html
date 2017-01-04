@@ -31,6 +31,7 @@
 &lt;DEFAULT&gt; TOKEN [IGNORE_CASE] : {
 &lt;ALL: "all"&gt;
 | &lt;APPLICATION: "application"&gt;
+| &lt;BIGSEQUENCE: "bigsequence"&gt;
 | &lt;BOOLEAN: "boolean"&gt;
 | &lt;BYTE: "byte" | "tinyint"&gt;
 | &lt;CASCADE: "cascade"&gt;
@@ -235,7 +236,7 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">pickUse</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;USE&gt; &lt;LEFTPAREN&gt; ( &lt;CHAR&gt; ( <A HREF="#prod16">pickCharsize</A> )? | &lt;SEQUENCE&gt; | &lt;INT&gt; ) &lt;RIGHTPAREN&gt;</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;USE&gt; &lt;LEFTPAREN&gt; ( &lt;CHAR&gt; ( <A HREF="#prod16">pickCharsize</A> )? | &lt;SEQUENCE&gt; | &lt;BIGSEQUENCE&gt; | &lt;INT&gt; | &lt;LONG&gt; ) &lt;RIGHTPAREN&gt;</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">pickFields</A></TD>
@@ -281,6 +282,11 @@
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE>&lt;SEQUENCE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BIGSEQUENCE&gt;</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>

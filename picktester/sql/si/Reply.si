@@ -4,8 +4,8 @@ OUTPUT   Reply
 SERVER   vlab
 
 TABLE   Reply
-  Id            Sequence
-  MessageID     int
+  Id            BigSequence
+  MessageID     long
   QueueID       char (16)
   MessageLen    short
   MessageData   blob(16000)

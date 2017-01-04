@@ -4,8 +4,8 @@ OUTPUT   Streams
 SERVER   vlab
 
 TABLE   Streams
-  Id           Sequence
-  MessageId    int
+  Id           BigSequence
+  MessageId    long
   QueueId      char(16)
   EventQueueId char(16)  NULL
   StreamRef    char(128) NULL

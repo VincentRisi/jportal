@@ -1109,12 +1109,10 @@
       // logInfoRB
       // 
       this.logInfoRB.AutoSize = true;
-      this.logInfoRB.Checked = true;
       this.logInfoRB.Location = new System.Drawing.Point(126, 14);
       this.logInfoRB.Name = "logInfoRB";
       this.logInfoRB.Size = new System.Drawing.Size(43, 17);
       this.logInfoRB.TabIndex = 2;
-      this.logInfoRB.TabStop = true;
       this.logInfoRB.Text = "Info";
       this.logInfoRB.UseVisualStyleBackColor = true;
       this.logInfoRB.CheckedChanged += new System.EventHandler(this.logLevelChanged);
@@ -1122,10 +1120,12 @@
       // logDebugRB
       // 
       this.logDebugRB.AutoSize = true;
+      this.logDebugRB.Checked = true;
       this.logDebugRB.Location = new System.Drawing.Point(63, 14);
       this.logDebugRB.Name = "logDebugRB";
       this.logDebugRB.Size = new System.Drawing.Size(57, 17);
       this.logDebugRB.TabIndex = 1;
+      this.logDebugRB.TabStop = true;
       this.logDebugRB.Text = "Debug";
       this.logDebugRB.UseVisualStyleBackColor = true;
       this.logDebugRB.CheckedChanged += new System.EventHandler(this.logLevelChanged);
@@ -1152,6 +1152,8 @@
       // 
       this.showSetup.AutoSize = true;
       this.showSetup.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.showSetup.Checked = true;
+      this.showSetup.CheckState = System.Windows.Forms.CheckState.Checked;
       this.showSetup.Location = new System.Drawing.Point(8, 13);
       this.showSetup.Name = "showSetup";
       this.showSetup.Size = new System.Drawing.Size(84, 17);
@@ -1200,6 +1202,8 @@
       // 
       this.showSQL.AutoSize = true;
       this.showSQL.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.showSQL.Checked = true;
+      this.showSQL.CheckState = System.Windows.Forms.CheckState.Checked;
       this.showSQL.Location = new System.Drawing.Point(8, 13);
       this.showSQL.Name = "showSQL";
       this.showSQL.Size = new System.Drawing.Size(77, 17);

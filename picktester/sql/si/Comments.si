@@ -4,8 +4,8 @@ OUTPUT   Comments
 SERVER   vlab
 
 TABLE   Comments
-  ID            Sequence
-  MessageID     int
+  ID            BigSequence
+  MessageID     long
   Text          char(1024)
   USId          char (16)
   Tmstamp       timestamp

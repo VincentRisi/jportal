@@ -4,8 +4,8 @@ OUTPUT   BlobData
 SERVER   vlab
 
 TABLE BlobData
-  MessageId    int
-  Id           int
+  MessageId    long
+  Id           long
   BlobType     int (Message=0 Streams=1 Response=2 Reply=3)
   MessageData  blob(16000)
   USId         char(16)

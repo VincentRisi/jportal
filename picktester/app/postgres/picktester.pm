@@ -1,4 +1,4 @@
-APPLICATION ParamControl 'PickTester Parameter Control Application'
+APPLICATION ParamControl 'PickTester Parameter Control Application - postgres'
 SERVER   'localhost/postgres'
 USER     'postgres'
 PASSWORD 'postgres'

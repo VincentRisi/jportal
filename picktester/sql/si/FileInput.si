@@ -5,7 +5,7 @@ SERVER   vlab
 
 table FileInput
 
-  ID             Sequence
+  ID             BigSequence
   Name           char(256)
   FileDate       DateTime
   FileSize       int

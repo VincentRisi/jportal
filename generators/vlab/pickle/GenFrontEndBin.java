@@ -316,8 +316,10 @@ public class GenFrontEndBin
               Field field = (Field) relation.fromFields.elementAt(j);
               if (relation.fromShort.length() > 0)
                 writeString(outData, relation.fromShort+field.name);
+              else if (relation.fromFieldNames.size() > j)
+                writeString(outData, relation.fromFieldNames.elementAt(j));
               else
-                writeString(outData, relation.fromShort+(String)relation.fromFieldNames.elementAt(j));
+                writeString(outData, field.name);
               writeInt(outData, field.type);
               writeInt(outData, field.length);
               writeInt(outData, field.precision);
@@ -336,8 +338,10 @@ public class GenFrontEndBin
               Field field = (Field) relation.toFields.elementAt(j);
               if (relation.fromShort.length() > 0)
                 writeString(outData, relation.toShort+field.name);
+              else if (relation.toFieldNames.size() > j)
+                writeString(outData, relation.toFieldNames.elementAt(j));
               else
-                writeString(outData, relation.toShort+(String)relation.toFieldNames.elementAt(j));
+                writeString(outData, field.name);
               writeInt(outData, field.type);
               writeInt(outData, field.length);
               writeInt(outData, field.precision);

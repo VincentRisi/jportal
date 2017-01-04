@@ -4,7 +4,7 @@ OUTPUT   Message
 SERVER   vlab
 
 TABLE Message
-  Id            Sequence
+  Id            BigSequence
   SourceSysid   char  (16)
   Reference     char  (64)
   SourceQueue   char  (16)

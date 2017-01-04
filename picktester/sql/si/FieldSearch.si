@@ -4,7 +4,7 @@ OUTPUT   FieldSearch
 SERVER   vlab
 
 TABLE   FieldSearch
-  id            Sequence
+  id            BigSequence
   Tag           char (256)
   USId          char (16)
   Tmstamp       timestamp

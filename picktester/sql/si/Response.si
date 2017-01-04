@@ -4,9 +4,9 @@ OUTPUT   Response
 SERVER   vlab
 
 TABLE   Response
-  Id            Sequence
-  MessageID     int
-  Streamid      int
+  Id            BigSequence
+  MessageID     long
+  Streamid      long
   Streamref     char (128) NULL
   Sourcequeue   char (16)
   QueueID       char (16)

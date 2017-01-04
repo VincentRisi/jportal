@@ -4,8 +4,8 @@ OUTPUT   Routing
 SERVER   vlab
 
 TABLE   Routing
-  Id            Sequence
-  MessageID     int
+  Id            BigSequence
+  MessageID     long
   MessageType   byte       (Message=0 Stream=1 Response=2 Reply=3)
   Queuefrom     char (16)
   Queueto       char (16)
