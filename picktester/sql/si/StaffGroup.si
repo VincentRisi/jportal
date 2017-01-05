@@ -14,10 +14,10 @@ KEY StaffGroupKey PRIMARY
   StaffId
   GroupId
 
-LINK Staff DELETE CASCADE
+LINK Staff (Id)
   StaffId
 
-LINK Grps DELETE CASCADE 
+LINK Grps (GroupId)
   GroupId
 
 PROC Insert 

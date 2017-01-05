@@ -15,10 +15,10 @@ KEY  SYS_C00825 PRIMARY
   Name
   Queueid
 
-link Staff DELETE CASCADE
+link Staff (Id)
    Staffid
 
-link Queue
+link Queue (Id)
    Queueid
 
 PROC    Insert

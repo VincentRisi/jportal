@@ -14,10 +14,10 @@ KEY StreamFieldMsgRelKey PRIMARY
   FieldId
   StreamId
 
-LINK StreamFieldsDef DELETE CASCADE
+LINK StreamFieldsDef (Id)
   FieldId
 
-LINK StreamMessageFormat DELETE CASCADE
+LINK StreamMessageFormat (Id)
   StreamId
 
 PROC Insert

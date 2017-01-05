@@ -39,17 +39,17 @@ KEY KEY02
 KEY KEY03
   Country
 
-Link BankFile DELETE CASCADE
+Link BankFile (SwiftAddress)
   SwiftAddress
 
 PROC Insert
 PROC Update
 PROC SelectOne
-PROC DeleteOne 
+PROC DeleteOne
 PROC Exists
 
 // used by almanacto
-PROC UpdateAllStatus 
+PROC UpdateAllStatus
 INPUT
   Status        byte
   USId          char  (16)
@@ -81,7 +81,7 @@ SQLCODE
 ENDCODE
 
 // Used By Router, IDE
-PROC GetBankCode 
+PROC GetBankCode
 INPUT
   FinId            int
   BranchId         int
@@ -94,7 +94,7 @@ SQLCODE
 ENDCODE
 
 // Used By Router, IDE
-PROC FinIdBankCodeCheck 
+PROC FinIdBankCodeCheck
 INPUT
   FinId            int
   NationalBankCode Char(45) // why 315
@@ -107,7 +107,7 @@ SQLCODE
 ENDCODE
 
 // Used By Router, IDE
-PROC SwiftLookup 
+PROC SwiftLookup
 INPUT
   SwiftAddress     Char(11)
   Currency         Char(4)
@@ -124,7 +124,7 @@ select distinct corrswiftaddress from almanacbank b, almanaccorrespondent c
 ENDCODE
 
 // Used By Router, IDE
-PROC SwiftCountryLookup 
+PROC SwiftCountryLookup
 INPUT
   SwiftAddress     Char(11)
   Country          Char(100)

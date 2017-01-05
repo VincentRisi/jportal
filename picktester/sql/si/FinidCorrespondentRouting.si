@@ -16,23 +16,23 @@ TABLE FinidCorrespondentRouting
 KEY CorrespondentBankKey PRIMARY
   FinId
 
-LINK AlmanacBank
+LINK AlmanacBank (FinId BranchId)
   FinId
   Branchid
 
-LINK AlmanacBank
+LINK AlmanacBank (FinId BranchId)
   RouteFinId
   RouteBranchid
 
-PROC Insert     
-PROC Update     
-PROC SelectOne  
-PROC DeleteOne  
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
 
 
 
 //used by router,ide
-PROC Get 
+PROC Get
 INPUT
   FinId             int
 OUTPUT (single)

@@ -32,19 +32,19 @@ KEY KEY02
   QueueId
   Reference
 
-link Queue (Id) DELETE CASCADE
+link Queue (Id)
    QueueId
 
-link Queue (Id) DELETE CASCADE
+link Queue (Id)
    ResponseQueue
 
-link Queue (Id) DELETE CASCADE
+link Queue (Id)
    EventQueueId
 
-link Queue (Id) DELETE CASCADE
+link Queue (Id)
    SourceQueue
 
-link SourceSystem (Id) DELETE CASCADE
+link SourceSystem (Id)
    SourceSysId
 
 PROC    Insert

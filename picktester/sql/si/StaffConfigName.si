@@ -14,7 +14,7 @@ KEY StaffConfigName PRIMARY
   Config_Name
   StaffId
 
-link Staff DELETE CASCADE
+link Staff (Id)
   StaffId
 
 PROC    Insert

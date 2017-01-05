@@ -18,7 +18,7 @@ PRIMARY
   ID
   BlobType
 
-Link Message
+Link Message (Id)
   MessageId
 
 Proc Insert

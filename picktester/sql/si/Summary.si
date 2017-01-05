@@ -21,7 +21,7 @@ KEY SYS_C00810 PRIMARY
 KEY  KEY01
   MessageID
 
-link Message DELETE CASCADE
+link Message (Id)
    MessageID
 
 PROC    Insert

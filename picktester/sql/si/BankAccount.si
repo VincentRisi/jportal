@@ -17,7 +17,7 @@ KEY BankAccountKey PRIMARY
   CurrId
   AccountTypeId
 
-LINK BankFile (SwiftAddress) DELETE CASCADE
+LINK BankFile (SwiftAddress)
   SwiftAddress
 
 LINK Currency (Id)

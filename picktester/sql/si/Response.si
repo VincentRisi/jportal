@@ -21,13 +21,13 @@ TABLE   Response
 KEY     SYS_C00808 PRIMARY
   ID
 
-link Streams DELETE CASCADE
+link Streams (Id)
    Streamid
 
-link Queue
+link Queue (Id)
    Queueid
 
-link Message DELETE CASCADE
+link Message (Id)
   MessageID
 
 PROC    Insert

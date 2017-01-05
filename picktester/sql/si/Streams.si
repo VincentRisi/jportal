@@ -34,16 +34,16 @@ KEY key3
   QueueId
   Status
 
-link Queue
+link Queue (Id)
   QueueID
 
-link Queue
+link Queue (Id)
   EventQueueID
 
-link Message DELETE CASCADE
+link Message (Id)
   MessageID
 
-link Streamtype
+link Streamtype (Id)
   StreamType
 
 PROC    Insert

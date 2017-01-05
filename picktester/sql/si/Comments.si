@@ -19,7 +19,7 @@ KEY  KEY01
 // //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   MessageID
 
-link Message
+link Message (Id)
    MessageID
 
 PROC    Insert

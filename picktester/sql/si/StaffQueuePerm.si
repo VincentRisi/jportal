@@ -15,10 +15,10 @@ KEY StaffQueuePermKey PRIMARY
   StaffId
   QueueId
 
-LINK Queue
+LINK Queue (Id)
   QueueId
 
-LINK Staff
+LINK Staff (Id)
   StaffId
 
 PROC Insert

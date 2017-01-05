@@ -15,16 +15,17 @@ KEY StaffGroupKey PRIMARY
   ScriptName
   GroupId
 
-LINK Grps GroupId
+LINK Grps (GroupId)
+  GroupId
 
-PROC Insert 
-PROC Update 
+PROC Insert
+PROC Update
 PROC SelectAll
 PROC SelectOne
-PROC DeleteOne 
+PROC DeleteOne
 
-PROC ListAll 
-OUTPUT 
+PROC ListAll
+OUTPUT
   ScriptName Char(64)
   GroupId Char(16)
   AccessType byte
@@ -37,10 +38,10 @@ sqlcode
          , GroupId
 endcode
 
-PROC InsertScripts 
+PROC InsertScripts
 INPUT
   GroupId      Char(16)
-  AccessType   byte 
+  AccessType   byte
   USId         Char(16)
 sqlcode
   insert into ScriptGroup
@@ -49,7 +50,7 @@ sqlcode
      where name in ($ScriptList(40960)))
 endcode
 
-PROC DeleteScripts 
+PROC DeleteScripts
 INPUT
   GroupId      Char(16)
 sqlcode
@@ -58,10 +59,10 @@ sqlcode
   and ScriptName in ($ScriptList(4096))
 endcode
 
-PROC UpdateScriptsAccess 
+PROC UpdateScriptsAccess
 INPUT
   GroupId      Char(16)
-  AccessType   byte 
+  AccessType   byte
   USId         Char(16)
 sqlcode
   update ScriptGroup set AccessType = :AccessType, USId = :Usid
@@ -69,10 +70,10 @@ sqlcode
   and ScriptName in ($ScriptList(40960))
 endcode
 
-PROC InsertGroups 
+PROC InsertGroups
 INPUT
   ScriptName   char(64)
-  AccessType   byte 
+  AccessType   byte
   USId         Char(16)
 sqlcode
   insert into ScriptGroup
@@ -81,7 +82,7 @@ sqlcode
      where name in ($GroupList(40960)))
 endcode
 
-PROC DeleteGroups 
+PROC DeleteGroups
 INPUT
   ScriptName   char(64)
 sqlcode
@@ -90,10 +91,10 @@ sqlcode
   and ScriptName = :ScriptName
 endcode
 
-PROC UpdateGroupsAccess 
+PROC UpdateGroupsAccess
 INPUT
   ScriptName   char(64)
-  AccessType   byte 
+  AccessType   byte
   USId         Char(16)
 sqlcode
   update ScriptGroup set AccessType = :AccessType, USId = :Usid

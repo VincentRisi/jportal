@@ -23,10 +23,10 @@ KEY KEY01
 KEY KEY02
   Content
 
-link Message DELETE CASCADE
+link Message (Id)
    MessageID
 
-link FieldSearchDef DELETE CASCADE
+link FieldSearchDef (Id)
    Fieldsearchid
 
 PROC    Insert

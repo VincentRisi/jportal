@@ -4,16 +4,16 @@ OUTPUT   StaffProfile
 SERVER   vlab
 
 TABLE   StaffProfile
-Staffid       char(16)
-Function      char (64)
+StaffId       char(16)
+FunctionOf    char (64)
 USId          char (16)
 Tmstamp       timestamp
 
 KEY     SYS_C00826 PRIMARY
-  STAFFID
-  FUNCTION
+  StaffId
+  FunctionOf
 
-link Staff DELETE CASCADE
+link Staff (Id)
   Staffid
 
 PROC    Insert

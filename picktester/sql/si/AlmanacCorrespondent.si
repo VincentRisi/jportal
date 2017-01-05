@@ -27,7 +27,7 @@ KEY BankFileKey PRIMARY
   CorrFinId
   CorrBranchId
 
-link Bankfile (SwiftAddress) DELETE CASCADE
+link Bankfile (SwiftAddress)
   CorrSwiftAddress
 
 PROC Insert

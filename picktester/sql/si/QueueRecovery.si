@@ -16,13 +16,9 @@ TABLE   QueueRecovery
 
 KEY     SYS_C00816
 PRIMARY
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
    QueueId
 
-//link Queue
-//   QueueId
-
-link QueueType
+link QueueType (Id)
    QueueType
 
 

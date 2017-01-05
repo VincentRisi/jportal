@@ -247,8 +247,8 @@ public class MySqlDDL extends Generator
       else
         name = (String)link.linkFields.elementAt(i);
       outData.println(comma + name);
-      outData.println("  )");
     }
+    outData.println("  )");
     if (link.isDeleteCascade)
     {
       outData.println("  ON DELETE CASCADE");
@@ -415,8 +415,9 @@ public class MySqlDDL extends Generator
       case Field.INT:
         return "integer";
       case Field.SEQUENCE:
+        return "int AUTO_INCREMENT UNIQUE";
       case Field.BIGSEQUENCE:
-        return "serial";
+        return "bigint AUTO_INCREMENT UNIQUE";
       case Field.LONG:
         return "bigint";
       case Field.CHAR:

@@ -11,13 +11,7 @@ TABLE TestPackMessage
 
 KEY     SYS_C00821
 PRIMARY
-// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
   MessageID
   PackName
 
-//link TestPack
-//   PackName
-
-//link TestMessage
-//   MessageId
 

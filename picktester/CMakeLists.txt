@@ -13,12 +13,12 @@ if (USE_PICKTESTER)
   ## These list was manually created using depends.py - see pyutils
   set (buildorder_list
     AccountType Audits BankFile Currency Drivers FieldSearch FileInput Grps
-    Persistent QueueType ScriptGroup Scripts SourceSystem StreamFields
+    Persistent QueueType ScriptGroup SourceSystem StreamFields
     StreamMessageFormat StreamType TestMessage TestPackMessage TestPayment
     AlmanacBank BankAccount Country Dates FieldSearchDef FileOutput Lookup Queue
     Routing ScriptVersion StreamFieldsDef TestPack AlmanacCorrespondent
     BankCorrespondents CountryCurrency FigCorrespondentBank Message Reply
-    ScriptProcs StreamFieldMsgRel Summary AuditTrail Comments
+    StreamFieldMsgRel Summary AuditTrail Comments
     FinidCorrespondentRouting Staff StaffGroup StaffQueueConfig Streams BlobData
     QueueRecovery StaffConfigName StaffQueuePerm Fields StaffProfile Response
     TestpackPayment
@@ -28,11 +28,11 @@ if (USE_PICKTESTER)
     TestpackPayment Response StaffProfile Fields StaffQueuePerm StaffConfigName
     QueueRecovery BlobData Streams StaffQueueConfig StaffGroup Staff
     FinidCorrespondentRouting Comments AuditTrail Summary StreamFieldMsgRel
-    ScriptProcs Reply Message FigCorrespondentBank CountryCurrency
+    Reply Message FigCorrespondentBank CountryCurrency
     BankCorrespondents AlmanacCorrespondent TestPack StreamFieldsDef ScriptVersion
     Routing Queue Lookup FileOutput FieldSearchDef Dates Country BankAccount
     AlmanacBank TestPayment TestPackMessage TestMessage StreamType
-    StreamMessageFormat StreamFields SourceSystem Scripts ScriptGroup QueueType
+    StreamMessageFormat StreamFields SourceSystem ScriptGroup QueueType
     Persistent Grps FileInput FieldSearch Drivers Currency BankFile Audits
     AccountType
   )
@@ -126,6 +126,7 @@ if (USE_PICKTESTER)
     file(WRITE ${depends} "USE vlab;\n")
     foreach (name ${buildorder_list})
       set (srcFile ${PICKTESTER_BINARY_DIR}/sql/msDDL/${name}.sql)
+      file(APPEND ${depends} ":!! echo ${srcFile}\n")
       file(APPEND ${depends} ":r ${srcFile}\n")
     endforeach()
     set (drops ${PICKTESTER_BINARY_DIR}/sql/msDDL/drops.sql)

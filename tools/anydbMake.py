@@ -183,7 +183,9 @@ def parse_anydb(sourceFile):
   switches[CRACKLE] = ''
   switches[JPORTAL] = ''
   switches[PICKLE] = ''
+  lineNo = 0
   for line in lines:
+    lineNo += 1
     line=expand(remove_comment(line.strip()))
     if len(line) == 0:
       continue
@@ -192,6 +194,13 @@ def parse_anydb(sourceFile):
       args[fields[0]] = fields[1]
       continue
     fields=line.split()
+    if fields[0] == 'include':
+      if len(fields) == 2:
+        ifile = open(fields[1], 'r')
+        includeLines = ifile.readlines()
+        ifile.close()
+        lines[lineNo:lineNo] = includeLines
+      continue
     if fields[0] == 'project' and len(fields) > 1:
       project = Class()
       project.name = fixname(fields[1])
