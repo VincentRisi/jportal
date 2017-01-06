@@ -4,7 +4,7 @@ OUTPUT   Audits
 SERVER   vlab
 
 TABLE Audits
-    OPTIONS "descr=Audit Trail "
+    OPTIONS 'descr=Audit Trail' 'viewonly'
   Id        BigSequence
   TableName Char(64)
   Action    byte(l'Add'=0 l'Change'=1 l'Delete'=2)
