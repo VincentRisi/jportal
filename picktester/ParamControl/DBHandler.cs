@@ -279,6 +279,10 @@ namespace vlab.ParamControl
       long d = (long)table.Rows[0][0];
 #elif do_it_with_mssql
       int d = (int)table.Rows[0][0];
+#elif do_it_with_mysql
+      int d = (int)table.Rows[0][0];
+#elif do_it_with_postgres
+      long d = (long)table.Rows[0][0];
 #endif
       return int.Parse(d.ToString());
     }

@@ -37,7 +37,8 @@ namespace vlab.jportal
         OleDb,
         PostgreSQL,
         DB2,
-        Lite3
+        Lite3,
+        MySql
     }
 
     public interface IPortalHandler

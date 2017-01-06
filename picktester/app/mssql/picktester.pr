@@ -75,7 +75,7 @@ VALIDATE ALL
 def validate(name, action, fields, old, new):
   loginfo('all', name, action, fields, old, new)
   xml = make_xml(name, action, fields, old, new)
-  sqlaction("INSERT INTO AUDITS (TableName, Action, XmlText, USId, TmStamp) VALUES ('%s', %s, '%s', 'AUDIT', GetDate())" % (name, action, xml))
+  sqlaction("INSERT INTO AUDITS (TableName, Action, XmlText, USId, TmStamp) VALUES ('%s', %s, '%s', 'AUDIT', Now())" % (name, action, xml))
   result = sqlquery("SELECT DateType, Description from Dates")
   show_message(result, 'query')
   return True

@@ -14,8 +14,9 @@ using System.Data.SqlClient;
 #elif do_it_with_lite3 
 using System.Data.SQLite;
 #elif do_it_with_mysql 
-using MySql.Data;
+using MySql.Data.MySqlClient;
 #elif do_it_with_postgres 
+using Devart.Data.PostgreSql;
 #endif
 using IronPython.Hosting;
 using Microsoft.Scripting;
@@ -32,7 +33,6 @@ namespace vlab.ParamControl
     private string registryName;
     private string logFileName;
     private string xuser, ypassword, zserver;
-    private string connUserId, connPassword, connDataSource;
     private Registry registry;
     private static JConnect connect;
     private bool allowUpdates;
@@ -191,34 +191,30 @@ namespace vlab.ParamControl
             listOfTables.Items.Add(new ListItem(values, descr, i));
           }
           string server;
-          string userData = "";
 #if do_it_with_mssql
           server = zserver == null ? decrypt(pcApplication.server) : zserver;
-          connectionStripLabel.Text = server;
+          connectionStripLabel.Text = dropPassword(server, "Password=");
           connect = new JConnect(new SqlConnection(server));
-#else
-          connDataSource = zserver == null ? decrypt(pcApplication.server) : zserver;
-          connUserId = xuser == null ? decrypt(pcApplication.user) : xuser == "NONE" ? "" : xuser;
-          connPassword = ypassword == null ? decrypt(pcApplication.password) : ypassword == "NONE" ? "" : ypassword;
-          server = string.Format("Data Source={0};", connDataSource);
-          userData = "";
-          if (connUserId != "") userData += string.Format("User Id={0};", connUserId);
-          if (connPassword != "") userData += string.Format("Password={1};", connPassword);
-#endif
-#if do_it_with_oracle
+          connect.TypeOfVendor = VendorType.SqlServer;
+#elif do_it_with_mysql
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = dropPassword(server, "Pwd=");
+          connect = new JConnect(new MySqlConnection(server));
+          connect.TypeOfVendor = VendorType.MySql;
+#elif do_it_with_lite3
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = server;
+          connect = new JConnect(new SQLiteConnection(server));
+          connect.TypeOfVendor = VendorType.Lite3;
+#elif do_it_with_postgres
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = dropPassword(server, "Password=");
+          connect = new JConnect(new Devart.Data.PostgreSql.PgSqlConnection(server));
+          connect.TypeOfVendor = VendorType.PostgreSQL;
+#elif do_it_with_oracle
           connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
           connect = new JConnect(new OracleConnection(server + userData));
-#elif do_it_with_lite3
-          connectionStripLabel.Text = string.Format("{0}", connDataSource);
-          connect = new JConnect(new SQLiteConnection(server));
-#endif
-          server = userData = "";
-#if do_it_with_oracle
           connect.TypeOfVendor = VendorType.Oracle;
-#elif do_it_with_lite3
-          connect.TypeOfVendor = VendorType.Lite3;
-#elif do_it_with_mssql
-          connect.TypeOfVendor = VendorType.SqlServer;
 #endif
           connect.Open();
         }
@@ -228,6 +224,20 @@ namespace vlab.ParamControl
           Close();
         }
       }
+    }
+    private string dropPassword(string server, string v)
+    {
+      int n = server.ToUpper().IndexOf(v.ToUpper());
+      if (n >= 0)
+      {
+        int t = server.Substring(n).IndexOf(";");
+        if (t > 0)
+        {
+          string result = server.Substring(0, n) + server.Substring(n + t + 1);
+          return result;
+        }
+      }
+      return server;
     }
     private string decrypt(byte[] p)
     {
@@ -672,6 +682,10 @@ namespace vlab.ParamControl
             string CurrentDate = "'" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "'"; 
 #elif do_it_with_mssql
             string CurrentDate = "GetDate()";
+#elif do_it_with_mysql
+            string CurrentDate = "Now()";
+#elif do_it_with_postgres
+            string CurrentDate = "CURRENT_TIMESTAMP";
 #endif
             command += "'" + userName + "', " + CurrentDate + ")";
             fieldNames += "]";
@@ -912,6 +926,22 @@ namespace vlab.ParamControl
           return "CONVERT(DATETIME, " + String.Format("'{0}-{1}-{2} {3}:{4}:{5}')", data.Substring(0, 4), data.Substring(4, 2), data.Substring(6, 2), data.Substring(8, 2), data.Substring(10, 2), data.Substring(12, 2));
         case DBHandler.PC_TIME:
           return "CONVERT(DATETIME, " + String.Format("'0001-01-01 {0}:{1}:{2}')", data.Substring(0, 2), data.Substring(2, 2), data.Substring(2, 2));
+#elif do_it_with_mysql
+        case DBHandler.PC_DATE:
+          return "STR_TO_DATE('" + data + "', '%Y%m%d')";
+        case DBHandler.PC_DATETIME:
+        case DBHandler.PC_TIMESTAMP:
+          return "STR_TO_DATE('" + data + "', '%Y%m%d%H%i%s')";
+        case DBHandler.PC_TIME:
+          return "STR_TO_DATE('" + data + "', '%H%i%s')";
+#elif do_it_with_postgres
+        case DBHandler.PC_DATE:
+          return "TO_DATE('" + data + "','YYYYMMDD')";
+        case DBHandler.PC_DATETIME:
+        case DBHandler.PC_TIMESTAMP:
+          return "TO_DATE('" + data + "','YYYYMMDDHH24MISS')";
+        case DBHandler.PC_TIME:
+          return "TO_DATE('" + data + "','HH24MISS')";
 #endif
       }
       return "";
@@ -1410,6 +1440,10 @@ namespace vlab.ParamControl
         string CurrentDate = "'" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "'"; 
 #elif do_it_with_mssql
         string CurrentDate = "GetDate()";
+#elif do_it_with_mysql
+        string CurrentDate = "Now()";
+#elif do_it_with_postgres
+        string CurrentDate = "CURRENT_TIMESTAMP";
 #endif
         switch (how)
         {
