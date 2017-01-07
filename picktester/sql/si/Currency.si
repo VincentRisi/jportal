@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Currency
 SERVER   vlab
@@ -22,7 +22,7 @@ PROC DeleteOne
 PROC SelectAll
 
 PROC Curcy
-OUTPUT 
+OUTPUT
   Id Char(4)
   Descr Char(64)
   Comments Char(256)

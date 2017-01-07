@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Scripts
 SERVER   vlab
@@ -9,7 +9,7 @@ TABLE Scripts
   Version     short
   StoreType   byte    (Source=0 Description=1 Compiled=2 Compressed=3)
   Part        short
-  OfParts     short   
+  OfParts     short
   Content     char(4000) NULL
   USId        char(16)
   Tmstamp     timestamp
@@ -38,7 +38,7 @@ PROC DeleteOne
 PROC Versions
 INPUT
   Name        char(64)
-OUTPUT 
+OUTPUT
   Version     short
   Removed     byte
   Active      byte
@@ -46,8 +46,8 @@ OUTPUT
 sqlcode
   select distinct s.Version
                 , s.VersionType Removed
-                , (select count ( *) 
-                     from ScriptVersion v 
+                , (select count ( *)
+                     from ScriptVersion v
                     where v.Name = s.Name
                       and v.Version = s.Version) Active
                 , to_char(s.TmStamp, 'YYYY/MM/DD HH24:MI:SS')

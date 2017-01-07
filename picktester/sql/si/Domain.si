@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Domain
 SERVER   vlab
@@ -6,7 +6,7 @@ SERVER   vlab
 TABLE Domain
 
 PROC AccountType
-OUTPUT 
+OUTPUT
   Id Char(16)
   Descr Char(256)
   Status byte
@@ -19,7 +19,7 @@ sqlcode
 endcode
 
 PROC BankFile
-OUTPUT 
+OUTPUT
   SwiftAddress Char(11)
   BankName Char(105)
   BankTown Char(35)
@@ -77,7 +77,7 @@ sqlcode
 endcode
 
 PROC AlmanacBank
-OUTPUT 
+OUTPUT
   FinId Int
   BranchId Int
   BankName Char(504) NULL
@@ -125,7 +125,7 @@ sqlcode
 endcode
 
 PROC AlmanacCorrespondent
-OUTPUT 
+OUTPUT
   FinId Int
   CorrCurrency Char(4)
   CorrFinId Int
@@ -163,7 +163,7 @@ sqlcode
 endcode
 
 PROC Currency
-OUTPUT 
+OUTPUT
   Id Char(4)
   Descr Char(64)
   Comments Char(256)
@@ -178,7 +178,7 @@ sqlcode
 endcode
 
 PROC BankAccount
-OUTPUT 
+OUTPUT
   SwiftAddress Char(11)
   CurrId Char(4)
   AccountTypeId Char(16)
@@ -196,7 +196,7 @@ sqlcode
 endcode
 
 PROC BankCorrespondents
-OUTPUT 
+OUTPUT
   SwiftAddress Char(11)
   CurrId Char(4)
   Correspondent Char(11)
@@ -213,7 +213,7 @@ sqlcode
 endcode
 
 PROC Country
-OUTPUT 
+OUTPUT
   Id Char(64)
   CodeId Char(4)
   CurrId Char(4)
@@ -228,7 +228,7 @@ sqlcode
 endcode
 
 PROC Dates
-OUTPUT 
+OUTPUT
   DateType byte
   Description Char(50)
   Value DateTime
@@ -241,7 +241,7 @@ sqlcode
 endcode
 
 PROC Drivers
-OUTPUT 
+OUTPUT
   Id Char(16)
   Descr Char(256)
   Status byte
@@ -254,7 +254,7 @@ sqlcode
 endcode
 
 PROC FieldSearchDef
-OUTPUT 
+OUTPUT
   Id Char(16)
   Tag Char(256)
 sqlcode
@@ -265,7 +265,7 @@ sqlcode
 endcode
 
 PROC FigCorrespondentBank
-OUTPUT 
+OUTPUT
   Country Char(64)
   CurrId Char(4)
   RankType Char(1)
@@ -292,7 +292,7 @@ sqlcode
 endcode
 
 PROC FinidCorrespondentRouting
-OUTPUT 
+OUTPUT
   FinId Int
   Branchid Int
   RouteFinId Int
@@ -310,7 +310,7 @@ sqlcode
 endcode
 
 PROC Grps
-OUTPUT 
+OUTPUT
   GroupId Char(16)
   Name Char(64)
 sqlcode
@@ -321,7 +321,7 @@ sqlcode
 endcode
 
 PROC Lookup
-OUTPUT 
+OUTPUT
   Name Char(255)
   Refs Char(255)
   Value Char(255)
@@ -335,7 +335,7 @@ sqlcode
 endcode
 
 PROC QueueType
-OUTPUT 
+OUTPUT
   Id Int
   Name Char(64)
   Descr Char(256)
@@ -350,7 +350,7 @@ sqlcode
 endcode
 
 PROC Queue
-OUTPUT 
+OUTPUT
   Id Char(16)
   Name Char(64)
   Descr Char(256)
@@ -373,7 +373,7 @@ sqlcode
 endcode
 
 PROC ScriptGroup
-OUTPUT 
+OUTPUT
   ScriptName Char(64)
   GroupId Char(16)
   AccessType byte
@@ -387,7 +387,7 @@ sqlcode
 endcode
 
 PROC SourceSystem
-OUTPUT 
+OUTPUT
   ID Char(16)
   Name Char(256)
   Decription Char(256)
@@ -402,7 +402,7 @@ sqlcode
 endcode
 
 PROC Staff
-OUTPUT 
+OUTPUT
   Id Char(16)
   Name Char(64)
   Description Char(256)
@@ -415,7 +415,7 @@ sqlcode
 endcode
 
 PROC StaffGroup
-OUTPUT 
+OUTPUT
   StaffId Char(16)
   GroupId Char(16)
 sqlcode
@@ -427,7 +427,7 @@ sqlcode
 endcode
 
 PROC StaffQueuePerm
-OUTPUT 
+OUTPUT
   StaffId Char(16)
   QueueId Char(16)
   Status byte
@@ -441,7 +441,7 @@ sqlcode
 endcode
 
 PROC StreamFieldsDef
-OUTPUT 
+OUTPUT
   Id Char(16)
   Name Char(64)
   Descr Char(256) NULL
@@ -462,7 +462,7 @@ sqlcode
 endcode
 
 PROC StreamMessageFormat
-OUTPUT 
+OUTPUT
   Id Char(16)
   Format Char(256) NULL
 sqlcode
@@ -473,7 +473,7 @@ sqlcode
 endcode
 
 PROC StreamType
-OUTPUT 
+OUTPUT
   Id Char(16)
   Descr Char(65) NULL
 sqlcode
@@ -484,7 +484,7 @@ sqlcode
 endcode
 
 PROC TestPack
-OUTPUT 
+OUTPUT
   Name Char(50)
 sqlcode
   SELECT Name

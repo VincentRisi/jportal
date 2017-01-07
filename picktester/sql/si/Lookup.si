@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Lookup
 SERVER   vlab
@@ -16,23 +16,23 @@ KEY LookupKey PRIMARY
   Ref
 
 PROC Insert
-PROC Update 
-PROC SelectOne 
-PROC DeleteOne 
-PROC DeleteAll 
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+PROC DeleteAll
 
-PROC SelectList  
+PROC SelectList
 INPUT
   Name         Char(255)
-OUTPUT 
+OUTPUT
   Ref(Refs)    Char(255)
   Value        Char(255)
 sqlcode
   select Ref, Value from Lookup where Name = :Name
 endcode
 
-// used by Rutter 
-PROC Get 
+// used by Rutter
+PROC Get
 INPUT
   Name Char(256)
   Ref Char(256)
@@ -48,8 +48,8 @@ sqlcode
      and Ref = :Ref
 endcode
 
-PROC NameList 
-OUTPUT 
+PROC NameList
+OUTPUT
   Name Char(256)
 sqlcode
   SELECT distinct Name FROM Lookup

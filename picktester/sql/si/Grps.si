@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Grps
 SERVER   vlab
@@ -13,14 +13,14 @@ TABLE Grps
 KEY GroupKey PRIMARY
   GroupId
 
-PROC Insert 
-PROC Update 
+PROC Insert
+PROC Update
 PROC SelectAll
 PROC SelectOne
-PROC DeleteOne 
+PROC DeleteOne
 
-PROC ListAll 
-OUTPUT 
+PROC ListAll
+OUTPUT
   GroupId Char(16)
   Name Char(64)
 sqlcode

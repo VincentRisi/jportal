@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   BankFile
 SERVER   vlab
@@ -40,7 +40,7 @@ PROC SelectOne
 PROC DeleteOne
 
 //used by router,ide
-PROC GetAuthKeys 
+PROC GetAuthKeys
 INPUT
    SwiftAddress      char(11)
 OUTPUT (single)
@@ -83,17 +83,17 @@ sqlcode
       ,BankTown = :BankTown
       ,BankType = :BankType
       ,BranchName = :BranchName
-      ,PhysicalAddr1   = :PhysicalAddr1  
-      ,PhysicalAddr2   = :PhysicalAddr2  
-      ,PhysicalAddr3   = :PhysicalAddr3  
-      ,PhysicalAddr4   = :PhysicalAddr4  
-      ,PhysicalAddr5   = :PhysicalAddr5  
+      ,PhysicalAddr1   = :PhysicalAddr1
+      ,PhysicalAddr2   = :PhysicalAddr2
+      ,PhysicalAddr3   = :PhysicalAddr3
+      ,PhysicalAddr4   = :PhysicalAddr4
+      ,PhysicalAddr5   = :PhysicalAddr5
       ,PhysicalCountry = :PhysicalCountry
-      ,PostalAddr1     = :PostalAddr1    
-      ,PostalAddr2     = :PostalAddr2    
-      ,PostalAddr3     = :PostalAddr3    
-      ,PostalAddr4     = :PostalAddr4    
-      ,PostalCountry   = :PostalCountry  
+      ,PostalAddr1     = :PostalAddr1
+      ,PostalAddr2     = :PostalAddr2
+      ,PostalAddr3     = :PostalAddr3
+      ,PostalAddr4     = :PostalAddr4
+      ,PostalCountry   = :PostalCountry
       ,Status = :Status
       ,USId = :USId
       ,TMstamp = current_timestamp

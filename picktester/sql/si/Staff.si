@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Staff
 SERVER   vlab
@@ -14,14 +14,14 @@ TABLE Staff
 KEY StaffKey PRIMARY
   Id
 
-PROC Insert 
-PROC Update 
+PROC Insert
+PROC Update
 PROC SelectAll
 PROC SelectOne
-PROC DeleteOne 
+PROC DeleteOne
 
-PROC ListAll 
-OUTPUT 
+PROC ListAll
+OUTPUT
   Id Char(16)
   Name Char(64)
   Description Char(256)

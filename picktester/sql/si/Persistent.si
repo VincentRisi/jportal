@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Persistent
 SERVER   vlab
@@ -15,18 +15,18 @@ KEY LookupKey PRIMARY
   Name
   Ref
 
-PROC SelectOne 
-PROC Insert 
-PROC Update 
-PROC DeleteOne 
+PROC SelectOne
+PROC Insert
+PROC Update
+PROC DeleteOne
 
 // used by PythonIntrinsics
-PROC GetForUpdate 
+PROC GetForUpdate
 INPUT
   Name Char(256)
   Ref Char(256)
 OUTPUT (single)
-  Type  byte   
+  Type  byte
   Value Char(256)
 sqlcode
   SELECT

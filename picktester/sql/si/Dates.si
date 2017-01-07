@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Dates
 SERVER   vlab
@@ -17,12 +17,12 @@ DateType
 
 proc Insert
 proc Update
-proc SelectOne 
+proc SelectOne
 proc Exists
 proc SelectAll
 
 //used by appsyndate,ide, router
-PROC Get 
+PROC Get
 INPUT
   DateType byte
 OUTPUT  (single)

@@ -1,27 +1,27 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   Scripts
 SERVER   vlab
 
 TABLE Scripts
 
-PROC List 
+PROC List
 INPUT
-  VersionType byte 
-OUTPUT 
+  VersionType byte
+OUTPUT
   Name        char(64)
   Version     short
 sqlcode
-  select Name, Version from ScriptVersion 
-  where VersionType = :VersionType 
+  select Name, Version from ScriptVersion
+  where VersionType = :VersionType
   order by Name, Version
 endcode
 
 PROC StaffList
 INPUT
   StaffId     char(16)
-  VersionType byte 
-OUTPUT 
+  VersionType byte
+OUTPUT
   Name        char(64)
   Version     short
   AccessType  byte
@@ -44,8 +44,8 @@ PROC StaffGroupList
 INPUT
   StaffId     char(16)
   GroupId     char(16)
-  VersionType byte 
-OUTPUT 
+  VersionType byte
+OUTPUT
   Name        char(64)
   Version     short
   AccessType  byte
@@ -162,7 +162,7 @@ INPUT
   StoreType   byte
   VersionType byte
   Version     short
-OUTPUT 
+OUTPUT
   Part        short
   OfParts     short
   Content     char(4000)
@@ -208,7 +208,7 @@ INPUT
   Name        char(64)
   VersionType byte
   StoreType   byte
-OUTPUT 
+OUTPUT
   Version     short
   Part        short
   OfParts     short
@@ -263,7 +263,7 @@ endcode
 PROC GrabTmStamps
 INPUT
   VersionType byte
-OUTPUT 
+OUTPUT
   Name        char(64)
   Stamp       DateTime
 sqlcode

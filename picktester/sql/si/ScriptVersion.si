@@ -1,11 +1,11 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   ScriptVersion
 SERVER   vlab
 
 TABLE ScriptVersion
   Name         char(64)
-  VersionType  byte    (Test=0 QA=1 Live=2 Expired=3) 
+  VersionType  byte    (Test=0 QA=1 Live=2 Expired=3)
   Version      short
   IDELock      short
   USId         char (16)
@@ -28,7 +28,7 @@ PROC DeleteOne
 //sqldata
 //  --start transaction;
 //  INSERT INTO ScriptGroup
-//    select distinct name, 'INTRSYS', 0, 'vlabIDE', current_timestamp 
+//    select distinct name, 'INTRSYS', 0, 'vlabIDE', current_timestamp
 //     from ScriptVersion
 //     where name like 'DB_%'
 //     or name like 'SYS_%';

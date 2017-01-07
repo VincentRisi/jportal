@@ -1,4 +1,4 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp' 'addExit'
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
 PACKAGE  vlab
 OUTPUT   StaffGroup
 SERVER   vlab
@@ -20,10 +20,10 @@ LINK Staff (Id)
 LINK Grps (GroupId)
   GroupId
 
-PROC Insert 
-PROC DeleteOne 
+PROC Insert
+PROC DeleteOne
 
-PROC InsertStaff 
+PROC InsertStaff
 INPUT
   GroupId      Char(16)
   USId         Char(16)
@@ -34,7 +34,7 @@ sqlcode
      where Id in ($StaffList(40960)))
 endcode
 
-PROC DeleteStaff 
+PROC DeleteStaff
 INPUT
   GroupId      Char(16)
 sqlcode
@@ -43,7 +43,7 @@ sqlcode
   and StaffId in ($StaffList(40960))
 endcode
 
-PROC InsertGroups 
+PROC InsertGroups
 INPUT
   StaffId      Char(16)
   USId         Char(16)
@@ -54,7 +54,7 @@ sqlcode
      where GroupId in ($GroupList(40960)))
 endcode
 
-PROC DeleteGroups 
+PROC DeleteGroups
 INPUT
   StaffId      Char(16)
 sqlcode
@@ -66,14 +66,14 @@ endcode
 PROC List
 INPUT
   StaffId      Char(16)
-OUTPUT 
+OUTPUT
   GroupId      Char(16)
 sqlcode
   select GroupId from StaffGroup where StaffId = :StaffId
 endcode
 
-PROC ListAll 
-OUTPUT 
+PROC ListAll
+OUTPUT
   StaffId Char(16)
   GroupId Char(16)
 sqlcode
