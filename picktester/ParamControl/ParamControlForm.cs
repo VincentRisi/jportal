@@ -8,7 +8,7 @@ using System.IO;
 using System.Configuration;
 using vlab.jportal;
 #if do_it_with_oracle
-using Oracle.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 #elif do_it_with_mssql
 using System.Data.SqlClient;
 #elif do_it_with_lite3 
@@ -212,8 +212,9 @@ namespace vlab.ParamControl
           connect = new JConnect(new Devart.Data.PostgreSql.PgSqlConnection(server));
           connect.TypeOfVendor = VendorType.PostgreSQL;
 #elif do_it_with_oracle
-          connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
-          connect = new JConnect(new OracleConnection(server + userData));
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = dropPassword(server, "Password=");
+          connect = new JConnect(new OracleConnection(server));
           connect.TypeOfVendor = VendorType.Oracle;
 #endif
           connect.Open();
