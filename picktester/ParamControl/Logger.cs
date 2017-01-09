@@ -13,7 +13,7 @@ namespace vlab.ParamControl
       info,
       debug
     }
-    private static LogType level = LogType.debug; public static LogType Level { set { level = value; } }
+    private static LogType level = LogType.info; public static LogType Level { set { level = value; } }
     private static TextBox logMemo = null; public static TextBox LogMemo { set { logMemo = value; } }
     private static StreamWriter logFile = null; public static StreamWriter LogFile { set { logFile = value; } }
     private static void log(LogType logType, string data)
