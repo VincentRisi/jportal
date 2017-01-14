@@ -382,7 +382,7 @@ namespace vlab.ParamControl
       time.Width = width;
       time.Text = value;
       time.Format = DateTimePickerFormat.Custom;
-      time.CustomFormat = "hhmmss";
+      time.CustomFormat = "HHmmss";
       time.AllowDrop = false;
       time.ShowUpDown = true;
       time.Anchor = AnchorStyles.Top | AnchorStyles.Right;
