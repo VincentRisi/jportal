@@ -9,6 +9,7 @@
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
 ///    Vincent Risi
+///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
 import java.util.*;

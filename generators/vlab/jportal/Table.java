@@ -444,7 +444,7 @@ public class Table implements Serializable
     String front = "  ";
     proc.isStd = true;
     proc.isSql = true;
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("merge into " + name));
     proc.lines.addElement(new Line("using table"));
     proc.lines.addElement(new Line("      ("));
@@ -536,7 +536,7 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.head", true));
     String identityName = "";
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("insert into " + name + " ("));
     for (i=0; i<fields.size(); i++)
     {
@@ -688,7 +688,7 @@ public class Table implements Serializable
     String line;
     proc.isStd = true;
     proc.isSql = true;
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("update " + name));
     proc.lines.addElement(new Line(" set"));
     for (i = 0, j = 0; i < proc.fields.size(); i++)
@@ -742,7 +742,7 @@ public class Table implements Serializable
     String line;
     proc.isStd = true;
     proc.isSql = true;
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("update " + name));
     proc.lines.addElement(new Line(" set"));
     if (proc.fields.size() == 0)
@@ -863,7 +863,7 @@ public class Table implements Serializable
     int i, j;
     String line;
     proc.isSql = true;
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("delete from " + name));
     for (i=0, j=0; i<fields.size(); i++)
     {
@@ -890,7 +890,7 @@ public class Table implements Serializable
   {
     String name = tableName();
     proc.isSql = true;
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("delete from " + name));
  	if (proc.hasReturning)
 		proc.lines.add(new Line("_ret.tail", true));
@@ -908,7 +908,7 @@ public class Table implements Serializable
     field.type = Field.INT;
     field.length = 4;
     proc.outputs.addElement(field);
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("select count(*) noOf from " + name));
   }
   /**
@@ -926,7 +926,7 @@ public class Table implements Serializable
     count.type = Field.INT;
     count.length = 4;
     proc.outputs.addElement(count);
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("select count(*) noOf from " + name));
     for (i=0, j=0; i<fields.size(); i++)
     {
@@ -955,7 +955,7 @@ public class Table implements Serializable
     proc.isStd = true;
     proc.isSql = true;
     proc.isSingle = true;
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("select"));
     for (i=0, j = 0; i<fields.size(); i++)
     {
@@ -1024,7 +1024,7 @@ public class Table implements Serializable
     String line;
     proc.isStd = true;
     proc.isSql = true;
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("select"));
     for (i=0; i<fields.size(); i++)
     {
@@ -1065,7 +1065,7 @@ public class Table implements Serializable
     String line;
     proc.isStd = true;
     proc.isSql = true;
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("Delete from " + name));
     for (i = 0, j = 0; i < proc.fields.size(); i++)
     {
@@ -1105,7 +1105,7 @@ public class Table implements Serializable
     if (forUpdate) proc.name = proc.name + "Upd";
     else if (forReadOnly) proc.name = proc.name + "ReadOnly";
 
-    proc.lines.addElement(new Line("--PROC " + proc.name + "\n"));
+    proc.lines.addElement(new Line("/* PROC " + proc.name + " */"));
     proc.lines.addElement(new Line("select"));
     for (i = 0; i < proc.outputs.size(); i++)
     {

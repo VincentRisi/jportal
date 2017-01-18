@@ -73,7 +73,7 @@ abstract public class Connector
     }
   }
   abstract public Returning getReturning(String table, String field) throws SQLException;
-  public String checkExclude(String line, String field)
+  public static String checkExclude(String line, String field)
   {
     if (field.length() > 0)
     {

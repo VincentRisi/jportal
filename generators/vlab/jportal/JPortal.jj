@@ -2230,6 +2230,8 @@ void jUserProc() :
   s = jIdent()
   {
     proc.name = s;
+    Line l1 = new Line("/* PROC " + proc.name + " */");
+    proc.lines.addElement(l1);
   }
   (
     <LEFTPAREN> <STANDARD> <RIGHTPAREN>

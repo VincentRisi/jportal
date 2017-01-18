@@ -113,6 +113,7 @@ public class JavaJCCode
             outData.println("   */");
           }
           outData.println("  public "+javaVar(field)+";");
+          outData.println("  public "+getterSetter(field));
         }
         outData.println("  public "+table.useName()+"Struct()");
         outData.println("  {");
@@ -160,7 +161,7 @@ public class JavaJCCode
       Proc proc = (Proc) table.procs.elementAt(i);
       if (proc.isData)
         continue;
-      if (!proc.isStd && !proc.hasNoData())
+      if (proc.extendsStd || (!proc.isStd && !proc.hasNoData()))
         generateOtherProcStruct(table, proc, output, outLog);
     }
   } 
@@ -188,12 +189,28 @@ public class JavaJCCode
           outData2.println(" *"+comment);
         }
         outData2.println(" */");
-        outData2.println("public class "+table.useName()+proc.upperFirst()+"Struct implements Serializable");
+        if (proc.extendsStd)
+          outData2.println("public class "+table.useName()+proc.upperFirst()+"Struct extends " + table.useName()+"Struct");
+        else
+          outData2.println("public class "+table.useName()+proc.upperFirst()+"Struct implements Serializable");
+
         outData2.println("{");
         int maxSize = 0;
-        for (int j=0; j<proc.inputs.size(); j++)
+        for (int t=0; t<table.fields.size(); t++)
         {
+          Field field = (Field) table.fields.elementAt(t);
+          if (field.useName().length() > maxSize)
+            maxSize = field.useName().length();
+        }
+
+        for (int j=0; j<proc.inputs.size(); j++)
+        {          
           Field field = (Field) proc.inputs.elementAt(j);
+          
+          //Skip if the field is in the standard proc
+          if (proc.extendsStd && table.hasField(field.name))
+            continue;
+
           if (field.useName().length() > maxSize)
             maxSize = field.useName().length();
           outData2.println("  /**");
@@ -208,10 +225,16 @@ public class JavaJCCode
             outData2.println("   * (input/output)");
           outData2.println("   */");
           outData2.println("  public "+javaVar(field)+";");
+          outData2.println("  public "+getterSetter(field));
         }
         for (int j=0; j<proc.outputs.size(); j++)
         {
           Field field = (Field) proc.outputs.elementAt(j);
+
+          //Skip if the field is in the standard proc
+          if (proc.extendsStd && table.hasField(field.name))
+            continue;
+
           if (field.useName().length() > maxSize)
             maxSize = field.useName().length();
           if (!proc.hasInput(field.name))
@@ -225,6 +248,7 @@ public class JavaJCCode
             outData2.println("   * (output)");
             outData2.println("   */");
             outData2.println("  public "+javaVar(field)+";");
+            outData2.println("  public "+getterSetter(field));
           }
         }
         for (int j=0; j<proc.dynamics.size(); j++)
@@ -239,14 +263,25 @@ public class JavaJCCode
         }
         outData2.println("  public "+table.useName()+proc.upperFirst()+"Struct()");
         outData2.println("  {");
+        if (proc.extendsStd)
+          outData2.println("    "+"super();");
+
         for (int j=0; j<proc.inputs.size(); j++)
         {
           Field field = (Field) proc.inputs.elementAt(j);
+          //Skip if the field is in the standard proc
+          if (proc.extendsStd && table.hasField(field.name))
+            continue;
+
           outData2.println("    "+initJavaVar(field));
         }
         for (int j=0; j<proc.outputs.size(); j++)
         {
           Field field = (Field) proc.outputs.elementAt(j);
+          //Skip if the field is in the standard proc
+          if (proc.extendsStd && table.hasField(field.name))
+            continue;
+
           if (!proc.hasInput(field.name))
             outData2.println("    "+initJavaVar(field));
         }
@@ -260,11 +295,22 @@ public class JavaJCCode
         outData2.println("  {");
         outData2.println("    String CRLF = (String) System.getProperty(\"line.separator\");");
         String ret = "    return ";
+        if (proc.extendsStd)
+        {
+          ret += "super.toString() + CRLF";
+          outData2.println(ret);
+          ret = "         + ";
+        }
+
         for (int j=0; j<proc.inputs.size(); j++)
         {
+          Field field = (Field) proc.inputs.elementAt(j);
+          //Skip if the field is in the standard proc
+          if (proc.extendsStd && table.hasField(field.name))
+            continue;
+
           outData2.print(ret);
           ret = "         + ";
-          Field field = (Field) proc.inputs.elementAt(j);
           int no = maxSize - field.useName().length();
           outData2.println("\"  "+field.useName()+padded(no+1)+": \" + "+field.useName()+" + CRLF");
         }
@@ -345,7 +391,11 @@ public class JavaJCCode
         outData.println("{");
         outData.println("  Connector connector;");
         outData.println("  Connection connection;");
-        outData.println("  public Contingency()");
+        outData.println("  /**");
+        outData.println("   * @param Connector for specific database");
+        outData.println("   */");
+
+          outData.println("  public "+table.useName()+"()");
         outData.println("  {");
         outData.println("    super();");
         outData.println("  }");
@@ -354,9 +404,7 @@ public class JavaJCCode
         outData.println("    this.connector = conn;");
         outData.println("    connection = connector.connection;");
         outData.println("  }");
-        outData.println("  /**");
-        outData.println("   * @param Connector for specific database");
-        outData.println("   */");
+
         outData.println("  public "+table.useName()+"(Connector connector)");
         outData.println("  {");
         outData.println("    super();");
@@ -430,6 +478,18 @@ public class JavaJCCode
         outData.println("{");
         outData.println("  Connector connector;");
         outData.println("  Connection connection;");
+
+        outData.println("  public "+table.useName()+proc.upperFirst()+"()");
+        outData.println("  {");
+        outData.println("    super();");
+        outData.println("  }");
+
+        outData.println("  public void setConnector(Connector conn)");
+        outData.println("  {");
+        outData.println("    this.connector = conn;");
+        outData.println("    connection = connector.connection;");
+        outData.println("  }");
+
         outData.println("  public "+table.useName()+proc.upperFirst()+"(Connector connector)");
         outData.println("  {");
         outData.println("    super();");
@@ -480,26 +540,6 @@ public class JavaJCCode
     outData.println("    prep.close();");
     outData.println("  }");
   }
-  private static String getParmField(Proc proc)
-  {
-    for (int i = 0; i < proc.inputs.size(); i++)
-    {
-      Field field = (Field)proc.inputs.elementAt(i);
-      if (field.type == Field.IDENTITY)
-        return field.useName();
-      if (field.isSequence)
-        return field.useName();
-    }
-    for (int i = 0; i < proc.outputs.size(); i++)
-    {
-      Field field = (Field)proc.outputs.elementAt(i);
-      if (field.type == Field.IDENTITY)
-        return field.useName();
-      if (field.isSequence)
-        return field.useName();
-    }
-    return "junked";
-  }  
   /** Emits class method for processing the database activity */
   static void emitProc(Proc proc, PrintWriter outData)
   {              //  12345
@@ -512,7 +552,7 @@ public class JavaJCCode
         outData.println("    *"+comment);
       }
     }
-    if (proc.outputs.size() == 0)
+    if (!proc.extendsStd && proc.outputs.size() == 0)
       outData.println("   * Returns no output.");
     else if (proc.isSingle)
     {
@@ -527,7 +567,7 @@ public class JavaJCCode
     outData.println("   * @exception SQLException is passed through");
     outData.println("   */");
     String procName = proc.lowerFirst();
-    if (proc.outputs.size() == 0)
+    if (!proc.extendsStd && proc.outputs.size() == 0)
       outData.println("  public void "+procName+"() throws SQLException");
     else if (proc.isSingle)
       outData.println("  public boolean "+procName+"() throws SQLException");
@@ -536,13 +576,18 @@ public class JavaJCCode
     outData.println("  {");
 		placeHolders = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
 		Vector<?> lines = placeHolders.getLines();
-    String parmField = "";
-    if (proc.hasReturning || proc.isMultipleInput)
-    {
-      parmField = getParmField(proc);
-      String parms = "\"" + proc.table.useName() + "\", \"" + parmField + "\"";
-      outData.println("    Connector.Returning _ret = connector.getReturning(" + parms + ");");
+
+      Field primaryKeyField = null;
+      for(int i = 0; i < proc.table.fields.size() && primaryKeyField == null; i++){
+          Field fEval = proc.table.fields.get(i);
+          if(fEval.isPrimaryKey)
+              primaryKeyField = fEval;
     }    
+
+      if(proc.hasReturning)
+          outData.println("Connector.Returning _ret = connector.getReturning(\""+proc.table.name+"\",\""+ primaryKeyField.useName()+"\");");
+
+
 		outData.println("    String statement = ");
     String plus = "      ";
     for (int i=0; i<lines.size(); i++)
@@ -576,7 +621,7 @@ public class JavaJCCode
       outData.print(i+1);
       outData.println(", "+field.useName()+");");
     }
-    if (proc.outputs.size() > 0)
+    if (proc.extendsStd || proc.outputs.size() > 0)
     {
       outData.println("    ResultSet result = prep.executeQuery();");
       if (!proc.isSingle)
@@ -608,6 +653,18 @@ public class JavaJCCode
         outData.println("      return false;");
         outData.println("    }");
       }
+      if (proc.extendsStd)
+      {
+        for (int i=0; i<proc.table.fields.size(); i++)
+        {
+          Field field = (Field) proc.table.fields.elementAt(i);
+          outData.print("    "+field.useName()+" =  result.get");
+          outData.print(setType(field));
+          outData.print("(");
+          outData.print(i+1);
+          outData.println(");");
+        }        
+      }
       for (int i=0; i<proc.outputs.size(); i++)
       {
         Field field = (Field) proc.outputs.elementAt(i);
@@ -631,7 +688,7 @@ public class JavaJCCode
     }
     outData.println("  }");
     
-    if (proc.outputs.size() > 0 && !proc.isSingle)
+    if ((proc.extendsStd || (proc.outputs.size() > 0)) && !proc.isSingle)
     {
       outData.println("  /**");
       outData.println("   * Returns all the records in a result set as array of "+extendsName+".");
@@ -645,6 +702,14 @@ public class JavaJCCode
       outData.println("    while ("+procName+"(query) == true)");
       outData.println("    {");
       outData.println("      "+extendsName+" rec = new "+extendsName+"();");
+      if (proc.extendsStd)
+      {
+        for (int i=0; i<proc.table.fields.size(); i++)
+        {
+          Field field = (Field) proc.table.fields.elementAt(i);
+          outData.println("      rec."+field.useName()+" = "+field.useName()+";");
+        }        
+      }      
       for (int i=0; i<proc.outputs.size(); i++)
       {
         Field field = (Field) proc.outputs.elementAt(i);
@@ -661,7 +726,7 @@ public class JavaJCCode
     if (proc.inputs.size() > 0 || proc.dynamics.size() > 0)
     {
       outData.println("  /**");
-      if (proc.outputs.size() == 0)
+      if (!proc.extendsStd && proc.outputs.size() == 0)
         outData.println("   * Returns no records.");
       else if (proc.isSingle)
       {
@@ -673,6 +738,20 @@ public class JavaJCCode
         outData.println("   * Returns any number of records.");
         outData.println("   * @return result set of records found");
       }
+      // if (proc.extendsStd)
+      // {
+      //   for (int i=0; i<proc.table.fields.size(); i++)
+      //   {
+      //     Field field = (Field) proc.table.fields.elementAt(i);
+      //     if ((field.isSequence && proc.isInsert)
+      //       || (field.type == Field.TIMESTAMP)
+      //       || (field.type == Field.USERSTAMP))
+      //       continue;
+      //     if (!field.isPrimaryKey)
+      //       continue;
+      //     outData.println("   * @param "+field.useName()+" key input.");
+      //   }
+      // }      
       for (int i=0; i<proc.inputs.size(); i++)
       {
         Field field = (Field) proc.inputs.elementAt(i);
@@ -684,6 +763,20 @@ public class JavaJCCode
           continue;
         outData.println("   * @param "+field.useName()+" key input.");
       }
+      // if (proc.extendsStd)
+      // {      
+      //   for (int i=0; i<proc.table.fields.size(); i++)
+      //   {
+      //     Field field = (Field) proc.table.fields.elementAt(i);
+      //     if ((field.isSequence && proc.isInsert)
+      //       || (field.type == Field.TIMESTAMP)
+      //       || (field.type == Field.USERSTAMP))
+      //       continue;
+      //     if (field.isPrimaryKey)
+      //       continue;
+      //     outData.println("   * @param "+field.useName()+" input.");
+      //   }      
+      // }
       for (int i=0; i<proc.inputs.size(); i++)
       {
         Field field = (Field) proc.inputs.elementAt(i);
@@ -699,13 +792,40 @@ public class JavaJCCode
         outData.println("   * @param "+proc.name+" dynamic input.");
       outData.println("   * @exception SQLException is passed through");
       outData.println("   */");
-      if (proc.outputs.size() == 0)
+      if (!proc.extendsStd && proc.outputs.size() == 0)
         outData.println("  public void "+procName+"(");
       else if (proc.isSingle)
         outData.println("  public boolean "+procName+"(");
       else
         outData.println("  public Query "+procName+"(");
       String comma = "    ";
+      // if (proc.extendsStd)
+      // {
+      //   for (int i=0; i<proc.table.fields.size(); i++)
+      //   {
+      //     Field field = (Field) proc.table.fields.elementAt(i);
+      //     if ((field.isSequence && proc.isInsert)
+      //       || (field.type == Field.TIMESTAMP)
+      //       || (field.type == Field.USERSTAMP))
+      //       continue;
+      //     if (!field.isPrimaryKey)
+      //       continue;
+      //     outData.println(comma+javaVar(field));
+      //     comma = "  , ";
+      //   }
+      //   for (int i=0; i<proc.table.fields.size(); i++)
+      //   {
+      //     Field field = (Field) proc.table.fields.elementAt(i);
+      //     if ((field.isSequence && proc.isInsert)
+      //       || (field.type == Field.TIMESTAMP)
+      //       || (field.type == Field.USERSTAMP))
+      //       continue;
+      //     if (field.isPrimaryKey)
+      //       continue;
+      //     outData.println(comma+javaVar(field));
+      //     comma = "  , ";
+      //   }        
+      // }
       for (int i=0; i<proc.inputs.size(); i++)
       {
         Field field = (Field) proc.inputs.elementAt(i);
@@ -753,7 +873,7 @@ public class JavaJCCode
         String name = (String) proc.dynamics.elementAt(i);
         outData.println("    this."+name+" = "+name+";");
       }
-      if (proc.outputs.size() > 0)
+      if (proc.extendsStd || proc.outputs.size() > 0)
         outData.println("    return "+procName+"();");
       else
         outData.println("    "+procName+"();");
@@ -783,7 +903,7 @@ public class JavaJCCode
     case Field.ANSICHAR:
       return "String "+ field.useName();
     case Field.DATE:
-      return "Date "+ field.useName();
+      return "java.sql.Date "+ field.useName();
     case Field.DATETIME:
       return "Timestamp "+ field.useName();
     case Field.TIME:
@@ -802,6 +922,70 @@ public class JavaJCCode
       return "String "+ field.useName();
     }
     return "unknown";
+  }
+  /**
+   * Translates field type to java data member type
+   */
+  static String getterSetter(Field field)
+  {
+    String type = null;
+    switch(field.type)
+    {
+      case Field.BYTE:
+        type = "byte ";
+        break;
+      case Field.SHORT:
+        type = "short ";
+        break;
+      case Field.BIGSEQUENCE:
+        type = "long ";
+        break;
+      case Field.INT:
+      case Field.SEQUENCE:
+      case Field.IDENTITY:
+        type = "int ";
+        break;
+      case Field.LONG:
+        type = "long ";
+        break;
+      case Field.CHAR:
+      case Field.ANSICHAR:
+        type = "String ";
+        break;
+      case Field.DATE:
+        type = "java.sql.Date ";
+        break;
+      case Field.DATETIME:
+        type = "Timestamp ";
+        break;
+      case Field.TIME:
+        type = "Time ";
+        break;
+      case Field.TIMESTAMP:
+        type = "Timestamp ";
+        break;
+      case Field.FLOAT:
+      case Field.DOUBLE:
+        type = "double ";
+        break;
+      case Field.BLOB:
+      case Field.TLOB:
+        type = "String ";
+        break;
+      case Field.MONEY:
+        type = "double ";
+        break;
+      case Field.USERSTAMP:
+        type = "String ";
+        break;
+    }
+    if(type == null){
+      return "unknown";
+
+    }else{
+      return type+ "get"+ field.useName() +"(){ return "+field.useName()+"; } \n  public void set"+field.useName() +"(" +type +" "+field.useName() +"){ this."+field.useName() +" = "+field.useName() +"; }\n";
+
+    }
   }
   /**
    * returns the data member initialisation code (not always neccessary in java but
@@ -890,7 +1074,7 @@ public class JavaJCCode
     }
     return "unknown";
   }
-  static String padString = "                                                         ";
+static String padString = "                                                         ";
 private static PrintWriter outData;
 private static PrintWriter outData2; 
   private static String padded(int size)
