@@ -1869,7 +1869,7 @@ void jStdProc() :
           }
         }
         proc.isSingle = true;
-        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, descending, outLog);        
         table.hasStdProcs = true;
       }    
   | <SELECTBY> ( jProcColumn())+
@@ -1926,7 +1926,7 @@ void jStdProc() :
         )*
       )?
       {
-        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, descending, outLog);
         table.hasStdProcs = true;
       }      
   | <SELECTALL>
