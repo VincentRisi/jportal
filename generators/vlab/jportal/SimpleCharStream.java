@@ -10,6 +10,7 @@
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
 ///    Vincent Risi, Hennie Hammann
+///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
 
@@ -483,4 +484,4 @@ public class SimpleCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=f882661fff8b65d84d53b66a6960f2ee (do not edit this line) */
+/* JavaCC - OriginalChecksum=c89e1e6aacd14a84eb000ec2485b3f30 (do not edit this line) */

@@ -8,6 +8,7 @@
 /// http://www.eclipse.org/legal/cpl-v10.html 
 /// Contributors:
 ///    Vincent Risi
+///    Dieter Rosch
 /// ------------------------------------------------------------------
 
 package vlab.jportal;
@@ -18,8 +19,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-
-import com.sun.org.apache.bcel.internal.generic.Type;
 
 public class OracleDDL extends Generator
 {

@@ -223,6 +223,14 @@ public class Field implements Serializable
       return alias;
     return name;
   }
+  /** If there is an literal uses that else returns name */
+  public String useLiteral()
+  {
+    if (isLiteral)
+      return literalName;
+    return name;
+  }
+
   /** If there is an alias uses that else returns name */
   public String useLowerName()
   {
@@ -310,13 +318,6 @@ public class Field implements Serializable
   public boolean isCharEmptyOrAnsiAsNull()
   {
     return isCharEmptyAsNull() || ansiIsNull();
-  }
-  /** If there is an literal uses that else returns name */
-  public String useLiteral()
-  {
-    if (isLiteral)
-      return literalName;
-    return name;
   }
 }
 
