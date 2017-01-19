@@ -1847,6 +1847,8 @@ void jStdProc() :
       }
     }
   | <SELECTONEBY> ( jProcColumn())+
+      ((<IN>)? <ORDER> {inOrder = true;})?
+      ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       (<AS> s = jIdent()
       {        
         //DGR: I think long term it would be better to follow the convention that when a user overrides (aliases)
@@ -1855,8 +1857,7 @@ void jStdProc() :
         //proc.username = s;
         proc.name = s;
       })?      
-      ((<IN>)? <ORDER> {inOrder = true;})?
-      ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
+
       {
   
         //proc.name is set by <AS> clause above
@@ -1873,6 +1874,8 @@ void jStdProc() :
         table.hasStdProcs = true;
       }    
   | <SELECTBY> ( jProcColumn())+
+      ((<IN>)? <ORDER> {inOrder = true;})?
+      ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       (<AS> s = jIdent()
       {        
         //DGR: I think long term it would be better to follow the convention that when a user overrides (aliases)
@@ -1880,21 +1883,10 @@ void jStdProc() :
         //     just overrides the proc.name, so I am sticking to the convention.
         //proc.username = s;
         proc.name = s;
-      })?      
-      ((<IN>)? <ORDER> {inOrder = true;})?
-      ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
+      })?            
       ( <OUTPUT> (jOutputType())?
         ( jField()
           {
-            //proc.name is set by <AS> clause above
-            if(proc.name == null || proc.name.trim().isEmpty())
-            {
-              proc.name = "SelectBy";
-              for (String fname : proc.fields)
-              {
-                proc.name += fname;
-              }
-            }
             if (proc.isSProc == true)
             {
               if (proc.hasInput(field.name))
@@ -1926,6 +1918,15 @@ void jStdProc() :
         )*
       )?
       {
+        //proc.name is set by <AS> clause above
+        if(proc.name == null || proc.name.trim().isEmpty())
+        {
+          proc.name = "SelectOneBy";
+          for (String fname : proc.fields)
+          {
+            proc.name += fname;
+          }
+        }      
         table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, descending, outLog);
         table.hasStdProcs = true;
       }      
