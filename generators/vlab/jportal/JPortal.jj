@@ -1921,7 +1921,7 @@ void jStdProc() :
         //proc.name is set by <AS> clause above
         if(proc.name == null || proc.name.trim().isEmpty())
         {
-          proc.name = "SelectOneBy";
+          proc.name = "SelectBy";
           for (String fname : proc.fields)
           {
             proc.name += fname;
