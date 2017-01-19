@@ -1,0 +1,19 @@
+#------------------------------------------
+#   PICK TESTER MYSQL
+#   wildcards %a -asis-case %i -ignore-case
+#             %l -lowercase %u -uppercase
+#------------------------------------------
+
+project picktester_mysql
+
+source_dir=/main/jportal/picktester
+binary_dir=/main/jportal/build/picktester
+
+pickle
+  GenFrontEndBin ${binary_dir}/app/mysql/bin %a.bin
+
+app
+  appfile  ${binary_dir}/app/mysql/picktester.app
+  pmfile   ${source_dir}/app/mysql/picktester.pm
+  prfile   ${source_dir}/app/mysql/picktester.pr
+  include  ${source_dir}/pifiles.anydb

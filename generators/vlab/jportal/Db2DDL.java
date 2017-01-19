@@ -531,7 +531,7 @@ public class Db2DDL extends Generator
       case Field.MONEY:
         return "DECIMAL(18,2)";
       case Field.USERSTAMP:
-        return "VARCHAR(8)";
+        return "VARCHAR(50)";
       case Field.XML:
         return "XML";
       case Field.IDENTITY:

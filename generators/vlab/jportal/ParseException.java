@@ -9,7 +9,7 @@
 /// which accompanies this distribution and is available at
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
-///    Vincent Risi
+///    Vincent Risi, Hennie Hammann
 ///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
@@ -196,4 +196,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=ce729c42e1b59757c4c4e622b8c35b08 (do not edit this line) */
+/* JavaCC - OriginalChecksum=f26f165274fc01022bd9158d755827fc (do not edit this line) */

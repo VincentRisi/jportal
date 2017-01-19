@@ -36,19 +36,20 @@ public class Field implements Serializable
   public Vector<String>  comments;
   public Vector<Enum>  enums;
   public static final byte
-    BOOLEAN    = 4
-  , BYTE       = 8
-  , CHAR       = 12
-  , DATE       = 16
-  , DATETIME   = 20
-  , DOUBLE     = 24
-  , INT        = 28
-  , LONG       = 32
-  , SEQUENCE   = 36
-  , SHORT      = 40
-  , TIME       = 44
-  , TIMESTAMP  = 48
-  , USERSTAMP  = 52
+    BIGSEQUENCE = 2
+  , BOOLEAN     = 4
+  , BYTE        = 8
+  , CHAR        = 12
+  , DATE        = 16
+  , DATETIME    = 20
+  , DOUBLE      = 24
+  , INT         = 28
+  , LONG        = 32
+  , SEQUENCE    = 36
+  , SHORT       = 40
+  , TIME        = 44
+  , TIMESTAMP   = 48
+  , USERSTAMP   = 52
   ;
   /** constructor ensures fields have correct default values */
   public Field()

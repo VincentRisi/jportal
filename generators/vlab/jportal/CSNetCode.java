@@ -8,7 +8,6 @@
 /// http://www.eclipse.org/legal/cpl-v10.html 
 /// Contributors:
 ///    Vincent Risi
-///    Dieter Rosch
 /// ------------------------------------------------------------------
 
 package vlab.jportal;
@@ -33,7 +32,7 @@ public class CSNetCode extends Generator
       {
         outLog.println(args[i] + ": Generate C# Code for ADO.NET via IDbConnection");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
-        Database database = (Database) in.readObject();
+        Database database = (Database)in.readObject();
         in.close();
         generate(database, "", outLog);
       }
@@ -132,7 +131,7 @@ public class CSNetCode extends Generator
       flagDefaults();
     for (int i = 0; i < database.flags.size(); i++)
     {
-      String flag = (String) database.flags.elementAt(i);
+      String flag = (String)database.flags.elementAt(i);
       if (flag.equalsIgnoreCase("mssql storedprocs"))
         mSSqlStoredProcs = true;
       else if (flag.equalsIgnoreCase("use generics"))
@@ -178,7 +177,6 @@ public class CSNetCode extends Generator
   public static void generate(Database database, String output, PrintWriter outLog)
   {
     setFlags(database, outLog);
-
     for (int i = 0; i < database.tables.size(); i++)
     {
       Table table = (Table)database.tables.elementAt(i);
@@ -216,16 +214,15 @@ public class CSNetCode extends Generator
         generateStructs(table, outData);
         if (!noDatatables)
         {
-          if (useSeparate == true)
-          {
-            outData.println("}");
-            outData.flush();
-            outFile.close();
-            outFile = openOutputStream(table, output, outLog, "Tables");
-            outData = openWriterPuttingTop(table, outFile);
-          }
-
-          generateDataTables(table, outData);
+        if (useSeparate == true)
+        {
+          outData.println("}");
+          outData.flush();
+          outFile.close();
+          outFile = openOutputStream(table, output, outLog, "Tables");
+          outData = openWriterPuttingTop(table, outFile);
+        }
+        generateDataTables(table, outData);
         }
         if (useSeparate == true)
         {
@@ -320,8 +317,8 @@ public class CSNetCode extends Generator
       if (useCSharp1)
       {
         outData.println(indent(6) + "return " + validNull(field) + ";");
-      }
-      else
+    }
+    else
       {
         outData.println(indent(6) + "return default(" + fieldCastNo(field) + ");");
       }
@@ -367,7 +364,6 @@ public class CSNetCode extends Generator
     }
     return hasStoredProcs;
   }
-
   public static void generateDataTables(Table table, PrintWriter outData)
   {
     boolean hasDataTables = false;
@@ -617,7 +613,7 @@ public class CSNetCode extends Generator
     if (hasDataTables == true && usePartials == true && useSeparate == true)
     {
       String mainName = table.useName();
-      //outData.println("    [Serializable()]");
+      //outData.println("  [Serializable()]");
       outData.println(indent(1) + "public partial class " + mainName);
       outData.println(indent(1) + "{");
       for (int i = 0; i < table.procs.size(); i++)
@@ -627,9 +623,9 @@ public class CSNetCode extends Generator
           continue;
         if (!noDatatables)
         {
-          if (proc.outputs.size() > 0 && !proc.isSingle)
-            generateFetchProcDataTables(proc, mainName, outData);
-        }
+        if (proc.outputs.size() > 0 && !proc.isSingle)
+          generateFetchProcDataTables(proc, mainName, outData);
+      }
       }
       outData.println(indent(1) + "}");
       for (int i = 0; i < table.procs.size(); i++)
@@ -640,19 +636,19 @@ public class CSNetCode extends Generator
         if (proc.outputs.size() > 0 && !proc.isSingle)
         {
           mainName = table.useName() + proc.upperFirst();
-          //outData.println("    [Serializable()]");
+          //outData.println("  [Serializable()]");
           outData.println(indent(1) + "public partial class " + mainName);
           outData.println(indent(1) + "{");
           if (!noDatatables)
           {
-            generateFetchProcDataTables(proc, mainName, outData);
+          generateFetchProcDataTables(proc, mainName, outData);
           }
           outData.println(indent(1) + "}");
         }
       }
-    }
-  }
-  public static void generateStructPairs(Proc proc, Vector fields, Vector dynamics, String mainName, PrintWriter outData, String tableName, boolean hasReturning)
+        }
+      }
+  public static void generateStructPairs(Proc proc, Vector<Field> fields, Vector<?> dynamics, String mainName, PrintWriter outData, String tableName, boolean hasReturning)
   {
     outData.println(indent(1) + "[Serializable()]");
     String inherit = "";
@@ -663,11 +659,11 @@ public class CSNetCode extends Generator
     else
     {
       inherit = useNotify ? " : INotifyPropertyChanged" : "";
-    }
+  }
     outData.println(indent(1) + "public " + (usePartials ? "partial " : "") + "class " + mainName + "Rec" + inherit);
     outData.println(indent(1) + "{");
     if (useNotify && fields.size() > 0)
-    {
+  {
       outData.println(indent(2) + "#region INotifyPropertyChanged Members ");
       outData.println("");
       outData.println(indent(2) + "public event PropertyChangedEventHandler PropertyChanged;");
@@ -707,7 +703,7 @@ public class CSNetCode extends Generator
       if (field.precision > 0)
       {
         temp = temp + ", Precision=" + field.precision + ", Scale=" + field.scale;
-      }
+    }
 
       outData.println(fieldDef(field, temp));
       if (field.isNull)
@@ -814,10 +810,10 @@ public class CSNetCode extends Generator
           }
           outData.println(indent(1) + "/// </summary>");
         }
-        Vector fields = new Vector();
+        Vector<Field> fields = new Vector<Field>();
         if (!proc.extendsStd)
-          for (int j = 0; j < proc.outputs.size(); j++)
-            fields.addElement(proc.outputs.elementAt(j));
+        for (int j = 0; j < proc.outputs.size(); j++)
+          fields.addElement(proc.outputs.elementAt(j));
         for (int j = 0; j < proc.inputs.size(); j++)
         {
           Field field = (Field)proc.inputs.elementAt(j);
@@ -865,7 +861,7 @@ public class CSNetCode extends Generator
     }
   }
   static PlaceHolder placeHolder;
-  static void generateStoredProc(Proc proc, String storedProcName, Vector lines)
+  static void generateStoredProc(Proc proc, String storedProcName, Vector<?> lines)
   {
     //procData.println("IF EXISTS (SELECT * FROM SYSOBJECTS WHERE ID = OBJECT_ID('dbo." + storedProcName + "') AND SYSSTAT & 0xf = 4)");
     procData.println("IF OBJECT_ID('dbo." + storedProcName + "','P') IS NOT NULL");
@@ -900,7 +896,7 @@ public class CSNetCode extends Generator
   {
     placeHolder = new PlaceHolder(proc, PlaceHolder.AT, "");
     String storedProcName = proc.table.useName() + proc.upperFirst();
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     generateStoredProc(proc, storedProcName, lines);
     outData.println(indent(2) + "public string Command" + proc.upperFirst() + "()");
     outData.println(indent(2) + "{");
@@ -924,7 +920,7 @@ public class CSNetCode extends Generator
       placeHolder = new PlaceHolder(proc, PlaceHolder.CURLY, "Rec.");
       outData.println(indent(2) + "public string Command" + proc.upperFirst() + "()");
     }
-    Vector lines = placeHolder.getLines();
+    Vector<?> lines = placeHolder.getLines();
     outData.println(indent(2) + "{");
     if (proc.hasReturning)
       outData.println(indent(3) + "Returning _ret = new Returning(aConnect.TypeOfVendor, aTable, aField);");
@@ -971,7 +967,7 @@ public class CSNetCode extends Generator
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(i);
       Field field = pair.field;
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
@@ -1136,7 +1132,7 @@ public class CSNetCode extends Generator
         if (proc.isMultipleInput)
         {
           placeHolder = "item." + field.useUpperName();
-        }
+    }
         if (field.isNull && getNullableType(field))
         {
 
@@ -1206,7 +1202,8 @@ public class CSNetCode extends Generator
     for (int i = 0; i < proc.table.fields.size(); i++)
     {
       Field field = (Field)proc.table.fields.elementAt(i);
-      if (field.isPrimaryKey)
+      //if (field.isPrimaryKey) -- not all primary keys are sequences or identities
+      if (field.isSequence)
       {
         identity = field;
         break;
@@ -1234,7 +1231,7 @@ public class CSNetCode extends Generator
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(i);
       Field field = pair.field;
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
@@ -1270,10 +1267,19 @@ public class CSNetCode extends Generator
       outData.println(indent(4) + "mRec." + identity.useUpperName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
       outData.println(indent(4) + "mRec." + identity.useUpperName() + "IsNull = " + identity.useLowerName() + "IsNull;");
     }
-    else
+      else
     {
       outData.println(indent(5) + "mRec." + identity.useUpperName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
     }
+//    outData.println("        wCursor.Run();");
+//    outData.println("        bool wResult = (wCursor.HasReader() && wCursor.Read());");
+//    outData.println("        if (wResult == true)");
+//    outData.println("          mRec." + identity.useLowerName() + " = " + castOf(identity) + "wCursor." + cursorGet(identity, 0) + ";");
+//    outData.println("        if (wCursor.HasReader())");
+//    outData.println("          wCursor.Close();");
+//    outData.println("        return wResult;");
+//    outData.println("      }");
+//    outData.println("    }");
     outData.println(indent(4) + "}");
     outData.println(indent(4) + "if (wCursor.HasReader())");
     outData.println(indent(4) + "{");
@@ -1302,7 +1308,7 @@ public class CSNetCode extends Generator
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(i);
       Field field = pair.field;
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
@@ -1319,7 +1325,7 @@ public class CSNetCode extends Generator
         outData.println(indent(4) + "wCursor.Parameter(" + i + ", wCursor.GetUserStamp(ref " + field.useLowerName() + i + "));");
         outData.println(indent(4) + "mRec." + field.useUpperName() + " = " + field.useLowerName() + i + ";");
       }
-      else
+      else 
         outData.println(indent(4) + "wCursor.Parameter(" + i + ", mRec." + field.useUpperName() + member + tail + ");");
     }
     outData.println(indent(4) + "wCursor.Run();");
@@ -1330,14 +1336,14 @@ public class CSNetCode extends Generator
     {
       Field field = (Field)proc.outputs.elementAt(i);
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".Buffer";
       if (field.isNull && getDataType(field, new StringBuffer(), new StringBuffer()) == "string")
       {
         outData.println(indent(5) + "var " + field.useLowerName() + "IsNull = mRec." + field.useUpperName() + "IsNull;");
         outData.println(indent(5) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "wCursor.GetString(" + i + ", out " + field.useLowerName() + "IsNull);");
         outData.println(indent(5) + "mRec." + field.useUpperName() + "IsNull = " + field.useLowerName() + "IsNull;");
-      }
+    }
       else if (field.isNull)
       {
         outData.println(indent(5) + "var " + field.useLowerName() + "IsNull = mRec." + field.useUpperName() + "IsNull;");
@@ -1375,6 +1381,22 @@ public class CSNetCode extends Generator
     }
     return "aConnect, \"" + tableName + "\", \"" + fieldName + "\"";
   }
+  /*static String returningField(Proc proc)
+  {
+    if (proc.hasReturning == false)
+      return "";
+    String fieldName = "";
+    for (int i = 0; i < proc.table.fields.size(); i++)
+    {
+      Field field = (Field)proc.table.fields.elementAt(i);
+      if (field.isSequence == true)
+      {
+        fieldName = field.useName();
+        break;
+      }
+    }
+    return fieldName;
+  }*/
   static void generateFetchProc(Proc proc, String mainName, PrintWriter outData, boolean isLoaded)
   {
     outData.println(indent(2) + "private void " + proc.upperFirst() + "(Connect aConnect)");
@@ -1392,7 +1414,7 @@ public class CSNetCode extends Generator
       PlaceHolderPairs pair = (PlaceHolderPairs)placeHolder.pairs.elementAt(i);
       Field field = pair.field;
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".getBlob()";
       String tail = "";
       if (field.isNull)
@@ -1410,7 +1432,7 @@ public class CSNetCode extends Generator
     {
       Field field = (Field)proc.outputs.elementAt(i);
       String member = "";
-      if (field.type == field.BLOB)
+      if (field.type == Field.BLOB)
         member = ".Buffer";
       if (field.isNull && getDataType(field, new StringBuffer(), new StringBuffer()) == "string")
       {
@@ -1423,7 +1445,7 @@ public class CSNetCode extends Generator
         outData.println(indent(4) + "var " + field.useLowerName() + "IsNull = mRec." + field.useUpperName() + "IsNull;");
         outData.println(indent(4) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "mCursor." + cursorGet(field, i) + ";");
         outData.println(indent(4) + "mRec." + field.useUpperName() + "IsNull = " + field.useLowerName() + "IsNull;");
-      }
+    }
       else
       {
         outData.println(indent(4) + "mRec." + field.useUpperName() + member + " = " + castOf(field) + "mCursor." + cursorGet(field, i) + ";");
@@ -1463,9 +1485,9 @@ public class CSNetCode extends Generator
     outData.println(indent(2) + "}");
     if (isLoaded)
     {
-      if (useGenerics)
+    if (useGenerics)
         outData.println(indent(2) + "public List<" + mainName + "Rec> Loaded { get { return mList; } }");
-      else
+    else
         outData.println(indent(2) + "public ArrayList Loaded { get { return mList; } }");
     }
     outData.println(indent(2) + "public class " + proc.upperFirst() + "Ord");
@@ -1510,9 +1532,9 @@ public class CSNetCode extends Generator
     outData.println(indent(2) + "}");
     if (!noDatatables)
     {
-      if (useSeparate == false && usePartials == false)
-        generateFetchProcDataTables(proc, mainName, outData);
-    }
+    if (useSeparate == false && usePartials == false)
+      generateFetchProcDataTables(proc, mainName, outData);
+  }
   }
   static void generateFetchProcDataTables(Proc proc, String mainName, PrintWriter outData)
   {
@@ -1549,7 +1571,6 @@ public class CSNetCode extends Generator
     {
       outData.println(indent(2) + "private " + mainName + "Rec mRec;");
       outData.println(indent(2) + "public " + mainName + "Rec Rec { get { return mRec; } set { mRec = value; } }");
-
       if (doCursor == true || (proc.outputs.size() > 0 && !proc.isSingle))
       {
         if (useGenerics)
@@ -1607,7 +1628,6 @@ public class CSNetCode extends Generator
       outData.println(indent(2) + "}");
     }
   }
-
   static boolean doMSSqlStoredProcs(Proc proc)
   {
     return (mSSqlStoredProcs == true && proc.dynamics.size() == 0) || (proc.isSProc == true && proc.dynamics.size() == 0);
@@ -1958,7 +1978,7 @@ public class CSNetCode extends Generator
       default:
         nullableType = false;
         break;
-    }
+  }
     return nullableType;
   }
 

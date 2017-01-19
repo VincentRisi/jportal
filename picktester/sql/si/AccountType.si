@@ -1,0 +1,30 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   AccountType
+SERVER   vlab
+
+TABLE AccountType options 'descr=Account Type'
+  Id      char(16)
+  Descr   char(256)
+  Status  byte (Active=0 Inactive=1 MarkForDelete=2)
+  USId    char(16)
+  TmStamp timestamp
+
+KEY ATK PRIMARY
+  Id
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC SelectAll
+PROC DeleteOne
+
+SQLDATA
+--start transaction;
+INSERT INTO AccountType VALUES ('CURRENT'    , 'CURRENT'    , 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('NOSTRO'     , 'NOSTRO'     , 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('VOSTRO'     , 'VOSTRO'     , 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('NOSTRODRAFT', 'NOSTRODRAFT', 0, 'PreDefined', CURRENT_TIMESTAMP);
+INSERT INTO AccountType VALUES ('ZAPS'       , 'ZAPS'       , 0, 'PreDefined', CURRENT_TIMESTAMP);
+commit;
+ENDDATA

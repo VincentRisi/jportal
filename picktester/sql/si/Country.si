@@ -1,0 +1,267 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Country
+SERVER   vlab
+
+TABLE Country
+    OPTIONS "descr=Countries" "show=Id"
+  Id      Char(64)
+  CodeId  Char(4)
+  CurrId  Char(4)
+  Status  byte  (Active=0 Inactive=1 MarkForDelete=2)
+  USId    Char(16)
+  Tmstamp timestamp
+
+KEY CountryKey PRIMARY
+  Id
+
+KEY KEY01
+  CodeId
+
+KEY KEY02
+  CurrId
+
+LINK Currency (Id)
+  CurrId
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+
+//Used By Router, IDE
+PROC Get
+INPUT
+  Id      Char(64)
+OUTPUT (Single)
+  CodeId  Char(4)
+  CurrId  Char(4)
+  Status  byte     // (Active=0 Inactive=1 MarkForDelete=2)
+sqlcode
+  Select CodeId, CurrId, Status
+  From Country
+  Where Id = :Id
+endcode
+
+//Used By Router, IDE
+PROC GetByCurrency
+INPUT
+  CurrId  Char(4)
+OUTPUT (Single)
+  Id      Char(64)
+  CodeId  Char(4)
+  Status  byte     // (Active=0 Inactive=1 MarkForDelete=2)
+sqlcode
+  Select Id, CodeId, Status
+  From Country
+  Where CurrId = :CurrId
+endcode
+
+sqldata
+--start transaction;
+INSERT INTO Country Values('AFGHANISTAN'                                                    ,'AF'          ,'AFA' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ALBANIA'                                                        ,'AL'          ,'ALL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ALGERIA'                                                        ,'DZ'          ,'DZD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ANDORRA'                                                        ,'AD'          ,'ADP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ANGOLA'                                                         ,'AO'          ,'AON' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ARGENTINA'                                                      ,'AR'          ,'ARS' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ARUBA'                                                          ,'AW'          ,'AWG' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('AUSTRALIA'                                                      ,'AU'          ,'AUD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('AUSTRIA'                                                        ,'AT'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('AZERBAIJAN'                                                     ,'AZ'          ,'AZM' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BAHRAIN'                                                        ,'BH'          ,'BHD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BANGLADESH'                                                     ,'BD'          ,'BDT' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BARBADOS'                                                       ,'BB'          ,'BBD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BELGIUM'                                                        ,'BE'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BELIZE'                                                         ,'BZ'          ,'BZD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BENIN'                                                          ,'BJ'          ,'XOF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BERMUDA'                                                        ,'BM'          ,'BMD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BHUTAN'                                                         ,'BT'          ,'BTN' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BOLIVIA'                                                        ,'BO'          ,'BOB' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BOSNIA-HERZEGOVINA'                                             ,'BA'          ,'BAM' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BOTSWANA'                                                       ,'BW'          ,'BWP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BRAZIL'                                                         ,'BR'          ,'BRL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BRUNEI DARUSSALAM'                                              ,'BN'          ,'BND' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BULGARIA'                                                       ,'BG'          ,'BGL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BURKINA FASO'                                                   ,'BF'          ,'XOF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('BURUNDI'                                                        ,'BI'          ,'BIF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CAMBODIA'                                                       ,'KH'          ,'KHR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CANADA'                                                         ,'CA'          ,'CAD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CAPE VERDE ISLANDS'                                             ,'CV'          ,'CVE' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CAYMAN ISLANDS'                                                 ,'KY'          ,'KYD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CENTRAL AFRICAN REPUBLIC'                                       ,'CF'          ,'XAF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CHAD'                                                           ,'TD'          ,'XAF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CHANNEL ISLANDS'                                                ,'JE'          ,'GBP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CHILE'                                                          ,'CL'          ,'CLF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('COLOMBIA'                                                       ,'CO'          ,'COP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('COMMONWEALTH OF THE BAHAMAS'                                    ,'BS'          ,'BSD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('COMORES ARCHIPELAGO'                                            ,'KM'          ,'KMF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CONGO (DEMOCRATIC REPUBLIC OF)'                                 ,'CD'          ,'CDF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('COOK ISLANDS'                                                   ,'CK'          ,'NZD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('COSTA RICA'                                                     ,'CR'          ,'CRC' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('COTE DIVOIRE'                                                   ,'CI'          ,'XOF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CROATIA'                                                        ,'HR'          ,'HRK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CUBA'                                                           ,'CU'          ,'CUP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CYPRUS'                                                         ,'CY'          ,'CYP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('CZECH REPUBLIC'                                                 ,'CZ'          ,'CZK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('DEMOCRATIC PEOPLES REPUBLIC OF KOREA'                           ,'KP'          ,'KPW' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('DENMARK'                                                        ,'DK'          ,'DKK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('DOMINICAN REPUBLIC'                                             ,'DO'          ,'DOP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ECUADOR'                                                        ,'EC'          ,'ECS' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('EGYPT'                                                          ,'EG'          ,'EGP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('EQUATORIAL GUINEA'                                              ,'GQ'          ,'XAF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ERITREA'                                                        ,'ER'          ,'ERN' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ESTONIA'                                                        ,'EE'          ,'EEK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ETHIOPIA'                                                       ,'ET'          ,'ETB' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('FALKLAND ISLANDS'                                               ,'FK'          ,'FKP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('FAROE ISLANDS'                                                  ,'FO'          ,'DKK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('FIJI'                                                           ,'FJ'          ,'FJD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('FINLAND'                                                        ,'FI'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('FRANCE'                                                         ,'FR'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('FRENCH GUIANA'                                                  ,'GF'          ,'FRF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('FRENCH POLYNESIA'                                               ,'PF'          ,'XPF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('GABON'                                                          ,'GA'          ,'XAF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('GERMANY'                                                        ,'DE'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('GHANA'                                                          ,'GH'          ,'GHC' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('GIBRALTAR'                                                      ,'GI'          ,'GIP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('GREECE'                                                         ,'GR'          ,'GRD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('GREENLAND'                                                      ,'GL'          ,'DKK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('GUATEMALA'                                                      ,'GT'          ,'GTQ' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('GUYANA'                                                         ,'GY'          ,'GYD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('HAITI'                                                          ,'HT'          ,'HTG' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('HONDURAS'                                                       ,'HN'          ,'HNL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('HONG KONG'                                                      ,'HK'          ,'HKD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ICELAND'                                                        ,'IS'          ,'ISK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('INDIA'                                                          ,'IN'          ,'INR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('INDONESIA'                                                      ,'ID'          ,'IDR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('IRAN'                                                           ,'IR'          ,'IRR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('IRAQ'                                                           ,'IQ'          ,'IQD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ISLE OF MAN'                                                    ,'IM'          ,'GBP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ISRAEL'                                                         ,'IL'          ,'ILS' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ITALY'                                                          ,'IT'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('JAMAICA'                                                        ,'JM'          ,'JMD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('JAPAN'                                                          ,'JP'          ,'JPY' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('JORDAN'                                                         ,'JO'          ,'JOD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('KAZAKHSTAN'                                                     ,'KZ'          ,'KZT' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('KENYA'                                                          ,'KE'          ,'KES' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('KIRIBATI REPUBLIC'                                              ,'KI'          ,'AUD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('KUWAIT'                                                         ,'KW'          ,'KWD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('KYRGYZSTAN'                                                     ,'KG'          ,'KGS' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LAOS'                                                           ,'LA'          ,'LAK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LATVIA'                                                         ,'LV'          ,'LVL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LEBANON'                                                        ,'LB'          ,'LBP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LESOTHO'                                                        ,'LS'          ,'LSL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LIBERIA'                                                        ,'LR'          ,'LRD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LIBYA'                                                          ,'LY'          ,'LYD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LIECHTENSTEIN'                                                  ,'LI'          ,'CHF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LITHUANIA'                                                      ,'LT'          ,'LTL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('LUXEMBOURG'                                                     ,'LU'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MACAU'                                                          ,'MO'          ,'MOP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MACEDONIA'                                                      ,'MK'          ,'MKD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MADAGASCAR'                                                     ,'MG'          ,'MGF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MALAYSIA'                                                       ,'MY'          ,'MYR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MALDIVE ISLANDS'                                                ,'MV'          ,'MVR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MALTA'                                                          ,'MT'          ,'MTL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MAURITANIA'                                                     ,'MR'          ,'MRO' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MAURITIUS'                                                      ,'MU'          ,'MUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MAYOTTE ISLAND'                                                 ,'YT'          ,'FRF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MEXICO'                                                         ,'MX'          ,'MXN' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MONACO'                                                         ,'MC'          ,'FRF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MONGOLIA'                                                       ,'MN'          ,'MNT' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MOROCCO'                                                        ,'MA'          ,'MAD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MOZAMBIQUE'                                                     ,'MZ'          ,'MZM' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('MYANMAR'                                                        ,'MM'          ,'MMK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NAMIBIA'                                                        ,'NA'          ,'NAD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NAURU'                                                          ,'NR'          ,'AUD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NEPAL'                                                          ,'NP'          ,'NPR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NETHERLANDS ANTILLES'                                           ,'AN'          ,'ANG' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NETHERLANDS'                                                    ,'NL'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NEW CALEDONIA'                                                  ,'NC'          ,'XPF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NEW ZEALAND'                                                    ,'NZ'          ,'NZD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NICARAGUA'                                                      ,'NI'          ,'NIO' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NIGER'                                                          ,'NE'          ,'XOF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('NORWAY'                                                         ,'NO'          ,'NOK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('PAKISTAN'                                                       ,'PK'          ,'PKR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('PANAMA'                                                         ,'PA'          ,'PAB' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('PAPUA NEW GUINEA'                                               ,'PG'          ,'PGK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('PARAGUAY'                                                       ,'PY'          ,'PYG' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('PEOPLES REPUBLIC OF CHINA'                                      ,'CN'          ,'CNY' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('PERU'                                                           ,'PE'          ,'PEN' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('POLAND'                                                         ,'PL'          ,'PLN' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('PORTUGAL'                                                       ,'PT'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('PUERTO RICO'                                                    ,'PR'          ,'USD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('QATAR'                                                          ,'QA'          ,'QAR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF ARMENIA'                                            ,'AM'          ,'AMD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF BELARUS'                                            ,'BY'          ,'BYB' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF CAMEROON'                                           ,'CM'          ,'XAF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF DJIBOUTI'                                           ,'DJ'          ,'DJF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF EL SALVADOR'                                        ,'SV'          ,'SVC' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF GEORGIA'                                            ,'GE'          ,'GEL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF GUINEA'                                             ,'GN'          ,'GNF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF GUINEA-BISSAU'                                      ,'GW'          ,'XOF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF HUNGARY'                                            ,'HU'          ,'HUF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF IRELAND'                                            ,'IE'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF KOREA'                                              ,'KR'          ,'KRW' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF MALAWI'                                             ,'MW'          ,'MWK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF MALI'                                               ,'ML'          ,'XOF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF MOLDOVA'                                            ,'MD'          ,'MDL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF NIGERIA'                                            ,'NG'          ,'NGN' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF SAO TOME AND PRINCIPE'                              ,'ST'          ,'STD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF SUDAN'                                              ,'SD'          ,'SDD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF THE CONGO-BRAZZAVILLE'                              ,'CG'          ,'XAF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF THE PHILIPPINES'                                    ,'PH'          ,'PHP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF TOGO'                                               ,'TG'          ,'XOF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF TRINIDAD AND TOBAGO'                                ,'TT'          ,'TTD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REPUBLIC OF YEMEN'                                              ,'YE'          ,'YER' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('REUNION ISLAND'                                                 ,'RE'          ,'FRF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ROMANIA'                                                        ,'RO'          ,'ROL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('RUSSIAN FEDERATION'                                             ,'RU'          ,'RUB' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('RWANDA'                                                         ,'RW'          ,'RWF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SAMOA'                                                          ,'WS'          ,'WST' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SAN MARINO'                                                     ,'SM'          ,'ITL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SAUDI ARABIA'                                                   ,'SA'          ,'SAR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SENEGAL'                                                        ,'SN'          ,'XOF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SEYCHELLES'                                                     ,'SC'          ,'SCR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SIERRA LEONE'                                                   ,'SL'          ,'SLL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SINGAPORE'                                                      ,'SG'          ,'SGD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SLOVAKIA'                                                       ,'SK'          ,'SKK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SLOVENIA'                                                       ,'SI'          ,'SIT' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SOCIALIST REPUBLIC OF VIETNAM'                                  ,'VN'          ,'VND' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SOLOMON ISLANDS'                                                ,'SB'          ,'SBD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SOMALI REPUBLIC'                                                ,'SO'          ,'SOS' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SOUTH AFRICA'                                                   ,'ZA'          ,'ZAR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SPAIN'                                                          ,'ES'          ,'EUR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SRI LANKA'                                                      ,'LK'          ,'LKR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SULTANATE OF OMAN'                                              ,'OM'          ,'OMR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SURINAME'                                                       ,'SR'          ,'SRC' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SWAZILAND'                                                      ,'SZ'          ,'SZL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SWEDEN'                                                         ,'SE'          ,'SEK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SWITZERLAND'                                                    ,'CH'          ,'CHF' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('SYRIA'                                                          ,'SY'          ,'SYP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TAIWAN'                                                         ,'TW'          ,'TWD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TAJIKISTAN'                                                     ,'TJ'          ,'TJR' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TANZANIA'                                                       ,'TZ'          ,'TZS' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('THAILAND'                                                       ,'TH'          ,'THB' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('THE GAMBIA'                                                     ,'GM'          ,'GMD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TONGA'                                                          ,'TO'          ,'TOP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TUNISIA'                                                        ,'TN'          ,'TND' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TURKEY'                                                         ,'TR'          ,'TRL' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TURKMENISTAN'                                                   ,'TM'          ,'TMM' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TURKS AND CAICOS ISLANDS'                                       ,'TC'          ,'USD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('TUVALU'                                                         ,'TV'          ,'AUD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('UGANDA'                                                         ,'UG'          ,'UGX' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('UKRAINE'                                                        ,'UA'          ,'UAH' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('UNITED ARAB EMIRATES'                                           ,'AE'          ,'AED' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('UNITED KINGDOM'                                                 ,'GB'          ,'GBP' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('UNITED STATES OF AMERICA'                                       ,'US'          ,'USD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('URUGUAY'                                                        ,'UY'          ,'UYO' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('US DEPENDENCIES'                                                ,'UM'          ,'USD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('UZBEKISTAN'                                                     ,'UZ'          ,'UZS' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('VANUATU'                                                        ,'VU'          ,'VUV' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('VENEZUELA'                                                      ,'VE'          ,'VEB' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('VIRGIN ISLANDS (BRITISH)'                                       ,'VI'          ,'USD' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('YUGOSLAVIA'                                                     ,'YU'          ,'YUM' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ZAMBIA'                                                         ,'ZM'          ,'ZMK' , 0, 'Predefined', current_timestamp);
+INSERT INTO Country Values('ZIMBABWE'                                                       ,'ZW'          ,'ZWD' , 0, 'Predefined', current_timestamp);
+commit;
+enddata

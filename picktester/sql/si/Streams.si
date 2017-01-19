@@ -1,0 +1,968 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Streams
+SERVER   vlab
+
+TABLE   Streams
+  Id           BigSequence
+  MessageId    long
+  QueueId      char(16)
+  EventQueueId char(16)  NULL
+  StreamRef    char(128) NULL
+  StreamType   char(16)  NULL
+  StreamDescr  char(65)  NULL
+  MessageLen   short
+  MessageData  blob(16000)
+  MessageType  byte(AsXML=0 Text=1 File=2)
+  Priority     byte
+  Status       byte(None=0 Sent=1 Ack=2 Nak=3)
+  DateCreated  datetime
+  USId         char(16)
+  TmStamp      timestamp
+
+KEY SYS_C00822 PRIMARY
+  ID
+
+KEY key1
+  StreamRef
+  QueueID
+
+KEY key2
+  MessageID
+
+KEY key3
+  QueueId
+  Status
+
+link Queue (Id)
+  QueueID
+
+link Queue (Id)
+  EventQueueID
+
+link Message (Id)
+  MessageID
+
+link Streamtype (Id)
+  StreamType
+
+PROC    Insert
+PROC    Update
+PROC    SelectOne
+PROC    SelectOneUpd
+PROC    SelectAll
+PROC    DeleteOne
+PROC    Exists
+PROC    Count
+
+// used by SaffySnd,tibossnd
+PROC Queued
+INPUT
+  Queue         char(16)
+  DayInterval   int
+  Status        byte
+OUTPUT
+  Id            Int
+sqlcode
+  SELECT
+     Id
+  FROM
+     Streams
+  Where
+         Queueid = :Queue
+     and Status = :Status
+     and DateCreated <= sysdate
+     and DateCreated > (sysdate - :DayInterval)
+  ORDER BY Id
+endcode
+
+// used by SaffySnd,tibossnd
+PROC ByStatusQueueDate
+INPUT
+  Queue         char(16)
+  Status        byte
+  DateFrom      DateTime
+OUTPUT
+  Id            Int
+  TmStamp   DateTime
+sqlcode
+  SELECT
+     Id,
+     to_char(TmStamp, 'YYYYMMDDHH24MISS')
+  FROM
+     Streams
+  Where
+         Queueid = :Queue
+     and Status = :Status
+     and TmStamp >= to_date(:DateFrom, 'YYYYMMDDHH24MISS')
+endcode
+
+
+// used by tibossnd
+PROC RevertStatusToNone
+INPUT
+  Queue         char(16)
+  StatusNone    int
+  StatusSent    int
+sqlcode
+  update
+     Streams
+  set
+     Status = :StatusNone
+  Where
+         Queueid = :Queue
+     and Status  = :StatusSent
+endcode
+
+// used by SaffySnd,tibossnd, router
+PROC UpdateStatus
+INPUT
+  Id            Int
+  StreamRef     char(255)
+  Status        byte
+  USId          char(16)
+sqlcode
+  update
+    Streams
+   set
+      Status    = :Status
+    , StreamRef = :StreamRef
+    , USId      = :USId
+    , TMStamp   = SYSDATE
+   where
+     Id = :Id
+endcode
+
+// used by SaffySnd tibossnd
+PROC ForUpd
+INPUT
+  Id           int
+  QueueId      char(16)
+  Status       byte
+OUTPUT (single)
+  EventQueueID char(16)  NULL
+  StreamRef    char(255) NULL
+  MessageLen   short
+  MessageData  blob(16000)
+  MessageType  byte       // 0 - Text, 1 - AsXML
+  Priority     byte
+sqlcode
+   SELECT
+     EventQueueID
+    ,StreamRef
+    ,MessageLen
+    ,MessageData
+    ,MessageType
+    ,Priority
+   FROM
+      Streams
+   WHERE
+          ID = :ID
+      AND Status = :Status
+      AND QueueId = :QueueId
+      for update
+endcode
+
+// used by SaffyRcv
+PROC GetByRef
+INPUT
+  StreamRef    char (255)
+  ID           int
+  MessageID    int
+  EventQueueID char (16)
+  ReplyQueueID char (16)
+  StreamCount  byte
+sqlcode
+begin
+  Select Id, MessageID, EventQueueID
+  into :ID, :MessageID, :EventQueueID
+  From Streams Where StreamRef = :StreamRef For Update;
+
+  Select ResponseQueue, StreamCount
+  Into :ReplyQueueID, :StreamCount
+  From Message Where ID = :MessageID For Update;
+End;
+endcode
+
+// SELECT /*+RULE*/
+//    s.Id
+//   ,s.MessageID
+//   ,s.EventQueueID
+//   ,m.ResponseQueue
+//   ,m.StreamCount
+// FROM
+//    Streams s, Message m
+// Where
+//        s.StreamRef = :StreamRef
+//    and s.MessageID = m.ID
+//    for update
+
+// used by AcbFileIn
+PROC GetByQRef
+INPUT
+  StreamRef    char (255)
+  QueueId      char (16)
+  Status       byte
+
+  ID           int
+  MessageID    int
+  EventQueueID char (16)
+  ReplyQueueID char (16)
+  ReplyQueue   char (64)
+  StreamCount  byte
+sqlcode
+begin
+  Select max(Id)
+  into :ID
+  From Streams
+  Where QueueId = :QueueId
+  And   StreamRef = :StreamRef
+  And   Status = :Status;
+
+  Select MessageID, EventQueueID
+  into :MessageID, :EventQueueID
+  From Streams
+  Where Id = :ID
+  For Update;
+
+  Select ResponseQueue, StreamCount
+  Into :ReplyQueueID, :StreamCount
+  From Message Where ID = :MessageID For Update;
+
+  Select Name
+  Into :ReplyQueue
+  From Queue Where ID = :ReplyQueueID;
+End;
+endcode
+
+
+
+//used by tibossnd mqout
+PROC GetById
+INPUT
+  ID int
+OUTPUT (single)
+  ID           int
+  MessageID    int
+  EventQueueID char (16)
+  StreamRef    char(128)
+  StreamCount  byte
+  ReplyQueueID char (16)
+  Status       byte
+sqlcode
+  SELECT
+     s.Id
+    ,s.MessageID
+    ,s.EventQueueID
+    ,s.StreamRef
+    ,m.StreamCount
+    ,m.ResponseQueue
+    ,s.Status
+  FROM
+     Streams s, Message m
+  Where
+         s.ID = :ID
+     and s.MessageID = m.ID
+     for update
+endcode
+
+// used by SaffyRcv
+PROC GetMsgStatus
+INPUT
+  MessageID    int
+OUTPUT
+  MyCount      Int
+  Status       byte  // 0 - None, 1-Sent, 2-NAK, 3-ACK
+sqlcode
+  SELECT
+     Count(*)
+    ,Status
+  FROM
+     Streams
+  Where
+     MessageID = :MessageID
+  Group By
+     Status
+endcode
+
+// used by TibosSndRcv
+PROC CountMsgStatus
+INPUT
+  MessageID    int
+  Status       byte  // 0 - None, 1-Sent, 2-NAK, 3-ACK
+OUTPUT (single)
+  MyCount      Int
+sqlcode
+  SELECT
+     Count(*)
+  FROM
+     Streams
+  Where
+         MessageID = :MessageID
+     and Status    = :Status
+endcode
+
+// used by Router
+PROC CountMsgStatusMultiple
+INPUT
+  StreamID    int
+  Status1       byte  // 0 - None, 1-Sent, 2-NAK, 3-ACK
+  Status2       byte  // 0 - None, 1-Sent, 2-NAK, 3-ACK
+OUTPUT (single)
+  MyCount1      Int
+  MyCount2      Int
+  StreamCount   int
+  MessageID     int
+  ReplyQueueID  char(16)
+sqlcode
+  select
+    (SELECT Count( *) FROM  Streams
+     Where
+         MessageID = Message.Id
+     and Status    = :Status1),
+    (SELECT Count( *) FROM  Streams
+     Where
+         MessageID = Message.Id
+     and Status    = :Status2),
+     StreamCount,
+     Message.ID,
+     Message.ResponseQueue
+  from
+     Message,Streams
+  where
+      Streams.ID = :StreamId
+  and Message.Id = Streams.MessageID
+
+endcode
+
+// Used by front end tester
+PROC ByQueueDate
+INPUT
+  QueueId      char(16)
+  DateFrom     DateTime
+  DateTo       DateTime
+  MaxRows      int
+OUTPUT
+  Id           int
+  SourceSysid  char(16)
+  Reference    char(64)
+  MessageType  byte
+  DateCreated  DateTime
+  Priority     byte
+  Status       byte
+sqlcode
+  select S.Id,  M.SourceSysid, M.Reference,  S.MessageType,
+             to_char(S.DateCreated, 'YYYYMMDDHH24MISS'), S.Priority,  S.Status
+  from Streams S, Message M
+  where S.QueueId = :QueUeId
+  and S.DateCreated
+    between to_date(:DateFrom, 'YYYYMMDDHH24MISS') and to_date(:DateTo  , 'YYYYMMDDHH24MISS')
+  and S.MessageId = M.Id
+  and (:MaxRows <= 0 or :MaxRows >= ROWNUM)
+endcode
+
+// Used by front end tester
+PROC ByDate
+INPUT
+  DateFrom     DateTime
+  DateTo       DateTime
+  MaxRows      int
+OUTPUT
+  Id           int
+  QueueId      char(16)
+  SourceSysid  char(16)
+  Reference    char(64)
+  MessageType  byte
+  DateCreated  DateTime
+  Priority     byte
+  Status       byte
+sqlcode
+  select S.Id, S.QueueId, M.SourceSysid, M.Reference,  S.MessageType,
+             to_char(S.DateCreated, 'YYYYMMDDHH24MISS'), S.Priority,  S.Status
+  from Streams S, Message M
+  where S.DateCreated
+    between to_date(:DateFrom, 'YYYYMMDDHH24MISS') and to_date(:DateTo  , 'YYYYMMDDHH24MISS')
+  and S.MessageId = M.Id
+  and (:MaxRows <= 0 or :MaxRows >= ROWNUM)
+endcode
+
+// Used by front end tester
+PROC Queues
+INPUT
+  DateFrom     DateTime
+  DateTo       DateTime
+OUTPUT
+  Id Char(16)
+  Name Char(64)
+  Descr Char(256)
+  NoOf int
+sqlcode
+  select Q.Id, Q.Name, Q.Descr, count(  ) NoOf
+  from Queue Q, Streams S
+  where S.DateCreated
+    between to_date(:DateFrom, 'YYYYMMDDHH24MISS') and to_date(:DateTo  , 'YYYYMMDDHH24MISS')
+  and S.QueueId = Q.Id
+  group by Q.Id, Q.Name, Q.Descr
+endcode
+
+// Used by front end tester
+PROC GetData
+INPUT
+  Id           int
+OUTPUT (Single)
+  MessageType   byte
+  MessageLen    short
+  MessageData   blob(16000)
+sqlcode
+  select MessageType, MessageLen, MessageData
+  from Streams
+  where Id = :Id
+endcode
+
+// Used By Router
+PROC RouterForUpd
+INPUT
+  Id            int
+  QueueId       char(16)
+  Status        byte //(None=0 Sent=1 Ack=2 Nak=3)
+OUTPUT (single)
+  MessageId    int
+  EventQueueId char(16)  NULL
+  StreamRef    char(128) NULL
+  MessageLen   short
+  MessageData  blob(16000)
+  MessageType  byte(AsXML=0 Text=1)
+  Priority     byte
+sqlcode
+   SELECT
+      MessageId
+     ,EventQueueId
+     ,StreamRef
+     ,MessageLen
+     ,MessageData
+     ,MessageType
+     ,Priority
+   FROM
+      Streams
+   WHERE
+          ID = :ID
+      AND QueueId = :QueueId
+      AND Status = :Status
+      for update
+endcode
+
+// Used By Router
+PROC Route
+INPUT
+  Id            int
+  QueueId       char  (16)
+  USId          char  (16)
+sqlcode
+    update
+       Streams
+    SET
+        QueueId = :QueueId
+      , USId    = :USId
+      , TMStamp = SYSDATE
+    where
+      Id = :Id
+endcode
+
+// Used By Front End
+// Used by router
+PROC ByMessageID
+INPUT
+  InMessageId   int
+OUTPUT
+  Id            int
+  MessageId     int
+  QueueId       char(16)
+  EventQueueId  char(16)
+  StreamRef     char(128)
+  StreamType    char(16) NULL
+  StreamDescr   char(65)  NULL
+  MessageLen    short
+  MessageType   byte(AsXML=0 Text=1)
+  Priority      byte
+  Status        byte (None=0 Sent=1 Ack=2 Nak=3)
+  DateCreated   datetime
+  USId          char(16)
+  TmStamp       timestamp
+sqlcode
+    SELECT
+      Id
+      ,MessageId
+      ,QueueId
+      ,EventQueueId
+      ,StreamRef
+      ,StreamType
+      ,StreamDescr
+      ,MessageLen
+      ,MessageType
+      ,Priority
+      ,Status
+      ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+      ,USId
+      ,to_char(TmStamp, 'YYYYMMDDHH24MISS')
+    FROM Streams
+    WHERE
+       MessageId = :InMessageId
+endcode
+
+// Used By Front End
+// Used by router
+PROC ByMessageIDData
+INPUT
+  InMessageId   int
+OUTPUT
+  Id            int
+  MessageId     int
+  QueueId       char(16)
+  EventQueueId  char(16)
+  StreamRef     char(128)
+  StreamType    char(16)
+  StreamDescr   char(65)
+  MessageLen    short
+  MessageData   blob(16000)
+  MessageType   byte(AsXML=0 Text=1)
+  Priority      byte
+  Status        byte (None=0 Sent=1 Ack=2 Nak=3)
+  DateCreated   datetime
+  USId          char(16)
+  TmStamp       timestamp
+sqlcode
+    SELECT
+      Id
+      ,MessageId
+      ,QueueId
+      ,EventQueueId
+      ,StreamRef
+      ,StreamType
+      ,StreamDescr
+      ,MessageLen
+      ,MessageData
+      ,MessageType
+      ,Priority
+      ,Status
+      ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+      ,USId
+      ,to_char(TmStamp, 'YYYYMMDDHH24MISS')
+    FROM Streams
+    WHERE
+       MessageId = :InMessageId
+endcode
+
+// used by Rutter, saffyrcv, acbfilein
+PROC UpdStatus
+INPUT
+  Id            int
+  Status        byte
+  USId          char  (16)
+sqlcode
+  Update
+    Streams
+  Set
+     Status = :Status
+     ,USId = :USId
+     ,TMStamp = SYSDATE
+  where
+     id = :Id
+endcode
+
+// Used By PE Front End
+PROC ByQueue
+INPUT
+   InQueue      char(16)
+   InStatus     byte
+   InDateFrom   DateTime
+   InDateTo     DateTime
+OUTPUT
+   Id           int
+   MessageId    int
+   QueueId      char(16)
+   EventQueueId char(16)  NULL
+   StreamRef    char(128) NULL
+   StreamType   char(16) NULL
+   StreamDescr  char(65)  NULL
+   MessageLen   short
+   MessageType  byte(AsXML=0 Text=1)
+   Priority     byte
+   Status       byte(None=0 Sent=1 Ack=2 Nak=3)
+   DateCreated  datetime
+   USId         char(16)
+   TmStamp      timestamp
+sqlcode
+   SELECT
+     Id
+     ,MessageId
+     ,QueueId
+     ,EventQueueId
+     ,StreamRef
+     ,StreamType
+     ,StreamDescr
+     ,MessageLen
+     ,MessageType
+     ,Priority
+     ,Status
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+     ,USId
+     ,to_char(TmStamp, 'YYYYMMDDHH24MISS')
+   FROM
+      Streams
+   WHERE
+          QueueId = :InQueue
+      AND Status = :InStatus
+      AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS')
+      AND                     to_date(:InDateTo, 'YYYYMMDDHH24MISS')
+      ORDER BY Id
+endcode
+
+// Used By PE Front End
+PROC ByQueueAll
+INPUT
+   InQueue      char(16)
+   InDateFrom   DateTime
+   InDateTo     DateTime
+OUTPUT
+   Id           int
+   MessageId    int
+   QueueId      char(16)
+   EventQueueId char(16)  NULL
+   StreamRef    char(128) NULL
+   StreamType   char(16) NULL
+   StreamDescr  char(65)  NULL
+   MessageLen   short
+   MessageType  byte(AsXML=0 Text=1)
+   Priority     byte
+   Status       byte(None=0 Sent=1 Ack=2 Nak=3)
+   DateCreated  datetime
+   USId         char(16)
+   TmStamp      timestamp
+sqlcode
+   SELECT
+     Id
+     ,MessageId
+     ,QueueId
+     ,EventQueueId
+     ,StreamRef
+     ,StreamType
+     ,StreamDescr
+     ,MessageLen
+     ,MessageType
+     ,Priority
+     ,Status
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+     ,USId
+     ,to_char(TmStamp, 'YYYYMMDDHH24MISS')
+   FROM
+      Streams
+   WHERE
+          QueueId = :InQueue
+      AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS')
+      AND                     to_date(:InDateTo, 'YYYYMMDDHH24MISS')
+      ORDER BY Id
+endcode
+
+// Used By PE Front End
+PROC ByStreamRef
+INPUT
+   InStreamRef  char(128)
+   InDateFrom   DateTime
+   InDateTo     DateTime
+OUTPUT
+   Id           int
+   MessageId    int
+   QueueId      char(16)
+   EventQueueId char(16)  NULL
+   StreamRef    char(128) NULL
+   StreamType   char(16) NULL
+   StreamDescr  char(65)  NULL
+   MessageLen   short
+   MessageType  byte(AsXML=0 Text=1)
+   Priority     byte
+   Status       byte(None=0 Sent=1 Ack=2 Nak=3)
+   DateCreated  datetime
+   USId         char(16)
+   TmStamp      timestamp
+sqlcode
+   SELECT
+     Id
+     ,MessageId
+     ,QueueId
+     ,EventQueueId
+     ,StreamRef
+     ,StreamType
+     ,StreamDescr
+     ,MessageLen
+     ,MessageType
+     ,Priority
+     ,Status
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+     ,USId
+     ,to_char(TmStamp, 'YYYYMMDDHH24MISS')
+   FROM
+      Streams
+   WHERE
+	  StreamRef = :InStreamRef
+      AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS')
+      AND                     to_date(:InDateTo, 'YYYYMMDDHH24MISS')
+      ORDER BY Id
+endcode
+
+// Used By PE Front End
+PROC ByQStreamRef
+INPUT
+   InQueue      char(16)
+   InStreamRef  char(128)
+   InDateFrom   DateTime
+   InDateTo     DateTime
+OUTPUT
+   Id           int
+   MessageId    int
+   QueueId      char(16)
+   EventQueueId char(16)  NULL
+   StreamRef    char(128) NULL
+   StreamType   char(16) NULL
+   StreamDescr  char(65)  NULL
+   MessageLen   short
+   MessageType  byte(AsXML=0 Text=1)
+   Priority     byte
+   Status       byte(None=0 Sent=1 Ack=2 Nak=3)
+   DateCreated  datetime
+   USId         char(16)
+   TmStamp      timestamp
+sqlcode
+   SELECT
+     Id
+     ,MessageId
+     ,QueueId
+     ,EventQueueId
+     ,StreamRef
+     ,StreamType
+     ,StreamDescr
+     ,MessageLen
+     ,MessageType
+     ,Priority
+     ,Status
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+     ,USId
+     ,to_char(TmStamp, 'YYYYMMDDHH24MISS')
+   FROM
+      Streams
+   WHERE
+	  QueueId = :InQueue
+      AND StreamRef = :InStreamRef
+      AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS')
+      AND                     to_date(:InDateTo, 'YYYYMMDDHH24MISS')
+      ORDER BY Id
+endcode
+
+PROC StatusCount
+INPUT
+   InStatus      byte
+   InQueueID	 char(16)
+   InDateFrom    datetime
+   InDateTo      datetime
+OUTPUT(Single)
+   Cnt           int
+sqlcode
+   SELECT
+      count(*)
+   FROM
+      Streams
+   WHERE
+         Status = :InStatus
+     AND QueueID = :InQueueID
+     AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS')
+     AND                     to_date(:InDateTo  , 'YYYYMMDDHH24MISS')
+endcode
+
+PROC StatusCountAll
+INPUT
+   InQueueID	 char(16)
+   InDateFrom    datetime
+   InDateTo      datetime
+OUTPUT(Single)
+   Cnt           int
+sqlcode
+   SELECT
+      count(*)
+   FROM
+      Streams
+   WHERE
+     QueueID = :InQueueID
+     AND DateCreated between to_date(:InDateFrom, 'YYYYMMDDHH24MISS')
+     AND                     to_date(:InDateTo  , 'YYYYMMDDHH24MISS')
+endcode
+
+// Used By PE Front End
+PROC ByID
+INPUT
+   InID           int
+OUTPUT(Single)
+   Id             int
+   MessageId      int
+   QueueId        char(16)
+   EventQueueId   char(16)  NULL
+   StreamRef      char(128) NULL
+   StreamType     char(16) NULL
+   StreamDescr    char(65)  NULL
+   MessageLen     short
+   MessageData    blob(16000)
+   MessageType    byte(AsXML=0 Text=1)
+   Priority       byte
+   Status         byte(None=0 Sent=1 Ack=2 Nak=3)
+   DateCreated    datetime
+   USId           char(16)
+   TmStamp        timestamp
+sqlcode
+   SELECT
+     Id
+     ,MessageId
+     ,QueueId
+     ,EventQueueId
+     ,StreamRef
+     ,StreamType
+     ,StreamDescr
+     ,MessageLen
+     ,MessageData
+     ,MessageType
+     ,Priority
+     ,Status
+     ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+     ,USId
+     ,to_char(TmStamp, 'YYYYMMDDHH24MISS')
+   FROM
+      Streams
+   WHERE
+          Id = :InID
+endcode
+
+PROC UpdQueue
+INPUT
+   InMsgNo     int
+   InQueueID   char(16)
+sqlcode
+   UPDATE
+      Streams
+   SET
+      QueueID = :InQueueID
+   WHERE
+      Id = :InMsgNo
+endcode
+
+// used by filemqout
+PROC FilemqForUpd
+INPUT
+  Id           int
+  QueueId      char(16)
+  Status       byte
+OUTPUT (single)
+  MessageID    int
+  EventQueueID char(16)  NULL
+  StreamRef    char(255) NULL
+  MessageLen   short
+  MessageData  blob(16000)
+  MessageType  byte       // 0 - Text, 1 - AsXML, 2 - File
+  Priority     byte
+  StreamCount  byte
+  ReplyQueueID char (16)
+sqlcode
+   SELECT
+     s.MessageID
+    ,s.EventQueueID
+    ,s.StreamRef
+    ,s.MessageLen
+    ,s.MessageData
+    ,s.MessageType
+    ,s.Priority
+    ,m.StreamCount
+    ,m.ResponseQueue
+   FROM
+      Streams s, Message m
+   WHERE
+          s.ID = :ID
+      AND s.Status = :Status
+      AND s.QueueId = :QueueId
+      AND s.MessageID = m.ID
+      for update
+endcode
+
+//used by router scripts
+PROC UpdateStreamRef
+INPUT
+  Id            Int
+  StreamRef     char(255)
+  USId          char(16)
+sqlcode
+  update
+    Streams
+   set
+    StreamRef = :StreamRef
+    , USId      = :USId
+    , TMStamp   = SYSDATE
+   where
+     Id = :Id
+endcode
+
+// Used by router-ACB batching for ProBanker
+PROC GetByQStatusDataForUpd
+INPUT
+  Status   int
+  QueueId  char(16)
+  DayRange int
+OUTPUT
+  Id            int
+  MessageId     int
+  EventQueueId  char(16)
+  StreamRef     char(128)
+  StreamType    char(16)
+  StreamDescr   char(65)
+  MessageLen    short
+  MessageData   blob(16000)
+  MessageType   byte(AsXML=0 Text=1)
+  Priority      byte
+  DateCreated   datetime
+  USId          char(16)
+  TmStamp       timestamp
+sqlcode
+    SELECT
+      Id
+      ,MessageId
+      ,EventQueueId
+      ,StreamRef
+      ,StreamType
+      ,StreamDescr
+      ,MessageLen
+      ,MessageData
+      ,MessageType
+      ,Priority
+      ,to_char(DateCreated, 'YYYYMMDDHH24MISS')
+      ,USId
+      ,to_char(TmStamp, 'YYYYMMDDHH24MISS')
+    FROM Streams
+    WHERE
+       QueueId = :QueueId
+   AND Status  = :Status
+   AND DateCreated > sysdate - :DayRange
+   for update
+endcode
+
+// Used by router-ACB batching for ProBanker
+PROC CountByQStatus
+INPUT
+  Status   int
+  QueueId  char(16)
+  DayRange int
+OUTPUT (single)
+  Cnt     int
+sqlcode
+    SELECT
+      count(*)
+    FROM Streams
+    WHERE
+       QueueId = :QueueId
+   AND Status  = :Status
+   AND DateCreated > sysdate - :DayRange
+endcode
+

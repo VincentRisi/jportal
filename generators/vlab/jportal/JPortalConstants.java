@@ -8,7 +8,7 @@
 /// which accompanies this distribution and is available at
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
-///    Vincent Risi
+///    Vincent Risi, Hennie Hammann
 ///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
@@ -77,7 +77,7 @@ public interface JPortalConstants {
   /** RegularExpression Id. */
   int DELETEALL = 33;
   /** RegularExpression Id. */
-  int DELETEONE = 34;
+  int DESC = 34;
   /** RegularExpression Id. */
   int DOUBLE = 35;
   /** RegularExpression Id. */
@@ -345,6 +345,7 @@ public interface JPortalConstants {
     "\"deleteby\"",
     "\"deleteall\"",
     "\"deleteone\"",
+    "\"desc\"",
     "\"double\"",
     "\"dynamic\"",
     "\"execute\"",

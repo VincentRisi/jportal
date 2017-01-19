@@ -1,0 +1,48 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   FileOutput
+SERVER   vlab
+
+table FileOutput
+
+  ID           BigSequence
+  Name         char(256)
+  FileDate     DateTime
+  FileSize     int
+  Message      char(256)
+  Header       char(256)
+  Trailer      char(256)
+  Error        int
+  Status       byte    // 0 - Started, 1 - Processed, 2 - Error
+  USId         char  (16)
+  TMstamp      timestamp
+
+KEY key1 PRIMARY
+// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  ID
+
+proc Insert
+proc Update
+proc SelectOne
+proc SelectOneUpd
+proc DeleteOne
+proc Exists
+proc SelectAll
+
+//Used By Batch
+PROC Processed
+INPUT
+  File_Name            char(256)
+  File_Size            int
+  Status               byte    // S - Started, P - Processed, E - Error
+  Hash1                char(30)
+OUTPUT (single)
+  MyCount               int
+sqlcode
+  Select count(*)
+  from Input_File
+    Where File_Name = :File_Name
+    AND   File_Size = :File_Size
+    AND   Status = :Status
+    AND   Hash1 = :Hash1;
+endcode

@@ -37,6 +37,7 @@ public class Table implements Serializable
   public Vector<Key>      keys;
   public Validation  validation;
   public boolean     useSequence;
+  public boolean     useBigSequence;
   public boolean     useChar;
   public boolean     noDomain;
   public boolean     viewOnly;
@@ -52,12 +53,13 @@ public class Table implements Serializable
     options           = new Vector<String>();
     order             = new Vector<Field>();
     show              = new Vector<Field>();
-	breaks            = new Vector<Field>();
+	  breaks            = new Vector<Field>();
     values            = new Vector<Value>();
     links             = new Vector<Link>();
     keys              = new Vector<Key>();
     validation        = new Validation();
     useSequence       = false;
+    useBigSequence    = false;
     useChar           = false;
     noDomain          = false;
     viewOnly          = false;

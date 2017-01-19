@@ -1,0 +1,33 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   BankAccount
+SERVER   vlab
+
+TABLE BankAccount
+    OPTIONS "lookup=SwiftAddress CurrId AccountTypeId AccountNo" "descr=Bank Accounts for Swift Currency and Type"
+  SwiftAddress  Char(11)
+  CurrId        Char(4)
+  AccountTypeId Char(16)
+  AccountNo     Char(64)
+  USId          Char(16)
+  TmStamp       DateTime
+
+KEY BankAccountKey PRIMARY
+  SwiftAddress
+  CurrId
+  AccountTypeId
+
+LINK BankFile (SwiftAddress)
+  SwiftAddress
+
+LINK Currency (Id)
+  CurrId
+
+LINK AccountType (Id)
+  AccountTypeId
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+

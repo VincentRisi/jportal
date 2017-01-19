@@ -1,0 +1,28 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   StreamType
+SERVER   vlab
+
+TABLE StreamType OPTIONS "descr=Stream Type"
+  Id Char(16)
+  Descr Char(65) NULL
+  USId         Char(16)
+  TmStamp      TimeStamp
+
+KEY StreamtypeKey1 PRIMARY
+  Id
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC SelectAll
+PROC DeleteOne
+
+sqldata
+--start transaction;
+INSERT INTO StreamType  values ('SWIFT', 'SWIFT'       , 'Predefined', current_timestamp);
+INSERT INTO StreamType  values ('TIBOS', 'TIBOS'       , 'Predefined', current_timestamp);
+INSERT INTO StreamType  values ('WASTE', 'Waste stream', 'Predefined', current_timestamp);
+commit;
+enddata
+

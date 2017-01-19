@@ -12,7 +12,7 @@ PARSER_BEGIN(JPortal)
 /// which accompanies this distribution and is available at
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
-///    Vincent Risi
+///    Vincent Risi, Hennie Hammann
 ///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
@@ -432,6 +432,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <DELETEBY:     "deleteby">
 | <DELETEALL:    "deleteall">
 | <DELETEONE:    "deleteone">
+| <DESC:         "desc" >
 | <DOUBLE:       "double">
 | <DYNAMIC:      "dynamic">
 | <EXECUTE:      "execute">
@@ -1744,6 +1745,7 @@ void jStdProc() :
   boolean forUpdate = false;
   boolean forReadOnly = false;
   boolean inOrder = false;
+  boolean descending = false;
   boolean isStdProc = false;
   String s;
 }
@@ -1773,7 +1775,7 @@ void jStdProc() :
         {
           proc.name = "Update";
           proc.isUpdate = true;
-          table.buildUpdate(proc, outLog);
+          table.buildUpdate(proc);
           table.hasStdProcs = true;
         }
       }
@@ -1798,7 +1800,7 @@ void jStdProc() :
       {
         proc.name = "BulkUpdate";
         proc.isUpdate = true;
-        table.buildBulkUpdate(proc, outLog);
+        table.buildBulkUpdate(proc);
         table.hasStdProcs = true;
       }
     }
@@ -1928,7 +1930,7 @@ void jStdProc() :
         table.hasStdProcs = true;
       }      
   | <SELECTALL>
-    ((<IN>)? <ORDER> {inOrder = true;})?
+    ((<IN>)? <ORDER> {inOrder = true;} (jOrderColumn())* (<DESC> {descending = true;})?)?
     ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
     {
       if (table.hasBigXML)
@@ -1939,12 +1941,10 @@ void jStdProc() :
         if (inOrder) proc.name = proc.name+"Sorted";
         if (forUpdate) proc.name = proc.name+"Upd";
         else if (forReadOnly) proc.name = proc.name+"ReadOnly";
-        table.buildSelectAll(proc, forUpdate, forReadOnly, inOrder);
+        table.buildSelectAll(proc, forUpdate, forReadOnly, inOrder, descending);
         table.hasStdProcs = true;
       }
     }
-
-
   | <COUNT>
     {
       proc.name = "Count";
@@ -1990,6 +1990,7 @@ void jNewProc() :
   boolean forUpdate = false;
   boolean forReadOnly = false;
   boolean inOrder = false;
+  boolean descending = false;
 }
 {
  s = jIdent()
@@ -2066,20 +2067,20 @@ void jNewProc() :
       )?
       ( jOldCode() | jNewCode() )
       {
-        table.buildSelectFrom(proc,table, outLog);
+        table.buildSelectFrom(proc, table, outLog);
         proc.useStd = true;
         isStdProc = true;
       }
+    
   | <SELECTONEBY> ( jProcColumn())+
-      ((<IN>)? <ORDER> {inOrder = true;})?
       ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       {
         proc.isSingle = true;
-        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, descending, outLog);
         table.hasStdProcs = true;
       }
   | <SELECTBY> ( jProcColumn())+
-      ((<IN>)? <ORDER> {inOrder = true;})?
+      ((<IN>)? <ORDER> {inOrder = true;} (jOrderColumn())* (<DESC> {descending = true;})?)?
       ((<FOR>)? (<UPDATE> {forUpdate = true;} | <READONLY> {forReadOnly = true;}))?
       ( <OUTPUT> (jOutputType())?
         ( jField()
@@ -2115,7 +2116,7 @@ void jNewProc() :
         )*
       )?
       {
-        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, outLog);
+        table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, descending, outLog);
         table.hasStdProcs = true;
       }
   | <DELETEBY> ( jProcColumn())+
@@ -2135,9 +2136,8 @@ void jNewProc() :
         table.buildUpdateBy(proc, outLog);
         table.hasStdProcs = true;
       }
- )
+  )
 }
-
 
 void jProcColumn() :
 {
@@ -2157,7 +2157,7 @@ void jProcColumn() :
   }
 }
 
-void jProcOutColumn() :
+void jOrderColumn() :
 {
   String s;
 }
@@ -2166,8 +2166,10 @@ void jProcOutColumn() :
   {
     if (!table.hasField(s))
       outLog.println(proc.name+" field "+s+" not present in table");
+    else if (proc.hasOrders(s))
+      outLog.println(proc.name+" field "+s+" already present");
     else
-      proc.outputs.addElement(table.getField(s));
+      proc.orderFields.addElement(s);
   }
 }
 
@@ -2452,7 +2454,7 @@ void jOutputType() :
 
   }
   (<STANDARD>
-{
+    {
       for (int i=0; i<table.fields.size(); i++)
         proc.outputs.addElement(table.fields.elementAt(i));
     }

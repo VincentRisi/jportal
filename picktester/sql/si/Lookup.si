@@ -1,0 +1,75 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Lookup
+SERVER   vlab
+
+TABLE Lookup
+    OPTIONS "lookup=Name Ref" "descr=User Lookup Table"
+  Name         Char(255)
+  Ref(Refs)    Char(255)
+  Value        Char(255)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY LookupKey PRIMARY
+  Name
+  Ref
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+PROC DeleteAll
+
+PROC SelectList
+INPUT
+  Name         Char(255)
+OUTPUT
+  Ref(Refs)    Char(255)
+  Value        Char(255)
+sqlcode
+  select Ref, Value from Lookup where Name = :Name
+endcode
+
+// used by Rutter
+PROC Get
+INPUT
+  Name Char(256)
+  Ref Char(256)
+OUTPUT (single)
+  Value Char(256)
+sqlcode
+  SELECT
+     Value
+  FROM
+     Lookup
+  Where
+     Name = :Name
+     and Ref = :Ref
+endcode
+
+PROC NameList
+OUTPUT
+  Name Char(256)
+sqlcode
+  SELECT distinct Name FROM Lookup
+endcode
+
+sqldata
+--start transaction;
+INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'CA'     , '001'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'GL'     , '009'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'MCA'    , '?'    , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('ACCOUNT SYSTEM'  , 'SA'     , '002'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('TRANSACTION TYPE', 'DT'     , 'YES'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('TRANSACTION TYPE', 'MCT'    , 'YES'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('TRANSACTION TYPE', 'OT'     , 'YES'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('TRANSACTION TYPE', 'PRODCHG', 'YES'  , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('VAT'             , 'NOVAT'  , '0.00%', 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('VAT'             , 'VAT'    , '14.00', 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('WASTE TRAN CODE' , 'DT'     , '1234' , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('WASTE TRAN CODE' , 'OT'     , '5678' , 'INITIAL', current_timestamp);
+INSERT INTO lookup values ('WASTE TRAN CODE' , 'RT'     , '8765' , 'INITIAL', current_timestamp);
+commit;
+enddata
+

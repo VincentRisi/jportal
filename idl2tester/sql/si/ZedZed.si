@@ -1,4 +1,4 @@
-DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8"
+DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8" "use func"
 PACKAGE  vlab
 OUTPUT   ZedZed
 SERVER   ssm
@@ -32,14 +32,36 @@ proc SelectAll
 proc DeleteOne options "BL"
 proc DeleteAll
 proc Update    options "BL"
-proc SelectBy Bee Cee
+
+proc SelectByCee 
+  SelectBy Cee in order Dee Toppers desc
+output 
+  Xavier = 
+  Dee = 
+  Toppers =
+
+proc SelectOneByXavier
+  SelectOneBy Xavier update
+
+proc DeleteByDee
+  DeleteBy Dee
+
+proc SelectSome Select (standard)
+input
+  Cee =
+output
+  Dee =
+sqlcode
+  select Dee from ZedZed where Cee >= :Cee
+endcode  
+
 
 proc AtomTest
 input
   Xavier =
 sqlcode
 begin atomic
-  update ZedZed set A y = 5.4321  where Xavier = :Xavier;
+  update ZedZed set A y = 5.4321  where Xavier =  :Xavier;
   update ZedZed set Bee = 54.321  where Xavier = :Xavier;
   update ZedZed set Cee = '12.00' where Xavier = :Xavier;
 end  

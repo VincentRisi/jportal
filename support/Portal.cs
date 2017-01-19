@@ -7,7 +7,7 @@
 /// which accompanies this distribution and is available at
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
-///    Vincent Risi
+///    Vincent Risi, Hennie Hamman
 /// ------------------------------------------------------------------
 /// System : JPortal
 using System;
@@ -15,6 +15,12 @@ using System.Data;
 
 namespace vlab.jportal 
 {
+    public delegate string CredentialHandler();
+
+    public delegate void LogHandler(string message, params object[] args);
+
+    public delegate void LogHandlerException(Exception ex);
+
     public enum ParameterType
     {
         QuestionMark,
@@ -31,7 +37,27 @@ namespace vlab.jportal
         OleDb,
         PostgreSQL,
         DB2,
-        Lite3
+        Lite3,
+        MySql
+    }
+
+    public interface IPortalHandler
+    {
+        #region Events
+
+        event LogHandler Debug;
+
+        event LogHandler Error;
+
+        event LogHandlerException Exep;
+
+        event LogHandler Info;
+
+        event CredentialHandler UserName;
+
+        event LogHandler Warning;
+
+        #endregion Events
     }
 
     public static class Nullable
@@ -166,7 +192,7 @@ namespace vlab.jportal
         #endregion Properties
     }
 
-    public class Connect : IDisposable
+    public class JConnect : PortalHandlerBase, IDisposable
     {
         #region Fields
 
@@ -177,6 +203,8 @@ namespace vlab.jportal
         public bool IsNew;
         internal int commandTimeout;
         internal IDbConnection connection;
+        internal PortalHandlerBase handler;
+        internal int queryToLong;
         internal IDbTransaction transaction;
         internal ParameterType typeOfParameter;
         internal VendorType typeOfVendor;
@@ -188,9 +216,17 @@ namespace vlab.jportal
 
         #region Constructors
 
-        public Connect(IDbConnection connection)
+        /// <summary>
+        /// Set up Portal connection
+        /// </summary>
+        /// <param name="connection">Db Connection</param>
+        /// <param name="handler">Handel logging and credentials</param>
+        /// <param name="queryToLong">Will log long running queries as warning</param>
+        public JConnect(IDbConnection connection, PortalHandlerBase handler = null, int queryToLong = 5)
         {
             this.connection = connection;
+            this.handler = handler;
+            this.queryToLong = queryToLong;
 
             commandTimeout = 300;
             Type type = connection.GetType();
@@ -383,7 +419,7 @@ namespace vlab.jportal
 
         public void OracleSequence(string tableName, string fieldName, ref int value)
         {
-            Cursor cursor = new Cursor(this);
+            JCursor cursor = new JCursor(this);
             cursor.Format(string.Format("select {0}Seq.NextVal from dual)", tableName), 0);
             cursor.Run();
             cursor.Read();
@@ -397,7 +433,7 @@ namespace vlab.jportal
 
         public void PostgreSQLSequence(string tableName, string fieldName, ref int value)
         {
-            Cursor cursor = new Cursor(this);
+            JCursor cursor = new JCursor(this);
             cursor.Format(string.Format("select nextval('{0}_{1}_seq')::int", tableName.ToLower(), fieldName.ToLower()), 0);
             cursor.Run();
             cursor.Read();
@@ -418,7 +454,7 @@ namespace vlab.jportal
 
         public void SqliteSequence(string tableName, string fieldName, ref int value)
         {
-            Cursor cursor = new Cursor(this);
+            JCursor cursor = new JCursor(this);
             cursor.Format(string.Format("select seq from sqlite_sequence where name = '{0}'", tableName), 0);
             cursor.Run();
             cursor.Read();
@@ -452,32 +488,35 @@ namespace vlab.jportal
 
         private void DefaultGetUserStampProc(ref string value)
         {
-            value = connection.Username;
+            value = handler.OnUserName();
         }
 
         #endregion Methods
     }
 
-    public class Cursor : IDisposable
+    public class JCursor : IDisposable
     {
         #region Fields
 
-        public Connect connect;
+        public JConnect connect;
         protected IDbCommand command;
         protected IDbConnection connection;
+        protected PortalHandlerBase handler;
         protected IDataReader reader;
-        private static int QUERYTOLONG = 5;
         private DateTime NullDefault = DateTime.MinValue;
+        private int queryToLong;
         private DateTime startTimeFetch;
 
         #endregion Fields
 
         #region Constructors
 
-        public Cursor(Connect connect)
+        public JCursor(JConnect connect)
         {
             this.connect = connect;
+            this.handler = connect.handler;
             connection = connect.Connection;
+            this.queryToLong = connect.queryToLong;
         }
 
         #endregion Constructors
@@ -826,6 +865,14 @@ namespace vlab.jportal
         public object GetValue(int ordinal)
         {
             return reader.GetValue(ordinal);
+            
+        }
+
+        public object GetValueByName(string fieldName)
+        {
+            var ordinal = reader.GetOrdinal(fieldName);
+            return reader.GetValue(ordinal);
+
         }
 
         public bool HasReader()
@@ -880,6 +927,9 @@ namespace vlab.jportal
             catch (Exception ex)
             {
                 Close();
+
+                handler.OnError("Failed to read from SQL statement\r\n{0}", ReplaceParameters(command));
+                handler.OnExeption(ex);
                 throw;
             }
         }
@@ -891,11 +941,13 @@ namespace vlab.jportal
                 command.CommandTimeout = connect.CommandTimeout;
                 startTimeFetch = DateTime.Now;
                 reader = command.ExecuteReader();
-                TestTime();
+                //TestTime();
             }
             catch (Exception ex)
             {
                 Close();
+                handler.OnError("Failed to execute SQL statement\r\n{0}", ReplaceParameters(command));
+                handler.OnExeption(ex);
                 throw;
             }
         }
@@ -946,6 +998,32 @@ namespace vlab.jportal
             return txt;
         }
 
+        private void TestTime(bool fetch = false)
+        {
+            IDbCommand comm = command;
+            string message = "{0}{1}ms to run query [{2}]";
+            var temp = command.CommandText.Split(';');
+            
+
+            if (fetch)
+            {
+                if (temp.Length == 2)
+                {
+                    comm.CommandText = temp[1];
+                }
+
+                message = "{0}{1}ms to run fetch [{2}]";
+            }
+            var elapsedTime = (DateTime.Now - startTimeFetch);
+
+            if (handler != null)
+            {
+              if (elapsedTime.Seconds > queryToLong)
+                handler.OnWarning(message, elapsedTime.Seconds == 0 ? "" : elapsedTime.Seconds + "s", elapsedTime.Milliseconds, ReplaceParameters(comm));
+              else
+                handler.OnDebug(message, elapsedTime.Seconds == 0 ? "" : elapsedTime.Seconds + "s", elapsedTime.Milliseconds, ReplaceParameters(comm));
+            }
+        }
 
         #endregion Methods
     }
@@ -1040,6 +1118,85 @@ namespace vlab.jportal
         }
 
         #endregion Constructors
+    }
+
+    public class PortalHandlerBase : IPortalHandler
+    {
+        #region Events
+
+        public event LogHandler Debug;
+
+        public event LogHandler Error;
+
+        public event LogHandlerException Exep;
+
+        public event LogHandler Info;
+
+        public event CredentialHandler UserName;
+
+        public event LogHandler Warning;
+
+        #endregion Events
+
+        #region Public Methods
+
+        public string OnUserName()
+        {
+            if (UserName != null)
+            {
+                return UserName();
+            }
+            else
+            {
+                return "Portal";
+            }
+        }
+
+        #endregion Public Methods
+
+        #region Methods
+
+        public void OnDebug(string message, params object[] args)
+        {
+            if (Debug != null)
+            {
+                Debug(message, args);
+            }
+        }
+
+        public void OnError(string message, params object[] args)
+        {
+            if (Error != null)
+            {
+                Error(message, args);
+            }
+        }
+
+        public void OnExeption(Exception ex)
+        {
+            if (Exep != null)
+            {
+                Exep(ex);
+            }
+        }
+
+        public void OnInfo(string message, params object[] args)
+        {
+            if (Info != null)
+            {
+                Info(message, args);
+            }
+        }
+
+        public void OnWarning(string message, params object[] args)
+        {
+            if (Warning != null)
+            {
+                Warning(message, args);
+            }
+        }
+
+        #endregion Methods
     }
 
     public class Returning

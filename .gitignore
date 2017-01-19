@@ -1,6 +1,6 @@
 build
+obj
 bin
-*.resx
 *.log
 *.suo
 Debug
@@ -9,3 +9,4 @@ Debug
 *.csproj.user
 *.user
 .vagrant/
+packages

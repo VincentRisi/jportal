@@ -10,41 +10,42 @@ source_dir=/main/jportal/picktester
 binary_dir=/main/jportal/build/picktester
 
 jportal
-  PostgreDDL ${binary_dir}/sql/pgDDL  %a.sql
-  MSSqlDDL   ${binary_dir}/sql/msDDL  %a.sql
-  OracleDDL  ${binary_dir}/sql/oraDDL %a.sql
-  Lite3DDL   ${binary_dir}/sql/lt3DDL %a.sql
-  MySqlDDL   ${binary_dir}/sql/myDDL  %a.sql
-  AdoCSCode  ${binary_dir}/sql/cs     %i.cs
-  JavaRWCode ${binary_dir}/sql/java   %iRec.java
+  PostgreDDL ${binary_dir}/sql/pgDDL   %a.sql
+  MSSqlDDL   ${binary_dir}/sql/msDDL   %a.sql
+  OracleDDL  ${binary_dir}/sql/oraDDL  %a.sql
+  Lite3DDL   ${binary_dir}/sql/lt3DDL  %a.sql
+  MySqlDDL   ${binary_dir}/sql/myDDL   %a.sql
+  MySqlCCode ${binary_dir}/code/myc    %l.c
+  AdoCSCode  ${binary_dir}/code/adocs  %a.cs
+  JavaRWCode ${binary_dir}/code/rwjava vlab/%aRec.java vlab/%aTab.java
 
 source
-  ${source_dir}/sql/si/audittrail.si
-  ${source_dir}/sql/si/blobdata.si
-  ${source_dir}/sql/si/comments.si
-  ${source_dir}/sql/si/domain.si
-  ${source_dir}/sql/si/fields.si
-  ${source_dir}/sql/si/fieldse1.si
-  ${source_dir}/sql/si/fieldsearch.si
-  ${source_dir}/sql/si/fileinput.si
-  ${source_dir}/sql/si/fileoutput.si
-  ${source_dir}/sql/si/message.si
-  ${source_dir}/sql/si/persistent.si
-  ${source_dir}/sql/si/queuerecovery.si
-  ${source_dir}/sql/si/reply.si
-  ${source_dir}/sql/si/response.si
-  ${source_dir}/sql/si/routing.si
-  ${source_dir}/sql/si/scriptprocs.si
-  ${source_dir}/sql/si/scripts.si
-  ${source_dir}/sql/si/scriptversion.si
-  ${source_dir}/sql/si/staffconfigname.si
-  ${source_dir}/sql/si/staffprofile.si
-  ${source_dir}/sql/si/staffqueueconfig.si
-  ${source_dir}/sql/si/staffqueueperm.si
-  ${source_dir}/sql/si/streamfields.si
-  ${source_dir}/sql/si/streams.si
-  ${source_dir}/sql/si/summary.si
-  ${source_dir}/sql/si/testmessage.si
-  ${source_dir}/sql/si/testpackmessage.si
-  ${source_dir}/sql/si/testpackpayment.si
-  ${source_dir}/sql/si/testpayment.si
+  ${source_dir}/sql/si/AuditTrail.si
+  ${source_dir}/sql/si/BlobData.si
+  ${source_dir}/sql/si/Comments.si
+  ${source_dir}/sql/si/Domain.si
+  ${source_dir}/sql/si/Fields.si
+  ${source_dir}/sql/si/FieldSearch.si
+  ${source_dir}/sql/si/FieldSearchDef.si
+  ${source_dir}/sql/si/FileInput.si
+  ${source_dir}/sql/si/FileOutput.si
+  ${source_dir}/sql/si/Message.si
+  ${source_dir}/sql/si/Persistent.si
+  ${source_dir}/sql/si/QueueRecovery.si
+  ${source_dir}/sql/si/Reply.si
+  ${source_dir}/sql/si/Response.si
+  ${source_dir}/sql/si/Routing.si
+  ${source_dir}/sql/si/ScriptProcs.si
+  ${source_dir}/sql/si/Scripts.si
+  ${source_dir}/sql/si/ScriptVersion.si
+  ${source_dir}/sql/si/StaffConfigName.si
+  ${source_dir}/sql/si/StaffProfile.si
+  ${source_dir}/sql/si/StaffQueueConfig.si
+  ${source_dir}/sql/si/StaffQueuePerm.si
+  ${source_dir}/sql/si/StreamFields.si
+  ${source_dir}/sql/si/Streams.si
+  ${source_dir}/sql/si/Summary.si
+  ${source_dir}/sql/si/TestMessage.si
+  ${source_dir}/sql/si/TestPackMessage.si
+  ${source_dir}/sql/si/TestpackPayment.si
+  ${source_dir}/sql/si/TestPayment.si

@@ -1,0 +1,25 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   StreamFieldsDef
+SERVER   vlab
+
+TABLE StreamFieldsDef
+    OPTIONS "descr=Stream Fields"
+  Id           Char(16)
+  Name         Char(64)
+  Descr        Char(256) NULL
+  Length       Int
+  Format       Char(256) NULL
+  DefaultValue Char(256) NULL
+  Mandatory    byte     (No=0 Optional=1 Yes=2)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY StreamFieldsDefKey PRIMARY
+  Id
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+

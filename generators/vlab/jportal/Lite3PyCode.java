@@ -248,7 +248,7 @@ public class Lite3PyCode extends Generator
       if (proc.isData)
         continue;
       PlaceHolder holder = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
-      Vector<?> pairs = holder.getPairs();
+      Vector<PlaceHolderPairs> pairs = holder.getPairs();
       String parent;
       if (proc.hasNoData() == true)
         parent = "object";
@@ -265,7 +265,7 @@ public class Lite3PyCode extends Generator
         outData.println("    " + parent + ".__init__(self)");
       }
       outData.println("  def " + proc.lowerFirst() + "(self, connect):");
-      Vector<?> lines = holder.getLines();
+      Vector<String> lines = holder.getLines();
       String command = "_command";
       generateString(proc, command, lines, outData);
       outData.println("    cursor = connect.cursor()");
@@ -315,7 +315,7 @@ public class Lite3PyCode extends Generator
   {
     outData.println("    pass");
   }
-  static void generateString(Proc proc, String name, Vector<?> strings, PrintWriter outData)
+  static void generateString(Proc proc, String name, Vector<String> strings, PrintWriter outData)
   {
     String added = "";
     outData.println("    "+name+" = '''\\");

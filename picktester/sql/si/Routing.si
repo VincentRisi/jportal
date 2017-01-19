@@ -1,0 +1,102 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Routing
+SERVER   vlab
+
+TABLE   Routing
+  Id            BigSequence
+  MessageID     long
+  MessageType   byte       (Message=0 Stream=1 Response=2 Reply=3)
+  Queuefrom     char (16)
+  Queueto       char (16)
+  Comments      char (256)    NULL
+  Method        byte       (Auto=0, Manual=1)
+  USId          char (16)
+  Tmstamp       timestamp
+
+KEY     SYS_C00812
+PRIMARY
+  ID
+
+KEY KEY01
+  MessageID
+
+link Queue (Id)
+   QueueFrom
+
+link Queue (Id)
+   QueueTo
+
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    Exists
+PROC    DeleteAll
+PROC    SelectAll
+PROC    Count
+
+// Used By Front End
+PROC ByID
+INPUT
+  InID          int
+OUTPUT(Single)
+  Id            int
+  MessageID     int
+  MessageType   byte
+  Queuefrom     char (16)
+  Queueto       char (16)
+  Comments      char (256)
+  Method        byte
+  USId          char (16)
+  Tmstamp       timestamp
+sqlcode
+    SELECT
+      Id
+      ,MessageID
+      ,MessageType
+      ,Queuefrom
+      ,Queueto
+      ,Comments
+      ,Method
+      ,USId
+      ,to_char(Tmstamp, 'YYYYMMDDHH24MISS')
+    FROM Routing
+    WHERE
+       Id = :InID
+endcode
+
+// Used By Front End
+PROC ByMessageID
+INPUT
+  InMessageId   int
+  InMessageType byte
+OUTPUT
+  Id            int
+  MessageID     int
+  MessageType   byte
+  Queuefrom     char (16)
+  Queueto       char (16)
+  Comments      char (256)
+  Method        byte
+  USId          char (16)
+  Tmstamp       timestamp
+sqlcode
+    SELECT
+      Id
+      ,MessageID
+      ,MessageType
+      ,Queuefrom
+      ,Queueto
+      ,Comments
+      ,Method
+      ,USId
+      ,to_char(Tmstamp, 'YYYYMMDDHH24MISS')
+    FROM Routing
+    WHERE
+       MessageId = :InMessageId
+       AND MessageType = :InMessageType
+endcode
+
+

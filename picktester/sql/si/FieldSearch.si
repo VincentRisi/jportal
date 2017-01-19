@@ -1,0 +1,26 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   FieldSearch
+SERVER   vlab
+
+TABLE   FieldSearch
+  id            BigSequence
+  Tag           char (256)
+  USId          char (16)
+  Tmstamp       timestamp
+
+KEY     SYS_C00809
+PRIMARY
+// TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  ID
+
+KEY KEY01
+// TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  TAG
+
+PROC    Insert
+PROC    SelectOne
+PROC    Exists
+PROC    SelectAll
+PROC    Count
+

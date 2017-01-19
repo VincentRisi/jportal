@@ -1,0 +1,41 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Staff
+SERVER   vlab
+
+TABLE Staff
+    OPTIONS "descr=Staff" "show=Name"
+  Id           Char(16)
+  Name         Char(64)
+  Description  Char(256)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY StaffKey PRIMARY
+  Id
+
+PROC Insert
+PROC Update
+PROC SelectAll
+PROC SelectOne
+PROC DeleteOne
+
+PROC ListAll
+OUTPUT
+  Id Char(16)
+  Name Char(64)
+  Description Char(256)
+sqlcode
+  SELECT Id
+       , Name
+       , Description
+  FROM Staff
+  ORDER BY Id
+endcode
+
+sqldata
+--start transaction;
+INSERT INTO Staff values ('vlabIDE', 'Super Snooper', 'Main Super user', 'vlabIDE', current_timestamp);
+commit;
+enddata
+

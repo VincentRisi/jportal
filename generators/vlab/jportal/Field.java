@@ -57,6 +57,10 @@ public class Field implements Serializable
   public boolean isSequence;
   /** Indicates the field can be NULL on the database */
   public boolean isNull;
+  /** Indicates the field can is a Literal */
+  public boolean isLiteral;
+  /** Indicates the field is a calculated column on the database */
+  public boolean isCalc;
   /** Indicates the field is INPUT */
   public boolean isIn;
   /** Indicates the field is OUTPUT */
@@ -64,9 +68,7 @@ public class Field implements Serializable
   /** Indicates the field is EXT */
   public boolean isExtStd;
   public boolean isExtStdOut;
-  public boolean isLiteral;
   public String literalName;
-  public boolean isCalc;
   public static final byte
     BLOB       = 1
   , BOOLEAN    = 2

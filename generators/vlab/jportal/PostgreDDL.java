@@ -228,7 +228,22 @@ public class PostgreDDL extends Generator
       String name = (String)link.fields.elementAt(i);
       outData.println(comma + name);
     }
-    outData.println("  ) REFERENCES " + tableOwner + link.name + " MATCH FULL");
+    outData.println("  ) REFERENCES " + tableOwner + link.name);
+    if (link.linkFields.size() > 0)
+    {
+      comma = "  ( ";
+      for (int i = 0; i < link.linkFields.size(); i++, comma = "  , ")
+      {
+        String name = (String)link.linkFields.elementAt(i);
+        outData.println(comma + name);
+      }
+      outData.println("  )");
+    }
+    if (link.isDeleteCascade)
+      outData.println("  ON DELETE CASCADE");
+    if (link.isUpdateCascade)
+      outData.println("  ON UPDATE CASCADE");
+    //outData.println("  MATCH FULL");
   }
   /**
    * @param table
@@ -389,6 +404,8 @@ public class PostgreDDL extends Generator
         return "integer";
       case Field.SEQUENCE:
         return "serial";
+      case Field.BIGSEQUENCE:
+        return "bigserial";
       case Field.LONG:
         return "bigint";
       case Field.CHAR:
@@ -414,7 +431,7 @@ public class PostgreDDL extends Generator
       case Field.MONEY:
         return "numeric(18,2)";
       case Field.USERSTAMP:
-        return "VARCHAR(16)";
+        return "VARCHAR(50)";
       case Field.IDENTITY:
         return "<not supported>";
     }

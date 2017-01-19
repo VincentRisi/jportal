@@ -380,6 +380,9 @@ public class PythonCliCode extends Generator
   private static Vector<String> coverFunctions;
   private static void generateInput(String tableName, String dataStruct, String procName, String parms, PrintWriter outData)
   {
+    String parameters = "";
+    if (parms.length() > 2)
+      parameters = parms.substring(2);
     outData.println("    def _" + procName + "_dict(self, parms):");
     outData.println("        'low level call with dictionary input'");
     outData.println("        for parm in parms: setattr(self, parm, parms[parm])");
@@ -387,7 +390,7 @@ public class PythonCliCode extends Generator
     outData.println("    def " + procName + "_with(self" + parms + "):");
     outData.println("        'with method - it is suggested for maintenance named parameters are used'");
     outData.println("        return self._" + procName + "_dict(vars())");
-    coverFunctions.addElement("def " + tableName + "_" + procName + "(" + parms.substring(2) + "):");
+    coverFunctions.addElement("def " + tableName + "_" + procName + "(" + parameters + "):");
     coverFunctions.addElement("    'It is suggested for maintenance named parameters are used'");
     coverFunctions.addElement("    return " + dataStruct + "()._" + procName + "_dict(vars())");
     coverFunctions.addElement("");

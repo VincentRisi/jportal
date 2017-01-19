@@ -450,11 +450,10 @@ public class AdoCSCode extends Generator
 			}
       else
         outData.println("        wCursor.Parameter(" + i + ", mRec._" + field.useName() + member + tail + ");");
-
+    }
     outData.println("        wCursor.Exec();");
     outData.println("      }");
     outData.println("    }");
-		}
   }
   static void generateReturningProc(Proc proc, String mainName, PrintWriter outData)
   {
@@ -506,7 +505,7 @@ public class AdoCSCode extends Generator
 			}
       else
         outData.println("        wCursor.Parameter(" + i + ", mRec._" + field.useName() + member + tail + ");");
-
+    }
     outData.println("        wCursor.Run();");
     outData.println("        bool wResult = (wCursor.HasReader() && wCursor.Read());");
     outData.println("        if (wResult == true)");
@@ -516,7 +515,6 @@ public class AdoCSCode extends Generator
     outData.println("        return wResult;");
     outData.println("      }");
     outData.println("    }");
-  }
 	}
   static void generateReadOneProc(Proc proc, String mainName, PrintWriter outData)
   {
@@ -674,7 +672,7 @@ public class AdoCSCode extends Generator
     outData.println("      }");
     outData.println("      else return null;");
     outData.println("    }");
-    outData.println("    public void Set" + mainName + "Rec(DataTable table, int row)");
+    outData.println("    public void Set" + upperFirst + "Rec(DataTable table, int row) // used to be " + mainName);
     outData.println("    {");
     outData.println("      mRec = new " + mainName + "Rec();");
     outData.println("      DataRowCollection rows = table.Rows;");

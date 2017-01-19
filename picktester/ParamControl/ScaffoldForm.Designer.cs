@@ -28,7 +28,6 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScaffoldForm));
       this.capturePanel = new System.Windows.Forms.Panel();
       this.buttonPanel = new System.Windows.Forms.Panel();
       this.acceptButton = new System.Windows.Forms.Button();
@@ -43,7 +42,7 @@
       this.capturePanel.Dock = System.Windows.Forms.DockStyle.Fill;
       this.capturePanel.Location = new System.Drawing.Point(0, 0);
       this.capturePanel.Name = "capturePanel";
-      this.capturePanel.Size = new System.Drawing.Size(342, 64);
+      this.capturePanel.Size = new System.Drawing.Size(342, 72);
       this.capturePanel.TabIndex = 2;
       // 
       // buttonPanel
@@ -52,7 +51,7 @@
       this.buttonPanel.Controls.Add(this.panel6);
       this.buttonPanel.Controls.Add(this.cancelButton);
       this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.buttonPanel.Location = new System.Drawing.Point(0, 71);
+      this.buttonPanel.Location = new System.Drawing.Point(0, 79);
       this.buttonPanel.Name = "buttonPanel";
       this.buttonPanel.Size = new System.Drawing.Size(342, 31);
       this.buttonPanel.TabIndex = 3;
@@ -98,7 +97,7 @@
       // panel7
       // 
       this.panel7.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.panel7.Location = new System.Drawing.Point(0, 64);
+      this.panel7.Location = new System.Drawing.Point(0, 72);
       this.panel7.Name = "panel7";
       this.panel7.Size = new System.Drawing.Size(342, 7);
       this.panel7.TabIndex = 6;
@@ -107,12 +106,11 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(342, 102);
+      this.ClientSize = new System.Drawing.Size(342, 110);
       this.ControlBox = false;
       this.Controls.Add(this.capturePanel);
       this.Controls.Add(this.panel7);
       this.Controls.Add(this.buttonPanel);
-      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MaximumSize = new System.Drawing.Size(1024, 768);
       this.MinimumSize = new System.Drawing.Size(350, 110);
       this.Name = "ScaffoldForm";

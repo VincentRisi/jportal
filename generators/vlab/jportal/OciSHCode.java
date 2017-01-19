@@ -969,7 +969,7 @@ public class OciSHCode extends Generator
     case Field.ANSICHAR:
       return ""+(field.length+1);
     case Field.USERSTAMP:
-      return "9";
+      return "51";
     case Field.BLOB:
     case Field.TLOB:
       return ""+(field.length+1);
@@ -1006,7 +1006,7 @@ public class OciSHCode extends Generator
     case Field.ANSICHAR:
       return "char   "+field.useName()+"["+(field.length+1)+"]";
     case Field.USERSTAMP:
-      return "char   "+field.useName()+"[9]";
+      return "char   "+field.useName()+"[51]";
     case Field.BLOB:
     case Field.TLOB:
       return "char   "+field.useName()+"["+(field.length+1)+"]";
@@ -1140,7 +1140,7 @@ public class OciSHCode extends Generator
     case Field.TLOB:
       return field.useName()+", "+(field.length+1);
     case Field.USERSTAMP:
-      return "q_.UserStamp("+field.useName()+"), 9";
+      return "q_.UserStamp("+field.useName()+"), 51";
     case Field.DATE:
       return "q_.Date("+field.useName()+"_OCIDate, "+field.useName()+")";
     case Field.TIME:
@@ -1174,7 +1174,7 @@ public class OciSHCode extends Generator
     case Field.ANSICHAR:
       return "(char*)   (q_.data+"+field.useName().toUpperCase()+"_POS), "+(field.length+1)+", 1";
     case Field.USERSTAMP:
-      return "(char*)   (q_.data+"+field.useName().toUpperCase()+"_POS), 9";
+      return "(char*)   (q_.data+"+field.useName().toUpperCase()+"_POS), 51";
     case Field.BLOB:
     case Field.TLOB:
       return "(char*)   (q_.data+"+field.useName().toUpperCase()+"_POS), "+(field.length+1);
@@ -1212,7 +1212,7 @@ public class OciSHCode extends Generator
     case Field.ANSICHAR:
       return "(char*)   (q_.data+"+field.useName().toUpperCase()+"_POS), "+(field.length+1)+", 1";
     case Field.USERSTAMP:
-      return "(char*)   (q_.data+"+field.useName().toUpperCase()+"_POS), 9";
+      return "(char*)   (q_.data+"+field.useName().toUpperCase()+"_POS), 51";
     case Field.BLOB:
     case Field.TLOB:
       return "(char*)   (q_.data+"+field.useName().toUpperCase()+"_POS), "+(field.length+1);
@@ -1250,7 +1250,7 @@ public class OciSHCode extends Generator
     case Field.ANSICHAR:
       return padder(field.useName()+",",32)+" q_.data+"+field.useName().toUpperCase()+"_POS, "+(field.length+1);
     case Field.USERSTAMP:
-      return padder(field.useName()+",",32)+" q_.data+"+field.useName().toUpperCase()+"_POS, 9";
+      return padder(field.useName()+",",32)+" q_.data+"+field.useName().toUpperCase()+"_POS, 51";
     case Field.BLOB:
     case Field.TLOB:
       return padder(field.useName()+",",32)+" q_.data+"+field.useName().toUpperCase()+"_POS, "+(field.length+1);
@@ -1286,7 +1286,7 @@ public class OciSHCode extends Generator
     case Field.ANSICHAR:
       return padder("q_.data+"+field.useName().toUpperCase()+"_POS,",32)+field.useName()+", "+(field.length+1);
     case Field.USERSTAMP:
-      return padder("q_.data+"+field.useName().toUpperCase()+"_POS,",32)+field.useName()+", 9";
+      return padder("q_.data+"+field.useName().toUpperCase()+"_POS,",32)+field.useName()+", 51";
     case Field.BLOB:
     case Field.TLOB:
       return padder("q_.data+"+field.useName().toUpperCase()+"_POS,",32)+field.useName()+", "+(field.length+1);

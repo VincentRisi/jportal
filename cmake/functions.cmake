@@ -2,28 +2,21 @@ set (jportalJar ${GENERATORS_SOURCE_DIR}/bin/jportal.jar)
 set (crackleJar ${GENERATORS_SOURCE_DIR}/bin/crackle.jar)
 set (pickleJar  ${GENERATORS_SOURCE_DIR}/bin/pickle.jar)
 set (anydbMake ${TOOLS_DIR}/anydbMake.py)
+set (lite3SQL  ${CMAKE_SOURCE_DIR}/pyutils/lite3SQL.py)
 
-if (WIN32) #TBD - use cmake to find them
-  message (STATUS "Setup link or junction for PostgreSQL, Ant and JavaJDK")
-  set (pythonExe c:/python27/python.exe)
-  set (psqlExe "c:/PostgeSQL/bin/psql.exe")
-  set (javaExe "c:/JavaJDK/bin/java.exe")
-  set (jarExe  "c:/JavaJDK/bin/jar.exe")
-  set (antExe  "c:/Ant/bin/ant.exe")
-else ()
-  set (pythonExe /usr/bin/python)
-  set (psqlExe /usr/bin/psql)
-  set (javaExe /usr/bin/java)
-  set (jarExe /usr/bin/jar)
-  set (antExe /usr/bin/ant)
-endif ()
+set (antExe ${ANT_EXECUTABLE})
+set (javaExe ${Java_JAVA_EXECUTABLE})
+set (jarExe ${Java_JAR_EXECUTABLE})
+set (psqlExe ${POSTGRES_EXECUTABLE})
+set (pythonExe ${PYTHON_EXECUTABLE})
+set (mysqlExe ${MYSQL_EXECUTABLE})
 
 function (pathed result ext_dir)
   foreach (arg ${ARGN})
     if (${ARGN} STREQUAL REMOVE)
       file (GLOB remFiles ${ext_dir}/*.*)
       list (LENGTH remFiles count)
-      if (0 LESS count) 
+      if (0 LESS count)
         message (STATUS "Removing all files in ${ext_dir}")
         file (REMOVE ${remFiles})
       endif ()
@@ -54,7 +47,7 @@ function (jportal projectName siFiles)
   endforeach ()
   set (sqlFiles ${sqlFiles} PARENT_SCOPE)
   add_custom_target (${projectName} ALL
-    DEPENDS ${sqlFiles} 
+    DEPENDS ${sqlFiles}
     SOURCES ${siFiles}
   )
 endfunction()
@@ -76,7 +69,7 @@ function (crackle projectName imFile idlDir iiDir ibDir)
     VERBATIM
   )
   add_custom_target (${projectName} ALL
-    DEPENDS ${idlFile} 
+    DEPENDS ${idlFile}
     SOURCES ${imFile} ${ibFiles} ${iiFiles} ${idlFile}
   )
 endfunction()
@@ -89,21 +82,21 @@ function (anydbMake projectName anydbMakeFile targetFiles)
     VERBATIM
   )
   add_custom_target (${projectName} ALL
-    DEPENDS ${targetFiles} 
+    DEPENDS ${targetFiles}
     SOURCES ${anydbMakeFile}
   )
 endfunction ()
 
 function (anydbMake2 projectName anydbMakeFile)
   add_custom_target (${projectName} ALL
-    ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -p ${pickleJar} -v ${anydbMakeFile} 
-    SOURCES ${anydbMakeFile}
+    ${pythonExe} ${anydbMake} -c ${crackleJar} -j ${jportalJar} -p ${pickleJar} -v ${anydbMakeFile}
+    SOURCES ${anydbMakeFile} ${ARGN}
   )
 endfunction ()
 
 function (antMake projectName buildFile)
   add_custom_target (${projectName} ALL
-    ${antExe} -f ${buildFile} 
+    ${antExe} -f ${buildFile}
     SOURCES ${buildFile}
   )
 endfunction ()

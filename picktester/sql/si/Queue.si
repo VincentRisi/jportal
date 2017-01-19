@@ -1,0 +1,91 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Queue
+SERVER   vlab
+
+TABLE Queue
+    OPTIONS "descr=Queues" "show=Name"
+  Id           Char(16)
+  Name         Char(64)
+  Descr        Char(256)
+  InputDriver  Char(16)
+  OutputDriver Char(16)
+  QueueType    Int      (Message=0, Stream=1, Response=2, Reply=3)
+  Priority     byte
+  Status       byte  (Active=0 Inactive=1 MarkForDelete=2)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY QueueKey PRIMARY
+  Id
+
+KEY KEY01
+  Name
+
+LINK QueueType (Id)
+  QueueType
+LINK Drivers (Id)
+  InputDriver
+LINK Drivers (Id)
+  OutputDriver
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+PROC Exists
+PROC SelectAll
+PROC Count
+
+sqldata
+--start transaction;
+INSERT INTO Queue values ('EXCEPTION', 'EXCEPTION'    , 'EXCEPTION', 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('SAFFY-TP' , 'SAFFY-TP'     , 'SAFFY-TP' , 'SAFFYRCV', 'NONE'    , 2, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('SAFFY-FP' , 'SAFFY-FP'     , 'SAFFY-FP' , 'NONE'    , 'SAFFYSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('SWIFT'    , 'SWIFT'        , 'SWIFT'    , 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('TEST1'    , 'TEST!'        , 'TEST!'    , 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('TIBOS-FP' , 'TIBOS-FROMvlab'     , 'TIBOS-FP' , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('TIBOS-TP' , 'TIBOS-TOvlab'     , 'TIBOS-TP' , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('WASTE-FP' , 'WASTE-FP'     , 'WASTE'    , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('WASTE-TP' , 'WASTE-TP'     , 'WASTE'    , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('DT-TP'    , 'DT-TOvlab'  , 'DT'       , 'TCPIN'   , 'ROUTER'  , 0, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('DT-FP'    , 'DT-FROMvlab', 'DT'       , 'TCPOUT'  , 'NONE'    , 3, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('DATE-EXCEPTION'  , 'DATE-EXCEPTION' , 'DATE-EXCEPTION', 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCEPTCHGDEBAMT' , 'NEDPAYMENT1'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCEPTION-TXNTYP', 'NEDPAYMENT2'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCEPTIONCHDEBTY', 'NEDPAYMENT3'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCPTCHGDEBACCCY', 'NEDPAYMENT4'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCPTN-GLDEBBRNO', 'NEDPAYMENT5'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('EXCPTNCHGDEBCCY' , 'NEDPAYMENT6'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('NEDEVOLVE'       , 'NEDEVOLVE'      , 'NEDEVOLVE'     , 'NONE', 'NONE', 1, 17, 1, 'PREDEFINED', current_timestamp);
+COMMIT;
+enddata
+
+
+// used by SaffyRcv,TibosSnd,TcpIn, TcpOut
+PROC Get
+INPUT
+  QueueName       Char(64)
+OUTPUT (Single)
+  Id              Char(16)
+  Descr           Char(256)
+  InputDriver     Char(16)
+  OutputDriver    Char(16)
+  QueueType       Int // (Message=0, Stream=1, Response=2, Reply=3)
+  Priority        byte
+  Status          byte
+sqlcode
+  SELECT
+     Id
+    ,Descr
+    ,InputDriver
+    ,OutputDriver
+    ,QueueType
+    ,Priority
+    ,Status
+  FROM
+     Queue
+  Where
+     Name = :QueueName
+endcode
+

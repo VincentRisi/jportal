@@ -247,7 +247,10 @@ public class MySqlDDL extends Generator
       else
         name = (String)link.linkFields.elementAt(i);
       outData.println(comma + name);
-      outData.println("  )");
+    }
+    outData.println("  )");
+    if (link.isDeleteCascade)
+    {
       outData.println("  ON DELETE CASCADE");
     }
   }
@@ -390,6 +393,8 @@ public class MySqlDDL extends Generator
       for (int j = 0; j < grant.users.size(); j++)
       {
         String user = (String)grant.users.elementAt(j);
+        if (user.toLowerCase().compareTo("public") == 0)
+          continue;
         outData.println("GRANT " + perm + " ON " + on + " TO " + user + ";");
         outData.println();
       }
@@ -410,7 +415,9 @@ public class MySqlDDL extends Generator
       case Field.INT:
         return "integer";
       case Field.SEQUENCE:
-        return "serial";
+        return "int AUTO_INCREMENT UNIQUE";
+      case Field.BIGSEQUENCE:
+        return "bigint AUTO_INCREMENT UNIQUE";
       case Field.LONG:
         return "bigint";
       case Field.CHAR:
@@ -436,7 +443,7 @@ public class MySqlDDL extends Generator
       case Field.MONEY:
         return "decimal";
       case Field.USERSTAMP:
-        return "VARCHAR(16)";
+        return "VARCHAR(50)";
       case Field.IDENTITY:
         return "<not supported>";
     }

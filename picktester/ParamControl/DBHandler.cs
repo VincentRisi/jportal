@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Data;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using vlab.jportal;
 
 namespace vlab.ParamControl
 {
@@ -236,6 +235,7 @@ namespace vlab.ParamControl
     public int noFields;
     public int maxRows;
     public string Lookup;
+    public string Limit;
     public string UsId;
     public string TmStamp;
     public TPCField[] fields;
@@ -251,6 +251,7 @@ namespace vlab.ParamControl
       noRows = 32;
       noFields = 0;
       maxRows = 0;
+      Limit = "";
       Lookup = "";
       UsId = "UsId";
       TmStamp = "TmStamp";
@@ -272,12 +273,28 @@ namespace vlab.ParamControl
       cursor.Run();
       DataTable table = new DataTable();
       table.Load(cursor.Reader);
-      Decimal d = (Decimal)table.Rows[0][0];
+#if do_it_with_oracle
+      decimal d = (decimal)table.Rows[0][0];
+#elif do_it_with_lite3
+      long d = (long)table.Rows[0][0];
+#elif do_it_with_mssql
+      int d = (int)table.Rows[0][0];
+#elif do_it_with_mysql
+      int d = (int)table.Rows[0][0];
+#elif do_it_with_postgres
+      long d = (long)table.Rows[0][0];
+#endif
       return int.Parse(d.ToString());
     }
     public void GetTable(string tableName, TPCField[] allFields, int offsetFields, int noFields, TPCIndexField[] orderFields, int offsetOrderFields, int noOrderFields)
     {
       string query = "SELECT";
+#if do_it_with_mssql
+      if (Limit.Length > 0)
+        query += " " + Limit;
+      else
+        query += " TOP 1000";
+#endif
       string comma = " ";
       fields = new TPCField[noFields];
       for (int i=0; i<noFields; i++) 
@@ -291,8 +308,10 @@ namespace vlab.ParamControl
       query += comma + UsId + ", " + TmStamp + " FROM " + tableName;
       if (Lookup.Length > 0)
         query += " " + Lookup;
-      else
+#if do_it_with_oracle
+      if (Lookup.Length == 0)
         query += " WHERE ROWNUM <= 1000";
+#endif
       if (noOrderFields > 0)
       {
         string orderBy = " ORDER BY";
@@ -306,6 +325,12 @@ namespace vlab.ParamControl
         }
         query += orderBy;
       }
+#if do_it_with_lite3
+      if (Limit.Length > 0)
+        query += " " + Limit;
+      else
+        query += " LIMIT 1000";
+#endif
       cursor.Format(query, 0);
       if (ShowSQL)
         LogDebug = query;

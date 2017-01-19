@@ -1,0 +1,53 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   StaffQueuePerm
+SERVER   vlab
+
+TABLE StaffQueuePerm
+    OPTIONS "descr=Staff Queue Permissions"
+  StaffId      Char(16)
+  QueueId      Char(16)
+  Status       byte (ViewOnly=0 ViewRoute=1)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY StaffQueuePermKey PRIMARY
+  StaffId
+  QueueId
+
+LINK Queue (Id)
+  QueueId
+
+LINK Staff (Id)
+  StaffId
+
+PROC Insert
+PROC DeleteOne
+
+Proc GetAll
+INPUT
+  InStaffId     char(16)
+OUTPUT
+  QueueId       char(16)
+  Status        byte
+sqlcode
+   Select QueueId
+   ,Status
+   From StaffQueuePerm
+   Where StaffId = :InStaffId
+endcode
+
+PROC UpdStatus
+INPUT
+   InStaffId   char(16)
+   InQueueId     char(16)
+   InStatus    byte
+sqlcode
+   UPDATE
+     StaffQueuePerm
+   Set
+     Status = :InStatus
+   Where
+     StaffId = :InStaffId and
+     QueueId = :InQueueId
+endcode

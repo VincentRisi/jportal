@@ -432,6 +432,10 @@ public class GenParmSi
       if (asSequence)
         return "Sequence"+x;
       return "Int"+x;
+    case Field.BIGSEQUENCE:
+      if (asSequence)
+        return "BigSequence"+x;
+      return "Long"+x;
     case Field.BOOLEAN:
     case Field.BYTE:
     return "TinyInt"+x;
@@ -479,6 +483,7 @@ public class GenParmSi
     case Field.INT:
     case Field.LONG:
     case Field.SEQUENCE:
+    case Field.BIGSEQUENCE:
     case Field.SHORT:
     case Field.CHAR:
     case Field.USERSTAMP:

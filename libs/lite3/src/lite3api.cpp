@@ -1,7 +1,7 @@
 #include "lite3api.h"
 
-enum 
-{ NOT_IN_ERROR = 0  
+enum
+{ NOT_IN_ERROR = 0
 , CONNECT_NOT_INITIALISED = 1001
 , QUERY_NOT_ENOUGH_DYNAMIC_SPACE
 , QUERY_NOT_INITIALISED
@@ -15,7 +15,7 @@ Lite3Connector::Lite3Connector()
 
 Lite3Connector::~Lite3Connector()
 {
-  if (conn) 
+  if (conn)
     sqlite3_close(conn);
 }
 
@@ -64,7 +64,7 @@ void Lite3Connector::rollback()
   rollback.close();
 }
 
-Lite3Query::Lite3Query(Lite3Connector *connector) 
+Lite3Query::Lite3Query(Lite3Connector *connector)
 {
   if (connector != 0 && connector->conn == 0)
     throw Lite3Exception(CONNECT_NOT_INITIALISED, "Connection not initialised", LITE3_MARK);
@@ -74,16 +74,16 @@ Lite3Query::Lite3Query(Lite3Connector *connector)
   stmt = 0;
 }
 
-Lite3Query::~Lite3Query() 
+Lite3Query::~Lite3Query()
 {
-  if (command != 0) 
-    delete [] command; 
-  if (stmt != 0) 
+  if (command != 0)
+    delete [] command;
+  if (stmt != 0)
     sqlite3_finalize(stmt);
 }
 
 /**
- * This just sets up the command string - exec does the prepare and 
+ * This just sets up the command string - exec does the prepare and
  * execute.
  */
 void Lite3Query::init(const char *command, int dynSize)
@@ -111,7 +111,7 @@ void Lite3Query::dynamic(char *key, char *value)
     if (&p[len+vlen]-command > commandSize)
       throw Lite3Exception(QUERY_NOT_ENOUGH_DYNAMIC_SPACE, "Not enough space for dynamic data", LITE3_MARK);
     memcpy(p, q, len);
-    for (i = len; i >= 0; i--) 
+    for (i = len; i >= 0; i--)
       p[i+vlen] = p[i];
     memcpy(p, value, vlen);
   }
@@ -205,7 +205,14 @@ void Lite3Query::bindDate(int no, char *data, int len, int *null)
   if (null != 0 && *null != 0)
     rc = sqlite3_bind_null(stmt, no);
   else
-    rc = sqlite3_bind_text(stmt, no, data, len, 0);
+  {
+    char work[11];
+    strncpy(work, "YYYY-MM-DD");
+    if (len >= 8) memcpy(work, data, 4);
+    if (len >= 8) memcpy(work+5, data+4, 2);
+    if (len >= 8) memcpy(work+8, data+6, 2);
+    rc = sqlite3_bind_text(stmt, no, work, 11, 0);
+  }
   if (rc != SQLITE_OK)
     throw Lite3Exception(rc, "Bind of date failed", LITE3_MARK);
 }
@@ -217,7 +224,14 @@ void Lite3Query::bindTime(int no, char *data, int len, int *null)
   if (null != 0 && *null != 0)
     rc = sqlite3_bind_null(stmt, no);
   else
-    rc = sqlite3_bind_text(stmt, no, data, len, 0);
+  {
+    char work[9];
+    strncpy(work, "HH:MI:SS");
+    if (len >= 6) memcpy(work, data, 2);
+    if (len >= 6) memcpy(work+3, data+2, 2);
+    if (len >= 6) memcpy(work+6, data+4, 2);
+    rc = sqlite3_bind_text(stmt, no, work, 9, 0);
+  }
   if (rc != SQLITE_OK)
     throw Lite3Exception(rc, "Bind of time failed", LITE3_MARK);
 }
@@ -229,7 +243,17 @@ void Lite3Query::bindDateTime(int no, char *data, int len, int *null)
   if (null != 0 && *null != 0)
     rc = sqlite3_bind_null(stmt, no);
   else
-    rc = sqlite3_bind_text(stmt, no, data, len, 0);
+  {
+    char work[20];
+    strncpy(work, "YYYY-MM-DD HH:MI:SS");
+    if (len >= 14) memcpy(work, data, 4);
+    if (len >= 14) memcpy(work+5, data+4, 2);
+    if (len >= 14) memcpy(work+8, data+6, 2);
+    if (len >= 14) memcpy(work+11, data+8, 2);
+    if (len >= 14) memcpy(work+14, data+10, 2);
+    if (len >= 14) memcpy(work+17, data+12, 2);
+    rc = sqlite3_bind_text(stmt, no, work, 20, 0);
+  }
   if (rc != SQLITE_OK)
     throw Lite3Exception(rc, "Bind of date time failed", LITE3_MARK);
 }
@@ -241,7 +265,17 @@ void Lite3Query::bindTimeStamp(int no, char *data, int len, int *null)
   if (null != 0 && *null != 0)
     rc = sqlite3_bind_null(stmt, no);
   else
-    rc = sqlite3_bind_text(stmt, no, data, len, 0);
+  {
+    char work[20];
+    strncpy(work, "YYYY-MM-DD HH:MI:SS");
+    if (len >= 14) memcpy(work, data, 4);
+    if (len >= 14) memcpy(work+5, data+4, 2);
+    if (len >= 14) memcpy(work+8, data+6, 2);
+    if (len >= 14) memcpy(work+11, data+8, 2);
+    if (len >= 14) memcpy(work+14, data+10, 2);
+    if (len >= 14) memcpy(work+17, data+12, 2);
+    rc = sqlite3_bind_text(stmt, no, work, 20, 0);
+  }
   if (rc != SQLITE_OK)
     throw Lite3Exception(rc, "Bind of time stamp failed", LITE3_MARK);
 }
@@ -354,7 +388,9 @@ void Lite3Query::getDate(int no, char *data, int len, int *null)
   if (rc != SQLITE_TEXT)
     throw Lite3Exception(rc, "Get of type not text", LITE3_MARK);
   const unsigned char* value = sqlite3_column_text(stmt, no);
-  strncpy(data, (const char*)value, len);
+  if (len >= 4) strncpy(data, (const char*)value, 4);
+  if (len >= 6) strncpy(data+4, (const char*)value+5, 2);
+  if (len >= 8) strncpy(data+6, (const char*)value+8, 2);
   data[len] = 0;
 }
 
@@ -370,9 +406,14 @@ void Lite3Query::getTime(int no, char *data, int len, int *null)
     throw Lite3Exception(rc, "Get of type not text", LITE3_MARK);
   const unsigned char* value = sqlite3_column_text(stmt, no);
   strncpy(data, (const char*)value, len);
+  if (len >= 2) strncpy(data+8, (const char*)value+11, 2);
+  if (len >= 4) strncpy(data+10, (const char*)value+14, 2);
+  if (len >= 6) strncpy(data+12, (const char*)value+17, 2);
   data[len] = 0;
 }
 
+// YYYY-MM-DD hh:mm:ss.sss
+// 01234567890123456789012
 void Lite3Query::getDateTime(int no, char *data, int len, int *null)
 {
   int rc;
@@ -384,7 +425,12 @@ void Lite3Query::getDateTime(int no, char *data, int len, int *null)
   if (rc != SQLITE_TEXT)
     throw Lite3Exception(rc, "Get of type not text", LITE3_MARK);
   const unsigned char* value = sqlite3_column_text(stmt, no);
-  strncpy(data, (const char*)value, len);
+  if (len >= 4) strncpy(data, (const char*)value, 4);
+  if (len >= 6) strncpy(data+4, (const char*)value+5, 2);
+  if (len >= 8) strncpy(data+6, (const char*)value+8, 2);
+  if (len >= 10) strncpy(data+8, (const char*)value+11, 2);
+  if (len >= 12) strncpy(data+10, (const char*)value+14, 2);
+  if (len >= 14) strncpy(data+12, (const char*)value+17, 2);
   data[len] = 0;
 }
 
@@ -399,7 +445,12 @@ void Lite3Query::getTimeStamp(int no, char *data, int len, int *null)
   if (rc != SQLITE_TEXT)
     throw Lite3Exception(rc, "Get of type not text", LITE3_MARK);
   const unsigned char* value = sqlite3_column_text(stmt, no);
-  strncpy(data, (const char*)value, len);
+  if (len >= 4) strncpy(data, (const char*)value, 4);
+  if (len >= 6) strncpy(data+4, (const char*)value+5, 2);
+  if (len >= 8) strncpy(data+6, (const char*)value+8, 2);
+  if (len >= 10) strncpy(data+8, (const char*)value+11, 2);
+  if (len >= 12) strncpy(data+10, (const char*)value+14, 2);
+  if (len >= 14) strncpy(data+12, (const char*)value+17, 2);
   data[len] = 0;
 }
 
@@ -435,4 +486,3 @@ void Lite3Query::close()
     throw Lite3Exception(rc, "Finalize of query statement error", LITE3_MARK);
   stmt = 0;
 }
-

@@ -1,0 +1,398 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for Pickle.jj </TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for Pickle.jj </H1>
+<H2 ALIGN=CENTER>TOKENS</H2>
+<TABLE>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SKIP : {
+" "
+| "\t"
+| "\n"
+| "\r"
+| ","
+| &lt;"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/"&gt;
+| &lt;"//" (~["\n","\r"])* ("\n" | "\r\n")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN [IGNORE_CASE] : {
+&lt;ALL: "all"&gt;
+| &lt;APPLICATION: "application"&gt;
+| &lt;BIGSEQUENCE: "bigsequence"&gt;
+| &lt;BOOLEAN: "boolean"&gt;
+| &lt;BYTE: "byte" | "tinyint"&gt;
+| &lt;CASCADE: "cascade"&gt;
+| &lt;CHAR: "char" | "ansichar"&gt;
+| &lt;CHECK: "check"&gt;
+| &lt;DATE: "date"&gt;
+| &lt;DATETIME: "datetime"&gt;
+| &lt;DELETE: "delete"&gt;
+| &lt;DOUBLE: "float" | "double"&gt;
+| &lt;FLAGS: "flags"&gt;
+| &lt;INIT: "__init__"&gt;
+| &lt;INT: "int" | "integer" | "identity"&gt;
+| &lt;KEY: "key"&gt;
+| &lt;LINK: "link"&gt;
+| &lt;LONG: "long"&gt;
+| &lt;MONEY: "money"&gt;
+| &lt;NOT: "not"&gt;
+| &lt;NODOMAIN: "nodomain"&gt;
+| &lt;NULL: "null"&gt;
+| &lt;OPTIONS: "options"&gt;
+| &lt;ORDER: "order" | "lookup"&gt;
+| &lt;OTHER: "other"&gt;
+| &lt;OUTPUT: "output"&gt;
+| &lt;PASSWORD: "password"&gt;
+| &lt;PRIMARY: "primary"&gt;
+| &lt;REGISTRY: "registry"&gt;
+| &lt;RELATION: "relation"&gt;
+| &lt;SEQUENCE: "sequence"&gt;
+| &lt;SERVER: "server"&gt;
+| &lt;SHORT: "short" | "smallint"&gt;
+| &lt;SHOW: "show"&gt;
+| &lt;SIZES: "sizes"&gt;
+| &lt;SUPPLIED: "supplied"&gt;
+| &lt;TABLE: "table"&gt;
+| &lt;TIME: "time"&gt;
+| &lt;TIMESTAMP: "timestamp"&gt;
+| &lt;UNIQUE: "unique"&gt;
+| &lt;UPPERCASE: "uppercase" | "upper"&gt;
+| &lt;USE: "use"&gt;
+| &lt;USER: "user"&gt;
+| &lt;USERSTAMP: "userstamp"&gt;
+| &lt;VALIDATE: "validate"&gt;
+| &lt;VALUE: "value"&gt;
+| &lt;VERSION: "version"&gt;
+| &lt;VIEWONLY: "viewonly"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;COMMENT: "**" (~["\n","\r"])* ("\n" | "\r\n")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;ATSIGN: "@"&gt;
+| &lt;COLON: ":"&gt;
+| &lt;LEFTPAREN: "("&gt;
+| &lt;RIGHTPAREN: ")"&gt;
+| &lt;LEFTBRACE: "{"&gt;
+| &lt;RIGHTBRACE: "}"&gt;
+| &lt;SLASH: "/"&gt;
+| &lt;ASSIGN: "="&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;NUMBER: ["0"-"9"] (["0"-"9"])*&gt;
+| &lt;FLOATING: (["0"-"9"])+ "." (["0"-"9"])* (&lt;EXPONENT&gt;)? (["f","F","d","D"])? | "." (["0"-"9"])+ (&lt;EXPONENT&gt;)? (["f","F","d","D"])? | (["0"-"9"])+ &lt;EXPONENT&gt; (["f","F","d","D"])? | (["0"-"9"])+ (&lt;EXPONENT&gt;)? ["f","F","d","D"]&gt;
+| &lt;#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+&gt;
+| &lt;STRING: &lt;DQUOTEDS&gt; | &lt;SQUOTEDS&gt;&gt;
+| &lt;#DQUOTEDS: "\"" (~["\"","\\"] | "\\" (["\\","\"","\'"])?)* "\""&gt;
+| &lt;#SQUOTEDS: "\'" (~["\'","\\"] | "\\" (["\\","\"","\'"])?)* "\'"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;IDENTIFIER: &lt;LETTER&gt; (&lt;LETTER&gt; | &lt;DIGIT&gt;)*&gt;
+| &lt;LIDENTIFIER: ("l" | "L") "\'" &lt;LETTER&gt; (&lt;LETTER&gt; | &lt;DIGIT&gt;)* "\'"&gt;
+| &lt;#LETTER: ["a"-"z","_","A"-"Z"]&gt;
+| &lt;#DIGIT: ["0"-"9","#","$"]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SPECIAL [IGNORE_CASE] : {
+&lt;CODE: "--code--" (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt; : CODESTATE
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;CODESTATE&gt; SPECIAL [IGNORE_CASE] : {
+&lt;ENDCODE: (" " | "\t")* "--endcode--" (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt; : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;CODESTATE&gt; TOKEN : {
+&lt;CODELINE: (~["\n","\r"])* ("\n" | "\r" | "\r\n")&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+</TABLE>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// Parser starting point
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">pickStart</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;APPLICATION&gt; <A HREF="#prod2">pickIdent</A> ( <A HREF="#prod3">pickString</A> )? ( &lt;OUTPUT&gt; <A HREF="#prod4">pickIdentOrString</A> | &lt;SERVER&gt; <A HREF="#prod4">pickIdentOrString</A> | &lt;USER&gt; <A HREF="#prod4">pickIdentOrString</A> | &lt;PASSWORD&gt; <A HREF="#prod4">pickIdentOrString</A> | &lt;REGISTRY&gt; <A HREF="#prod4">pickIdentOrString</A> | &lt;VERSION&gt; <A HREF="#prod4">pickIdentOrString</A> | &lt;FLAGS&gt; ( <A HREF="#prod4">pickIdentOrString</A> )+ )+ ( &lt;SUPPLIED&gt; <A HREF="#prod5">pickSupplieds</A> )? ( &lt;SIZES&gt; &lt;LEFTPAREN&gt; <A HREF="#prod6">pickNumber</A> <A HREF="#prod6">pickNumber</A> &lt;RIGHTPAREN&gt; )? ( <A HREF="#prod7">pickTable</A> | <A HREF="#prod8">pickRelation</A> | <A HREF="#prod9">pickValidate</A> )+ &lt;EOF&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">pickSupplieds</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod10">pickField</A> )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">pickIdentOrString</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">pickIdent</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// Identifiers may be DEF keywords if they are escaped using L'x'
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">pickIdent</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LIDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">pickValidate</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VALIDATE&gt; ( &lt;ALL&gt; | &lt;OTHER&gt; | &lt;INIT&gt; | <A HREF="#prod2">pickIdent</A> ) ( &lt;CODELINE&gt; )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">pickTable</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TABLE&gt; <A HREF="#prod2">pickIdent</A> ( <A HREF="#prod3">pickString</A> )? ( <A HREF="#prod11">pickAlias</A> )? ( &lt;VIEWONLY&gt; | &lt;NODOMAIN&gt; | &lt;NULL&gt; | &lt;CHECK&gt; <A HREF="#prod3">pickString</A> )* ( <A HREF="#prod12">pickComment</A> )* ( &lt;OPTIONS&gt; ( <A HREF="#prod3">pickString</A> )+ )* ( <A HREF="#prod13">pickFields</A> | <A HREF="#prod14">pickUse</A> ) ( <A HREF="#prod15">pickValues</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">pickUse</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;USE&gt; &lt;LEFTPAREN&gt; ( &lt;CHAR&gt; ( <A HREF="#prod16">pickCharsize</A> )? | &lt;SEQUENCE&gt; | &lt;BIGSEQUENCE&gt; | &lt;INT&gt; | &lt;LONG&gt; ) &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">pickFields</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod10">pickField</A> )+ ( &lt;ORDER&gt; &lt;LEFTPAREN&gt; ( <A HREF="#prod2">pickIdent</A> ( &lt;SLASH&gt; )? )+ &lt;RIGHTPAREN&gt; )? ( &lt;SHOW&gt; &lt;LEFTPAREN&gt; ( <A HREF="#prod2">pickIdent</A> )+ &lt;RIGHTPAREN&gt; )? ( &lt;LINK&gt; <A HREF="#prod2">pickIdent</A> &lt;LEFTPAREN&gt; ( <A HREF="#prod2">pickIdent</A> )+ &lt;RIGHTPAREN&gt; ( ( &lt;DELETE&gt; )? &lt;CASCADE&gt; )? | &lt;KEY&gt; <A HREF="#prod2">pickIdent</A> &lt;LEFTPAREN&gt; ( <A HREF="#prod2">pickIdent</A> )+ &lt;RIGHTPAREN&gt; ( &lt;UNIQUE&gt; | &lt;PRIMARY&gt; )? )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">pickField</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod2">pickIdent</A> ( <A HREF="#prod11">pickAlias</A> )? <A HREF="#prod17">pickDatatype</A> ( <A HREF="#prod12">pickComment</A> | &lt;NOT&gt; &lt;NULL&gt; | &lt;NULL&gt; | &lt;UPPERCASE&gt; | &lt;CHECK&gt; <A HREF="#prod3">pickString</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">pickAlias</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; <A HREF="#prod2">pickIdent</A> &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">pickDatatype</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BOOLEAN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BYTE&gt; ( <A HREF="#prod18">pickEnums</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CHAR&gt; ( <A HREF="#prod16">pickCharsize</A> )? ( <A HREF="#prod19">pickCharEnums</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SHORT&gt; ( <A HREF="#prod18">pickEnums</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INT&gt; ( <A HREF="#prod18">pickEnums</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SEQUENCE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BIGSEQUENCE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LONG&gt; ( <A HREF="#prod18">pickEnums</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DATE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DATETIME&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TIME&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TIMESTAMP&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;USERSTAMP&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DOUBLE&gt; ( <A HREF="#prod20">pickFloatsize</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">pickEnums</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; ( <A HREF="#prod2">pickIdent</A> &lt;ASSIGN&gt; <A HREF="#prod6">pickNumber</A> )+ &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">pickCharEnums</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTBRACE&gt; ( <A HREF="#prod2">pickIdent</A> &lt;ASSIGN&gt; <A HREF="#prod6">pickNumber</A> )+ &lt;RIGHTBRACE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">pickFloatsize</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LEFTPAREN&gt; <A HREF="#prod6">pickNumber</A> <A HREF="#prod6">pickNumber</A> &lt;RIGHTPAREN&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">pickCharsize</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;LEFTPAREN&gt; <A HREF="#prod6">pickNumber</A> &lt;RIGHTPAREN&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod6">pickNumber</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">pickNumber</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;NUMBER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">pickValues</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;VALUE&gt; ( &lt;LEFTPAREN&gt; <A HREF="#prod21">pickValue</A> ( <A HREF="#prod21">pickValue</A> )+ &lt;RIGHTPAREN&gt; )+ )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">pickValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod22">pickNIS</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">pickNIS</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;NUMBER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FLOATING&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod4">pickIdentOrString</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">pickRelation</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;RELATION&gt; <A HREF="#prod2">pickIdent</A> ( <A HREF="#prod3">pickString</A> )? ( <A HREF="#prod11">pickAlias</A> )? ( <A HREF="#prod12">pickComment</A> )* <A HREF="#prod2">pickIdent</A> ( &lt;COLON&gt; <A HREF="#prod2">pickIdent</A> )? &lt;LEFTPAREN&gt; ( <A HREF="#prod2">pickIdent</A> )+ &lt;RIGHTPAREN&gt; <A HREF="#prod2">pickIdent</A> ( &lt;COLON&gt; <A HREF="#prod2">pickIdent</A> )? &lt;LEFTPAREN&gt; ( <A HREF="#prod2">pickIdent</A> )+ &lt;RIGHTPAREN&gt; ( <A HREF="#prod15">pickValues</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">pickString</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">pickComment</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;COMMENT&gt;</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

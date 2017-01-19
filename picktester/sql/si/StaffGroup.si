@@ -1,0 +1,93 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   StaffGroup
+SERVER   vlab
+
+TABLE StaffGroup
+    OPTIONS "lookup=StaffId GroupId" "descr=Staff Group Relationship"
+  StaffId      Char(16)
+  GroupId      Char(16)
+  USId         Char(16)
+  TmStamp      timestamp
+
+KEY StaffGroupKey PRIMARY
+  StaffId
+  GroupId
+
+LINK Staff (Id)
+  StaffId
+
+LINK Grps (GroupId)
+  GroupId
+
+PROC Insert
+PROC DeleteOne
+
+PROC InsertStaff
+INPUT
+  GroupId      Char(16)
+  USId         Char(16)
+sqlcode
+  insert into StaffGroup
+    (select Id, :GroupId, :USId, current_timestamp
+     from Staff
+     where Id in ($StaffList(40960)))
+endcode
+
+PROC DeleteStaff
+INPUT
+  GroupId      Char(16)
+sqlcode
+  delete from ScriptGroup
+  where GroupId = :GroupId
+  and StaffId in ($StaffList(40960))
+endcode
+
+PROC InsertGroups
+INPUT
+  StaffId      Char(16)
+  USId         Char(16)
+sqlcode
+  insert into StaffGroup
+    (select :StaffId, GroupId, :USId, current_timestamp
+     from Grps
+     where GroupId in ($GroupList(40960)))
+endcode
+
+PROC DeleteGroups
+INPUT
+  StaffId      Char(16)
+sqlcode
+  delete from ScriptGroup
+  where GroupId in ($GroupList(40960))
+  and StaffId = :StaffId
+endcode
+
+PROC List
+INPUT
+  StaffId      Char(16)
+OUTPUT
+  GroupId      Char(16)
+sqlcode
+  select GroupId from StaffGroup where StaffId = :StaffId
+endcode
+
+PROC ListAll
+OUTPUT
+  StaffId Char(16)
+  GroupId Char(16)
+sqlcode
+  SELECT StaffId
+       , GroupId
+  FROM StaffGroup
+  ORDER BY StaffId
+         , GroupId
+endcode
+
+sqldata
+--start transaction;
+INSERT INTO StaffGroup values ('vlabIDE', 'INTRSYS', 'vlabIDE', current_timestamp);
+INSERT INTO StaffGroup select Staff.ID, 'NEDPAYM', 'vlabIDE', current_timestamp from Staff;
+INSERT INTO StaffGroup select Staff.ID, 'ZARPAYM', 'vlabIDE', current_timestamp from Staff;
+commit;
+enddata

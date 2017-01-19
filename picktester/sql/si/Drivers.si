@@ -1,0 +1,32 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Drivers
+SERVER   vlab
+
+TABLE Drivers
+    OPTIONS "descr=Input and Output vlab Drivers" "show=Descr"
+  Id      Char(16)
+  Descr   Char(256)
+  Status  byte    (Active=0 Inactive=1 MarkForDelete=2)
+  USId    Char(16)
+  TmStamp timestamp
+
+KEY DriverKey PRIMARY
+  Id
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+
+sqldata
+--start transaction;
+INSERT INTO Drivers VALUES ('TCPIN'   , 'TCPIN'   , 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('NONE'    , 'NONE'    , 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('TCPOUT'  , 'TCPOUT'  , 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('ROUTER'  , 'ROUTER'  , 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('SAFFYSND', 'SAFFYSND', 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('SAFFYRCV', 'SAFFYRCV', 0, 'PreDefined', current_timestamp);
+INSERT INTO Drivers VALUES ('TIBOSSND', 'TIBOSSND', 0, 'PreDefined', current_timestamp);
+commit;
+enddata

@@ -9,7 +9,7 @@
 /// which accompanies this distribution and is available at
 /// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
-///    Vincent Risi
+///    Vincent Risi, Hennie Hammann
 ///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 package vlab.jportal;
@@ -140,4 +140,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=637c9e6e20c112c2e3af0298b3a2071b (do not edit this line) */
+/* JavaCC - OriginalChecksum=8b4e6687fc0e2ed7ad766cd81d758c5b (do not edit this line) */

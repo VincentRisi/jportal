@@ -1,0 +1,68 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Comments
+SERVER   vlab
+
+TABLE   Comments
+  ID            BigSequence
+  MessageID     long
+  Text          char(1024)
+  USId          char (16)
+  Tmstamp       timestamp
+
+KEY     SYS_C00810
+PRIMARY
+// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  ID
+
+KEY  KEY01
+// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  MessageID
+
+link Message (Id)
+   MessageID
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    Exists
+PROC    DeleteAll
+PROC    SelectAll
+PROC    Count
+
+PROC ByMsgNo
+INPUT
+  InMessageID  int
+OUTPUT
+  ID           int
+  Text         char(1024)
+  USId         char (16)
+  Tmstamp      timestamp
+sqlcode
+  SELECT ID
+   ,Text
+   ,USId
+   ,to_char(Tmstamp, 'YYYYMMDDHH24MISS')
+    FROM Comments
+      WHERE MessageID = :InMessageID
+endcode
+
+PROC ByID
+INPUT
+  InID         int
+OUTPUT(Single)
+  MessageID    int
+  Text         char(1024)
+  USId         char (16)
+  Tmstamp      timestamp
+sqlcode
+  SELECT MessageID
+   ,Text
+   ,USId
+   ,to_char(Tmstamp, 'YYYYMMDDHH24MISS')
+    FROM Comments
+      WHERE ID = :InID
+endcode
+
+

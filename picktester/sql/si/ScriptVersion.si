@@ -1,0 +1,47 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   ScriptVersion
+SERVER   vlab
+
+TABLE ScriptVersion
+  Name         char(64)
+  VersionType  byte    (Test=0 QA=1 Live=2 Expired=3)
+  Version      short
+  IDELock      short
+  USId         char (16)
+  Tmstamp      timestamp
+
+KEY Key11 PRIMARY
+  Name
+  VersionType
+
+KEY Key12 UNIQUE
+  Name
+  Version
+
+PROC Insert
+PROC SelectOne
+PROC SelectAll
+PROC Update
+PROC DeleteOne
+
+//sqldata
+//  --start transaction;
+//  INSERT INTO ScriptGroup
+//    select distinct name, 'INTRSYS', 0, 'vlabIDE', current_timestamp
+//     from ScriptVersion
+//     where name like 'DB_%'
+//     or name like 'SYS_%';
+//  INSERT INTO ScriptGroup
+//    select distinct name, 'NEDPAYM', 0, 'vlabIDE', current_timestamp
+//     from ScriptVersion
+//     where name not like 'DB_%'
+//     and name not like 'SYS_%'
+//     and name not like 'ZAR_%';
+//  INSERT INTO ScriptGroup
+//    select distinct name, 'ZARPAYM', 0, 'vlabIDE', current_timestamp
+//     from ScriptVersion
+//     where name like 'ZAR_%';
+//  commit;
+//enddata
+

@@ -1,0 +1,31 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   AuditTrail
+SERVER   vlab
+
+TABLE   AuditTrail
+  ID            bigsequence
+  MessageID     long
+  Action        byte (StatusChange=1 Comment=2)
+  FromStatus    byte (None=0 Pending=1 Complete=2 Error=3)
+  ToStatus      byte (None=0 Pending=1 Complete=2 Error=3)
+  Comments      char (256) null
+  USId          char (16)
+  Tmstamp       timestamp
+
+KEY     SYS_C00811
+PRIMARY
+// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  ID
+
+link Message (Id)
+  MessageID
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    Exists
+PROC    SelectAll
+PROC    Count
+

@@ -1,0 +1,25 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   StreamFieldMsgRel
+SERVER   vlab
+
+TABLE StreamFieldMsgRel
+    OPTIONS "descr=Stream Message Field Relations"
+  FieldId     Char(16)
+  StreamId    Char(16)
+  USId        Char(16)
+  TmStamp     TimeStamp
+
+KEY StreamFieldMsgRelKey PRIMARY
+  FieldId
+  StreamId
+
+LINK StreamFieldsDef (Id)
+  FieldId
+
+LINK StreamMessageFormat (Id)
+  StreamId
+
+PROC Insert
+PROC DeleteOne
+

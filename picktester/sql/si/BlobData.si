@@ -1,0 +1,78 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   BlobData
+SERVER   vlab
+
+TABLE BlobData
+  MessageId    long
+  Id           long
+  BlobType     int (Message=0 Streams=1 Response=2 Reply=3)
+  MessageData  blob(16000)
+  USId         char(16)
+  TmStamp      timestamp
+
+KEY     SYS_C00822
+PRIMARY
+// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  MessageId
+  ID
+  BlobType
+
+Link Message (Id)
+  MessageId
+
+Proc Insert
+
+// used by BlobData
+PROC GetId
+INPUT
+  ExtractDate  Date
+OUTPUT
+  Id            Int
+sqlcode
+  SELECT
+     Id
+  FROM
+     Message
+  Where
+     DateCreated < to_date(:ExtractDate, 'YYYYMMDD')
+  ORDER BY Id
+endcode
+
+
+// used by BlobData
+PROC GetMsgData
+INPUT
+  Id            int
+OUTPUT (single)
+  MessageLen    short
+  MessageData   blob  (16000)
+sqlcode
+   SELECT
+     MessageLen
+    ,MessageData
+   FROM
+     Message
+   WHERE
+      ID = :ID
+endcode
+
+// used by BlobData
+PROC GetChildData
+INPUT
+  MessageId   int
+OUTPUT
+  Id            int
+  MessageLen    short
+  MessageData   blob  (16000)
+sqlcode
+   SELECT
+     id
+    ,MessageLen
+    ,MessageData
+   FROM
+     $TableName(64)
+   WHERE
+      MessageId = :MessageId
+endcode
+

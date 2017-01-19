@@ -1,0 +1,104 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   ScriptGroup
+SERVER   vlab
+
+TABLE ScriptGroup
+    OPTIONS "lookup=ScriptName GroupId" "descr=ScriptGroup"
+  ScriptName   char(64)
+  GroupId      Char(16)
+  AccessType   byte (l'ReadWrite'=0 l'ReadOnly'=1 l'None'=2)
+  USId         Char(16)
+  TmStamp      DateTime
+
+KEY StaffGroupKey PRIMARY
+  ScriptName
+  GroupId
+
+LINK Grps (GroupId)
+  GroupId
+
+PROC Insert
+PROC Update
+PROC SelectAll
+PROC SelectOne
+PROC DeleteOne
+
+PROC ListAll
+OUTPUT
+  ScriptName Char(64)
+  GroupId Char(16)
+  AccessType byte
+sqlcode
+  SELECT ScriptName
+       , GroupId
+       , AccessType
+  FROM ScriptGroup
+  ORDER BY ScriptName
+         , GroupId
+endcode
+
+PROC InsertScripts
+INPUT
+  GroupId      Char(16)
+  AccessType   byte
+  USId         Char(16)
+sqlcode
+  insert into ScriptGroup
+    (select unique name, :GroupId, :AccessType, :USId, current_timestamp
+     from ScriptVersion
+     where name in ($ScriptList(40960)))
+endcode
+
+PROC DeleteScripts
+INPUT
+  GroupId      Char(16)
+sqlcode
+  delete from ScriptGroup
+  where GroupId = :GroupId
+  and ScriptName in ($ScriptList(4096))
+endcode
+
+PROC UpdateScriptsAccess
+INPUT
+  GroupId      Char(16)
+  AccessType   byte
+  USId         Char(16)
+sqlcode
+  update ScriptGroup set AccessType = :AccessType, USId = :Usid
+  where GroupId = :GroupId
+  and ScriptName in ($ScriptList(40960))
+endcode
+
+PROC InsertGroups
+INPUT
+  ScriptName   char(64)
+  AccessType   byte
+  USId         Char(16)
+sqlcode
+  insert into ScriptGroup
+    (select unique :ScriptName, GroupId, :AccessType, :USId, current_timestamp
+     from Grps
+     where name in ($GroupList(40960)))
+endcode
+
+PROC DeleteGroups
+INPUT
+  ScriptName   char(64)
+sqlcode
+  delete from ScriptGroup
+  where GroupId in ($GroupList(4096))
+  and ScriptName = :ScriptName
+endcode
+
+PROC UpdateGroupsAccess
+INPUT
+  ScriptName   char(64)
+  AccessType   byte
+  USId         Char(16)
+sqlcode
+  update ScriptGroup set AccessType = :AccessType, USId = :Usid
+  where GroupId in ($GroupList(40960))
+  and ScriptName = :ScriptName
+endcode
+

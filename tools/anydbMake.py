@@ -10,9 +10,15 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-b", "--build",      dest="build",      default=False, action="store_true", help='build all anyway')
 parser.add_option("-c", "--crackle",    dest="crackle",    default='crackle.jar')
+parser.add_option("-f", "--fromdir",    dest="fromdir",    default='/main')
 parser.add_option("-j", "--jportal",    dest="jportal",    default='jportal.jar')
+parser.add_option("-n", "--nobuild",    dest="nobuild",    default=False, action="store_true", help="do not do the build")
+parser.add_option("-o", "--outfile",    dest="outfile",    default='')
 parser.add_option("-p", "--pickle",     dest="pickle",     default='pickle.jar')
+parser.add_option("-t", "--todir",      dest="todir",      default='/main')
 parser.add_option("-v", "--verbose",    dest="verbose",    default=False, action="store_true", help="verbose")
+parser.add_option("-S", "--sources",    dest="sources",    default=False, action="store_true", help="writes sources to outfile if set")
+parser.add_option("-T", "--targets",    dest="targets",    default=False, action="store_true", help="writes targets to outfile if set")
 
 (options, args) = parser.parse_args()
 
@@ -25,6 +31,8 @@ def fixname(name):
   if len(result) > 2 and result[1] == ':':
     result = result[2:]
   result = result.replace('\\','/')
+  if options.fromdir != options.todir and result.find(options.fromdir) == 0:
+    result = '%s%s' % (options.todir, result[len(options.fromdir):])
   log(result)
   return result
 
@@ -175,7 +183,9 @@ def parse_anydb(sourceFile):
   switches[CRACKLE] = ''
   switches[JPORTAL] = ''
   switches[PICKLE] = ''
+  lineNo = 0
   for line in lines:
+    lineNo += 1
     line=expand(remove_comment(line.strip()))
     if len(line) == 0:
       continue
@@ -184,6 +194,13 @@ def parse_anydb(sourceFile):
       args[fields[0]] = fields[1]
       continue
     fields=line.split()
+    if fields[0] == 'include':
+      if len(fields) == 2:
+        ifile = open(fields[1], 'r')
+        includeLines = ifile.readlines()
+        ifile.close()
+        lines[lineNo:lineNo] = includeLines
+      continue
     if fields[0] == 'project' and len(fields) > 1:
       project = Class()
       project.name = fixname(fields[1])
@@ -328,6 +345,70 @@ def derive_targets(project):
     for mask in mask_keys:
       get_targets(source, name, mask, project)
 
+def add_to_group(outfile, groups, type, filename):
+  if os.path.exists(filename) ==  True:
+    flist = filename.upper().split('/')
+    if type == 'TARGET':
+      groups.append(r'source_group(TARGET\\%s_%s FILES %s)' % (flist[-3], flist[-2], filename))
+    else:
+      groups.append(r'source_group(%s\\%s FILES %s)' % (type.upper(), flist[-2], filename))
+      
+def build_outfile(outfile_name):
+  outfile = open(fixname(outfile_name), 'wt')
+  groups=[]
+  if options.sources == True:
+    outfile.write('set (sources\n')  
+    for source in project.sources:
+      outfile.write('  %s\n' % (source.name))
+      add_to_group(outfile, groups, 'JPORTAL', source.name)
+    if 'idlTarget' in switches:
+      target_name = fixname(switches['idlTarget'])
+      if 'idlModule' in switches:
+        module_name = fixname(switches['idlModule'])    
+        outfile.write('  %s\n' % (module_name))
+        add_to_group(outfile, groups, 'CRACKLE', module_name)
+      else:
+        outfile.write('  %s\n' % (target_name)) 
+        add_to_group(outfile, groups, 'CRACKLE', target_name)
+      for key in project.idls: 
+        for source in project.idls[key]:
+          outfile.write('  %s\n' % (source.name))
+          add_to_group(outfile, groups, 'CRACKLE', source.name)
+    if 'appTarget' in switches:          
+      target_name = fixname(switches['appTarget'])  
+      if 'appModule' in switches:
+        module_name = fixname(switches['appModule'])    
+        outfile.write('  %s\n' % (module_name))
+        add_to_group(outfile, groups, 'PICKLE', module_name)
+      else:
+        outfile.write('  %s\n' % (target_name)) 
+        add_to_group(outfile, groups, 'PICKLE', target_name)
+      for key in project.apps: 
+        for source in project.apps[key]:
+          outfile.write('  %s\n' % (source.name))
+          add_to_group(outfile, groups, 'PICKLE', source.name)
+    outfile.write(')\n\n')
+  if options.targets == True:
+    outfile.write('set (targets\n')  
+    for source in project.sources:
+      for target in source.targets:  
+        if os.path.exists(target.name) ==  True:  
+          outfile.write('  %s\n' % (target.name))
+          add_to_group(outfile, groups, 'TARGET', target.name)
+    if 'idlTarget' in switches and 'idlModule' in switches:
+      target_name = fixname(switches['idlTarget'])
+      outfile.write('  %s\n' % (target_name)) 
+      add_to_group(outfile, groups, 'CRACKLE', target_name)
+    if 'appModule' in switches and 'appTarget' in switches:
+      target_name = fixname(switches['appTarget'])
+      outfile.write('  %s\n' % (target_name)) 
+      add_to_group(outfile, groups, 'PICKLE', target_name)
+    outfile.write(')\n\n')
+    outfile.write('set_source_files_properties (${targets} PROPERTIES GENERATED TRUE)\n\n')
+    for group in sorted(groups):
+      outfile.write('%s\n' % (group))
+  outfile.close() 
+
 project = parse_anydb(sourceFile)
 derive_targets(project)
 projmod = lastmod(sourceFile)
@@ -347,6 +428,11 @@ if 'prfile' not in project.apps:
   project.apps['prfile'] = []
 prFiles = project.apps['prfile']
 piFiles = project.apps['pifile']
+#-------------------------------------------------------
+if len(options.outfile) > 0:
+  build_outfile(options.outfile)
+if options.nobuild == True:
+  exit(0)
 #-------------------------------------------------------
 for source in project.sources:
   if source.noTargets == 0:
@@ -374,7 +460,10 @@ for source in project.sources:
     for target in source.targets:
       if os.path.exists(target.name) == True:
         print('removing %s' % (target.name))
-        os.remove(target.name)
+        try:
+          os.remove(target.name)
+        except:
+          log('failed to remove %s' % (target.name))  
   else:
     log(source.name, 'up to date')
     for target in  source.targets:

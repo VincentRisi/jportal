@@ -1,0 +1,27 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   StaffProfile
+SERVER   vlab
+
+TABLE   StaffProfile
+StaffId       char(16)
+FunctionOf    char (64)
+USId          char (16)
+Tmstamp       timestamp
+
+KEY     SYS_C00826 PRIMARY
+  StaffId
+  FunctionOf
+
+link Staff (Id)
+  Staffid
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    Exists
+PROC    DeleteAll
+PROC    SelectAll
+PROC    Count
+

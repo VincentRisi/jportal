@@ -4,14 +4,17 @@
 
 There are three code generator types written using the same mechanism: 
   
-[JPortal](#jportalgenerator)  
+[JPortal](generators/JPortal.html)
+
 A generator that generates DALs (Data Access Layers) for various databases (Oracle, MS SQL Server, Postgres, SQLLite, DB2) in various languages (C#, Java, C++, Python, VB).  
   
-[Crackle](#cracklegenerator)  
-A generator that generates ???  
+[Crackle](generators/IDL.html)
+
+A generator that generates IDL (Interface Definition Language) RPCs (Remote Procedure Calls) using Client/Server for various languages.  
   
-[Pickle](#picklegenerator)  
-A generator that generates ???  
+[Pickle](generators/Pickle.html)
+
+A generator that generates Parameter Control Table maintenace code. A front end written in C# that maintains any ADO.NET Database.  
 
 This mechanism or paradigm follow the same coding pattern. There is a
 parser generator or compiler compiler written using javacc for the tokenising
@@ -118,10 +121,12 @@ user@localmachine:~/jportal> vagrant halt
 
 Assuming the repository has been checked out to */main/jportal*. The cmake is used from */main/jportal/build*, build is in .gitignore so initially one must do a *'mkdir'*  of it and from it do a *'cmake ..'*. Once the cmake has been made and as long as all the required tools are in place, *'make'* should complete an initial build.
 
+There is a wrinkle - the current source is /main/jportal based on windows c:\main\jportal - this is not a cmake problem, but in the anydbmake having /main/jportal hardcoded - I will look into fixing this - but using c:\main\jportal should suffice for now. A stategic use of mklink /J should solve most problems.
+
 I am running on linux mint 17.3 Rosa, which is debian based. Installing oracle client software is quite trial and error. But I do now have the client connecting to the Developer Days stuff. Of course we use sudo alien -i ... to install the instantclient stuff. The linux mint is a superb desktop environment, IMNSHO it is the route Microsoft should have gone, but when you business model is Total Resale every 3-5 years, more the pity.
 
 I have quite good success on a Windows 7 VM - I am not using Visual Studio for the cmake, but using mingw - using unix build - I am also using git bash for the make terminal.
-
+ 
 ### JPortal RDBMS code generator <a id="jportalgenerator"></a>
 
 The class tree for *JPortal* starts with a single Database instance. As can be seen from

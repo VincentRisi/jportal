@@ -1,0 +1,24 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   TestpackPayment
+SERVER   vlab
+
+TABLE   TestpackPayment
+  Testpackid    char (50)
+  TestMessageID int
+
+KEY     SYS_C00821
+PRIMARY
+// //TABLESPACE NPUT001M1 INITIAL 40K NEXT 1M
+  TESTPACKID
+  TESTMessageID
+
+PROC    Insert
+PROC    Update
+PROC    DeleteOne
+PROC    SelectOne
+PROC    Exists
+PROC    DeleteAll
+PROC    SelectAll
+PROC    Count
+

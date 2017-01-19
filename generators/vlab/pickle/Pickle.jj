@@ -119,6 +119,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 {
   <ALL:          "all">
 | <APPLICATION:  "application">
+| <BIGSEQUENCE:  "bigsequence">
 | <BOOLEAN:      "boolean">
 | <BYTE:        ("byte"|"tinyint")>
 | <CASCADE:      "cascade">
@@ -487,12 +488,42 @@ void pickUse() :
       field.length = application.descrSize;
       table.fields.addElement(field);
     }
+  | <BIGSEQUENCE>
+    {
+      table.useBigSequence = true;
+      field = new Field();
+      field.name = "Id";
+      field.type = field.BIGSEQUENCE;
+      field.length = 8;
+      table.fields.addElement(field);
+      table.order.addElement(field);
+      field = new Field();
+      field.name = "Descr";
+      field.type = field.CHAR;
+      field.length = application.descrSize;
+      table.fields.addElement(field);
+    }
   | <INT>
     {
       table.useSequence = true;
       field = new Field();
       field.name = "Id";
       field.type = field.INT;
+      field.length = 4;
+      table.fields.addElement(field);
+      table.order.addElement(field);
+      field = new Field();
+      field.name = "Descr";
+      field.type = field.CHAR;
+      field.length = application.descrSize;
+      table.fields.addElement(field);
+    }
+  | <LONG>
+    {
+      table.useBigSequence = true;
+      field = new Field();
+      field.name = "Id";
+      field.type = field.LONG;
       field.length = 4;
       table.fields.addElement(field);
       table.order.addElement(field);
@@ -695,6 +726,11 @@ void pickDatatype() :
     field.type = field.SEQUENCE;
     field.length = 4;
   }
+|  <BIGSEQUENCE>
+  {
+    field.type = field.BIGSEQUENCE;
+    field.length = 8;
+  }
 |  <LONG>
   {
     field.type = field.LONG;
@@ -887,16 +923,8 @@ void pickRelation() :
     relation.descr = s;
   }
   ( s = pickString() { relation.descr = s; } )?
-  ( s = pickAlias()
-    {
-      relation.alias = s;
-    }
-  )?
-  ( s = pickComment()
-    {
-      relation.comments.addElement(s);
-    }
-  )*
+  ( s = pickAlias()  { relation.alias = s; } )?
+  ( s = pickComment() { relation.comments.addElement(s); } )*
   s = pickIdent()
   {
     relation.fromTable = application.getTable(s);

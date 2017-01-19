@@ -214,8 +214,7 @@ public class Application implements Serializable
             rt.relation.fromFields.addElement(field);
           }
         }
-        System.out
-            .println("Missing table relation " + table.name + " resolved");
+        System.out.println("Missing table relation " + table.name + " resolved");
         result = true;
       }
     }

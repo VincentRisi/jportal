@@ -1,0 +1,27 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   CountryCurrency
+SERVER   vlab
+
+TABLE CountryCurrency
+    OPTIONS "descr=Country Currency Relationship"
+  CountryId   Char(64)
+  CurrencyId  Char(4)
+  USId        Char(16)
+  Tmstamp     timestamp
+
+KEY CountryKey PRIMARY
+  CountryId
+  CurrencyId
+
+LINK Country (Id)
+  CountryId
+
+LINK Currency (Id)
+  CurrencyId
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+

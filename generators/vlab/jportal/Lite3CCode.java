@@ -155,7 +155,7 @@ public class Lite3CCode extends Generator
     }
     outData.println("struct " + table.useName());
     outData.println("{");
-    Vector<?> fields = table.fields;
+    Vector<Field> fields = table.fields;
     for (int i = 0; i < fields.size(); i++)
     {
       Field field = (Field) table.fields.elementAt(i);
@@ -198,7 +198,7 @@ public class Lite3CCode extends Generator
         }
         outData.println(" */");
       }
-      Vector<?> fields;
+      Vector<Field> fields;
       fields = proc.outputs;
       outData.println("struct " + table.useName() + proc.upperFirst());
       outData.println("{");
@@ -296,13 +296,13 @@ public class Lite3CCode extends Generator
   static void generateCommand(Proc proc, PrintWriter outData)
   {
     placeHolder = new PlaceHolder(proc, PlaceHolder.COLON, "");
-    Vector<?> lines = placeHolder.getLines();
+    Vector<String> lines = placeHolder.getLines();
     if (lines.size() > 0)
     {
       outData.println("const char* "+proc.table.useName()+proc.upperFirst()+"Command =");
       for (int i = 0; i < lines.size(); i++)
       {
-        String l = (String) lines.elementAt(i);
+        String l = lines.elementAt(i);
         if (l.charAt(0) != '"')
         {
           l = l.trim();

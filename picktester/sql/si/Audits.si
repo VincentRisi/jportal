@@ -1,0 +1,21 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   Audits
+SERVER   vlab
+
+TABLE Audits
+    OPTIONS 'descr=Audit Trail' 'viewonly'
+  Id        BigSequence
+  TableName Char(64)
+  Action    byte(l'Add'=0 l'Change'=1 l'Delete'=2)
+  XmlText   Char(2000)
+  USId      Char(16)
+  TmStamp   timestamp
+
+KEY AdaptorKey PRIMARY
+  TableName Id
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne

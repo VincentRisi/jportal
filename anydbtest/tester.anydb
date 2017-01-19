@@ -13,11 +13,13 @@ jportal
   AdoCSCode         ${binary_dir}/sql/AdoCS       %a.cs
   BinCode           ${binary_dir}/sql/Bin         %l.code
   BinCppCode        ${binary_dir}/sql/BinCpp      %l.h
-  BinCSCode         ${binary_dir}/sql/BinCS       %i.cs
+  BinCSCode         ${binary_dir}/sql/BinCS       %a.cs
   BinJavaCode       ${binary_dir}/sql/BinJava     vlab/%a.java
   BinPythonCode     ${binary_dir}/sql/BinPython   binu_%l.py
   CliCCode          ${binary_dir}/sql/CliC        %l.cpp %l.sh
+  CSNetCode         ${binary_dir}/sql/CSNet       %a.cs
   Db2DDL            ${binary_dir}/sql/Db2         %a.sql
+  DelphiCode        ${binary_dir}/sql/Delphi      %a.pas
   IdlBinUCode       ${binary_dir}/sql/IdlBinU     U%a.bin
   IdlCode           ${binary_dir}/sql/Idl         %l.ii %a.cs
   JavaCSCode        ${binary_dir}/sql/JavaCS      %a.java

@@ -1,11 +1,11 @@
 /// ------------------------------------------------------------------
-/// Copyright (c) from 1996 Vincent Risi 
-///                           
-/// All rights reserved. 
-/// This program and the accompanying materials are made available 
-/// under the terms of the Common Public License v1.0 
-/// which accompanies this distribution and is available at 
-/// http://www.eclipse.org/legal/cpl-v10.html 
+/// Copyright (c) from 1996 Vincent Risi
+///
+/// All rights reserved.
+/// This program and the accompanying materials are made available
+/// under the terms of the Common Public License v1.0
+/// which accompanies this distribution and is available at
+/// http://www.eclipse.org/legal/cpl-v10.html
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
@@ -33,7 +33,7 @@ public class Lite3DDL extends Generator
       {
         outLog.println(args[i] + ": generating Lite3 DDL");
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(args[i]));
-        Database database = (Database)in.readObject();
+        Database database = (Database) in.readObject();
         in.close();
         generate(database, "", outLog);
       }
@@ -65,8 +65,8 @@ public class Lite3DDL extends Generator
         fileName = database.output;
       else
         fileName = database.name;
-      if (database.schema.length() > 0)
-        tableOwner = database.schema + ".";
+      if (database.schema.length() > 0) // does not have mutiple schemas - main or temp only
+        tableOwner = "main.";
       else
         tableOwner = "";
       outLog.println("DDL: " + output + fileName + ".sql");
@@ -75,7 +75,7 @@ public class Lite3DDL extends Generator
       {
         PrintWriter outData = new PrintWriter(outFile);
         for (int i = 0; i < database.tables.size(); i++)
-          generateTable(database, (Table)database.tables.elementAt(i), outData);
+          generateTable(database, (Table) database.tables.elementAt(i), outData);
         outData.flush();
       }
       finally
@@ -97,7 +97,7 @@ public class Lite3DDL extends Generator
   {
     if (table.fields.size() > 0)
     {
-      outData.println("DROP TABLE IF EXISTS " + tableOwner + table.name +";");
+      outData.println("DROP TABLE IF EXISTS " + tableOwner + table.name + ";");
       outData.println();
     }
     String comma = "( ";
@@ -107,7 +107,7 @@ public class Lite3DDL extends Generator
       outData.println("CREATE TABLE " + tableOwner + table.name);
       for (int i = 0; i < table.fields.size(); i++, comma = ", ")
       {
-        Field field = (Field)table.fields.elementAt(i);
+        Field field = (Field) table.fields.elementAt(i);
         if (field.isSequence && field.isPrimaryKey)
           primeDone = true;
         outData.println(comma + field.name + " " + varType(field));
@@ -115,7 +115,7 @@ public class Lite3DDL extends Generator
       }
       for (int i = 0; i < table.keys.size(); i++)
       {
-        Key key = (Key)table.keys.elementAt(i);
+        Key key = (Key) table.keys.elementAt(i);
         if (key.isPrimary == true && primeDone == false)
           generatePrimary(table, key, outData);
         if (key.isUnique == true)
@@ -125,7 +125,7 @@ public class Lite3DDL extends Generator
       {
         for (int i = 0; i < table.links.size(); i++)
         {
-          Link link = (Link)table.links.elementAt(i);
+          Link link = (Link) table.links.elementAt(i);
           if (link.linkName.length() == 0)
             link.linkName = table.name + "_FK" + bSO(i);
           generateLink(link, outData, table.name, tableOwner, i);
@@ -135,7 +135,7 @@ public class Lite3DDL extends Generator
       {
         for (int i = 0; i < table.options.size(); i++)
         {
-          String option = (String)table.options.elementAt(i);
+          String option = (String) table.options.elementAt(i);
           if (option.toLowerCase().indexOf("constraint") == 0)
             outData.println(", " + option);
         }
@@ -145,19 +145,19 @@ public class Lite3DDL extends Generator
       outData.println();
       for (int i = 0; i < table.keys.size(); i++)
       {
-        Key key = (Key)table.keys.elementAt(i);
+        Key key = (Key) table.keys.elementAt(i);
         if (!key.isPrimary && !key.isUnique)
           generateIndex(table, key, outData);
       }
     }
     for (int i = 0; i < table.views.size(); i++)
     {
-      View view = (View)table.views.elementAt(i);
+      View view = (View) table.views.elementAt(i);
       generateView(view, outData, table.name, tableOwner);
     }
     for (int i = 0; i < table.procs.size(); i++)
     {
-      Proc proc = (Proc)table.procs.elementAt(i);
+      Proc proc = (Proc) table.procs.elementAt(i);
       if (proc.isData)
         generateProc(proc, outData);
     }
@@ -187,7 +187,7 @@ public class Lite3DDL extends Generator
     outData.print(", UNIQUE");
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
-      String name = (String)key.fields.elementAt(i);
+      String name = (String) key.fields.elementAt(i);
       outData.print(comma + name);
     }
     outData.println(")");
@@ -204,22 +204,23 @@ public class Lite3DDL extends Generator
     outData.print(", PRIMARY KEY");
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
-      String name = (String)key.fields.elementAt(i);
+      String name = (String) key.fields.elementAt(i);
       outData.print(comma + name);
     }
     outData.println(")");
   }
   /**
-  * Generates foreign key SQL Code for DB2
-  */
-  static void generateLink(Link link, PrintWriter outData, String tableName, String owner, int no)
+   * Generates foreign key SQL Code for DB2
+   */
+  static void generateLink(Link link, PrintWriter outData,
+      String tableName, String owner, int no)
   {
     String comma = "( ";
     String linkname = "FK" + no + link.linkName.toUpperCase();
     outData.println(", CONSTRAINT " + make18(linkname) + " FOREIGN KEY");
     for (int i = 0; i < link.fields.size(); i++, comma = "    , ")
     {
-      String name = (String)link.fields.elementAt(i);
+      String name = (String) link.fields.elementAt(i);
       outData.println(comma + name);
     }
     outData.print(") REFERENCES " + owner + link.name);
@@ -228,7 +229,7 @@ public class Lite3DDL extends Generator
       comma = "(";
       for (int i = 0; i < link.linkFields.size(); i++)
       {
-        String name = (String)link.linkFields.elementAt(i);
+        String name = (String) link.linkFields.elementAt(i);
         outData.print(comma + name);
         comma = ", ";
       }
@@ -273,7 +274,8 @@ public class Lite3DDL extends Generator
    * @param name
    * @param tableOwner
    */
-  private static void generateView(View view, PrintWriter outData, String tableName, String tableOwner)
+  private static void generateView(View view, PrintWriter outData,
+      String tableName, String tableOwner)
   {
     outData.println("DROP VIEW IF EXISTS " + tableOwner + tableName + view.name);
     outData.println("");
@@ -281,7 +283,7 @@ public class Lite3DDL extends Generator
     outData.println("AS (");
     for (int i = 0; i < view.lines.size(); i++)
     {
-      String line = (String)view.lines.elementAt(i);
+      String line = (String) view.lines.elementAt(i);
       outData.println(line);
     }
     outData.println(");");
@@ -300,10 +302,11 @@ public class Lite3DDL extends Generator
       keyname = table.name.toUpperCase() + "_" + keyname;
     outData.println("DROP INDEX IF EXISTS " + tableOwner + table.name + keyname + ";");
     outData.println("");
-    outData.print("CREATE INDEX " + table.name + keyname +" ON " + tableOwner + table.name );
+    outData.print(
+        "CREATE INDEX " + table.name + keyname + " ON " + tableOwner + table.name);
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
-      String name = (String)key.fields.elementAt(i);
+      String name = (String) key.fields.elementAt(i);
       outData.println(comma + name);
     }
     outData.println(");");
@@ -315,8 +318,8 @@ public class Lite3DDL extends Generator
    */
   private static String varType(Field field)
   {
-    //if (field.isNull == true)
-    //  return "NULL";
+    // if (field.isNull == true)
+    // return "NULL";
     String notNull = (field.isNull == true) ? "" : " NOT NULL";
     String primeKey = "";
     String autoInc = "";
@@ -333,25 +336,25 @@ public class Lite3DDL extends Generator
     String work = "unknown";
     switch (field.type)
     {
-      case Field.BYTE:
-      case Field.SHORT:
-      case Field.INT:
-      case Field.IDENTITY:
-      case Field.SEQUENCE:
+    case Field.BYTE:
+    case Field.SHORT:
+    case Field.INT:
+    case Field.IDENTITY:
+    case Field.SEQUENCE:
       case Field.LONG:
       case Field.BIGIDENTITY:
       case Field.BIGSEQUENCE:
-        work = "INTEGER"; 
-        break;
+      work = "INTEGER";
+      break;
       case Field.BOOLEAN:
         work = "BOOLEAN";
         break;
-      case Field.ANSICHAR:
-      case Field.TLOB:
+    case Field.ANSICHAR:
+    case Field.TLOB:
       case Field.XML:
       case Field.BIGXML:
-        work = "TEXT";
-        break;
+      work = "TEXT";
+      break;
       case Field.CHAR:
         work =  " VARCHAR(" + String.valueOf(field.length) + ")";
         break;
@@ -361,12 +364,12 @@ public class Lite3DDL extends Generator
       case Field.UID:
         work = " VARCHAR(36)";
         break;
-      case Field.FLOAT:
-      case Field.DOUBLE:
-      case Field.MONEY:
-        work = "REAL";
-        break;
-      case Field.BLOB:
+    case Field.FLOAT:
+    case Field.DOUBLE:
+    case Field.MONEY:
+      work = "REAL";
+      break;
+    case Field.BLOB:
         work = "BLOB";
         break;
       case Field.DATE:
@@ -380,7 +383,7 @@ public class Lite3DDL extends Generator
         break;
       case Field.TIMESTAMP:
         work = "DATETIME";
-        break;
+      break;
     }
     return work + notNull + defaultValue + primeKey + autoInc;
   }

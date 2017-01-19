@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Configuration;
-using vlab.ParamControl;
-using Oracle.DataAccess.Client;
+using vlab.jportal;
+#if do_it_with_oracle
+using Oracle.ManagedDataAccess.Client;
+#elif do_it_with_mssql
+using System.Data.SqlClient;
+#elif do_it_with_lite3 
+using System.Data.SQLite;
+#elif do_it_with_mysql 
+using MySql.Data.MySqlClient;
+#elif do_it_with_postgres 
+using Devart.Data.PostgreSql;
+#endif
 using IronPython.Hosting;
-using IronPython.Runtime;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
-using Bbd.Security.SecurityPrincipleClient;
 
 namespace vlab.ParamControl
 {
@@ -23,21 +29,10 @@ namespace vlab.ParamControl
     private string[] args;
     private string ParamBinName = ConfigurationManager.AppSettings["binFileName"];
     private string ParamLogName = ConfigurationManager.AppSettings["logFileName"];
-#if do_check_timtam
-    private string ParamApplicationName = ConfigurationManager.AppSettings["applicationName"];
-    private string ParamOperationName = ConfigurationManager.AppSettings["operationName"];
-    private string ParamUrlName = ConfigurationManager.AppSettings["urlName"];
-#endif
     private string binFileName;
     private string registryName;
     private string logFileName;
-#if do_check_timtam
-    private string applicationName;
-    private string operationName;
-    private string urlName;
-#endif
     private string xuser, ypassword, zserver;
-    private string connUserId, connPassword, connDataSource;
     private Registry registry;
     private static JConnect connect;
     private bool allowUpdates;
@@ -67,11 +62,6 @@ namespace vlab.ParamControl
           case ' ':
             if (arg == "-b") state = 'b';
             else if (arg == "-l") state = 'l';
-#if do_check_timtam
-            else if (arg == "-a") state = 'a';
-            else if (arg == "-o") state = 'o';
-            else if (arg == "-u") state = 'u';
-#endif
             else if (arg == "-x") state = 'x';
             else if (arg == "-y") state = 'y';
             else if (arg == "-z") state = 'z';
@@ -86,20 +76,6 @@ namespace vlab.ParamControl
             logFileName = arg;
             state = ' ';
             break;
-#if do_check_timtam
-          case 'a':
-            applicationName = arg;
-            state = ' ';
-            break;
-          case 'o':
-            operationName = arg;
-            state = ' ';
-            break;
-          case 'u':
-            urlName = arg;
-            state = ' ';
-            break;
-#endif
           case 'x':
             xuser = arg;
             state = ' ';
@@ -116,11 +92,9 @@ namespace vlab.ParamControl
             System.Console.WriteLine("Valid command line arguments:");
             System.Console.WriteLine(" -b <binFileName>      : " + binFileName);
             System.Console.WriteLine(" -l <logFileName>      : " + logFileName);
-#if do_check_timtam
-            System.Console.WriteLine(" -a <applicationName>  : " + applicationName);
-            System.Console.WriteLine(" -o <operationName>    : " + operationName);
-            System.Console.WriteLine(" -u <urlName>          : " + urlName);
-#endif
+            System.Console.WriteLine(" -x <user>             : " + xuser);
+            System.Console.WriteLine(" -y <password>         : ");
+            System.Console.WriteLine(" -z <server>           : " + zserver);
             state = ' ';
             break;
         }
@@ -132,11 +106,6 @@ namespace vlab.ParamControl
       InitializeComponent();
       binFileName = ParamBinName;
       logFileName = ParamLogName;
-#if do_check_timtam
-      applicationName = ParamApplicationName;
-      operationName = ParamOperationName;
-      urlName = ParamUrlName;
-#endif
       thisForm = this;
       this.args = getArgs(args);
     }
@@ -145,51 +114,11 @@ namespace vlab.ParamControl
     public static string LogInfo  { set { Logger.Info = value;  } }
     public static string LogDebug { set { Logger.Debug = value; } }
     public bool ShowSql { get { return showSQL.Checked; } }
+
+    public object Resource1 { get; private set; }
+
     private ScriptEngine pyEngine = null;
     private ScriptScope pyScope = null;
-#if do_check_timtam
-    private bool timtamChecked = false;
-    private void checkTimTam()
-    {
-      if (timtamChecked == true) return;
-      timtamChecked = true;
-      using (AutoCursor.AppStart)
-      {
-        try
-        {
-          if (applicationName.Trim().Length != 0 && operationName.Trim().Length != 0)
-          {
-            LogInfo = string.Format("TimTam Application: {0} Operation: {1} Url: {2}", applicationName, operationName, urlName);
-            SecurityPrincipleClient client = new SecurityPrincipleClient(applicationName);
-            client.SetSecurityPrincipleProperties(urlName);
-            string[] operations = operationName.Split(';');
-            int id = 0;
-            bool access = false;
-            foreach (string op in operations)
-            {
-              client.AddToOperationList(op, id);
-              if (client.CheckAuthOperation(op) == true)
-              {
-                LogInfo = string.Format("Operation: {0} has access.", op);
-                access = true;
-              }
-              id++;
-            }
-            if (access == false)
-            {
-              LogInfo = string.Format("TimTam Application: {0} Operation: {1} Url: {2} Access Not Allowed", applicationName, operationName, urlName);
-              throw new Exception(string.Format("User does not have access to the {0} system", applicationName));
-            }
-          }
-        }
-        catch (Exception exception)
-        {
-          showException(exception);
-          Close();
-        }
-      }
-    }
-#endif
     private void applicationLoad(object sender, EventArgs e)
     {
       using (AutoCursor.AppStart)
@@ -217,7 +146,7 @@ namespace vlab.ParamControl
           pcLinks = BinTables.PCLinks;
           pcLinkPairs = BinTables.PCLinkPairs;
           registryName = pcApplication.registry;
-          string ironPythonSetup = Resource1.IronPythonSetup;
+          string ironPythonSetup = Properties.Resources.IronPythonSetup;
           string pythonCode = "";
           if (BinTables.HasValidation() == true)
           {
@@ -261,15 +190,33 @@ namespace vlab.ParamControl
             descr[0] = pcTables[i].descr;
             listOfTables.Items.Add(new ListItem(values, descr, i));
           }
-          connDataSource = zserver == null ? decrypt(pcApplication.server) : zserver;
-          connUserId = xuser == null ? decrypt(pcApplication.user) : xuser;
-          connPassword = ypassword == null ? decrypt(pcApplication.password) : ypassword;
-          string server = string.Format("Data Source={0};", connDataSource);
-          string userData = string.Format("User Id={0};Password={1};", connUserId, connPassword);
-          connectionStripLabel.Text = string.Format("{0}@{1}", connUserId, connDataSource);
-          connect = new JConnect(new OracleConnection(server + userData));
-          server = userData = "";
+          string server;
+#if do_it_with_mssql
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = dropPassword(server, "Password=");
+          connect = new JConnect(new SqlConnection(server));
+          connect.TypeOfVendor = VendorType.SqlServer;
+#elif do_it_with_mysql
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = dropPassword(server, "Pwd=");
+          connect = new JConnect(new MySqlConnection(server));
+          connect.TypeOfVendor = VendorType.MySql;
+#elif do_it_with_lite3
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = server;
+          connect = new JConnect(new SQLiteConnection(server));
+          connect.TypeOfVendor = VendorType.Lite3;
+#elif do_it_with_postgres
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = dropPassword(server, "Password=");
+          connect = new JConnect(new Devart.Data.PostgreSql.PgSqlConnection(server));
+          connect.TypeOfVendor = VendorType.PostgreSQL;
+#elif do_it_with_oracle
+          server = zserver == null ? decrypt(pcApplication.server) : zserver;
+          connectionStripLabel.Text = dropPassword(server, "Password=");
+          connect = new JConnect(new OracleConnection(server));
           connect.TypeOfVendor = VendorType.Oracle;
+#endif
           connect.Open();
         }
         catch (Exception exception)
@@ -278,6 +225,20 @@ namespace vlab.ParamControl
           Close();
         }
       }
+    }
+    private string dropPassword(string server, string v)
+    {
+      int n = server.ToUpper().IndexOf(v.ToUpper());
+      if (n >= 0)
+      {
+        int t = server.Substring(n).IndexOf(";");
+        if (t > 0)
+        {
+          string result = server.Substring(0, n) + server.Substring(n + t + 1);
+          return result;
+        }
+      }
+      return server;
     }
     private string decrypt(byte[] p)
     {
@@ -449,8 +410,10 @@ namespace vlab.ParamControl
           string MR = "5000";
           if (maxRowsEdit.Value > 0)
             MR = maxRowsEdit.Value.ToString();
+#if do_it_with_oracle
           db.Lookup += C + "RowNum <= " + MR;
           C = "AND ";
+#endif
           string value = likeEdit.Text.Trim();
           if (value.Length > 0)
           {
@@ -462,6 +425,11 @@ namespace vlab.ParamControl
             if (p == 0) p = value.IndexOf('_');
             db.Lookup += string.Format("{0} {1} {2} '{3}'", C, pcFields[f].name, p == 0 ? "=" : "LIKE", value);
           }
+#if do_it_with_lite3
+          db.Limit = " LIMIT " + MR;
+#elif do_it_with_mssql
+          db.Limit = " TOP " + MR;
+#endif
           dbLookupLabel.Text = registry["Lookup", pcTable.name] = db.Lookup;
           db.GetTable(pcTable.name,
             pcFields, pcTable.offsetFields, pcTable.noFields,
@@ -488,14 +456,19 @@ namespace vlab.ParamControl
           string MR = "5000";
           if (maxRowsEdit.Value > 0)
             MR = maxRowsEdit.Value.ToString();
+#if do_it_with_oracle
           db.Lookup += C + "RowNum <= " + MR;
           C = "AND ";
+#endif
           string value = valueCombo.Text.Trim();
           value = value.Replace("'", "''");
           int p = value.IndexOf('%');
           if (p == 0) p = value.IndexOf('_');
           if (value.Length > 0)
             db.Lookup += string.Format("{0} {1} {2} '{3}'", C, lookupCombo.Text, p == 0 ? "=" : "LIKE", value);
+#if do_it_with_lite3
+          db.Limit = " LIMIT " + MR;
+#endif
           db.GetTable(pcTable.name,
             pcFields, pcTable.offsetFields, pcTable.noFields,
             pcOrderFields, pcTable.offsetOrderFields, pcTable.noOrderFields);
@@ -704,7 +677,18 @@ namespace vlab.ParamControl
               values += comma + "'" + toList[c] + "'";
               command += "'" + toList[c] + "', ";
             }
-            command += "'" + userName + "', SysDate)";
+#if do_it_with_oracle
+           string CurrentDate = "SysDate";
+#elif do_it_with_lite3
+            string CurrentDate = "'" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "'"; 
+#elif do_it_with_mssql
+            string CurrentDate = "GetDate()";
+#elif do_it_with_mysql
+            string CurrentDate = "Now()";
+#elif do_it_with_postgres
+            string CurrentDate = "CURRENT_TIMESTAMP";
+#endif
+            command += "'" + userName + "', " + CurrentDate + ")";
             fieldNames += "]";
             values += "]";
             DBHandler db = new DBHandler(connect);
@@ -918,6 +902,7 @@ namespace vlab.ParamControl
         case DBHandler.PC_CHAR:
         case DBHandler.PC_USERSTAMP:
           return "'" + escape(data) + "'";
+#if do_it_with_oracle
         case DBHandler.PC_DATE:
           return "to_date('" + data + "','YYYYMMDD')";
         case DBHandler.PC_DATETIME:
@@ -926,6 +911,39 @@ namespace vlab.ParamControl
           return "to_date('" + data + "','HH24MISS')";
         case DBHandler.PC_TIMESTAMP:
           return "to_date('" + data + "','YYYYMMDDHH24MISS')";
+#elif do_it_with_lite3
+        case DBHandler.PC_DATE:
+          return String.Format("'{0}-{1}-{2}'", data.Substring(0,4), data.Substring(4,2), data.Substring(6,2));
+        case DBHandler.PC_DATETIME:
+        case DBHandler.PC_TIMESTAMP:
+          return String.Format("'{0}-{1}-{2} {3}:{4}:{5}'", data.Substring(0, 4), data.Substring(4, 2), data.Substring(6, 2), data.Substring(8, 2), data.Substring(10, 2), data.Substring(12, 2));
+        case DBHandler.PC_TIME:
+          return String.Format("'{0}:{1}:{2}'", data.Substring(0, 2), data.Substring(2, 2), data.Substring(4, 2));
+#elif do_it_with_mssql
+        case DBHandler.PC_DATE:
+          return "CONVERT(DATETIME, " + String.Format("'{0}-{1}-{2}')", data.Substring(0,4), data.Substring(4,2), data.Substring(6,2));
+        case DBHandler.PC_DATETIME:
+        case DBHandler.PC_TIMESTAMP:
+          return "CONVERT(DATETIME, " + String.Format("'{0}-{1}-{2} {3}:{4}:{5}')", data.Substring(0, 4), data.Substring(4, 2), data.Substring(6, 2), data.Substring(8, 2), data.Substring(10, 2), data.Substring(12, 2));
+        case DBHandler.PC_TIME:
+          return "CONVERT(DATETIME, " + String.Format("'0001-01-01 {0}:{1}:{2}')", data.Substring(0, 2), data.Substring(2, 2), data.Substring(2, 2));
+#elif do_it_with_mysql
+        case DBHandler.PC_DATE:
+          return "STR_TO_DATE('" + data + "', '%Y%m%d')";
+        case DBHandler.PC_DATETIME:
+        case DBHandler.PC_TIMESTAMP:
+          return "STR_TO_DATE('" + data + "', '%Y%m%d%H%i%s')";
+        case DBHandler.PC_TIME:
+          return "STR_TO_DATE('" + data + "', '%H%i%s')";
+#elif do_it_with_postgres
+        case DBHandler.PC_DATE:
+          return "TO_DATE('" + data + "','YYYYMMDD')";
+        case DBHandler.PC_DATETIME:
+        case DBHandler.PC_TIMESTAMP:
+          return "TO_DATE('" + data + "','YYYYMMDDHH24MISS')";
+        case DBHandler.PC_TIME:
+          return "TO_DATE('" + data + "','HH24MISS')";
+#endif
       }
       return "";
     }
@@ -1226,7 +1244,7 @@ namespace vlab.ParamControl
       int editWidth = comboWidth - 18;
       // The next 3 lines are indicative of why properties are at best second class.
       Size size = form.MinimumSize;
-      size.Height = pcTable.noFields * 24 + 66;
+      size.Height = pcTable.noFields * 24 + 66 + 12;
       form.MinimumSize = size;
       Dictionary<int, ComboBox> combos = new Dictionary<int, ComboBox>();
       for (field = 0; field < pcTable.noFields; field++)
@@ -1417,6 +1435,17 @@ namespace vlab.ParamControl
       {
         DBHandler db = new DBHandler(connect);
         string sysdate = DateTime.Now.ToString("yyyyMMddhhmmss");
+#if do_it_with_oracle
+        string CurrentDate = "SysDate";
+#elif do_it_with_lite3
+        string CurrentDate = "'" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "'"; 
+#elif do_it_with_mssql
+        string CurrentDate = "GetDate()";
+#elif do_it_with_mysql
+        string CurrentDate = "Now()";
+#elif do_it_with_postgres
+        string CurrentDate = "CURRENT_TIMESTAMP";
+#endif
         switch (how)
         {
           case EHow.ADD:
@@ -1430,7 +1459,7 @@ namespace vlab.ParamControl
               query += c + sqlReady(pcFields[offset + field], cells[field], true, pcTable.name);
               c = ", ";
             }
-            query += ", '" + userName + "', Sysdate)";
+            query += ", '" + userName + "', " + CurrentDate + ")";
             break;
           case EHow.CHANGE:
             newUsId = userName;
@@ -1446,7 +1475,7 @@ namespace vlab.ParamControl
                          + sqlReady(pcFields[offset + field], cells[field]);
               c = ", ";
             }
-            query += ", " + db.UsId + " = '" + userName + "', " + db.TmStamp + " = Sysdate";
+            query += ", " + db.UsId + " = '" + userName + "', " + db.TmStamp + " = " + CurrentDate;
             query += " " + where;
             break;
           case EHow.DELETE:
@@ -1626,9 +1655,6 @@ namespace vlab.ParamControl
     private void applicationActivated(object sender, EventArgs e)
     {
       positionForm();
-#if do_check_timtam
-      checkTimTam();
-#endif
     }
     private void clearLogButton_Click(object sender, EventArgs e)
     {

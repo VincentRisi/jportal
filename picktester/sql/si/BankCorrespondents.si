@@ -1,0 +1,50 @@
+DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  vlab
+OUTPUT   BankCorrespondents
+SERVER   vlab
+
+TABLE BankCorrespondents
+    OPTIONS "lookup=SwiftAddress CurrId Correspondent" "descr=Bank Correspondent "
+  SwiftAddress  Char(11)
+  CurrId        Char(4)
+  Correspondent Char(11)
+  CreateDate    Date
+  USId          Char(16)
+  TmStamp       DateTime
+
+KEY BankCorrespondentsKey PRIMARY
+  SwiftAddress
+  CurrId
+  Correspondent
+
+LINK BankFile (SwiftAddress)
+  SwiftAddress
+
+LINK Currency (Id)
+  CurrId
+
+LINK BankFile (SwiftAddress)
+  Correspondent
+
+PROC Insert
+PROC Update
+PROC SelectOne
+PROC DeleteOne
+
+// used by Router,IDE
+PROC Get
+INPUT
+  SwiftAddress  Char(11)
+  CurrId        Char(4)
+OUTPUT
+  Correspondent Char(11)
+sqlcode
+  SELECT
+     Correspondent
+  FROM
+     BankCorrespondents
+  Where
+     SwiftAddress = :SwiftAddress
+     and CurrId = :CurrId
+endcode
+
