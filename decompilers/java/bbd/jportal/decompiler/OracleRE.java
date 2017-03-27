@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal.decompiler;
+package bbd.jportal.decompiler;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -18,18 +18,18 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.Vector;
-import vlab.jportal.Database;
-import vlab.jportal.Field;
-import vlab.jportal.Grant;
-import vlab.jportal.Key;
-import vlab.jportal.Link;
-import vlab.jportal.Proc;
-import vlab.jportal.Sequence;
-import vlab.jportal.Table;
-import vlab.jportal.View;
-import vlab.jportal.util.Connector;
-import vlab.jportal.util.ConnectorOracle;
-import vlab.jportal.util.Query;
+import bbd.jportal.Database;
+import bbd.jportal.Field;
+import bbd.jportal.Grant;
+import bbd.jportal.Key;
+import bbd.jportal.Link;
+import bbd.jportal.Proc;
+import bbd.jportal.Sequence;
+import bbd.jportal.Table;
+import bbd.jportal.View;
+import bbd.jportal.util.Connector;
+import bbd.jportal.util.ConnectorOracle;
+import bbd.jportal.util.Query;
 
 class LinksTo
 {
@@ -64,9 +64,9 @@ public class OracleRE
     {
       if (args.length == 0)
       {
-        outLog.println("usage java <classpath> vlab.jportal.decompiler.OracleRE (-l logfile)? (-s schema)? connect (-o output | -l logfile | generator)+");
+        outLog.println("usage java <classpath> bbd.jportal.decompiler.OracleRE (-l logfile)? (-s schema)? connect (-o output | -l logfile | generator)+");
         outLog.println();
-        outLog.println("java -cp jportal.jar vlab.jportal.decompiler.OracleRE vlab/polly@192.168.1.141:1521/orcl -o si JPortalSI");
+        outLog.println("java -cp jportal.jar bbd.jportal.decompiler.OracleRE bbd/polly@192.168.1.141:1521/orcl -o si JPortalSI");
         outLog.flush();
         return;
       }
@@ -123,7 +123,7 @@ public class OracleRE
   }
   private static void generate(Database database, String generator, String output, PrintWriter outLog) throws Exception
   {
-    Class<?> classOf = Class.forName("vlab.jportal." + generator);
+    Class<?> classOf = Class.forName("bbd.jportal." + generator);
     Class<?> parmsOf[] = { database.getClass(), output.getClass(), outLog.getClass() };
     Method methodOf = classOf.getMethod("generate", parmsOf);
     Object parms[] = { database, output, outLog };

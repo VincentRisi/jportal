@@ -1,7 +1,7 @@
 DATABASE OracleALL
-PACKAGE  vlab.jportal.decompiler
+PACKAGE  bbd.jportal.decompiler
 SERVER   orcl
-USERID   vlab
+USERID   bbd
 PASSWORD polly
 
 TABLE Oracle ** PLEASE NOTE no fields as we are not defining anything new

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace vlab.ParamControl
+namespace bbd.ParamControl
 {
   public partial class ScaffoldForm : Form
   {

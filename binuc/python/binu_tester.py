@@ -1,6 +1,6 @@
 import sys
-sys.path.append('c:/vlab/build/lib')
-sys.path.append('c:/vlab/build/binu/python')
+sys.path.append('c:/bbd/build/lib')
+sys.path.append('c:/bbd/build/binu/python')
 
 from binu import __init__ as Logon, Commit, Rollback
 

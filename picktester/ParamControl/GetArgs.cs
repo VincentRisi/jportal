@@ -4,7 +4,7 @@
 // --- not currently used ---  using System.Text;
 // --- not currently used ---  using System.IO;
 // --- not currently used ---  
-// --- not currently used ---  namespace vlab.Utility
+// --- not currently used ---  namespace bbd.Utility
 // --- not currently used ---  {
 // --- not currently used ---    public struct Argument
 // --- not currently used ---    {

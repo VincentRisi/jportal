@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
-namespace vlab.idl2
+namespace bbd.idl2
 {
   public class Convert
   {

@@ -1,7 +1,7 @@
 database infomation_schema
-package  vlab.jportal.decompiler
+package  bbd.jportal.decompiler
 server   postgres
-userid   vlab
+userid   bbd
 password polly
 
 table InformSchema ** PLEASE NOTE no fields as we are not defining anything new

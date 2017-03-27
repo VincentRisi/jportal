@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.pickle;
+package bbd.pickle;
 
 import java.io.DataOutputStream;
 import java.io.FileInputStream;

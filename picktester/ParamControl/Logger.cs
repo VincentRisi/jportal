@@ -2,7 +2,7 @@ using System;
 using System.Windows.Forms;
 using System.IO;
 
-namespace vlab.ParamControl
+namespace bbd.ParamControl
 {
   public class Logger
   {

@@ -1,4 +1,4 @@
-package vlab.binu;
+package bbd.binu;
 
 import java.io.FileInputStream;
 import java.util.Enumeration;
@@ -7,7 +7,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import vlab.crackle.rdc.RpcSocket;
+import bbd.crackle.rdc.RpcSocket;
 
 public class Server
 {

@@ -12,7 +12,7 @@
 /*
  * Created on Jan 9, 2004
  */
-package vlab.crackle;
+package bbd.crackle;
 
 import java.util.Vector;
 

@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace vlab.idl2
+namespace bbd.idl2
 {
   public class IDL2Exception : ApplicationException
   {

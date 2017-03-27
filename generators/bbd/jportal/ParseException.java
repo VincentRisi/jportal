@@ -12,7 +12,7 @@
 ///    Vincent Risi, Hennie Hammann
 ///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-package vlab.jportal;
+package bbd.jportal;
 
 /**
  * This exception is thrown when parse errors are encountered.

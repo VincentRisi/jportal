@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -68,7 +68,7 @@ public class VBNetCode extends Generator
 			{
 				String packageName = table.database.packageName;
 				if (packageName.length() == 0)
-				  packageName = "vlab.jportal"; 
+				  packageName = "bbd.jportal"; 
 				PrintWriter outData = new PrintWriter(outFile);
 				outData.println("Import System");
 				outData.println("Import System.Collections");

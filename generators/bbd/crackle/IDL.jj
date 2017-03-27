@@ -6,7 +6,7 @@ options
 }
 
 PARSER_BEGIN(IDL)
-package vlab.crackle;
+package bbd.crackle;
 
 import java.util.*;
 import java.io.*;

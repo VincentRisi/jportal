@@ -1,4 +1,4 @@
-package vlab.binu.parser;
+package bbd.binu.parser;
 
 public class TJBlob
 {

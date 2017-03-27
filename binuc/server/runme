@@ -1,1 +1,1 @@
-/main/vlab/bin/servers/binuserver -c config.xml -Debug 1 -logLevel debug -logDisplay 1
+/main/bbd/bin/servers/binuserver -c config.xml -Debug 1 -logLevel debug -logDisplay 1

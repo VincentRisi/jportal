@@ -11,7 +11,7 @@
 /// System : JPortal
 /// ------------------------------------------------------------------
 
-package vlab.idl2.rdc;
+package bbd.idl2.rdc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;

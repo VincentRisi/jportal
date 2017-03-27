@@ -17,7 +17,7 @@ jportal
   MySqlDDL   ${binary_dir}/sql/myDDL   %a.sql
   MySqlCCode ${binary_dir}/code/myc    %l.c
   AdoCSCode  ${binary_dir}/code/adocs  %a.cs
-  JavaRWCode ${binary_dir}/code/rwjava vlab/%aRec.java vlab/%aTab.java
+  JavaRWCode ${binary_dir}/code/rwjava bbd/%aRec.java bbd/%aTab.java
 
 source
   ${source_dir}/sql/si/AuditTrail.si

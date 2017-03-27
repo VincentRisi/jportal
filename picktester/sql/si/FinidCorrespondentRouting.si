@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   FinidCorrespondentRouting
-SERVER   vlab
+SERVER   bbd
 
 TABLE FinidCorrespondentRouting
     OPTIONS "lookup=FinId RouteFinId" "descr=Fig Correspondent Bank Routing"

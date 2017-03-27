@@ -14,7 +14,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace vlab.utility
+namespace bbd.utility
 {
   public class UCursor : IDisposable
   {

@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.crackle.util;
+package bbd.crackle.util;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

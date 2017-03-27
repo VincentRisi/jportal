@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   QueueRecovery
-SERVER   vlab
+SERVER   bbd
 
 TABLE   QueueRecovery
   QueueId       char (16)

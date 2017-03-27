@@ -983,7 +983,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F1A740671CFB48868176BF980F3765EE"
             {
-            "SourcePath" = "8:..\\obj\\x86\\Debug\\vlab.ParamControl.exe"
+            "SourcePath" = "8:..\\obj\\x86\\Debug\\bbd.ParamControl.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_716523468B86470DBC1C1640E42B61A3"

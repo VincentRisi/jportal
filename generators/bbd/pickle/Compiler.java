@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.pickle;
+package bbd.pickle;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -215,7 +215,7 @@ public class Compiler
           continue;
         }
         outLog.println(args[i]);
-        Class<?> c = Class.forName("vlab.pickle."+args[i]);
+        Class<?> c = Class.forName("bbd.pickle."+args[i]);
         Class<?> d[] = {application.getClass(), output.getClass(), outLog.getClass()};
         Method m = c.getMethod("generate", d);
         Object o[] = {application, output, outLog};

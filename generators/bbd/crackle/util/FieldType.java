@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.crackle.util;
+package bbd.crackle.util;
 
 public enum FieldType
 {

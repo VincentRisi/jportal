@@ -11,7 +11,7 @@
 ///    Vincent Risi, Hennie Hammann
 ///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-package vlab.jportal;
+package bbd.jportal;
 
 import java.util.*;
 import java.lang.*;

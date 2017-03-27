@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Configuration;
-using vlab.jportal;
+using bbd.jportal;
 #if do_it_with_oracle
 using Oracle.ManagedDataAccess.Client;
 #elif do_it_with_mssql
@@ -22,7 +22,7 @@ using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 
-namespace vlab.ParamControl
+namespace bbd.ParamControl
 {
   public partial class ParamControlForm : Form
   {

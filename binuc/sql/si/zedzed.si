@@ -1,5 +1,5 @@
 DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8"
-PACKAGE  vlab.puffin
+PACKAGE  bbd.puffin
 OUTPUT   zedzed
 SERVER   ssm
 SCHEMA   ssmd00

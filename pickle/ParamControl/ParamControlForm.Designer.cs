@@ -1,4 +1,4 @@
-﻿namespace vlab.ParamControl
+﻿namespace bbd.ParamControl
 {
   partial class ParamControlForm
   {

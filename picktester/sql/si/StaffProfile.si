@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   StaffProfile
-SERVER   vlab
+SERVER   bbd
 
 TABLE   StaffProfile
 StaffId       char(16)

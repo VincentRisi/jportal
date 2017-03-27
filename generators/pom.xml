@@ -9,8 +9,8 @@
     <name>All Code Generators</name>
 
     <modules>
-        <module>vlab/jportal</module>
-        <module>vlab/crackle</module>
-        <module>vlab/pickle</module>
+        <module>bbd/jportal</module>
+        <module>bbd/crackle</module>
+        <module>bbd/pickle</module>
     </modules>
 </project>

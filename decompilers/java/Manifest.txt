@@ -1,1 +1,1 @@
-Main-Class: vlab.jportal.decompiler.OracleRE
+Main-Class: bbd.jportal.decompiler.OracleRE

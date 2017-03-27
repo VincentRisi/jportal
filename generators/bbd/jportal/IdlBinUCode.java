@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -95,7 +95,7 @@ public class IdlBinUCode extends Generator
         {
           outData.println("using System;");
           outData.println("using System.IO;");
-          outData.println("using vlab.idl2;");
+          outData.println("using bbd.idl2;");
           outData.println("namespace Vlab.idl2.jportal");
           outData.println("{");
           generateStructs(table, outData);

@@ -1,5 +1,5 @@
 PARSER_BEGIN(Pickle)
-package vlab.pickle;
+package bbd.pickle;
 
 import java.util.*;
 import java.lang.*;

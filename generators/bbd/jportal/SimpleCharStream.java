@@ -12,7 +12,7 @@
 ///    Vincent Risi, Hennie Hammann
 ///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-package vlab.jportal;
+package bbd.jportal;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to

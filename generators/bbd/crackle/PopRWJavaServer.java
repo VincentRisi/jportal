@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.crackle;
+package bbd.crackle;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -227,8 +227,8 @@ public class PopRWJavaServer extends Generator
       outData.println("package " + packageName(module) + ";");
       outData.println();
       outData.println("import java.io.Serializable;");
-      outData.println("import vlab.crackle.rw.Reader;");
-      outData.println("import vlab.crackle.rw.Writer;");
+      outData.println("import bbd.crackle.rw.Reader;");
+      outData.println("import bbd.crackle.rw.Writer;");
       primeUsings(module);
       generateUsingsNoTables(module, outData);
       outData.println();
@@ -282,12 +282,12 @@ public class PopRWJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import vlab.crackle.rw.RpcSocket;");
-      outData.println("import vlab.crackle.rw.Header;");
-      outData.println("import vlab.crackle.rw.Reader;");
-      outData.println("import vlab.crackle.rw.Writer;");
-      outData.println("import vlab.crackle.rw.Handler;");
-      outData.println("import vlab.jportal.util.Connector;");
+      outData.println("import bbd.crackle.rw.RpcSocket;");
+      outData.println("import bbd.crackle.rw.Header;");
+      outData.println("import bbd.crackle.rw.Reader;");
+      outData.println("import bbd.crackle.rw.Writer;");
+      outData.println("import bbd.crackle.rw.Handler;");
+      outData.println("import bbd.jportal.util.Connector;");
       outData.println("import org.apache.log4j.Logger;");
       primeUsings(module);
       generateUsings(module, outData);
@@ -412,7 +412,7 @@ public class PopRWJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import vlab.jportal.util.Connector;");
+      outData.println("import bbd.jportal.util.Connector;");
       primeUsings(module);
       generateUsings(module, outData);
       outData.println();
@@ -771,7 +771,7 @@ public class PopRWJavaServer extends Generator
   {
     if (module.packageName.length() > 0)
       return module.packageName;
-    return "vlab." + module.name.toLowerCase() + ".crackle";
+    return "bbd." + module.name.toLowerCase() + ".crackle";
   }
   private static String padded(int size)
   {

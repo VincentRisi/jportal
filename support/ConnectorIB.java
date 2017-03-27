@@ -11,7 +11,7 @@
 /// System : JPortal
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.sql.*;
 

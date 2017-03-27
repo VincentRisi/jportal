@@ -17,7 +17,7 @@
 /// $Revision: 1.3 $
 ///
 
-package vlab.crackle.rpc;
+package bbd.crackle.rpc;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

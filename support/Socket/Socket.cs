@@ -16,10 +16,10 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using vlab.idl2;
-using vlab.utility;
+using bbd.idl2;
+using bbd.utility;
 
-namespace vlab.idl2.rpc
+namespace bbd.idl2.rpc
 {
   /// <summary>
   /// $Revision: 401.4 $ $Date: 2004/03/08 08:01:47 $

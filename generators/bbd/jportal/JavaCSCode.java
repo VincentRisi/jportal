@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -106,8 +106,8 @@ public class JavaCSCode extends Generator
         }
         else
         {
-          outData.println("using vlab.utility;");
-          outData.println("namespace vlab.utility");
+          outData.println("using bbd.utility;");
+          outData.println("namespace bbd.utility");
           outData.println("{");
         }
         if (useStandard == true)

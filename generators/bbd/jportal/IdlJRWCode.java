@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -204,7 +204,7 @@ public class IdlJRWCode extends Generator
         try
         {
           outData.println("using System;");
-          outData.println("using vlab.crackle.rw;");
+          outData.println("using bbd.crackle.rw;");
           outData.println();
           outData.println("namespace " + namespace);
           outData.println("{");

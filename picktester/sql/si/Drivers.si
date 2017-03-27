@@ -1,10 +1,10 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   Drivers
-SERVER   vlab
+SERVER   bbd
 
 TABLE Drivers
-    OPTIONS "descr=Input and Output vlab Drivers" "show=Descr"
+    OPTIONS "descr=Input and Output bbd Drivers" "show=Descr"
   Id      Char(16)
   Descr   Char(256)
   Status  byte    (Active=0 Inactive=1 MarkForDelete=2)

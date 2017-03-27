@@ -11,7 +11,7 @@
 ///    Dieter Rosch
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -374,7 +374,7 @@ public class JavaJCCode
           outData.println("package " + table.database.packageName + ";");
           outData.println("");
         }
-        outData.println("import vlab.jportal.*;");
+        outData.println("import bbd.jportal.*;");
         outData.println("import java.sql.*;");
         outData.println("import java.util.*;");
         outData.println("");
@@ -462,7 +462,7 @@ public class JavaJCCode
           outData.println("package " + table.database.packageName + ";");
           outData.println("");
         }
-        outData.println("import vlab.jportal.*;");
+        outData.println("import bbd.jportal.*;");
         outData.println("import java.sql.*;");
         outData.println("import java.util.*;");
         outData.println("");

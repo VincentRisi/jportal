@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -97,7 +97,7 @@ public class JavaOSCode extends Generator
   {
     if (table.database.packageName.length() > 0)
       outData.println("package " + table.database.packageName + ";");
-    outData.println("import vlab.jportal.*;");
+    outData.println("import bbd.jportal.*;");
     outData.println("import java.sql.*;");
     outData.println("/**");
     for (int i=0; i < table.comments.size(); i++)

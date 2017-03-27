@@ -14,11 +14,11 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
-using vlab.idl2;
-using vlab.idl2.rpc;
-using vlab.utility;
+using bbd.idl2;
+using bbd.idl2.rpc;
+using bbd.utility;
 
-namespace vlab.idl2.rpc.ubi
+namespace bbd.idl2.rpc.ubi
 {
   public class Header : Bbd.Idl2.Rpc.Header
   {

@@ -19,7 +19,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace vlab.utility
+namespace bbd.utility
 {
   /// <summary>
   /// A class is to assist in the conversion of arrays of class records to a standard 

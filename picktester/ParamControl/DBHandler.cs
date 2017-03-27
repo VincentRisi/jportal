@@ -2,9 +2,9 @@
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using vlab.jportal;
+using bbd.jportal;
 
-namespace vlab.ParamControl
+namespace bbd.ParamControl
 {
   public struct TPCApplication
   {

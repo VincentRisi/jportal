@@ -10,7 +10,7 @@
 ///    Vincent Risi, Hennie Hammann
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

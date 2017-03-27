@@ -12,7 +12,7 @@
 /*
  * Created on Jan 23, 2004
  */
-package vlab.crackle.rw;
+package bbd.crackle.rw;
 
 
 /**

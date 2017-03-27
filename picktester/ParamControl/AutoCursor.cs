@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace vlab.ParamControl
+namespace bbd.ParamControl
 {
   public class AutoCursor : IDisposable
   {

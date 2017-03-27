@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal.util;
+package bbd.jportal.util;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

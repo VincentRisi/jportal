@@ -12,7 +12,7 @@
 /*
  * Created on Jan 13, 2004
  */
-package vlab.crackle.rpc;
+package bbd.crackle.rpc;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;

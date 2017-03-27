@@ -12,9 +12,9 @@
 /// ------------------------------------------------------------------
 
 using System;
-using vlab.idl2;
+using bbd.idl2;
 
-namespace vlab.idl2.rpc
+namespace bbd.idl2.rpc
 {
   /// <summary>
   /// $Revision: 401.4 $ $Date: 2004/03/08 08:01:47 $

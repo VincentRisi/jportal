@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -97,7 +97,7 @@ public class CSIdl2Code extends Generator
     if (table.database.packageName.length() > 0)
       packName = table.database.packageName;
     else
-      packName = "vlab.jportal";
+      packName = "bbd.jportal";
     try
     {
       outLog.println("Code: "+output+table.useName() + ".ii");

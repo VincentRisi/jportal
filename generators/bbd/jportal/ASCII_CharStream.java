@@ -10,7 +10,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.jportal;
+package bbd.jportal;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to

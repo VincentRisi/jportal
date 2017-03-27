@@ -50,7 +50,7 @@
                             <addClasspath>true</addClasspath>
                         </manifest>
                         <manifestEntries>
-                            <Main-Class>vlab.jportal.Compiler</Main-Class>
+                            <Main-Class>bbd.jportal.Compiler</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>

@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -235,7 +235,7 @@ public class IdlCode extends Generator
         PrintWriter outData = new PrintWriter(outFile);
         try
         {
-          String packageName = "vlab.idl2.jportal";
+          String packageName = "bbd.idl2.jportal";
           if (usePackage == true)
             packageName = table.database.packageName;
           outData.println("// This code was generated, do not modify it, modify it at source and regenerate it.");
@@ -510,8 +510,8 @@ public class IdlCode extends Generator
         try
         {
           outData.println("using System;");
-          outData.println("using vlab.idl2;");
-          String packageName = "vlab.idl2.jportal";
+          outData.println("using bbd.idl2;");
+          String packageName = "bbd.idl2.jportal";
           if (usePackage == true)
             packageName =table.database.packageName;
           if (useSchema == true && table.database.schema.length() > 0)

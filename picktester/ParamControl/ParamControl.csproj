@@ -8,8 +8,8 @@
     <ProjectGuid>{935D56EF-171A-46DB-987E-23421FB992C5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>vlab.ParamControl</RootNamespace>
-    <AssemblyName>vlab.ParamControl</AssemblyName>
+    <RootNamespace>bbd.ParamControl</RootNamespace>
+    <AssemblyName>bbd.ParamControl</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>

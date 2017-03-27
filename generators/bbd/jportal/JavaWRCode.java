@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -129,9 +129,9 @@ public class JavaWRCode extends Generator
     outData.println("// This code was generated, do not modify it, modify it at source and regenerate it.");
     if (table.database.packageName.length() > 0)
       outData.println("package " + table.database.packageName.toLowerCase() + ";");
-    outData.println("import vlab.jportal.*;");
-    outData.println("import vlab.jportal.util.*;");
-    outData.println("import vlab.crackle.util.*;");
+    outData.println("import bbd.jportal.*;");
+    outData.println("import bbd.jportal.util.*;");
+    outData.println("import bbd.crackle.util.*;");
     outData.println("import java.sql.*;");
     outData.println("import java.util.Vector;");
     outData.println("/**");
@@ -990,9 +990,9 @@ public class JavaWRCode extends Generator
         }
         outData.println("import java.io.Serializable;");
         outData.println("import java.sql.*;");
-        outData.println("import vlab.jportal.*;");
-        outData.println("import vlab.jportal.util.*;");
-        outData.println("import vlab.crackle.util.*;");
+        outData.println("import bbd.jportal.*;");
+        outData.println("import bbd.jportal.util.*;");
+        outData.println("import bbd.crackle.util.*;");
         outData.println();
         outData.println("/**");
         for (int i = 0; i < table.comments.size(); i++)
@@ -1092,9 +1092,9 @@ public class JavaWRCode extends Generator
         }
         outData.println("import java.io.Serializable;");
         outData.println("import java.sql.*;");
-        outData.println("import vlab.jportal.*;");
-        outData.println("import vlab.jportal.util.*;");
-        outData.println("import vlab.crackle.util.*;");
+        outData.println("import bbd.jportal.*;");
+        outData.println("import bbd.jportal.util.*;");
+        outData.println("import bbd.crackle.util.*;");
         outData.println();
         outData.println("/**");
         for (int j = 0; j < proc.comments.size(); j++)

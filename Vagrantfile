@@ -15,6 +15,9 @@ Vagrant.configure(2) do |config|
   #If you prefer a mint linux box, uncomment the line below, and comment out the ubuntu1404 line
   #config.vm.box = "npalm/mint17-amd64-cinnamon"
   config.vm.box = "box-cutter/ubuntu1404-desktop"
+  
+  #Change the hostname of the VM to something more meaningful
+  config.vm.hostname = "jportal_development"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -56,7 +59,7 @@ Vagrant.configure(2) do |config|
   #
   config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
-     vb.gui = true
+  #   vb.gui = true
   #
   #   # Customize the amount of memory on the VM:
   #   vb.memory = "1024"

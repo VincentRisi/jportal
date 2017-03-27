@@ -13,7 +13,7 @@
  * Created on 2005/06/10
  *
  */
-package vlab.crackle;
+package bbd.crackle;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

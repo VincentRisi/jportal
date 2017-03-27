@@ -12,7 +12,7 @@
 ///    Vincent Risi, Hennie Hammann
 ///    Dieter Rosch
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-package vlab.jportal;
+package bbd.jportal;
 
 /**
  * Describes the input token stream.

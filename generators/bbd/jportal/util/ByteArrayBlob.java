@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.jportal.util;
+package bbd.jportal.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

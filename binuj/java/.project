@@ -16,34 +16,34 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>server/vlab/binu/BinuDispatch.java</name>
+			<name>server/bbd/binu/BinuDispatch.java</name>
 			<type>1</type>
-			<locationURI>BINUJ_BUILD_LOC/vlab/binu/BinuDispatch.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/bbd/binu/BinuDispatch.java</locationURI>
 		</link>
 		<link>
-			<name>server/vlab/binu/BinuIFace.java</name>
+			<name>server/bbd/binu/BinuIFace.java</name>
 			<type>1</type>
-			<locationURI>BINUJ_BUILD_LOC/vlab/binu/BinuIFace.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/bbd/binu/BinuIFace.java</locationURI>
 		</link>
 		<link>
-			<name>server/vlab/binu/BinuImpl.java</name>
+			<name>server/bbd/binu/BinuImpl.java</name>
 			<type>1</type>
-			<locationURI>BINUJ_BUILD_LOC/vlab/binu/BinuImpl.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/bbd/binu/BinuImpl.java</locationURI>
 		</link>
 		<link>
-			<name>server/vlab/binu/BinuStructs.java</name>
+			<name>server/bbd/binu/BinuStructs.java</name>
 			<type>1</type>
-			<locationURI>BINUJ_BUILD_LOC/vlab/binu/BinuStructs.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/bbd/binu/BinuStructs.java</locationURI>
 		</link>
 		<link>
-			<name>server/vlab/binu/parser/Parser.java</name>
+			<name>server/bbd/binu/parser/Parser.java</name>
 			<type>1</type>
-			<locationURI>BINUJ_BUILD_LOC/vlab/binu/parser/Parser.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/bbd/binu/parser/Parser.java</locationURI>
 		</link>
 		<link>
-			<name>server/vlab/binu/parser/Scanner.java</name>
+			<name>server/bbd/binu/parser/Scanner.java</name>
 			<type>1</type>
-			<locationURI>BINUJ_BUILD_LOC/vlab/binu/parser/Scanner.java</locationURI>
+			<locationURI>BINUJ_BUILD_LOC/bbd/binu/parser/Scanner.java</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

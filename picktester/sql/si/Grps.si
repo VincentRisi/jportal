@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   Grps
-SERVER   vlab
+SERVER   bbd
 
 TABLE Grps
     OPTIONS "descr=Groups"
@@ -32,8 +32,8 @@ endcode
 
 sqldata
 --start transaction;
-INSERT INTO grps values ('INTRSYS', 'Intrinsics Scripter', 'vlabIDE', current_timestamp);
-INSERT INTO grps values ('NEDPAYM', 'Nedpayment Scripter', 'vlabIDE', current_timestamp);
-INSERT INTO grps values ('ZARPAYM', 'Zarpayment Scripter', 'vlabIDE', current_timestamp);
+INSERT INTO grps values ('INTRSYS', 'Intrinsics Scripter', 'bbdIDE', current_timestamp);
+INSERT INTO grps values ('NEDPAYM', 'Nedpayment Scripter', 'bbdIDE', current_timestamp);
+INSERT INTO grps values ('ZARPAYM', 'Zarpayment Scripter', 'bbdIDE', current_timestamp);
 commit;
 enddata

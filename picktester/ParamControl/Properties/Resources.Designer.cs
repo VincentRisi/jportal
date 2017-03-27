@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace vlab.ParamControl.Properties {
+namespace bbd.ParamControl.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace vlab.ParamControl.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("vlab.ParamControl.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("bbd.ParamControl.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,9 +62,9 @@ namespace vlab.ParamControl.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to import clr
-        ///clr.AddReference(&apos;vlab.ParamControl&apos;)
+        ///clr.AddReference(&apos;bbd.ParamControl&apos;)
         ///
-        ///from vlab.ParamControl import Logger, ParamControlForm
+        ///from bbd.ParamControl import Logger, ParamControlForm
         ///
         ///def loginfo(*parts):
         ///  Logger.Info = &apos;%s &apos; * len(parts) % parts

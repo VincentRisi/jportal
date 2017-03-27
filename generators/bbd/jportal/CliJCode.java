@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -308,8 +308,8 @@ public class CliJCode extends Generator
           outData.println("package " + table.database.packageName.toLowerCase() + ";");
           outData.println();
         }
-        outData.println("import vlab.crackle.rdc.*;");
-        outData.println("import vlab.crackle.util.*;");
+        outData.println("import bbd.crackle.rdc.*;");
+        outData.println("import bbd.crackle.util.*;");
         outData.println();
         if (table.comments.size() > 0)
         {

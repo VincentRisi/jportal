@@ -5,7 +5,7 @@ antMake(target_decompiler_ant ${DECOMPILERS_SOURCE_DIR}/java/build.xml)
 set (class_bin_dir ${DECOMPILERS_SOURCE_DIR}/java/bin)
 
 set (wild_card
-  vlab/jportal/decompiler/*.class
+  bbd/jportal/decompiler/*.class
 )
 set (decompiler_jar ${class_bin_dir}/decompiler.jar)
 set (manifest_file  ${DECOMPILERS_SOURCE_DIR}/java/Manifest.txt)

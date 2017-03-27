@@ -1,5 +1,5 @@
 DATABASE smdb FLAGS "pymod=idl2tester" "dont qualify"
-PACKAGE  vlab
+PACKAGE  bbd
 OUTPUT   ZedZedBiz
 SERVER   ssm
 SCHEMA   ssmd00

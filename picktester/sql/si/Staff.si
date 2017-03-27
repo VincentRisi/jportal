@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   Staff
-SERVER   vlab
+SERVER   bbd
 
 TABLE Staff
     OPTIONS "descr=Staff" "show=Name"
@@ -35,7 +35,7 @@ endcode
 
 sqldata
 --start transaction;
-INSERT INTO Staff values ('vlabIDE', 'Super Snooper', 'Main Super user', 'vlabIDE', current_timestamp);
+INSERT INTO Staff values ('bbdIDE', 'Super Snooper', 'Main Super user', 'bbdIDE', current_timestamp);
 commit;
 enddata
 

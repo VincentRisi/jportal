@@ -11,7 +11,7 @@
 /// ------------------------------------------------------------------
 
 
-package vlab.jportal;
+package bbd.jportal;
 
 
 public class Tester

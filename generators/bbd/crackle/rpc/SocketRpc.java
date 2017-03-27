@@ -12,7 +12,7 @@
 /*
  * Created on Jan 13, 2004
  */
-package vlab.crackle.rpc;
+package bbd.crackle.rpc;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

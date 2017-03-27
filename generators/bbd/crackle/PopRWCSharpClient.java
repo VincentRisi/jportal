@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.crackle;
+package bbd.crackle;
 
 /**
  * @author vince
@@ -173,7 +173,7 @@ public class PopRWCSharpClient extends Generator
         outData.println();
         outData.println("using System;");
         outData.println("using System.IO;");
-        outData.println("using vlab.crackle.rw;");
+        outData.println("using bbd.crackle.rw;");
         generateUsings(module, outData);
         outData.println();
         outData.println(makeNameSpace(module));
@@ -554,7 +554,7 @@ public class PopRWCSharpClient extends Generator
         outData.println("// 1: Mutilation, Spindlization and Bending will result in goto 1");
         outData.println();
         outData.println("using System;");
-        outData.println("using vlab.crackle.rw;");
+        outData.println("using bbd.crackle.rw;");
         generateUsings(module, outData);
         outData.println();
         outData.println(makeNameSpace(module));

@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -101,8 +101,8 @@ public class JavaSCCode extends Generator
     outData.println("import java.sql.PreparedStatement;");
     outData.println("import java.sql.ResultSet;");
     outData.println("import java.sql.SQLException;");
-    outData.println("import vlab.jportal.util.Connector;");
-    outData.println("import vlab.jportal.util.Query;");
+    outData.println("import bbd.jportal.util.Connector;");
+    outData.println("import bbd.jportal.util.Query;");
     outData.println("/**");
     for (int i=0; i < table.comments.size(); i++)
     {

@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.crackle;
+package bbd.crackle;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

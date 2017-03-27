@@ -13,7 +13,7 @@
 
 using System;
 
-namespace vlab.utility
+namespace bbd.utility
 {
   public class Rdc
   {

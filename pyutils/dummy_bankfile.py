@@ -1,6 +1,6 @@
 from string import join
 ins = '''\
-INSERT INTO vlab.bankfile(
+INSERT INTO bbd.bankfile(
 swiftaddress, bankname, banktown, banktype, physicalcountry,
 authkeysexchd, tgtestkeysexchd, deleteind,
 status, usid, tmstamp)

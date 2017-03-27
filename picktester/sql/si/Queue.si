@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   Queue
-SERVER   vlab
+SERVER   bbd
 
 TABLE Queue
     OPTIONS "descr=Queues" "show=Name"
@@ -44,12 +44,12 @@ INSERT INTO Queue values ('SAFFY-TP' , 'SAFFY-TP'     , 'SAFFY-TP' , 'SAFFYRCV',
 INSERT INTO Queue values ('SAFFY-FP' , 'SAFFY-FP'     , 'SAFFY-FP' , 'NONE'    , 'SAFFYSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
 INSERT INTO Queue values ('SWIFT'    , 'SWIFT'        , 'SWIFT'    , 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
 INSERT INTO Queue values ('TEST1'    , 'TEST!'        , 'TEST!'    , 'NONE'    , 'NONE'    , 0, 17, 0, 'PREDEFINED', current_timestamp);
-INSERT INTO Queue values ('TIBOS-FP' , 'TIBOS-FROMvlab'     , 'TIBOS-FP' , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
-INSERT INTO Queue values ('TIBOS-TP' , 'TIBOS-TOvlab'     , 'TIBOS-TP' , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('TIBOS-FP' , 'TIBOS-FROMbbd'     , 'TIBOS-FP' , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('TIBOS-TP' , 'TIBOS-TObbd'     , 'TIBOS-TP' , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
 INSERT INTO Queue values ('WASTE-FP' , 'WASTE-FP'     , 'WASTE'    , 'NONE'    , 'TIBOSSND', 1, 17, 1, 'PREDEFINED', current_timestamp);
 INSERT INTO Queue values ('WASTE-TP' , 'WASTE-TP'     , 'WASTE'    , 'TIBOSSND', 'ROUTER'  , 2, 17, 1, 'PREDEFINED', current_timestamp);
-INSERT INTO Queue values ('DT-TP'    , 'DT-TOvlab'  , 'DT'       , 'TCPIN'   , 'ROUTER'  , 0, 17, 1, 'PREDEFINED', current_timestamp);
-INSERT INTO Queue values ('DT-FP'    , 'DT-FROMvlab', 'DT'       , 'TCPOUT'  , 'NONE'    , 3, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('DT-TP'    , 'DT-TObbd'  , 'DT'       , 'TCPIN'   , 'ROUTER'  , 0, 17, 1, 'PREDEFINED', current_timestamp);
+INSERT INTO Queue values ('DT-FP'    , 'DT-FROMbbd', 'DT'       , 'TCPOUT'  , 'NONE'    , 3, 17, 1, 'PREDEFINED', current_timestamp);
 INSERT INTO Queue values ('DATE-EXCEPTION'  , 'DATE-EXCEPTION' , 'DATE-EXCEPTION', 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
 INSERT INTO Queue values ('EXCEPTCHGDEBAMT' , 'NEDPAYMENT1'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);
 INSERT INTO Queue values ('EXCEPTION-TXNTYP', 'NEDPAYMENT2'     , 'NEDPAYMENT'    , 'NONE', 'NONE', 0, 17, 0, 'PREDEFINED', current_timestamp);

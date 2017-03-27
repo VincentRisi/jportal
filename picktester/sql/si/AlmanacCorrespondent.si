@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   AlmanacCorrespondent
-SERVER   vlab
+SERVER   bbd
 
 TABLE AlmanacCorrespondent
     OPTIONS "lookup=FinId CorrCurrency CorrFinId CorrBranchId CorrSwiftAddress Status" "descr=Almanac Correspondents"

@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -52,12 +52,12 @@ public class Decompile
       }
       if (args.length < 2+i)
       {
-        outLog.println("usage java vlab.jportal.Decompile (-l logfile)? <decompiler> (-s schema)? <connect> (generators)+");
+        outLog.println("usage java bbd.jportal.Decompile (-l logfile)? <decompiler> (-s schema)? <connect> (generators)+");
         outLog.println("for example to re(verse)engineer Oracle");
         outLog.println();
-        outLog.println("java vlab.jportal.Decompile OracleRE vlab/polly@192.168.1.141:1521/orcl -o sql OracleDDL");
-        outLog.println("This would expect <decompiler> of vlab.jportal.decompiler.Oracle");
-        outLog.println("                  <connect> of vlab with password polly at host:port/SID of 192.168.1.141:1521/orcl");
+        outLog.println("java bbd.jportal.Decompile OracleRE bbd/polly@192.168.1.141:1521/orcl -o sql OracleDDL");
+        outLog.println("This would expect <decompiler> of bbd.jportal.decompiler.Oracle");
+        outLog.println("                  <connect> of bbd with password polly at host:port/SID of 192.168.1.141:1521/orcl");
         outLog.flush();
         return;
       }
@@ -97,7 +97,7 @@ public class Decompile
         }
         outLog.println(args[i]);
         String generator = args[i];
-        Class<?> classOf = Class.forName("vlab.jportal."+generator);
+        Class<?> classOf = Class.forName("bbd.jportal."+generator);
         Class<?> parmsOf[] = {database.getClass(), output.getClass(), outLog.getClass()};
         Method methodOf = classOf.getMethod("generate", parmsOf);
         Object parms[] = {database, output, outLog};
@@ -114,7 +114,7 @@ public class Decompile
   private static Database runDecompiler(PrintWriter outLog, String decompiler, String schema, String connect)
 		throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException 
   {
-    Class<?> classOf = Class.forName("vlab.jportal.decompiler."+decompiler);
+    Class<?> classOf = Class.forName("bbd.jportal.decompiler."+decompiler);
     Class<?> parmsOf[] = {schema.getClass(), connect.getClass(), outLog.getClass()};
     Method methodOf = classOf.getMethod("devolve", parmsOf);
     Object parms[] = {connect, outLog};

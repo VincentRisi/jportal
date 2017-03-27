@@ -5,7 +5,7 @@
 project decompiler
 
 source_dir=/main/jportal/decompilers/sql/si
-binary_dir=/main/jportal/build/decompilers/java/vlab/jportal/decompiler
+binary_dir=/main/jportal/build/decompilers/java/bbd/jportal/decompiler
 
 jportal
   JavaSCCode ${binary_dir} %i.java

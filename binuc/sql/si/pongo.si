@@ -1,5 +1,5 @@
 database utdb FLAGS "pymod=idl2tester" "dont qualify" "use package" "utf-8"
-package  vlab.puffin
+package  bbd.puffin
 output   pongo
 server   uttm
 schema   uttm

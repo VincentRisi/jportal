@@ -152,15 +152,15 @@ We include a subdirectory for a database decompiler application used from jporta
     
     set (class_bin_dir ${GENERATORS_SOURCE_DIR}/bin)
     
-    add_subdirectory(vlab/jportal/decompiler)
+    add_subdirectory(bbd/jportal/decompiler)
     
     set (wild_card 
-      vlab/jportal/*.class 
-      vlab/jportal/decompiler/*.class 
-      vlab/jportal/util/*.class
+      bbd/jportal/*.class 
+      bbd/jportal/decompiler/*.class 
+      bbd/jportal/util/*.class
     )
     set (jportal_jar    ${class_bin_dir}/jportal.jar)
-    set (manifest_file  ${GENERATORS_SOURCE_DIR}/vlab/jportal/Manifest.txt)
+    set (manifest_file  ${GENERATORS_SOURCE_DIR}/bbd/jportal/Manifest.txt)
     message (STATUS "COMMAND ${jarExe} vcfm ${jportal_jar} ${manifest_file} ${wild_card}")
     add_custom_target (target_jportal_jar ALL
       ${jarExe} vcfm ${jportal_jar} ${manifest_file} ${wild_card}
@@ -168,23 +168,23 @@ We include a subdirectory for a database decompiler application used from jporta
     )
     
     set (wild_card 
-      vlab/crackle/*.class 
-      vlab/crackle/rdc/*.class 
-      vlab/crackle/rpc/*.class 
-      vlab/crackle/rw/*.class
-      vlab/crackle/util/*.class
+      bbd/crackle/*.class 
+      bbd/crackle/rdc/*.class 
+      bbd/crackle/rpc/*.class 
+      bbd/crackle/rw/*.class
+      bbd/crackle/util/*.class
     )
     set (crackle_jar ${class_bin_dir}/crackle.jar)
-    set (manifest_file  ${GENERATORS_SOURCE_DIR}/vlab/crackle/Manifest.txt)
+    set (manifest_file  ${GENERATORS_SOURCE_DIR}/bbd/crackle/Manifest.txt)
     message (STATUS "COMMAND ${jarExe} vcfm ${crackle_jar} ${manifest_file} ${wild_card}")
     add_custom_target (target_crackle_jar ALL
       ${jarExe} vcfm ${crackle_jar} ${manifest_file} ${wild_card}
       WORKING_DIRECTORY ${class_bin_dir}
     )
     
-    set (wild_card vlab/pickle/*.class)
+    set (wild_card bbd/pickle/*.class)
     set (pickle_jar ${class_bin_dir}/pickle.jar)
-    set (manifest_file  ${GENERATORS_SOURCE_DIR}/vlab/pickle/Manifest.txt)
+    set (manifest_file  ${GENERATORS_SOURCE_DIR}/bbd/pickle/Manifest.txt)
     message (STATUS "COMMAND ${jarExe} vcfm ${pickle_jar} ${manifest_file} ${wild_card}")
     add_custom_target (target_pickle_jar ALL
       ${jarExe} vcfm ${pickle_jar} ${manifest_file} ${wild_card}
@@ -195,7 +195,7 @@ This is an example of using anydbMake within cmake.
 It should be noted that anydbMake is a special make system for the jportal generators.
 The is a markdown document describing the anydbMake, viz. anydbMake.md.
 
-## jportal/generators/vlab/jportal/decompiler
+## jportal/generators/bbd/jportal/decompiler
 
     project (jportal_decompiler)
     
@@ -298,10 +298,10 @@ CocoR is a very nice parser generator. The cmake here builds it using standard c
 
     project (jportal_binuj)
     
-    anydbMake(jportal_binuj ${BINUJ_SOURCE_DIR}/binuj.anydb "${BINUJ_BINARY_DIR}/vlab/binu/BinuImpl.java")
+    anydbMake(jportal_binuj ${BINUJ_SOURCE_DIR}/binuj.anydb "${BINUJ_BINARY_DIR}/bbd/binu/BinuImpl.java")
     
     set (cocoJar ${CMAKE_SOURCE_DIR}/support/Coco.jar)
-    set (parser_dir ${BINUJ_BINARY_DIR}/vlab/binu/parser)
+    set (parser_dir ${BINUJ_BINARY_DIR}/bbd/binu/parser)
     file (MAKE_DIRECTORY ${parser_dir})
     
     set (generated

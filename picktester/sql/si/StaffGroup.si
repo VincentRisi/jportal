@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   StaffGroup
-SERVER   vlab
+SERVER   bbd
 
 TABLE StaffGroup
     OPTIONS "lookup=StaffId GroupId" "descr=Staff Group Relationship"
@@ -86,8 +86,8 @@ endcode
 
 sqldata
 --start transaction;
-INSERT INTO StaffGroup values ('vlabIDE', 'INTRSYS', 'vlabIDE', current_timestamp);
-INSERT INTO StaffGroup select Staff.ID, 'NEDPAYM', 'vlabIDE', current_timestamp from Staff;
-INSERT INTO StaffGroup select Staff.ID, 'ZARPAYM', 'vlabIDE', current_timestamp from Staff;
+INSERT INTO StaffGroup values ('bbdIDE', 'INTRSYS', 'bbdIDE', current_timestamp);
+INSERT INTO StaffGroup select Staff.ID, 'NEDPAYM', 'bbdIDE', current_timestamp from Staff;
+INSERT INTO StaffGroup select Staff.ID, 'ZARPAYM', 'bbdIDE', current_timestamp from Staff;
 commit;
 enddata

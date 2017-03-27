@@ -14,7 +14,7 @@
 using System;
 using System.Net;
 
-namespace vlab.utility
+namespace bbd.utility
 {
 	/// <summary>
 	/// This class is used to supply various TcpIP functions

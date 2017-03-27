@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   BankFile
-SERVER   vlab
+SERVER   bbd
 
 TABLE BankFile
     OPTIONS "lookup=SwiftAddress BankName BankTown BankType PhysicalCountry Status" "nodomain" "descr=Bank File" "show=BankName BankTown BankType"

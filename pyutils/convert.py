@@ -9,10 +9,10 @@ parser.add_option("-p", "--parmCheck",  dest="parmCheck",  default=False, action
 
 top = '''\
 DATABASE putty FLAGS 'user=USId(16)' 'when=TmStamp'
-PACKAGE  vlab
+PACKAGE  bbd
 OUTPUT   %s
 SERVER   npu
-SCHEMA   vlab
+SCHEMA   bbd
 '''
 
 for in_filename in sorted(glob.glob('%s/si/*.si' % (options.sourcePath))):

@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.crackle.rpc;
+package bbd.crackle.rpc;
 
 public class Event
 {

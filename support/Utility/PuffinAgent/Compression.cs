@@ -17,7 +17,7 @@ using System.Text;
 using System.IO;
 using System.IO.Compression;
 
-namespace vlab.idl2.PuffinAgent
+namespace bbd.idl2.PuffinAgent
 {
   public class Compression
   {

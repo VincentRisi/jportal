@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -89,7 +89,7 @@ public class BinCSCode extends Generator
           outData.println("using System;");
           outData.println("using System.IO;");
           //outData.println("using Bbd.Idl2;");
-          outData.println("namespace vlab.jportal");
+          outData.println("namespace bbd.jportal");
           outData.println("{");
           generateStructs(table, outData);
           //generateBinUsage(table, outData);

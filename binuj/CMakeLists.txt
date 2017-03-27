@@ -11,7 +11,7 @@ if (USE_BINUJ)
   anydbMake2(jportal_binuj ${BINUJ_SOURCE_DIR}/binuj.anydb ${sources})
   
   set (cocoJar ${CMAKE_SOURCE_DIR}/support/Coco.jar)
-  set (parser_dir ${BINUJ_BINARY_DIR}/vlab/binu/parser)
+  set (parser_dir ${BINUJ_BINARY_DIR}/bbd/binu/parser)
   file (MAKE_DIRECTORY ${parser_dir})
   
   set (generated

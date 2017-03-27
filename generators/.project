@@ -16,99 +16,99 @@
 	</natures>
 	<!--linkedResources>
 		<link>
-			<name>vlab/jportal/decompiler/Oracle.java</name>
+			<name>bbd/jportal/decompiler/Oracle.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/Oracle.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/Oracle.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleConstraintColumnsRec.java</name>
+			<name>bbd/jportal/decompiler/OracleConstraintColumnsRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleConstraintColumnsRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleConstraintColumnsRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleForeignLinksRec.java</name>
+			<name>bbd/jportal/decompiler/OracleForeignLinksRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleForeignLinksRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleForeignLinksRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleGetIndexTableSpaceRec.java</name>
+			<name>bbd/jportal/decompiler/OracleGetIndexTableSpaceRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleGetIndexTableSpaceRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleGetIndexTableSpaceRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleIndexColumnsRec.java</name>
+			<name>bbd/jportal/decompiler/OracleIndexColumnsRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleIndexColumnsRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleIndexColumnsRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleIndexesRec.java</name>
+			<name>bbd/jportal/decompiler/OracleIndexesRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleIndexesRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleIndexesRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleSequencesRec.java</name>
+			<name>bbd/jportal/decompiler/OracleSequencesRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleSequencesRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleSequencesRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleSynonymsRec.java</name>
+			<name>bbd/jportal/decompiler/OracleSynonymsRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleSynonymsRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleSynonymsRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTableColumnsRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTableColumnsRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTableColumnsRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTableColumnsRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTableForeignKeysRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTableForeignKeysRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTableForeignKeysRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTableForeignKeysRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTableGrantsRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTableGrantsRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTableGrantsRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTableGrantsRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTableIndexesRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTableIndexesRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTableIndexesRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTableIndexesRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTablePrimaryKeyRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTablePrimaryKeyRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTablePrimaryKeyRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTablePrimaryKeyRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTableSequenceRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTableSequenceRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTableSequenceRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTableSequenceRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTableTypeCRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTableTypeCRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTableTypeCRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTableTypeCRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTableUniqueKeysRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTableUniqueKeysRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTableUniqueKeysRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTableUniqueKeysRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleTablesRec.java</name>
+			<name>bbd/jportal/decompiler/OracleTablesRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleTablesRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleTablesRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleViewColumnsRec.java</name>
+			<name>bbd/jportal/decompiler/OracleViewColumnsRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleViewColumnsRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleViewColumnsRec.java</locationURI>
 		</link>
 		<link>
-			<name>vlab/jportal/decompiler/OracleViewsRec.java</name>
+			<name>bbd/jportal/decompiler/OracleViewsRec.java</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/build/generators/vlab/jportal/decompiler/OracleViewsRec.java</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/build/generators/bbd/jportal/decompiler/OracleViewsRec.java</locationURI>
 		</link>
 	</linkedResources-->
 </projectDescription>

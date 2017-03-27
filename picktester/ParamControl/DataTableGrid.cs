@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace vlab.ParamControl
+namespace bbd.ParamControl
 {
   public class DataTableGrid
   {

@@ -12,8 +12,8 @@
 // for the transaction. The validation is the last line validation invoked.
 //
 //   import clr
-//   clr.AddReference('vlab.ParamControl')
-//   from vlab.ParamControl import Logger, ParamControlForm
+//   clr.AddReference('bbd.ParamControl')
+//   from bbd.ParamControl import Logger, ParamControlForm
 //   def loginfo(*parts):
 //     Logger.Info = '%s ' * len(parts) % parts
 //   def logwarn(*parts):

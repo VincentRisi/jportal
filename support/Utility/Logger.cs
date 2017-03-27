@@ -18,7 +18,7 @@ using System.IO;
 using System.Text;
 using System.Diagnostics;
 
-namespace vlab.utility
+namespace bbd.utility
 {
   public class Logger
   {

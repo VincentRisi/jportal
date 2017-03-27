@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.crackle;
+package bbd.crackle;
 
 /**
  * @author vince
@@ -128,7 +128,7 @@ public class PopGenJava extends Generator
   {
     if (module.packageName.length() > 0)
       return module.packageName;
-    return "vlab."+module.name.toLowerCase()+".crackle";
+    return "bbd."+module.name.toLowerCase()+".crackle";
   }
   public static void generateStruct(Module module, Structure structure, String output, PrintWriter outLog) throws Exception
   {
@@ -329,7 +329,7 @@ public class PopGenJava extends Generator
     {
       outData.println("package "+packageName(module)+";");
       outData.println();
-      outData.println("import vlab.crackle.rpc.BaseIFace;");
+      outData.println("import bbd.crackle.rpc.BaseIFace;");
       outData.println("import java.util.Hashtable;");
       usings = new Vector<String>();
       generateUsingsNoTables(module, outData);
@@ -398,7 +398,7 @@ public class PopGenJava extends Generator
     {
       outData.println("package "+packageName(module)+";");
       outData.println();
-      outData.println("import vlab.crackle.rpc.Rpc;");
+      outData.println("import bbd.crackle.rpc.Rpc;");
       outData.println("import java.util.Hashtable;");
       usings = new Vector<String>();
       generateUsingsNoTables(module, outData);
@@ -409,11 +409,11 @@ public class PopGenJava extends Generator
       generateProxyCalls(module, outData);
       outData.println("  public Hashtable get_CallersPouch()");
       outData.println("  {");
-      outData.println("    return ((vlab.crackle.rpc.SocketRpc)_rpc).get_CallersPouch();");
+      outData.println("    return ((bbd.crackle.rpc.SocketRpc)_rpc).get_CallersPouch();");
       outData.println("  }");
       outData.println("  public void set_CallersPouch(Hashtable pouch)");
       outData.println("  {");
-      outData.println("    ((vlab.crackle.rpc.SocketRpc)_rpc).set_CallersPouch(pouch);");
+      outData.println("    ((bbd.crackle.rpc.SocketRpc)_rpc).set_CallersPouch(pouch);");
       outData.println("  }");
       outData.println("}");
     }
@@ -541,10 +541,10 @@ public class PopGenJava extends Generator
     {
       outData.println("package "+packageName(module)+";");
       outData.println();
-      outData.println("import vlab.crackle.rpc.Rpc;");
-      outData.println("import vlab.crackle.rpc.Header;");
-      outData.println("import vlab.crackle.rpc.Event;");
-      outData.println("import vlab.jportal.Connector;");
+      outData.println("import bbd.crackle.rpc.Rpc;");
+      outData.println("import bbd.crackle.rpc.Header;");
+      outData.println("import bbd.crackle.rpc.Event;");
+      outData.println("import bbd.jportal.Connector;");
       outData.println("import org.apache.log4j.Logger;");
       usings = new Vector<String>();
       generateUsingsNoTablesNoStructs(module, outData);
@@ -572,8 +572,8 @@ public class PopGenJava extends Generator
     {
       outData.println("package "+packageName(module)+";");
       outData.println();
-      outData.println("import vlab.crackle.rpc.Rpc;");
-      outData.println("import vlab.jportal.Connector;");
+      outData.println("import bbd.crackle.rpc.Rpc;");
+      outData.println("import bbd.jportal.Connector;");
       outData.println("import java.util.Hashtable;");
       usings = new Vector<String>();
       generateUsings(module, outData);

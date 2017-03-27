@@ -23,9 +23,9 @@
       <rotateLog>1</rotateLog>
       <Service>23456</Service>
       <python>/usr/bin/python</python>
-      <datadir>/main/vlab/data/binu</datadir>
-      <pythonpath>/main/vlab/bin/pyextensions;/main/vlab/bin/pyextensions/binu</pythonpath>
-      <script>/main/vlab/bin/pyextensions/binu_start.py</script>
+      <datadir>/main/bbd/data/binu</datadir>
+      <pythonpath>/main/bbd/bin/pyextensions;/main/bbd/bin/pyextensions/binu</pythonpath>
+      <script>/main/bbd/bin/pyextensions/binu_start.py</script>
     </binuserver>
   </specific>
 </config>

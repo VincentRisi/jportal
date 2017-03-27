@@ -13,7 +13,7 @@
 
 using System;
 
-namespace vlab.idl2
+namespace bbd.idl2
 {
   /// <summary>
   /// $Revision: 401.3 $ $Date: 2004/03/08 08:01:47 $

@@ -16,9 +16,9 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using vlab.utility;
+using bbd.utility;
 
-namespace vlab.utility.rpc
+namespace bbd.utility.rpc
 {
   /// <summary>
   /// $Revision: 401.4 $ $Date: 2004/03/08 08:01:47 $

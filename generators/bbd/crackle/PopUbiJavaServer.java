@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.crackle;
+package bbd.crackle;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -114,7 +114,7 @@ public class PopUbiJavaServer extends Generator
   {
     if (module.packageName.length() > 0)
       return module.packageName;
-    return "vlab." + module.name.toLowerCase() + ".crackle";
+    return "bbd." + module.name.toLowerCase() + ".crackle";
   }
   private static void primeUsings(Module module)
   {
@@ -302,11 +302,11 @@ public class PopUbiJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import vlab.crackle.rdc.RpcSocket;");
-      outData.println("import vlab.crackle.rdc.Header;");
-      outData.println("import vlab.crackle.rdc.Reader;");
-      outData.println("import vlab.crackle.rdc.Handler;");
-      outData.println("import vlab.jportal.util.Connector;");
+      outData.println("import bbd.crackle.rdc.RpcSocket;");
+      outData.println("import bbd.crackle.rdc.Header;");
+      outData.println("import bbd.crackle.rdc.Reader;");
+      outData.println("import bbd.crackle.rdc.Handler;");
+      outData.println("import bbd.jportal.util.Connector;");
       outData.println("import org.apache.log4j.Logger;");
       primeUsings(module);
       generateUsings(module, outData);
@@ -690,7 +690,7 @@ public class PopUbiJavaServer extends Generator
     {
       outData.println("package " + packageName(module) + ";");
       outData.println();
-      outData.println("import vlab.jportal.util.Connector;");
+      outData.println("import bbd.jportal.util.Connector;");
       primeUsings(module);
       generateUsings(module, outData);
       outData.println();

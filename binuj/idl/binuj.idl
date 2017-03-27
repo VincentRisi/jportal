@@ -1,5 +1,5 @@
 module Binu
-package vlab.binu
+package bbd.binu
 version "1.0.0.0"
 
 message
@@ -8,8 +8,8 @@ message
   UNHANDLED_ERROR    "UNHANDLED ERROR"
 }
 
-struct tjAction "import vlab.binu.parser.TJAction;"
-struct Idl2Thread "import vlab.binu.Idl2Thread;"
+struct tjAction "import bbd.binu.parser.TJAction;"
+struct Idl2Thread "import bbd.binu.Idl2Thread;"
 
 public struct Binu
 {

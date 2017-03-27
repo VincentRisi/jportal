@@ -1,7 +1,7 @@
-DATABASE vlab FLAGS 'user=USId(16)' 'when=TmStamp'//
-PACKAGE  vlab
+DATABASE bbd FLAGS 'user=USId(16)' 'when=TmStamp'//
+PACKAGE  bbd
 OUTPUT   TestPack
-SERVER   vlab
+SERVER   bbd
 
 TABLE   TestPack
     OPTIONS "descr=Test Packs"

@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal.util;
+package bbd.jportal.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

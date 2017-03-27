@@ -1,7 +1,7 @@
 import clr
-clr.AddReference('vlab.ParamControl')
+clr.AddReference('bbd.ParamControl')
 
-from vlab.ParamControl import Logger, ParamControlForm
+from bbd.ParamControl import Logger, ParamControlForm
 
 def loginfo(*parts):
   Logger.Info = '%s ' * len(parts) % parts

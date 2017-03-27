@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.crackle;
+package bbd.crackle;
 import java.io.PrintWriter;
 import java.util.Vector;
 

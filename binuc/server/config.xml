@@ -11,7 +11,7 @@
       <restartCommand>echo</restartCommand>
       <statsCheckSeconds>15</statsCheckSeconds>
     </common>
-    server_debug="" command_args="-c C:\vlab\source\binu\server\config.xml" 
+    server_debug="" command_args="-c C:\bbd\source\binu\server\config.xml" 
   -->
   <specific>
     <binuserver>
@@ -26,9 +26,9 @@
       <logDisplay>1</logDisplay>
       <Service>23456</Service>
       <python>c:\python25\python.exe</python>
-      <datadir>c:\vlab\build\binu\temp</datadir>
-      <pythonpath>c:\vlab\build\lib;c:\vlab\build\lib\binu.zip</pythonpath>
-      <script>c:\vlab\source\binu\python\binu_start.py</script>
+      <datadir>c:\bbd\build\binu\temp</datadir>
+      <pythonpath>c:\bbd\build\lib;c:\bbd\build\lib\binu.zip</pythonpath>
+      <script>c:\bbd\source\binu\python\binu_start.py</script>
     </binuserver>
   </specific>
 </config>

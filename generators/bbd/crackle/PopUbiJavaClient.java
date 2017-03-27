@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.crackle;
+package bbd.crackle;
 
 /**
  * @author vince
@@ -247,7 +247,7 @@ public class PopUbiJavaClient extends Generator
             .println("// 1: Mutilation, Spindlization and Bending will result in goto 1");
         outData.println(makeNameSpace(module));
         outData.println();
-        outData.println("import vlab.crackle.rdc.*;");
+        outData.println("import bbd.crackle.rdc.*;");
         outData.println();
         outData.println("public class " + module.name + "Structs");
         outData.println("{");
@@ -276,7 +276,7 @@ public class PopUbiJavaClient extends Generator
   private static String getPackageName(Module module)
   {
     if (module.packageName.length() == 0)
-      return "vlab.crackle." + module.name.toLowerCase();
+      return "bbd.crackle." + module.name.toLowerCase();
     return module.packageName;
   }
   private static String makeNameSpace(Module module)
@@ -304,7 +304,7 @@ public class PopUbiJavaClient extends Generator
             .println("// Mutilation, Spindlization and Bending will result in ...");
         outData.println(makeNameSpace(module));
         outData.println();
-        outData.println("import vlab.crackle.rdc.*;");
+        outData.println("import bbd.crackle.rdc.*;");
         generateUsings(module, outData);
         outData.println();
         outData.println("public class " + module.name + " extends Client");

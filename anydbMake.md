@@ -66,8 +66,8 @@ Uses *jportal* to generate java code to access any Oracle database in order to d
 
     project decompiler
 
-    source_dir=/main/jportal/generators/vlab/jportal/decompiler
-    binary_dir=/main/jportal/build/generators/vlab/jportal/decompiler
+    source_dir=/main/jportal/generators/bbd/jportal/decompiler
+    binary_dir=/main/jportal/build/generators/bbd/jportal/decompiler
 
     jportal
       JavaWRCode ${binary_dir} %i.java
@@ -113,7 +113,7 @@ Uses *crackle* to define the crackle generator to use together with the *idl* to
     binary_dir=/main/jportal/build/binuj
 
     crackle  
-      PopBinuJavaServer  ${binary_dir}/vlab/binu BinuImpl.java
+      PopBinuJavaServer  ${binary_dir}/bbd/binu BinuImpl.java
 
     idl        
       idlfile  ${source_dir}/idl/binuj.idl

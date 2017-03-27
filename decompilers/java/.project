@@ -16,9 +16,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>vlab/jportal/decompiler/Oracle.java</name>
+			<name>bbd/jportal/decompiler/Oracle.java</name>
 			<type>1</type>
-			<locationURI>PARENT-3-ECLIPSE_HOME/jportal/build/decompilers/java/vlab/jportal/decompiler/Oracle.java</locationURI>
+			<locationURI>PARENT-3-ECLIPSE_HOME/jportal/build/decompilers/java/bbd/jportal/decompiler/Oracle.java</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

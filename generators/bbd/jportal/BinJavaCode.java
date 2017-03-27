@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -153,7 +153,7 @@ public class BinJavaCode extends Generator
           outData.println("// ###############################################################");
           outData.println("package " + table.database.packageName + ";");
           outData.println("");
-          outData.println("import vlab.clibinu.*;");
+          outData.println("import bbd.clibinu.*;");
           outData.println("");
           outData.println("public class " + table.useName());
           outData.println("{");

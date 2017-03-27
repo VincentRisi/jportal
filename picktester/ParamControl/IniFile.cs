@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace vlab.ParamControl
+namespace bbd.ParamControl
 {
   public class IniFile
   {

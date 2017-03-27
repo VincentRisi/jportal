@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.crackle.rdc;
+package bbd.crackle.rdc;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Random;

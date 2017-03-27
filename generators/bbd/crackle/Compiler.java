@@ -9,7 +9,7 @@
 /// Contributors:
 ///    Vincent Risi
 /// ------------------------------------------------------------------
-package vlab.crackle;
+package bbd.crackle;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -239,7 +239,7 @@ public class Compiler
           continue;
         }
         outLog.println(args[i]);
-        Class<?> c = Class.forName("vlab.crackle." + args[i]);
+        Class<?> c = Class.forName("bbd.crackle." + args[i]);
         Class<?> d[] = { module.getClass(), output.getClass(), outLog.getClass() };
         Method m = c.getMethod("generate", d);
         Object o[] = { module, output, outLog };

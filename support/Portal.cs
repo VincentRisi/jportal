@@ -13,7 +13,7 @@
 using System;
 using System.Data;
 
-namespace vlab.jportal 
+namespace bbd.jportal 
 {
     public delegate string CredentialHandler();
 

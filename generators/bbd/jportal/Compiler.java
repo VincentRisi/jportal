@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -97,7 +97,7 @@ public class Compiler
         continue;
       }
       outLog.println(args[i]);
-      Class<?> c = Class.forName("vlab.jportal." + args[i]);
+      Class<?> c = Class.forName("bbd.jportal." + args[i]);
       Class<?> d[] = { database.getClass(), output.getClass(), outLog.getClass() };
       Method m = c.getMethod("generate", d);
       Object o[] = { database, output, outLog };

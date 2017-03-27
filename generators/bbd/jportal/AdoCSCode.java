@@ -10,7 +10,7 @@
 ///    Vincent Risi
 /// ------------------------------------------------------------------
 
-package vlab.jportal;
+package bbd.jportal;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -170,11 +170,11 @@ public class AdoCSCode extends Generator
     PrintWriter outData = new PrintWriter(outFile);
     String packageName = table.database.packageName;
     if (packageName.length() == 0)
-      packageName = "vlab.jportal";
+      packageName = "bbd.jportal";
     outData.println("using System;");
     outData.println("using System.Collections.Generic;");
     outData.println("using System.Data;");
-    outData.println("using vlab.jportal;");
+    outData.println("using bbd.jportal;");
     outData.println("");
     outData.println("namespace " + packageName);
     outData.println("{");

@@ -1,4 +1,4 @@
-package vlab.binu;
+package bbd.binu;
 
 public class Notifier<PARCEL>
 {

@@ -1,7 +1,7 @@
 import sys, optparse 
 
-data_dir_default   = '/main/vlab/data/binu'
-pythonpath_default = '/main/vlab/bin/pyextensions'
+data_dir_default   = '/main/bbd/data/binu'
+pythonpath_default = '/main/bbd/bin/pyextensions'
 delim = '/'
 
 class Class: pass
