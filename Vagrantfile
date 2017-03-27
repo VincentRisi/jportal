@@ -17,7 +17,8 @@ Vagrant.configure(2) do |config|
   config.vm.box = "box-cutter/ubuntu1404-desktop"
   
   #Change the hostname of the VM to something more meaningful
-  config.vm.hostname = "jportal_development"
+  config.vm.hostname = "jportal-development"
+  
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
