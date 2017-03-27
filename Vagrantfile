@@ -14,7 +14,7 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   #If you prefer a mint linux box, uncomment the line below, and comment out the ubuntu1404 line
   #config.vm.box = "npalm/mint17-amd64-cinnamon"
-  config.vm.box = "box-cutter/ubuntu1404-desktop"
+  config.vm.box = "bento/ubuntu-16.04"
   
   #Change the hostname of the VM to something more meaningful
   config.vm.hostname = "jportal-development"
