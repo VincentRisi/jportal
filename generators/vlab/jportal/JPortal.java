@@ -3162,6 +3162,8 @@ public class JPortal implements JPortalConstants {
       proc.extendsStd = true;
       proc.useStd = true;
       isStdProc = true;
+      for (int i=0; i<table.fields.size(); i++)
+        proc.outputs.addElement(table.fields.elementAt(i));
       break;
     default:
       jj_la1[157] = jj_gen;
@@ -3691,21 +3693,16 @@ public class JPortal implements JPortalConstants {
     finally { jj_save(10, xla); }
   }
 
-  static private boolean jj_3R_104() {
-    if (jj_scan_token(SQL)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_90() {
-    if (jj_3R_99()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_99() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_104()) jj_scanpos = xsp;
     if (jj_scan_token(CODE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_90() {
+    if (jj_3R_99()) return true;
     return false;
   }
 
@@ -3731,14 +3728,14 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static private boolean jj_3R_83() {
-    if (jj_scan_token(VIEW)) return true;
-    if (jj_3R_73()) return true;
+  static private boolean jj_3_11() {
+    if (jj_scan_token(IDLLINE)) return true;
     return false;
   }
 
-  static private boolean jj_3_11() {
-    if (jj_scan_token(IDLLINE)) return true;
+  static private boolean jj_3R_83() {
+    if (jj_scan_token(VIEW)) return true;
+    if (jj_3R_73()) return true;
     return false;
   }
 
@@ -3758,14 +3755,20 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
+  static private boolean jj_3_4() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_3R_67()) return true;
+    return false;
+  }
+
   static private boolean jj_3R_101() {
     if (jj_3R_73()) return true;
     return false;
   }
 
-  static private boolean jj_3_4() {
+  static private boolean jj_3_3() {
     if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_3R_67()) return true;
+    if (jj_scan_token(MULTIPLE)) return true;
     return false;
   }
 
@@ -3775,9 +3778,8 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static private boolean jj_3_3() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_scan_token(MULTIPLE)) return true;
+  static private boolean jj_3_10() {
+    if (jj_scan_token(DATALINE)) return true;
     return false;
   }
 
@@ -3789,11 +3791,6 @@ public class JPortal implements JPortalConstants {
   static private boolean jj_3R_81() {
     if (jj_scan_token(KEY)) return true;
     if (jj_3R_73()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_10() {
-    if (jj_scan_token(DATALINE)) return true;
     return false;
   }
 
@@ -3919,13 +3916,22 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
+  static private boolean jj_3R_105() {
+    if (jj_scan_token(CODELINE)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_67() {
     if (jj_scan_token(NUMBER)) return true;
     return false;
   }
 
-  static private boolean jj_3R_105() {
-    if (jj_scan_token(CODELINE)) return true;
+  static private boolean jj_3R_100() {
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_105()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
@@ -3936,15 +3942,6 @@ public class JPortal implements JPortalConstants {
 
   static private boolean jj_3R_108() {
     if (jj_scan_token(INSERT)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_100() {
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_105()) { jj_scanpos = xsp; break; }
-    }
     return false;
   }
 
@@ -3969,6 +3966,12 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
+  static private boolean jj_3_9() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(STANDARD)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_93() {
     if (jj_3R_101()) return true;
     return false;
@@ -3988,12 +3991,6 @@ public class JPortal implements JPortalConstants {
     jj_scanpos = xsp;
     if (jj_3R_91()) return true;
     }
-    return false;
-  }
-
-  static private boolean jj_3_9() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_scan_token(STANDARD)) return true;
     return false;
   }
 
@@ -4029,14 +4026,14 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static private boolean jj_3R_92() {
-    if (jj_3R_101()) return true;
-    return false;
-  }
-
   static private boolean jj_3_8() {
     if (jj_scan_token(LEFTPAREN)) return true;
     if (jj_3R_67()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_92() {
+    if (jj_3R_101()) return true;
     return false;
   }
 
@@ -4087,6 +4084,11 @@ public class JPortal implements JPortalConstants {
   static private boolean jj_3_7() {
     if (jj_scan_token(LEFTPAREN)) return true;
     if (jj_scan_token(SINGLE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_104() {
+    if (jj_scan_token(SQL)) return true;
     return false;
   }
 

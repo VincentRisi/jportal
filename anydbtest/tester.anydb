@@ -20,6 +20,7 @@ jportal
   CSNetCode         ${binary_dir}/sql/CSNet       %a.cs
   Db2DDL            ${binary_dir}/sql/Db2         %a.sql
   DelphiCode        ${binary_dir}/sql/Delphi      %a.pas
+  GoCode            ${binary_dir}/sql/Go          %a.go 
   IdlBinUCode       ${binary_dir}/sql/IdlBinU     U%a.bin
   IdlCode           ${binary_dir}/sql/Idl         %l.ii %a.cs
   JavaCSCode        ${binary_dir}/sql/JavaCS      %a.java

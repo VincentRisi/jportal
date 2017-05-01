@@ -61,7 +61,7 @@ input
   Xavier =
 sqlcode
 begin atomic
-  update ZedZed set A y = 5.4321  where Xavier =  :Xavier;
+  update ZedZed set Ay = 5.4321  where Xavier =  :Xavier;
   update ZedZed set Bee = 54.321  where Xavier = :Xavier;
   update ZedZed set Cee = '12.00' where Xavier = :Xavier;
 end  
@@ -93,7 +93,7 @@ sqlcode
   , Spatch
   , Snitch
   , tmStamp
-  from ssmd00.zedzed where 
+  from ssmd00.zedzed where MOD(Xavier, 117) = 0 
 endcode
 
 proc MODGiven (standard)
