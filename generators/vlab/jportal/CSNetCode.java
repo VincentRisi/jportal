@@ -287,7 +287,10 @@ public class CSNetCode extends Generator
       outData.println("using System.Runtime.CompilerServices;");
     }
     outData.println("using System.Data;");
-    outData.println("using vlab.jportal;");
+    if (table.database.portalName.length() == 0)
+      outData.println("using vlab.jportal;");
+    else
+      outData.println("using " + table.database.portalName + ";");
     outData.println("");
     outData.println("namespace " + packageName);
     outData.println("{");
@@ -648,35 +651,52 @@ public class CSNetCode extends Generator
       }
         }
       }
-  public static void generateStructPairs(Proc proc, Vector<Field> fields, Vector<?> dynamics, String mainName, PrintWriter outData, String tableName, boolean hasReturning)
+  public static void generateStructPairs(Proc proc, Table table, Vector<Field> fields, Vector<?> dynamics, String mainName, PrintWriter outData, String tableName, boolean hasReturning)
   {
     outData.println(indent(1) + "[Serializable()]");
     String inherit = "";
     if (proc != null && proc.extendsStd == true)
     {
-      inherit = " : " + tableName + "Rec" + (useNotify ? ", INotifyPropertyChanged" : "");
+      inherit = " : " + tableName + "Rec";
+      outData.println(indent(1) + "public " + (usePartials ? "partial " : "") + "class " + mainName + "Rec" + inherit);
+      outData.println(indent(1) + "{");
+
+      outData.println(indent(2) + "public " + mainName + "Rec()");
+      outData.println(indent(2) + "{");
+      outData.println(indent(2) + "}");
+
+      outData.println(indent(2) + "public " + mainName + "Rec(" + tableName + "Rec rec)");
+      outData.println(indent(2) + "{");
+      for (int j = 0; j < table.fields.size(); j++)
+      {
+        Field field = (Field)table.fields.elementAt(j);
+        outData.println(indent(3) + "this."+ field.name +" = rec." + field.name + ";");
+      }
+      
+      outData.println(indent(2) + "}");
+
     }
     else
     {
       inherit = useNotify ? " : INotifyPropertyChanged" : "";
-  }
-    outData.println(indent(1) + "public " + (usePartials ? "partial " : "") + "class " + mainName + "Rec" + inherit);
-    outData.println(indent(1) + "{");
-    if (useNotify && fields.size() > 0)
-  {
-      outData.println(indent(2) + "#region INotifyPropertyChanged Members ");
-      outData.println("");
-      outData.println(indent(2) + "public event PropertyChangedEventHandler PropertyChanged;");
-      outData.println("");
-      outData.println(indent(2) + "public void NotifyPropertyChanged([CallerMemberName] string propertyName = null)");
-      outData.println(indent(2) + "{");
-      outData.println(indent(3) + "if (this.PropertyChanged != null)");
-      outData.println(indent(3) + "{");
-      outData.println(indent(4) + "this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
-      outData.println(indent(3) + "}");
-      outData.println(indent(2) + "}");
-      outData.println("");
-      outData.println(indent(2) + "#endregion");
+      outData.println(indent(1) + "public " + (usePartials ? "partial " : "") + "class " + mainName + "Rec" + inherit);
+      outData.println(indent(1) + "{");
+      if (useNotify)
+      {
+        outData.println(indent(2) + "#region INotifyPropertyChanged Members ");
+        outData.println("");
+        outData.println(indent(2) + "public event PropertyChangedEventHandler PropertyChanged;");
+        outData.println("");
+        outData.println(indent(2) + "public void NotifyPropertyChanged([CallerMemberName] string propertyName = null)");
+        outData.println(indent(2) + "{");
+        outData.println(indent(3) + "if (this.PropertyChanged != null)");
+        outData.println(indent(3) + "{");
+        outData.println(indent(4) + "this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));");
+        outData.println(indent(3) + "}");
+        outData.println(indent(2) + "}");
+        outData.println("");
+        outData.println(indent(2) + "#endregion");
+      }
       outData.println("");
     }
     for (int i = 0; i < fields.size(); i++)
@@ -793,7 +813,7 @@ public class CSNetCode extends Generator
           break;
         }
       }
-      generateStructPairs(null, table.fields, null, table.useName(), outData, null, hasReturning);
+      generateStructPairs(null, table, table.fields, null, table.useName(), outData, null, hasReturning);
       generateEnumOrdinals(table, outData);
       for (int i = 0; i < table.procs.size(); i++)
       {
@@ -830,7 +850,7 @@ public class CSNetCode extends Generator
           field.length = n.intValue();
           fields.addElement(field);
         }
-        generateStructPairs(proc, fields, proc.dynamics, table.useName() + proc.upperFirst(), outData, table.useName(), false);
+        generateStructPairs(proc, table, fields, proc.dynamics, table.useName() + proc.upperFirst(), outData, table.useName(), false);
       }
     }
   }

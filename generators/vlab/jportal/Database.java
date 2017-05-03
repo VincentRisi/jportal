@@ -34,6 +34,7 @@ public class Database implements Serializable
   public String userid;
   public String password;
   public String packageName;
+  public String portalName;
   public Vector<Table> tables;
   public Vector<String> flags;
   public Vector<Sequence> sequences;
@@ -149,6 +150,7 @@ public class Database implements Serializable
     userid = set(userid, database.userid, "userid", outLog);
     password = set(password, database.password, "password", outLog);
     packageName = set(packageName, database.packageName, "packageName", outLog);
+    portalName = set(portalName, database.portalName, "portalName", outLog);
     for (int i = 0; i < database.tables.size(); i++)
     {
       Table table = (Table) database.tables.elementAt(i);

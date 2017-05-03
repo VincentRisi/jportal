@@ -432,6 +432,8 @@ public class MSSqlDDL extends Generator
       outData.println("CREATE UNIQUE CLUSTERED INDEX " + key.name + " ON " + table);
     else if (key.isUnique)
       outData.println("CREATE UNIQUE INDEX " + key.name + " ON " + table);
+    else if (key.isClustered)
+      outData.println("CREATE CLUSTERED INDEX " + key.name + " ON " + table);
     else
       outData.println("CREATE INDEX " + key.name + " ON " + table);
     outData.println("(");
@@ -480,7 +482,7 @@ public class MSSqlDDL extends Generator
   static void generateUnique(Key key, String table, PrintWriter outData)
   {
     String comma = "    ";
-    outData.println(", CONSTRAINT UK_"  + table + "_" + key.name + " UNIQUE (");
+    outData.println(", CONSTRAINT UK_"  + table + "_" + key.name + (key.isClustered ? " CLUSTERED UNIQUE (" : "UNIQUE (") );
     for (int i = 0; i < key.fields.size(); i++, comma = "  , ")
     {
       String name = (String) key.fields.elementAt(i);

@@ -421,6 +421,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <COUNT:        "count">
 | <CONST:       ("const"|"constant")>
 | <CURSOR:       "cursor">
+| <CLUSTERED:    "clustered">
 | <DATABASE:     "database">
 | <DATE:         "date">
 | <DATETIME:     "datetime">
@@ -459,6 +460,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <ORDER:       ("order"|"sorted")>
 | <OUTPUT:       "output">
 | <PACKAGE:      "package">
+| <USING:        "using">
 | <PASSWORD:     "password">
 | <PRIMARY:      "primary">
 | <PROC:         "proc">
@@ -614,6 +616,11 @@ void jInput() :
   ( <PACKAGE> s = jPackageIdent()
     {
       database.packageName = s;
+    }
+  )?
+  ( <USING> s = jPackageIdent()
+    {
+      database.portalName = s;
     }
   )?
   (
@@ -1514,6 +1521,10 @@ void jModifier() :
     key.isPrimary = true;
     table.hasPrimaryKey = true;
   }
+| <CLUSTERED>
+  {
+    key.isClustered = true;
+  }
 }
 
 void jColumn() :
@@ -2184,6 +2195,8 @@ void jUserProc() :
           if (proc.extendsStd == true && proc.hasOutput(field.name) == false)
           {
             proc.useStd = false;
+            if (table.getField(field.name) == null)
+              field.isExtStd = true;
             isStdProc = false;
           }
           if (!field.isNull)
@@ -2249,6 +2262,7 @@ void jUserProc() :
             if (proc.extendsStd == true)
             {
               proc.useStd = false;
+              field.isExtStd = true;
               isStdProc = false;
             }
             if (!field.isNull)
@@ -2370,8 +2384,11 @@ void jOutputType() :
   }
   (<STANDARD>
     {
-      for (int i=0; i<table.fields.size(); i++)
-        proc.outputs.addElement(table.fields.elementAt(i));
+      if (proc.outputs.size() != table.fields.size() && table.fields.size() > 0)
+      {
+        for (int i=0; i<table.fields.size(); i++)
+          proc.outputs.addElement(table.fields.elementAt(i));
+      }
     }
   )?
   <RIGHTPAREN>
@@ -2392,8 +2409,11 @@ void jOutputType() :
   }
 | LOOKAHEAD(2) <LEFTPAREN> <STANDARD> 
   {
-    for (int i=0; i<table.fields.size(); i++)
-      proc.outputs.addElement(table.fields.elementAt(i));
+    if (proc.outputs.size() != table.fields.size() && table.fields.size() > 0)
+    {
+      for (int i=0; i<table.fields.size(); i++)
+        proc.outputs.addElement(table.fields.elementAt(i));
+    }
   }
   (<SINGLE>
     {

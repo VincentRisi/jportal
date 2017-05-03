@@ -37,6 +37,8 @@ public class Key implements Serializable
   public boolean isPrimary;
   /** Indicates the index is unique (not defined if primary key) */
   public boolean isUnique;
+  /** Indicates the index is clustered (not defined if primary key) */
+  public boolean isClustered;
   /** Contructs with default values */
   public Key()
   {
@@ -45,6 +47,7 @@ public class Key implements Serializable
     options   = new Vector<String>();
     isPrimary = false;
     isUnique  = false;
+    isClustered = false;
   }
   public void reader(DataInputStream ids) throws IOException
   {
@@ -63,6 +66,7 @@ public class Key implements Serializable
     }
     isPrimary = ids.readBoolean();
     isUnique = ids.readBoolean();
+    isClustered = ids.readBoolean();
   }
   public void writer(DataOutputStream ods) throws IOException
   {
@@ -81,6 +85,7 @@ public class Key implements Serializable
     }
     ods.writeBoolean(isPrimary);
     ods.writeBoolean(isUnique);
+    ods.writeBoolean(isClustered);
   }
   /** Checks if field is already used */
   public boolean hasField(String s)
