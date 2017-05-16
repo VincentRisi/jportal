@@ -2242,6 +2242,9 @@ void jUserProc() :
       proc.extendsStd = true;
       proc.useStd = true;
       isStdProc = true;
+      //Fix from Vinny's repo
+      for (int i=0; i<table.fields.size(); i++)
+        proc.outputs.addElement(table.fields.elementAt(i));      
     }
   )?
   ( s = jComment()
