@@ -602,8 +602,10 @@ public class JavaJCCode
       Field field = (Field) proc.inputs.elementAt(i);
       if (proc.isInsert)
       {
-        if (field.isSequence)
-          outData.println("    "+field.useName()+" = connector.getSequence(\""+proc.table.name+"\");");
+        if (field.type == Field.BIGSEQUENCE)
+          outData.println("    "+field.useName()+" = connector.getBigSequence(\""+proc.table.name+"\");");
+        else if (field.type == Field.SEQUENCE)
+          outData.println("    "+field.useName()+" = connector.getSequence(\""+proc.table.name+"\");");      
       }
       if (field.type == Field.TIMESTAMP)
         outData.println("    "+field.useName()+" = connector.getTimestamp();");
