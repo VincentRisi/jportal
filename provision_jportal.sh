@@ -51,3 +51,6 @@ export LD_LIBRARY_PATH=/usr/lib/oracle/12.1/client64/lib:$LD_LIBRARY_PATH
 #Vince currently has a bug in the crackle stuff
 rm -Rf /home/vagrant/sync/generators/bbd/crackle
 
+#Set up git user and email
+git config --global --edit
+
