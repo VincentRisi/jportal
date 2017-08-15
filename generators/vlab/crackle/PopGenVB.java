@@ -23,11 +23,12 @@ public class PopGenVB extends Generator
 {
   public static String description()
   {
-    return "Generates Name Pipe VB5/6 Code";
+    return "Generates VB5/6 Code";
   }
   public static String documentation()
   {
-    return "Generates Name Pipe VB5/6 Code";
+    return "Generates VB5/6 Code" + "\r\nHandles following pragmas"
+        + "\r\n  UseAliases - insert aliases into basic code compile for declspec(dllexport) __stdcall.";
   }
   /**
   * Reads input from stored repository
@@ -51,6 +52,18 @@ public class PopGenVB extends Generator
     {
       e.printStackTrace();
     }
+  }
+  private static Vector aliasList = new Vector();
+  private static boolean useAliases;
+  private static String alias(String funcName, int size)
+  {
+    if (useAliases == false)
+    {
+      String def = funcName + "=_" + funcName + "@" + size;
+      aliasList.addElement(def);
+    } else
+      return " Alias \"_" + funcName + "@" + size + "\"";
+    return "";
   }
   static void doCategories(Module module, Structure structure)
   {
@@ -104,6 +117,13 @@ public class PopGenVB extends Generator
   public static void generate(Module module, String output, PrintWriter outLog)
   {
     outLog.println(module.name+" version "+module.version);
+    for (int i = 0; i < module.pragmas.size(); i++)
+    {
+      String pragma = (String) module.pragmas.elementAt(i);
+      if (pragma.trim().equalsIgnoreCase("UseAliases") == true)
+        useAliases = true;
+      outLog.println("UseAliases=" + (useAliases ? "true" : "false"));
+    }
     for (int i = 0; i < module.structures.size(); i++)
     {
       Structure structure = (Structure) module.structures.elementAt(i);
@@ -117,6 +137,33 @@ public class PopGenVB extends Generator
       doCategories(module, prototype);
     }
     generateVBHeader(module, output, outLog);
+    if (useAliases == false)
+      generateVBDef(module, output, outLog);
+  }
+  static void generateVBDef(Module module, String output, PrintWriter outLog)
+  {
+    try
+    {
+      outLog.println("Code: " + output + module.name.toLowerCase() + ".def");
+      OutputStream outFile = new FileOutputStream(output + module.name.toLowerCase() + ".def");
+      PrintWriter outData = new PrintWriter(outFile);
+      try
+      {
+        outData.println("EXPORTS");
+        for (int i = 0; i < aliasList.size(); i++)
+        {
+          String line = (String) aliasList.elementAt(i);
+          outData.println("  " + line);
+        }
+      } finally
+      {
+        outData.flush();
+        outFile.close();
+      }
+    } catch (IOException e1)
+    {
+      outLog.println("Generate Procs IO Error");
+    }
   }
   /**
   * Generates the general stuff
@@ -200,15 +247,23 @@ public class PopGenVB extends Generator
           }
         }
         outData.println();
-        outData.println("Private Declare Function "+module.name+"SnapLogon Lib \""+module.name.toLowerCase()+".dll\" (Handle As Long, ByVal Service As String, ByVal Host As String, ByVal Timeout As Long) As Long");
+        outData.println("Private Declare Function " + module.name + "SnapLogon" + " Lib \"" + module.name.toLowerCase() + ".dll\" "
+            + alias(module.name + "SnapLogon", 16)
+            + " (Handle As Long, ByVal Service As String, ByVal Host As String, ByVal Timeout As Long) As Long");
         outData.println();
-        outData.println("Private Declare Function "+module.name+"SnapLogoff Lib \""+module.name.toLowerCase()+".dll\" (Handle As Long) As Long");
+        outData.println("Private Declare Function " + module.name + "SnapLogoff" + " Lib \"" + module.name.toLowerCase()
+            + ".dll\" " + alias(module.name + "SnapLogoff", 4) + " (Handle As Long) As Long");
         outData.println();
-        outData.println("Private Declare Sub "+module.name+"SnapErrBuffer Lib \""+module.name.toLowerCase()+".dll\" (ByVal Handle As Long, ByVal Buffer As String, ByVal BufferSize As Long)");
+        outData.println("Private Declare Sub " + module.name + "SnapErrBuffer" + " Lib \"" + module.name.toLowerCase() + ".dll\" "
+            + alias(module.name + "SnapErrBuffer", 12)
+            + " (ByVal Handle As Long, ByVal Buffer As String, ByVal BufferSize As Long)");
         outData.println();
-        outData.println("Private Declare Sub "+module.name+"SnapErrorDesc Lib \""+module.name.toLowerCase()+".dll\" (ByVal ErrorCode As Long, ByVal Buffer As String, ByVal BufferSize As Long)");
+        outData.println("Private Declare Sub " + module.name + "SnapErrorDesc" + " Lib \"" + module.name.toLowerCase() + ".dll\" "
+            + alias(module.name + "SnapErrorDesc", 12)
+            + " (ByVal ErrorCode As Long, ByVal Buffer As String, ByVal BufferSize As Long)");
         outData.println();
-        outData.println("Private Declare Sub "+module.name+"SnapVersion Lib \""+module.name.toLowerCase()+".dll\" (ByVal Buffer As String, ByVal BufferSize As Long)");
+        outData.println("Private Declare Sub " + module.name + "SnapVersion" + " Lib \"" + module.name.toLowerCase() + ".dll\" "
+            + alias(module.name + "SnapVersion", 8) + " (ByVal Buffer As String, ByVal BufferSize As Long)");
         outData.println();
         for (int i = 0; i < module.prototypes.size(); i++)
         {
@@ -339,62 +394,67 @@ public class PopGenVB extends Generator
   */
   static void generateVBHeader(Module module, Prototype prototype, PrintWriter outData)
   {
-    String w1 = "", w2 = "";
-    Vector<Field> retrievals = new Vector<Field>();
-    Vector<Field> submittals = new Vector<Field>();
+    String modifier = "", parms = "", start = "";
+    int size_of;
+    Vector retrievals = new Vector();
+    Vector submittals = new Vector();
     for (int i = 0; i < prototype.parameters.size(); i++)
     {
       Field parameter = (Field) prototype.parameters.elementAt(i);
       if (parameter.type.typeof != Type.CHAR
-        && (parameter.type.reference == Type.BYPTR
-        ||  parameter.type.reference == Type.BYREFPTR)
-        && (prototype.hasOutputSize(parameter.name)
-        ||  prototype.hasInputSize(parameter.name)))
+          && (parameter.type.reference == Type.BYPTR || parameter.type.reference == Type.BYREFPTR)
+          && (prototype.hasOutputSize(parameter.name) || prototype.hasInputSize(parameter.name)))
       {
-        w1 = "Start";
+        start = "Start";
       }
     }
-    outData.print("Private Declare Function "+module.name+"Snap" + prototype.name
-      + w1 + " Lib \"" + module.name.toLowerCase()+".dll\""
-      + " (ByVal Handle As Long, ByVal Signature As Long");
+    outData.print("Private Declare Function " + module.name + "Snap" + prototype.name + start + " Lib \""
+        + module.name.toLowerCase() + ".dll\" ");
+    size_of = 8; // for Handle and Signature
     if (prototype.type.typeof != Type.VOID)
-      outData.print(", Result"+prototype.type.basType(false));
+    {
+      parms += ", Result" + prototype.type.basType(false);
+      size_of += prototype.type.basSize(false);
+    }
     for (int i = 0; i < prototype.parameters.size(); i++)
     {
       Field parameter = (Field) prototype.parameters.elementAt(i);
-      w1 = "";
-      if (parameter.type.typeof == Type.CHAR
-        &&  parameter.type.reference == Type.BYPTR)
-        w2 = "ByVal ";
-      else if (parameter.type.reference == Type.BYPTR
-        ||  parameter.type.reference == Type.BYREFPTR)
+      // w1 = "";
+      if (parameter.type.typeof == Type.CHAR && parameter.type.reference == Type.BYPTR)
       {
-        w2 = "";
+        modifier = "ByVal ";
+        size_of += 4;
+      } else if (parameter.type.reference == Type.BYPTR || parameter.type.reference == Type.BYREFPTR)
+      {
+        modifier = "";
         if (prototype.hasOutputSize(parameter.name))
           retrievals.addElement(parameter);
         if (prototype.hasInputSize(parameter.name))
           submittals.addElement(parameter);
-        if (prototype.hasOutputSize(parameter.name)
-          ||  prototype.hasInputSize(parameter.name))
+        if (prototype.hasOutputSize(parameter.name) || prototype.hasInputSize(parameter.name))
           continue;
-      }
-      else if (parameter.type.reference == Type.BYREF)
-        w2 = "<unsupported>";
+        size_of += 4;
+      } else if (parameter.type.reference == Type.BYREF)
+        modifier = "<unsupported>";
       else
-        w2 = "ByVal ";
-      outData.print(", "+w2+parameter.type.basDef(parameter.name+w1, false));
+      {
+        modifier = "ByVal ";
+        size_of += parameter.type.basSize(false);
+      }
+      parms += ", " + modifier + parameter.type.basDef(parameter.name, false);
     }
-    outData.println(") As Long");
+    outData.println(alias(module + "Snap" + prototype.name + start, size_of) + " (ByVal Handle As Long, ByVal Signature As Long"
+        + parms + ") As Long");
     for (int i = 0; i < submittals.size(); i++)
     {
       Field parameter = (Field) submittals.elementAt(i);
       outData.println();
-      outData.println("Private Declare Sub "+module.name+"Snap" + prototype.name
-        + parameter.name + "Prepare Lib \"" + module.name.toLowerCase()+".dll\""
+      outData.println("Private Declare Sub " + module.name + "Snap" + prototype.name + parameter.name + "Prepare" + " Lib \""
+          + module.name.toLowerCase() + ".dll\"" + alias(module.name + "Snap" + prototype.name + parameter.name + "Prepare", 8)
         + " (ByVal Handle As Long, ByVal Size As Long)");
       outData.println();
-      outData.print("Private Declare Function "+module.name+"Snap" + prototype.name
-        + parameter.name + "Fill Lib \"" + module.name.toLowerCase()+".dll\""
+      outData.print("Private Declare Function " + module.name + "Snap" + prototype.name + parameter.name + "Fill" + " Lib \""
+          + module.name.toLowerCase() + ".dll\"" + alias(module.name + "Snap" + prototype.name + parameter.name + "Fill", 12)
         + " (ByVal Handle As Long");
       outData.print(", "+parameter.type.basDef("Rec", false));
       outData.println(", ByVal Index As Long) As Long");
@@ -403,14 +463,14 @@ public class PopGenVB extends Generator
     {
       Field parameter = (Field) retrievals.elementAt(i);
       outData.println();
-      outData.print("Private Declare Function "+module.name+"Snap" + prototype.name
-        + parameter.name + "Next Lib \"" + module.name.toLowerCase()+".dll\""
+      outData.print("Private Declare Function " + module.name + "Snap" + prototype.name + parameter.name + "Next" + " Lib \""
+          + module.name.toLowerCase() + ".dll\"" + alias(module.name + "Snap" + prototype.name + parameter.name + "Next", 12)
         + " (ByVal Handle As Long");
       outData.print(", "+parameter.type.basDef("Rec", false));
       outData.println(", ByVal Index As Long) As Long");
       outData.println();
-      outData.println("Private Declare Sub "+module.name+"Snap" + prototype.name
-        + parameter.name + "Done Lib \"" + module.name.toLowerCase()+".dll\""
+      outData.println("Private Declare Sub " + module.name + "Snap" + prototype.name + parameter.name + "Done" + " Lib \""
+          + module.name.toLowerCase() + ".dll\"" + alias(module.name + "Snap" + prototype.name + parameter.name + "Done", 4)
         + " (ByVal Handle As Long)");
     }
   }
@@ -419,10 +479,10 @@ public class PopGenVB extends Generator
   */
   static void generateVBRoutine(Module module, Prototype prototype, PrintWriter outData)
   {
-    String w1 = "", w2 = "", w3 ="";
+    String comma = "", modifier = "", brackets = "";
     boolean hasVBLists = false;
-    Vector<Field> retrievals = new Vector<Field>();
-    Vector<Field> submittals = new Vector<Field>();
+    Vector retrievals = new Vector();
+    Vector submittals = new Vector();
     if (prototype.type.typeof != Type.VOID)
       outData.print("Public Function "+module.name+prototype.name + "(");
     else
@@ -430,33 +490,30 @@ public class PopGenVB extends Generator
     for (int i = 0; i < prototype.parameters.size(); i++)
     {
       Field parameter = (Field) prototype.parameters.elementAt(i);
-      w3 = "";
-      if (parameter.type.typeof == Type.CHAR
-        &&  parameter.type.reference == Type.BYPTR)
-        w2 = "";
-      else if (parameter.type.reference == Type.BYPTR
-        ||  parameter.type.reference == Type.BYREFPTR)
+      brackets = "";
+      if (parameter.type.typeof == Type.CHAR && parameter.type.reference == Type.BYPTR)
+        modifier = "";
+      else if (parameter.type.reference == Type.BYPTR || parameter.type.reference == Type.BYREFPTR)
       {
-        w2 = "";
+        modifier = "";
         if (prototype.hasOutputSize(parameter.name))
         {
           hasVBLists = true;
           retrievals.addElement(parameter);
-          w3 = "()";
+          brackets = "()";
         }
         if (prototype.hasInputSize(parameter.name))
         {
           hasVBLists = true;
           submittals.addElement(parameter);
-          w3 = "()";
+          brackets = "()";
         }
-      }
-      else if (parameter.type.reference == Type.BYREF)
-        w2 = "<unsupported>";
+      } else if (parameter.type.reference == Type.BYREF)
+        modifier = "<unsupported>";
       else
-        w2 = "ByVal ";
-      outData.print(w1 + w2 + parameter.type.basDef(parameter.name+w3, false));
-      w1 = ", ";
+        modifier = "ByVal ";
+      outData.print(comma + modifier + parameter.type.basDef(parameter.name + brackets, false));
+      comma = ", ";
     }
     if (prototype.type.typeof != Type.VOID)
       outData.println(")"+prototype.type.basType(false));
@@ -464,34 +521,32 @@ public class PopGenVB extends Generator
       outData.println(")");
     if (prototype.type.typeof != Type.VOID)
       outData.println("  Dim Result"+prototype.type.basType(false));
-    w1 = "";
+    String start = "";
     if (hasVBLists)
     {
       outData.println("  Dim Index As Long");
-      w1 = "Start";
+      start = "Start";
       for (int i = 0; i < submittals.size(); i++)
       {
         Field parameter = (Field) submittals.elementAt(i);
         outData.println("  "+module.name+"Snap"+prototype.name+parameter.name+"Prepare "+module.name+"Handle(), "
           + prototype.getInputSizeName(parameter.name));
         outData.println("  For Index = 1 To "+prototype.getInputSizeName(parameter.name));
-        outData.println("    ErrorCode = "+module.name+"Snap"+prototype.name+parameter.name+"Fill("+module.name+"Handle(), "
-          +parameter.name+"(Index), Index-1)");
+        outData.println("    ErrorCode = " + module.name + "Snap" + prototype.name + parameter.name + "Fill(" + module.name
+            + "Handle(), " + parameter.name + "(Index), Index-1)");
         outData.println("  Next Index");
       }
     }
-    outData.print("  ErrorCode = "+module.name+"Snap"+prototype.name+w1+"("+module.name+"Handle()");
+    outData.print("  ErrorCode = " + module.name + "Snap" + prototype.name + start + "(" + module.name + "Handle()");
     outData.print(", "+prototype.signature(true));
     if (prototype.type.typeof != Type.VOID)
       outData.print(", Result");
     for (int i = 0; i < prototype.parameters.size(); i++)
     {
       Field parameter = (Field) prototype.parameters.elementAt(i);
-      if ((parameter.type.reference == Type.BYPTR
-        ||   parameter.type.reference == Type.BYREFPTR)
+      if ((parameter.type.reference == Type.BYPTR || parameter.type.reference == Type.BYREFPTR)
         &&  parameter.type.typeof != Type.CHAR
-        &&  (prototype.hasOutputSize(parameter.name)
-        ||   prototype.hasInputSize(parameter.name)))
+          && (prototype.hasOutputSize(parameter.name) || prototype.hasInputSize(parameter.name)))
         continue;
       outData.print(", " + parameter.name);
     }

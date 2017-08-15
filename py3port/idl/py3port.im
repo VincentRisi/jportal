@@ -1,0 +1,289 @@
+module py3port
+package py3port
+version "1.0.0.0"
+
+code
+#include "machine.h"
+#include "bstring.h"
+#include "config.h"
+#include "logfile.h"
+#include "mutex.h"
+#include "intrinsic.h"
+#include "basiccbinterface.h" 
+#include "idl2testerpycode.h"
+
+//#include "autoprofile.h"
+#if defined(M_AIX) || defined(M_GNU)
+static int nextStepMutex;
+#else
+static HANDLE nextStepMutex;
+#endif
+
+endcode
+
+message
+{
+  SCRIPT_ERROR       "SCRIPT ERROR"
+  UNHANDLED_ERROR    "UNHANDLED ERROR"
+}
+
+pragma UseAsImport
+pragma DontQualify
+pragma NoQualifyEnums
+
+enum One {a,b,c}
+enum Two {c,b,a}
+
+struct Idl2TesterCache "idl2testercache.h"
+pragma CACHE:Idl2TesterCache
+
+public struct Idl2Tester
+{
+  bstring logFileName;
+  bstring logLevel;
+  bstring user;
+  bstring server;
+  bstring schema;
+  bstring password;
+  bool connectionOwner;
+  char customString[32];
+  BasicCBInterface* callbackInterface;
+  int interfaceHandle;
+  TPython *interp;
+  PyObject *pyModule;
+  Idl2TesterCache* idl2TesterCache;
+code
+  connect=0;
+  Config config;
+  config.Get("LogFile", logFileName);
+  config.Get("logLevel", logLevel);
+  bool logDisplay;
+  bool rotateLog;
+  config.Get("rotateLog", rotateLog);
+  config.Get("logDisplay", logDisplay);
+  config.Get("user", user);
+  config.Get("password", password);
+  config.Get("server", server);
+  config.Get("schema", schema);
+  SingletonLogFile::Initialize(logFileName.c_str(), logLevel.c_str(), logDisplay, rotateLog);
+  connect = TJConnector::Coordinated();
+  connect->Logon(user.c_str(), password.c_str(), server.c_str(), schema.c_str());
+  MinimalInitialize(connect);
+  connectionOwner = true;
+  callbackInterface = new BasicCBInterface();
+  callbackInterface->setConnect(connect, SingletonLogFile::LogFile());
+  SetupPythonInterp(&config);
+  idl2TesterCache = Idl2TesterCache::Instance();
+  //bstring trackingHost;
+  //bstring trackingService;
+  //unsigned int trackingTimeout;
+  //config.Get("trackingHost", trackingHost);
+  //config.Get("trackingService", trackingService);
+  //if (config.Has("trackingTimeout"))
+  //  config.Get("trackingTimeout", trackingTimeout);
+  //else  
+  //  trackingTimeout = 10000;
+  //__tracking->Logon(trackingService, trackingHost, trackingTimeout);
+  //bstring orchserverHost;
+  //bstring orchserverService;
+  //unsigned int orchserverTimeout;
+  //config.Get("orchserverHost", orchserverHost);
+  //config.Get("orchserverService", orchserverService);
+  //if (config.Has("orchserverTimeout"))
+  //  config.Get("orchserverTimeout", orchserverTimeout);
+  //else  
+  //  orchserverTimeout = 10000;
+  //__orchserver->Logon(orchserverService, orchserverHost, orchserverTimeout);
+onshutdown:
+  if (connectionOwner && connect != 0)
+  {
+    connect->Logoff();
+    delete connect;
+  }
+  SingletonLogFile::Destroy();
+endcode
+}
+
+public void MinimalInitialize(TJConnector *connection)
+{
+code
+  logFile = SingletonLogFile::LogFile();
+  #if defined (M_AIX) || defined (M_GNU)
+  sprintf(customString, "[%d] ", getpid());
+  logFile->CustomString = customString;
+  #endif
+  connect = connection;
+  connectionOwner = false;
+endcode
+}
+
+// The use of this name SetupPythonInterp will ensure that idl2testerembed.h and cpp 
+// will be generated here - The lack of the code ... endcode block is also required
+private void SetupPythonInterp(Config *config)
+{
+}
+
+int32 Commit()
+{
+message:#
+code
+  try {
+  connect->Commit();
+  } catch (...) { return 1; }
+  return 0;
+endcode
+}
+
+int32 Rollback()
+{
+message:#
+code
+  try {
+  connect->Rollback();
+  } catch (...) { return 1; }
+  return 0;
+endcode
+}
+
+int32 Logoff()
+{
+message:#
+code
+  try {
+  connect->Logoff();
+  } catch (...) { return 1; }
+  return 0;
+endcode
+}
+
+public void CheckCache()
+{
+message:#
+code
+  if (idl2TesterCache == 0) 
+    idl2TesterCache = Idl2TesterCache::Instance();
+endcode    
+}
+
+int Ping(int no)
+{
+message:#
+input: no;
+code
+  CheckCache();
+  int cacheNo = idl2TesterCache->global_test;
+  int noOf = idl2TesterCache->noOf;
+  bool stillConnected = connect->StillConnected();
+  logFile->lprintf(eLogDebug, "no:%d cacheNo:%d noOf=%d Bee=%f connected:%s", no, cacheNo, noOf, idl2TesterCache->zeds[0].Bee, (stillConnected == true) ? "TRUE" : "FALSE");
+  return no+cacheNo+noOf+1;
+endcode
+}
+
+long Ping2(long no)
+{
+message:#
+input: no;
+code
+  return no+1;
+endcode
+}
+
+void Bang(int no, DZedZed *rec)
+{
+message:#
+input: no; rec;
+code
+  DZedZedEpicUpdate eu;
+  eu.Epic = 5;
+  eu.Efyou = 0;
+  ZedZedEpicUpdate(&eu);
+  for (int i=0; i<no; i++)
+    ZedZedInsert(rec);
+  Commit();
+endcode
+}
+
+void Delay(int seconds)
+{
+message:#
+input: seconds;
+code
+#if defined(M_AIX) || defined(M_GNU)
+  if (seconds > 20)
+    seconds = 20;   
+  sleep(seconds);
+#endif  
+endcode
+}
+
+int NextStep(int seconds)
+{
+message:#
+input: seconds;
+code
+  if (nextStepMutex == 0)
+    nextStepMutex = Mutex::makeNamed("./nextStep.mutex");
+  Mutex wait(nextStepMutex);    
+  DZedZedNextXavier rec;
+  int count = 0;
+  int result = 0;
+  bool done = false;
+  do
+  {
+    try
+    {
+      result = ZedZedNextXavier(&rec);
+      #if defined(M_AIX) || defined(M_GNU)
+      if (seconds > 5)
+        seconds = 5;   
+      sleep(seconds);
+      #endif  
+      done = true;
+    }
+    catch (TCliApiException ex)
+    {
+      logFile->Log(ex);
+      count++;
+    }
+  } while (done == false && count < 4);
+  if (done == false)
+    Rollback();
+  else
+  {
+    Commit();
+    if (result != 0)
+      return rec.Xavier;
+  }
+  return 0;  
+endcode  
+}
+
+struct Structure
+{
+  int result;
+  char description[1024];
+}
+
+int32 Exercise1(int32 id, Structure* head)
+{
+message:#
+input: id; head;
+output: head;
+code
+  head->result = 1;
+  strcpy(head->description, "wit ever");
+  return head->result;
+endcode
+}
+
+Structure Exercise2(int32 id)
+{
+message:#
+input: id;
+code
+  Structure head;
+  head.result = 1;
+  strcpy(head.description, "wit ever");
+  return head;
+endcode
+}

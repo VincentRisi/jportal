@@ -223,7 +223,7 @@ public class PopGen
               w4 = w4+"&";
             if (field.isStruct(module))
               outData.println("    "+w2+field.name+w1+w3+"Trims();"+w5);
-            else if (field.needsSwap() == false)
+            else if (field.needsTrim())
               outData.println("    "+w2+"TrimTrailingBlanks("+w4+field.name+w1+", sizeof("+w4+field.name+w1+"));"+w5);
           }
           outData.println("  }");

@@ -1,0 +1,80 @@
+struct CodsWallap
+{
+  int field1;
+  char field2[24];
+  double field3;
+}
+
+struct CodsTwo
+{
+  int16 len;
+  int8  eight;
+  int32 thirtytwo;
+  int64 sixtyfour;
+  long  sixtyfourB;
+  byte data[4096];
+}
+
+void codsWallapOne(CodsWallap* wallap)
+{
+message:#
+input: wallap;
+output: wallap;
+}
+
+void codsWallapTwo(char *filename, int *noOf, char *& data)
+{
+message:#
+input:
+  filename;
+output:
+  noOf;
+  data size(noOf);
+}
+
+int codsWallapThree(DZedZed *record)
+{
+message:#
+input:  record;
+output: record;
+}
+
+int codsWallapFour(DZedZedDeleteOne *record)
+{
+message:#
+input:  record;
+}
+
+int codsWallapFive(int *noOf, OZedZed *& records)
+{
+message:#
+output:
+  noOf;
+  records size(noOf);
+}
+
+int codsWallapSix(int noOf, OZedZed *records)
+{
+message:#
+input:
+  noOf;
+  records size(noOf);
+}
+
+void codsWallapPing(int *ech)
+{
+message:#
+input: ech;
+output: ech;
+}
+
+int WallapFileLoad(char *filename, int *noOf, char *& data)
+{
+message:#
+input:
+  filename size(256);
+output:
+  noOf;
+  data size(noOf);
+}
+
