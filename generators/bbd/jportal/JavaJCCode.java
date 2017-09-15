@@ -617,9 +617,9 @@ public class JavaJCCode
     outData.println("    PreparedStatement prep = connection.prepareStatement(statement);");
 
     if (isBulkInsert) {
-      outData.println("    for (ContingencyStruct struct : inserts) {");
+      outData.println("    for ("+proc.table.useName()+"Struct struct : inserts) {");
     } else if (isBulkUpdate) {
-      outData.println("    for (ContingencyStruct struct : updates) {");
+      outData.println("    for ("+proc.table.useName()+"Struct struct : updates) {");
     }
 
     for (int i=0; i<proc.inputs.size(); i++)
