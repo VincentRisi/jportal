@@ -56,6 +56,7 @@ source
   ${source_dir}/sql/si/ZedZedBled.si
   ${source_dir}/sql/si/ZedZedClobs.si
   ${source_dir}/sql/si/ZhedIsDhed.si
+  ${source_dir}/sql/si/tidmca.si
 
 idl        
   idlfile  ${binary_dir}/idl/idl2tester.idl

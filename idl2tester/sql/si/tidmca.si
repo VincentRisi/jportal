@@ -261,3 +261,40 @@ sqlcode
      and dt.drcrind = b.batchdrcrind
    order by m.accno
 endcode   
+
+table l'"Odd Ball"' (OddBall)
+  fred bigidentity
+  l'"Stupid Field"' (dumbo) char 12
+  l'"Pi R Round"' (pirr) int
+
+key k1 primary fred  
+key k2 unique l'"Stupid Field"'
+
+proc insert  
+proc selectone
+proc selectall
+proc update
+proc deleteone
+proc exists
+proc deleteall
+proc selectonebydumbo selectoneby l'"Stupid Field"'
+proc selectbydumbo selectby l'"Stupid Field"'
+
+table l'[Odd Ballet]' (OddBallet)
+  fred bigidentity
+  l'[Stupid Field]' (dumbo) char 12
+  l'[Pi R Round]' (pirr) int
+
+key k1 primary fred  
+key k2 unique l'[Stupid Field]'
+
+proc insert  
+proc selectone
+proc selectall
+proc update
+proc deleteone
+proc exists
+proc deleteall
+proc selectonebydumbo selectoneby l'"Stupid Field"'
+proc selectbydumbo selectby l'"Stupid Field"'
+

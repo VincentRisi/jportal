@@ -311,11 +311,29 @@ public class Field implements Serializable
   {
     return isCharEmptyAsNull() || ansiIsNull();
   }
-  /** If there is an literal uses that else returns name */
+  /** If there is an literal uses that else returns name 
+   * optional inString defaults to false
+   * returning escaped quotes or double quotes 
+   * */
   public String useLiteral()
   {
+    return useLiteral(false);
+  }
+  public String useLiteral(boolean inString)
+  {
     if (isLiteral)
+    {
+      if (inString)
+      {
+        char first = literalName.charAt(0); 
+        int no = literalName.length()-1;
+        char last = literalName.charAt(no);
+        if (no > 0 && first == last)
+          if (first == '"' || first == '\'')
+            return "\\"+literalName.substring(0, no)+"\\"+last;
+      }
       return literalName;
+    }
     return name;
   }
 }

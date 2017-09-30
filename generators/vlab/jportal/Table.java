@@ -320,14 +320,31 @@ public class Table implements Serializable
     ods.writeInt(start);
   }
 
-  /** If there is an literal uses that else returns name */
+  /** If there is an literal uses that else returns name 
+   * optional inString defaults to false
+   * returning escaped quotes or double quotes 
+   * */
   public String useLiteral()
   {
+    return useLiteral(false);
+  }
+  public String useLiteral(boolean inString)
+  {
     if (isLiteral)
+    {
+      if (inString)
+      {
+        char first = literalName.charAt(0); 
+        int no = literalName.length()-1;
+        char last = literalName.charAt(no);
+        if (no > 0 && first == last)
+          if (first == '"' || first == '\'')
+            return "\\"+literalName.substring(0, no)+"\\"+last;
+      }
       return literalName;
+    }
     return name;
   }
-
   /**
    * If there is an alias uses that else returns name
    */
@@ -480,13 +497,8 @@ public class Table implements Serializable
   public String tableName()
   {
     if (database.schema.length() == 0)
-      if (isLiteral)
-        return literalName;
-      else
-        return name;
-    if (isLiteral)
-      return database.schema + "." + literalName;
-    return database.schema + "." + name;
+      return useLiteral(true);
+    return database.schema + "." + useLiteral(true);
   }
 
   /**
@@ -521,7 +533,7 @@ public class Table implements Serializable
     for (i = 0; i < fields.size(); i++)
     {
       Field field = fields.elementAt(i);
-      proc.lines.addElement(new Line("      " + comma + field.useLiteral()));
+      proc.lines.addElement(new Line("      " + comma + field.useLiteral(true)));
       comma = ", ";
     }
     proc.lines.addElement(new Line("      )"));
@@ -531,8 +543,8 @@ public class Table implements Serializable
       Field field = fields.elementAt(i);
       if (field.isPrimaryKey == true)
       {
-        proc.lines.addElement(new Line(front + name + "." + field.useLiteral()
-            + " = temp_" + proc.table.name + "." + field.useLiteral()));
+        proc.lines.addElement(new Line(front + name + "." + field.useLiteral(true)
+            + " = temp_" + proc.table.name + "." + field.useLiteral(true)));
         front = "and ";
       }
     }
@@ -544,8 +556,8 @@ public class Table implements Serializable
       Field field = fields.elementAt(i);
       if (field.isPrimaryKey == false)
       {
-        proc.lines.addElement(new Line(comma + name + "." + field.useLiteral()
-            + " = temp_" + proc.table.name + "." + field.useLiteral()));
+        proc.lines.addElement(new Line(comma + name + "." + field.useLiteral(true)
+            + " = temp_" + proc.table.name + "." + field.useLiteral(true)));
         comma = "  , ";
       }
     }
@@ -556,7 +568,7 @@ public class Table implements Serializable
     for (i = 0; i < fields.size(); i++)
     {
       Field field = fields.elementAt(i);
-      proc.lines.addElement(new Line(comma + field.useLiteral()));
+      proc.lines.addElement(new Line(comma + field.useLiteral(true)));
       comma = "  , ";
     }
     proc.lines.addElement(new Line("  )"));
@@ -567,7 +579,7 @@ public class Table implements Serializable
     {
       Field field = fields.elementAt(i);
       proc.lines.addElement(new Line(comma + "temp_" + proc.table.name + "."
-          + field.useLiteral()));
+          + field.useLiteral(true)));
       comma = "  , ";
     }
     proc.lines.addElement(new Line("  )"));
@@ -619,7 +631,7 @@ public class Table implements Serializable
         proc.isSingle = true;
         proc.hasUpdates = true;
         proc.lines.addElement(new Line("_ret.checkUse(\"" + line
-            + field.useLiteral() + comma + "\")", true));
+            + field.useLiteral(true) + comma + "\")", true));
         continue;
       } else if (isSequence(field) == true && proc.isMultipleInput == true)
       {
@@ -632,7 +644,7 @@ public class Table implements Serializable
         continue;
       }
       proc.inputs.addElement(field);
-      proc.lines.addElement(new Line(line + field.useLiteral() + comma));
+      proc.lines.addElement(new Line(line + field.useLiteral(true) + comma));
     }
     proc.lines.addElement(new Line(" ) "));
     if (hasIdentity == true)
@@ -686,7 +698,7 @@ public class Table implements Serializable
       if (field.type != Field.IDENTITY)
         continue;
       proc.outputs.addElement(field);
-      line = "select max(" + field.useLiteral() + ") " + field.useLiteral()
+      line = "select max(" + field.useLiteral(true) + ") " + field.useLiteral(true)
           + " from " + name;
       proc.lines.addElement(new Line(line));
     }
@@ -715,7 +727,7 @@ public class Table implements Serializable
       else
         line = ", ";
       j++;
-      proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+      proc.lines.addElement(new Line(line + field.useLiteral(true) + " = ?"));
 
     }
     for (i = 0, j = 0; i < fields.size(); i++)
@@ -729,7 +741,7 @@ public class Table implements Serializable
         else
           line = "   and ";
         j++;
-        line = line + field.useLiteral() + " = ?";
+        line = line + field.useLiteral(true) + " = ?";
         proc.lines.addElement(new Line(line));
       }
     }
@@ -765,7 +777,7 @@ public class Table implements Serializable
           else
             line = ", ";
           j++;
-          proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+          proc.lines.addElement(new Line(line + field.useLiteral(true) + " = ?"));
         }
       }
     }
@@ -781,7 +793,7 @@ public class Table implements Serializable
         else
           line = "   and ";
         j++;
-        line = line + field.useLiteral() + " = ?";
+        line = line + field.useLiteral(true) + " = ?";
         proc.lines.addElement(new Line(line));
       }
     }
@@ -819,7 +831,7 @@ public class Table implements Serializable
           else
             line = ", ";
           j++;
-          proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+          proc.lines.addElement(new Line(line + field.useLiteral(true) + " = ?"));
 
         }
       }
@@ -839,7 +851,7 @@ public class Table implements Serializable
             else
               line = ", ";
             j++;
-            proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+            proc.lines.addElement(new Line(line + field.useLiteral(true) + " = ?"));
           }
         }
       }
@@ -859,7 +871,7 @@ public class Table implements Serializable
           else
             line = "   and ";
           j++;
-          line = line + field.useLiteral() + " = ?";
+          line = line + field.useLiteral(true) + " = ?";
           proc.lines.addElement(new Line(line));
         }
       }
@@ -885,7 +897,7 @@ public class Table implements Serializable
           proc.inputs.addElement(field);
           line = ", ";
 
-          proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+          proc.lines.addElement(new Line(line + field.useLiteral(true) + " = ?"));
         }
       } else if (field.type == Field.TIMESTAMP && !tmAdded)
       {
@@ -894,7 +906,7 @@ public class Table implements Serializable
         {
           proc.inputs.addElement(field);
           line = ", ";
-          proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
+          proc.lines.addElement(new Line(line + field.useLiteral(true) + " = ?"));
         }
       }
     }
@@ -930,7 +942,7 @@ public class Table implements Serializable
         else
           line = "   and ";
         j++;
-        line = line + field.useLiteral() + " = ?";
+        line = line + field.useLiteral(true) + " = ?";
         proc.lines.addElement(new Line(line));
       }
     }
@@ -993,7 +1005,7 @@ public class Table implements Serializable
         else
           line = "   and ";
         j++;
-        line = line + field.useLiteral() + " = ?";
+        line = line + field.useLiteral(true) + " = ?";
         proc.lines.addElement(new Line(line));
       }
     }
@@ -1022,7 +1034,7 @@ public class Table implements Serializable
         else
           line = ", ";
         j++;
-        proc.lines.addElement(new Line(line + field.useLiteral()));
+        proc.lines.addElement(new Line(line + field.useLiteral(true)));
       }
     }
     proc.lines.addElement(new Line(" from " + name));
@@ -1037,7 +1049,7 @@ public class Table implements Serializable
         else
           line = "   and ";
         j++;
-        line = line + field.useLiteral() + " = ?";
+        line = line + field.useLiteral(true) + " = ?";
         proc.lines.addElement(new Line(line));
       }
     }
@@ -1064,7 +1076,7 @@ public class Table implements Serializable
       if (field.type == Field.TIMESTAMP)
       {
         proc.outputs.addElement(field);
-        proc.lines.addElement(new Line("max(" + field.useLiteral() + ")"));
+        proc.lines.addElement(new Line("max(" + field.useLiteral(true) + ")"));
       }
     }
     proc.lines.addElement(new Line(" from " + name));
@@ -1090,7 +1102,7 @@ public class Table implements Serializable
         line = "  ";
       else
         line = ", ";
-      proc.lines.addElement(new Line(line + field.useLiteral()));
+      proc.lines.addElement(new Line(line + field.useLiteral(true)));
     }
     proc.lines.addElement(new Line(" from " + name));
     selectFor(proc, update, readonly);
@@ -1109,7 +1121,7 @@ public class Table implements Serializable
       {
         Field field = fields.elementAt(i);
         if (field.isPrimaryKey)
-          proc.orderFields.addElement(field.useLiteral());
+          proc.orderFields.addElement(field.useLiteral(true));
       }
     }
     n = proc.orderFields.size();
@@ -1159,7 +1171,7 @@ public class Table implements Serializable
           else
             line = "   and ";
           j++;
-          line = line + field.useLiteral() + " = ?";
+          line = line + field.useLiteral(true) + " = ?";
           proc.lines.addElement(new Line(line));
         }
       }
@@ -1195,7 +1207,7 @@ public class Table implements Serializable
               line = "  ";
             else
               line = ", ";
-            proc.lines.addElement(new Line(line + field.useLiteral()));
+            proc.lines.addElement(new Line(line + field.useLiteral(true)));
           }
         }
       }
@@ -1209,7 +1221,7 @@ public class Table implements Serializable
           line = "  ";
         else
           line = ", ";
-        proc.lines.addElement(new Line(line + field.useLiteral()));
+        proc.lines.addElement(new Line(line + field.useLiteral(true)));
       }
     }
     proc.lines.addElement(new Line(" from " + name));
@@ -1228,7 +1240,7 @@ public class Table implements Serializable
           else
             line = "   and ";
           j++;
-          line = line + field.useLiteral() + " = ?";
+          line = line + field.useLiteral(true) + " = ?";
           proc.lines.addElement(new Line(line));
         }
       }
@@ -1322,7 +1334,7 @@ public class Table implements Serializable
             line = ", ";
         }
         proc.lines.insertElementAt(
-            new Line(line + fieldName.useLiteral() + " "), j + 1);
+            new Line(line + fieldName.useLiteral(true) + " "), j + 1);
       }
       if (proc.isStd)
       {

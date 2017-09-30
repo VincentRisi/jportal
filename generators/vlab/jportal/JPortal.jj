@@ -555,7 +555,7 @@ TOKEN :          // Identifiers
 | <#LETTER: ["a"-"z", "_", "A"-"Z"]>
 | <#DIGIT:  ["0"-"9"]>
 | <#EXTRA:  ["#", "$"]>
-| <#LITERAL:["[", "]", "\'", "\"", " ","\\"]>
+| <#LITERAL:["[", "]", "`", "\'", "\"", " ","\\"]>
 }
 
 SPECIAL_TOKEN[IGNORE_CASE] :
