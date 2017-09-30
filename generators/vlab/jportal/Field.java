@@ -336,6 +336,12 @@ public class Field implements Serializable
     }
     return name;
   }
+  public boolean isEnum()
+  {
+    if (enums.size() > 0)
+      return true;
+    return false;
+  }
 }
 
 

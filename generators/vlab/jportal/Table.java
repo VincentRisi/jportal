@@ -60,7 +60,6 @@ public class Table implements Serializable
   public boolean isStoredProc;
   public boolean isLiteral;
   public int start;
-
   public Table()
   {
     name = "";
@@ -97,12 +96,10 @@ public class Table implements Serializable
     isLiteral = false;
     start = 0;
   }
-
   public void reader(DataInputStream ids) throws IOException
   {
     reader(ids, null);
   }
-
   public void reader(DataInputStream ids, Vector<?> useProcs)
       throws IOException
   {
@@ -217,7 +214,6 @@ public class Table implements Serializable
     isLiteral = ids.readBoolean();
     start = ids.readInt();
   }
-
   public void writer(DataOutputStream ods) throws IOException
   {
     ods.writeInt(0xBABA00D);
@@ -319,7 +315,6 @@ public class Table implements Serializable
     ods.writeBoolean(isLiteral);
     ods.writeInt(start);
   }
-
   /** If there is an literal uses that else returns name 
    * optional inString defaults to false
    * returning escaped quotes or double quotes 
@@ -354,7 +349,6 @@ public class Table implements Serializable
       return alias;
     return name;
   }
-
   /**
    * Checks for the existence of a with
    */
@@ -368,7 +362,6 @@ public class Table implements Serializable
     }
     return false;
   }
-
   public With getWith(String s)
   {
     for (int i = 0; i < withs.size(); i++)
@@ -379,7 +372,6 @@ public class Table implements Serializable
     }
     return null;
   }
-
   /**
    * Checks for the existence of a field
    */
@@ -394,7 +386,6 @@ public class Table implements Serializable
     }
     return false;
   }
-
   public Field getField(String s)
   {
     int i;
@@ -406,7 +397,6 @@ public class Table implements Serializable
     }
     return null;
   }
-
   public int getFieldIndex(String s)
   {
     int i;
@@ -418,7 +408,6 @@ public class Table implements Serializable
     }
     return -1;
   }
-
   /**
    * Checks if table field is declared as null
    */
@@ -433,7 +422,6 @@ public class Table implements Serializable
     }
     return false;
   }
-
   /**
    * Checks for the existence of a proc
    */
@@ -447,7 +435,6 @@ public class Table implements Serializable
     }
     return false;
   }
-
   /**
    * Returns proc or null
    */
@@ -461,7 +448,6 @@ public class Table implements Serializable
     }
     return null;
   }
-
   /**
    * Checks for the existence of a proc
    */
@@ -476,7 +462,6 @@ public class Table implements Serializable
     }
     return false;
   }
-
   /**
    * Sets a field to be primary key
    */
@@ -493,14 +478,12 @@ public class Table implements Serializable
       }
     }
   }
-
   public String tableName()
   {
     if (database.schema.length() == 0)
       return useLiteral(true);
     return database.schema + "." + useLiteral(true);
   }
-
   /**
    * Builds a merge proc generated as part of standard record class
    */
@@ -584,17 +567,14 @@ public class Table implements Serializable
     }
     proc.lines.addElement(new Line("  )"));
   }
-
   static boolean isIdentity(Field field)
   {
     return field.type == Field.BIGIDENTITY || field.type == Field.IDENTITY;
   }
-
   static boolean isSequence(Field field)
   {
     return field.type == Field.BIGSEQUENCE || field.type == Field.SEQUENCE;
   }
-
   /**
    * Builds an insert proc generated as part of standard record class
    */
@@ -672,7 +652,6 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
-
   /**
    * Builds an insert proc generated as part of standard record class
    */
@@ -681,7 +660,6 @@ public class Table implements Serializable
     proc.isMultipleInput = true;
     buildInsert(proc);
   }
-
   /**
    * Builds an identity proc generated as part of standard record class
    */
@@ -703,7 +681,6 @@ public class Table implements Serializable
       proc.lines.addElement(new Line(line));
     }
   }
-
   /**
    * Builds an update proc generated as part of standard record class
    */
@@ -879,13 +856,13 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
-
   private void AddTimeStampUserStamp(Proc proc)
   {
     int k;
     String line;
     boolean tmAdded, unAdded;
     tmAdded = unAdded = false;
+
     for (k = 0; k < fields.size(); k++)
     {
       Field field = (Field) fields.elementAt(k);
@@ -911,7 +888,6 @@ public class Table implements Serializable
       }
     }
   }
-
   /**
    * Builds an update proc generated as part of standard record class
    */
@@ -920,7 +896,6 @@ public class Table implements Serializable
     proc.isMultipleInput = true;
     buildUpdate(proc);
   }
-
   /**
    * Builds a delete by primary key proc
    */
@@ -949,7 +924,6 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
-
   /**
    * Builds a delete all rows proc
    */
@@ -961,7 +935,6 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
-
   /**
    * Builds a count rows proc
    */
@@ -977,7 +950,6 @@ public class Table implements Serializable
     proc.outputs.addElement(field);
     proc.lines.addElement(new Line("select count(*) noOf from " + name));
   }
-
   /**
    * Builds a check for primary key existance proc
    */
@@ -1010,7 +982,6 @@ public class Table implements Serializable
       }
     }
   }
-
   /**
    * Builds a select on primary key proc
    */
@@ -1058,7 +1029,6 @@ public class Table implements Serializable
     else if (readonly)
       proc.lines.addElement(new Line(" for read only"));
   }
-
   /**
    * Builds a select on primary key proc
    */
@@ -1081,7 +1051,6 @@ public class Table implements Serializable
     }
     proc.lines.addElement(new Line(" from " + name));
   }
-
   /**
    * Builds a select all rows proc
    */
@@ -1108,7 +1077,6 @@ public class Table implements Serializable
     selectFor(proc, update, readonly);
     selectOrderBy(proc, inOrder, descending);
   }
-
   private void selectOrderBy(Proc proc, boolean inOrder, boolean descending)
   {
     int i, n;
@@ -1139,7 +1107,6 @@ public class Table implements Serializable
       proc.lines.addElement(new Line(line + fieldName + tail));
     }
   }
-
   private void selectFor(Proc proc, boolean update, boolean readonly)
   {
     if (update)
@@ -1147,7 +1114,6 @@ public class Table implements Serializable
     else if (readonly)
       proc.lines.addElement(new Line(" for read only"));
   }
-
   public void buildDeleteBy(Proc proc, PrintWriter outLog)
   {
     String name = tableName();
@@ -1251,7 +1217,6 @@ public class Table implements Serializable
     }
     selectOrderBy(proc, inOrder, descending);
   }
-
   public void buildSelectFrom(Proc proc, Table table, PrintWriter outLog)
   {
     String name = tableName();
@@ -1344,12 +1309,10 @@ public class Table implements Serializable
       }
     }
   }
-
   public String toString()
   {
     return name;
   }
-
   private String set(String a, String b, String what, PrintWriter outLog)
   {
     if (a.length() == 0)
@@ -1359,7 +1322,6 @@ public class Table implements Serializable
           + b);
     return a;
   }
-
   private boolean set(boolean a, boolean b, String what, PrintWriter outLog)
   {
     if (a == false)
@@ -1369,7 +1331,6 @@ public class Table implements Serializable
           + " is already true and is not set to false.");
     return a;
   }
-
   private void copy(Table addin, PrintWriter outLog)
   {
     name = addin.name;
@@ -1398,7 +1359,6 @@ public class Table implements Serializable
     hasIdentity = addin.hasIdentity;
     start = addin.start;
   }
-
   private void merge(Table addin, PrintWriter outLog)
   {
     alias = set(alias, addin.alias, "alias", outLog);
@@ -1418,7 +1378,6 @@ public class Table implements Serializable
     hasStdProcs = set(hasStdProcs, addin.hasStdProcs, "hasStdProcs", outLog);
     hasIdentity = set(hasIdentity, addin.hasIdentity, "hasIdentity", outLog);
   }
-
   public Table add(Table addin, PrintWriter outLog)
   {
     Table table = new Table();
@@ -1426,7 +1385,6 @@ public class Table implements Serializable
     table.merge(addin, outLog);
     return table;
   }
-
   public boolean hasOption(String value)
   {
     for (int i = 0; i < options.size(); i++)
@@ -1437,7 +1395,6 @@ public class Table implements Serializable
     }
     return false;
   }
-
   /**
    * Translates field type to DB2 SQL column types
    */
