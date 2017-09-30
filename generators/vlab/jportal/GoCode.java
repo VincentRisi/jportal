@@ -153,28 +153,29 @@ public class GoCode extends Generator
   private static void generateProc(Table table, Proc proc, PrintWriter outData)
   {
     placeHolder = new PlaceHolder(proc, PlaceHolder.AT_NAMED, "");
-    generateCommand(proc, outData);
-    
+    String recUsed = generateCommand(proc, outData);
+    if (proc.isMultipleInput)
+      generateMultipleImplementation(table, proc, recUsed, outData);
+    else
+      generateImplementation(table, proc, recUsed, outData);
   }
   static String check(String value)
   {
     String trimmed = value.trim();
-    if (trimmed.startsWith("_ret.checkUse("))
-      return trimmed.replace("_ret.checkUse(", "checkUse(_ret, ");
     if (trimmed.startsWith("_ret.") == true)
       return trimmed;
     return "rec." + trimmed;
   }
-  static void generateCommand(Proc proc, PrintWriter outData)
+  static String generateCommand(Proc proc, PrintWriter outData)
   {
     boolean isReturning = false;
     boolean isBulkSequence = false;
     String parms = "";
     String recUsed = "";
     if (proc.isStd == true || proc.isStdExtended() == true)
-      recUsed = String.format("rec *%sRec", proc.table.useName());
+      recUsed = String.format("%sRec", proc.table.useName());
     else if (proc.hasNoData() == false)
-      recUsed = String.format("rec *%s%sRec", proc.table.useName(), proc.upperFirst());
+      recUsed = String.format("%s%sRec", proc.table.useName(), proc.upperFirst());
     Vector<String> lines = placeHolder.getLines();
     if (proc.isInsert == true && proc.hasReturning == true && proc.outputs.size() == 1)
     {
@@ -189,7 +190,7 @@ public class GoCode extends Generator
     if (proc.hasNoData() == true)
       print(outData, String.format("func %s%sCmd() string {\n`var result = \"\"", proc.table.useName(), proc.name, parms));
     else
-      print(outData, String.format("func (%s) %sCmd(%s) string {\n`var result = \"\"", recUsed, proc.name, parms));
+      print(outData, String.format("func (rec *%s) %sCmd(%s) string {\n`var result = \"\"", recUsed, proc.name, parms));
     if (lines.size() > 0)
     { 
       String endLine = " + \"\\n\" + \n``";
@@ -203,6 +204,15 @@ public class GoCode extends Generator
       }
       println(outData, "\n`return result\n}\n");
     }
+    return recUsed;
+  }
+  private static void generateImplementation(Table table, Proc proc, String recUsed, PrintWriter outData)
+  {
+    println(outData, String.format("func (rec *%s) %sExec() {", recUsed, proc.name));
+    println(outData, "}\n");
+  }
+  private static void generateMultipleImplementation(Table table, Proc proc, String recUsed, PrintWriter outData)
+  {
   }
   private static String fieldDef(Field field)
   {
