@@ -173,7 +173,7 @@ def expand(line):
       result += args[arg]
   return result
 
-state=0;JPORTAL=1;CRACKLE=2;PICKLE=3;SOURCE=4;IDL=5;APP=8
+state=0;JPORTAL=1;CRACKLE=2;PICKLE=3;SOURCE=4;IDL=5;OCIAPI=6;OCISI=7;APP=8
 
 def parse_anydb(sourceFile):
   ifile = open(sourceFile, 'r')
@@ -183,6 +183,7 @@ def parse_anydb(sourceFile):
   switches[CRACKLE] = ''
   switches[JPORTAL] = ''
   switches[PICKLE] = ''
+  switches[OCIAPI] = ''
   lineNo = 0
   for line in lines:
     lineNo += 1
@@ -206,11 +207,13 @@ def parse_anydb(sourceFile):
       project.name = fixname(fields[1])
       project.switches = []
       project.sources = []
+      project.ocisis = []
       project.ptables = []
       project.masks = {}
       project.masks[JPORTAL] = {}
       project.masks[CRACKLE] = {}
       project.masks[PICKLE] = {}
+      project.masks[OCIAPI] = {}
       project.idlname = None
       project.idls = {}
       project.apps = {}
@@ -229,6 +232,9 @@ def parse_anydb(sourceFile):
     if fields[0] == 'pickle':
       state = PICKLE
       continue
+    if fields[0] == 'ociapi':
+      state = OCIAPI
+      continue
     if fields[0] == 'source':
       state = SOURCE
       continue
@@ -238,11 +244,28 @@ def parse_anydb(sourceFile):
     if fields[0] == 'app':
       state = APP
       continue
+    if fields[0] == 'ocisi':
+      state = OCISI
+      continue
     if state in [JPORTAL, CRACKLE, PICKLE]:
       if len(fields) > 1:
         dir = fixname(fields[1])
         makedirs(dir)
         switches[state] += '-o %s %s ' % (dir, fields[0])
+      else:
+        dir = ''  
+        switches[state] += '%s ' % (fields[0])
+      if len(fields) > 2:
+        if dir not in project.masks:
+          project.masks[state][dir] = []
+        for mask in fields[2:]:
+          project.masks[state][dir].append(mask)
+      continue
+    if state in [OCIAPI]:
+      if len(fields) > 1:
+        dir = fixname(fields[1])
+        makedirs(dir)
+        switches[state] += '%s|%s ' % (dir, fields[0])
       else:
         dir = ''  
         switches[state] += '%s ' % (fields[0])
@@ -259,6 +282,14 @@ def parse_anydb(sourceFile):
       source.noTargets = 0
       source.lastmod = lastmod(source.name)
       project.sources.append(source)
+      continue
+    if state == OCISI:
+      ocisi = Class()
+      ocisi.targets = []
+      ocisi.name = fixname(fields[0])
+      ocisi.noTargets = 0
+      ocisi.lastmod = lastmod(ocisi.name)
+      project.ocisis.append(ocisi)
       continue
     if state == APP:
       source = Class()
@@ -570,3 +601,93 @@ elif 'appTarget' in switches:
   compile = True
 if compile == True:
   pickle(appTarget.name, switches[PICKLE])
+
+xxx = '''\
+ BlankPadded(0)=0
+ CharZ(0)=0
+ ConnReqd(1)=1
+ ControlDB()=
+ ExitReqd(0)=0
+ IDLUbi(0)=0
+ Internal(0)=0
+ LogDir()=
+ LogExt(.log)=.log
+ OneSQLScript(0)=0
+ UConnect()=
+ UnderScore(0)=0
+ EightByte(0)=0
+ ExtendedPAS(0)=0
+ ExtendedVB(0)=0
+ IDLModule()=
+ NoDomain(0)=0
+ PARMSDescr()=
+ PARMSLookup()=
+ PrefixVBClasses(0)=0
+ Show()=
+ TargetVBforADOR(0)=0
+ ViewOnly(0)=0
+ ExtendedC(1)=1
+ LittleTrue(1)=1
+ Version2Bin(1)=1
+ UseCSFields(0)=0
+ SqlAuditExt(.aud)=.aud
+ SqlConExt(.con)=.con
+ SqlGrantExt(.gra)=.gra
+ SqlIdxExt(.idx)=.idx
+ SqlProcExt(.pro)=.pro
+ SqlSnapExt(.pop)=.pop
+ SqlTableExt(.tab)=.tab
+ SqlViewsExt(.vws)=.vws
+ TargetARCHIVE(0)=0
+ ArchiveDir()=
+ ArchiveExt(.arc)=.arc
+ TargetC(0)=0
+ CDir()=
+ CExt(.sh)=.sh
+ TargetCSAdoNet(0)=0
+ CSAdoNetDir()=
+ CSAdoNetExt(.cs)=.cs
+ TargetCSIDL2(0)=0
+ CSIDL2Dir()=
+ CSIDL2Ext(.cs)=.cs
+ TargetCSNet7(0)=0
+ CSNet7Dir()=
+ CSNet7Ext(.cs)=.cs
+ TargetCSRW(0)=0
+ CSRWDir()=
+ CSRWExt(.cs)=.cs
+ TargetIDL(0)=0
+ IDLDir()=
+ IDLExt(.ii)=.ii
+ TargetPARMS(0)=0
+ PARMSDir()=
+ PARMSExt(.pi)=.pi
+ TargetPAS(0)=0
+ PASDir()=
+ PASExt(.pas)=.pas
+ TargetPython(0)=0
+ PythonDir()=
+ PythonExt(.py)=.py
+ TargetSQL(0)=0
+ SqlDir()=
+ SqlExt(.sql)=.sql
+ TargetSO(0)=0
+ SODir()=
+ SOExt(.so)=.so
+ TargetVB(0)=0
+ VBDir()=
+ VBExt(.bas)=.bas
+ TargetVBforIDL(0)=0
+ VBforIDLDir()=
+ VBforIDLExt(.bas)=.bas
+ TargetVB5(0)=0
+ VB5Dir()=
+ VB5Ext(.bas)=.bas
+ TargetVBCode3(0)=0
+ VBCode3Dir()=
+ VBCode3Ext(.bas)=.bas
+ TargetVBNet7(0)=0
+ VBNet7Dir()=
+ VBNet7Ext(.vb)=.vb
+'''
+    

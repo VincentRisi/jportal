@@ -1,0 +1,263 @@
+DATABASE smdb
+PACKAGE  vlab
+OUTPUT   tidmca
+SERVER   nap
+SCHEMA   napd00
+
+table mcca
+
+with accnos_curr
+sqlcode
+  select p.accno p_accno
+    from prod p
+     , mcca m
+     , cifinfo c
+     , bal b
+ where m.blockstatuscde = 'NONE'
+   and p.accno = m.accno
+   and c.accno = m.accno
+   and b.accno = m.accno
+   and b.ccycde = m.ccycde
+   and b.balcde = 'BK'
+   and b.baldate = to_date(:BatchDate, 'YYYYMMDD')
+   and b.batchincbal > 0
+endcode   
+
+with odlimit_data
+sqlcode
+  select accno
+       , effdate
+       , max(effdate) over (partition by accno order by accno) as maxeffdate
+       , odlimitcde
+       , odlimitamt
+       , to_char(expdate, 'YYYYMMDD') as expdate 
+    from odlimit
+       , accnos_curr
+   where accno = p_accno  
+     and odlimitcde = 'OD1' 
+     and effdate <= to_date(:BatchDate, 'YYYYMMDD')
+endcode
+
+with odlimit_max
+sqlcode
+  select accno
+       , effdate
+       , odlimitamt
+       , expdate 
+    from odlimit_data 
+   where effdate = maxeffdate
+endcode
+
+with dailytotal_curr
+sqlcode
+   select accno
+        , totdate
+        , totcde
+     from dailytotal
+        , accnos_curr 
+    where accno = p_accno
+      and totcde in ('DAIR', 'DAIP')
+      and totdate = to_date(:BatchDate, 'YYYYMMDD')
+    order by accno
+endcode
+
+with dailytotal_data
+sqlcode
+  select d.accno
+       , d.totcde
+       , d.drintrate
+       , d.crintrate
+       , d.totamt
+       , d.drcrind
+       , d.totdate prevtotdate
+       , l.totdate totdate
+       , max(d.totdate) over (partition by d.accno, d.totcde order by d.accno, d.totcde) as maxtotdate
+  from dailytotal d 
+     , dailytotal_curr l
+  where d.accno = l.accno
+    and d.totcde = l.totcde
+    and d.totdate < l.totdate 
+endcode
+
+with dailytotal_withprev
+sqlcode
+  select accno
+       , totcde
+       , drintrate
+       , crintrate
+       , totamt
+       , drcrind
+       , prevtotdate
+       , totdate
+    from dailytotal_data
+   where maxtotdate = prevtotdate  
+endcode
+
+proc CountAccnos_curr
+input 
+  BatchDate char(8)
+output
+  NoOf int
+with
+  accnos_curr
+sqlcode
+  select count(*)
+    from accnos_curr
+endcode
+
+proc CountDailyTotal
+input 
+  BatchDate char(8)
+output
+  NoOf int
+with 
+  accnos_curr
+  dailytotal_curr 
+  dailytotal_data 
+  dailytotal_withprev
+sqlcode
+  select count(*)
+    from dailytotal_withprev
+endcode
+
+proc CountOdLimit
+input 
+  BatchDate char(8)
+output
+  NoOf int
+with 
+  accnos_curr
+  odlimit_data 
+  odlimit_max 
+sqlcode
+  select count(*)
+    from odlimit_max
+endcode
+
+proc MCA_NameInfo
+input
+   BatchDate      char(8)
+output
+   AccNo             char(16)
+   Status            char(1)
+   AccCde            char(4)
+   BlockStatusCde    char(4)
+   BlockStatusDesc   char(30)
+   ProdCde           char(4)
+   ProdDesc          char(30)
+   CorpInd           char(4)
+   CorpCustNo        char(10)
+   IntDivFreq        char(4)
+   CcyCde            char(3)
+   CcyName           char(30)
+   Initials          char(4)
+   Name1             char(30)
+   TitleCde          char(4)
+   TitleDesc         char(30)
+   BrnNo             char(4)
+   DCARNo            char(16)
+   StartDate         char(8)
+   FinBrnNo          char(6)
+   GroupNo           char(10)
+   HoganCISNo        char(12)
+   EndDate           char(8)
+   MarketInd         char(4)
+   NextIntDate       char(8)
+   SarbCde           char(4)
+   SarbDesc          char(30)
+   ClientNo          char(10)
+   BatchDrCrInd      char(2)
+   MultiDivInd       char(1)
+   IntRateDays       short
+   DecimalPoints     int
+   OdLimitAmt        float(20,2)
+   ExpDate           char(8)
+   IntRateCde        char(1)
+   TotCde            char(4)
+   DrIntRate         float(12,6)
+   CrIntRate         float(12,6)
+   TotAmt            float(20,2) NULL
+   DrCrInd           char(2)
+   PrevTotDate       char(8)
+   TotDate           char(8)
+with
+  accnos_curr
+  odlimit_data 
+  odlimit_max 
+  dailytotal_curr 
+  dailytotal_data 
+  dailytotal_withprev
+sqlcode  
+  select p.accno                              accno
+       , p.status                             status
+       , p.acccde                             acccde
+       , m.blockstatuscde                     blockstatuscde
+       , substr( bt.blockstatusdesc, 1, 30 )  blockstatusdesc
+       , p.prodcde                            prodcde
+       , substr( pt.proddesc, 1, 30 )         proddesc
+       , c.corpind                            corpind
+       , c.corpcustno                         corpcustno
+       , m.intdivfreq                         intdivfreq
+       , m.ccycde                             ccycde
+       , substr( ct.ccyname, 1, 30 )          ccyname
+       , c.initials                           initials
+       , substr( c.name1, 1, 30 )             name1
+       , c.titlecde                           titlecde
+       , substr( t.titledesc, 1, 30 )         titledesc
+       , p.brnno                              brnno
+       , m.decarno                            dcarno
+       , to_char( p.startdate, 'YYYYMMDD' )   startdate
+       , p.finbrnno                           finbrnno
+       , m.groupno                            groupno
+       , c.hogancisno                         hogancisno
+       , to_char( p.enddate, 'YYYYMMDD' )     enddate
+       , p.marketind                          marketind
+       , to_char( m.nextintdate, 'YYYYMMDD' ) nextintdate
+       , p.sarbcde                            sarbcde
+       , substr( st.sarbdesc, 1, 30 )         sarbdesc
+       , m.clientno                           clientno
+       , b.batchdrcrind                       batchdrcrind
+       , ct.multydivind                       multidivind
+       , ct.intratedays                       intratedays
+       , ct.decimalpoints                     decimalpoints
+       , nvl(om.odlimitamt, -1)               odlimitamt
+       , om.expdate                           expdate
+       , decode(g.groupno, NULL, 'I', 'G')    intratecde
+       , dt.totcde                            totcde
+       , dt.drintrate                         drintrate
+       , dt.crintrate                         crintrate
+       , dt.totamt                            totamt
+       , dt.drcrind                           drcrind
+       , dt.prevtotdate                       prevtotdate
+       , dt.totdate                           totdate
+    from prod p
+       , mcca m
+       , cifinfo c
+       , titletype t
+       , blockstatustype bt
+       , prodtype pt
+       , ccytype ct
+       , sarbtype st
+       , bal b
+       , odlimit_max om
+       , grps g
+       , dailytotal_withprev dt
+   where m.blockstatuscde = 'NONE'
+     and p.accno = m.accno
+     and bt.blockstatuscde (+)= m.blockstatuscde
+     and c.accno = m.accno
+     and t.titlecde (+)= c.titlecde
+     and st.sarbcde (+)= p.sarbcde
+     and pt.prodcde (+)= p.prodcde
+     and ct.ccycde (+)= m.ccycde
+     and b.accno = m.accno
+     and b.ccycde = m.ccycde
+     and b.balcde = 'BK'
+     and b.baldate = to_date(:BatchDate, 'YYYYMMDD')
+     and b.batchincbal > 0
+     and om.accno (+)= m.accno
+     and g.groupno (+)= m.groupno
+     and dt.accno (+)= m.accno
+     and dt.drcrind = b.batchdrcrind
+   order by m.accno
+endcode   

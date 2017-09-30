@@ -205,12 +205,22 @@ sqlcode
  where Xavier = :Extra1 
 endcode  
 
+with OneRow
+sqlcode
+  select xavier 
+    from zedzed
+   where xavier > 0 
+   order by xavier 
+   --fetch first 1 rows only
+endcode
+
 proc NextXavier
 output (single)
   Xavier  int
+with
+  OneRow  
 sqlcode
-  with single as (select xavier from zedzed where xavier > 0 order by xavier fetch first 1 rows only)
-  select xavier from old table (delete from zedzed where xavier = (select xavier from single))
+  select xavier from old table (delete from zedzed where xavier = (select xavier from OneRow))
 endcode
 
 TABLE ZedBled

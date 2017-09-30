@@ -40,6 +40,9 @@ set (LOYALTY_BINARY_DIR ${CMAKE_BINARY_DIR}/loyalty)
 set (PICKTESTER_SOURCE_DIR ${CMAKE_SOURCE_DIR}/picktester)
 set (PICKTESTER_BINARY_DIR ${CMAKE_BINARY_DIR}/picktester)
 
+set (PY3PORT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/py3port)
+set (PY3PORT_BINARY_DIR ${CMAKE_BINARY_DIR}/py3port)
+
 set (SPROCS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/sprocs)
 set (SPROCS_BINARY_DIR ${CMAKE_BINARY_DIR}/sprocs)
 
@@ -47,6 +50,7 @@ include (${CMAKE_SOURCE_DIR}/cmake/functions.cmake)
 
 add_subdirectory(generators)
 add_subdirectory(anydbtest)
+add_subdirectory(py3port)
 add_subdirectory(decompilers)
 add_subdirectory(loyalty)
 add_subdirectory(idl2tester)

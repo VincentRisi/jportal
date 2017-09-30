@@ -722,6 +722,40 @@ public class Type implements Serializable
       return name;
     }
   }
+  public int basSize()
+  {
+    return basSize(true);
+  }
+  public int basSize(boolean withBool)
+  {
+    switch(typeof)
+    {
+    case BOOLEAN:
+      if (withBool)
+        return 1;
+      else
+        return 4;
+    case BYTE:
+      return 1;
+    case CHAR:
+      if (arraySizes.size() > 0
+        || reference == Type.BYPTR)
+        return 4;
+      else
+        return 1;
+    case SHORT:
+      return 2;
+    case INT:
+      return 4;
+    case LONG:
+      return 4;
+    case FLOAT:
+    case DOUBLE:
+      return 8;
+    default:
+      return 4;
+    }
+  }
   public String basDef(String aName)
   {
     return basDef(aName, true);
