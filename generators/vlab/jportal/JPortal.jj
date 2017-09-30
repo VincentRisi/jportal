@@ -36,6 +36,7 @@ public class JPortal
   protected static Link      link;
   protected static View      view;
   protected static Proc      proc;
+  protected static With      with;
   protected static Parameter parameter;
   protected static String    perm;
   protected static String    user;
@@ -347,9 +348,9 @@ public class JPortal
     return haystack;
   }
   static String replaceAll(
-    String haystack,              // String to search in
-    String needle,                // Substring to find
-    String replacement)
+  String haystack,              // String to search in
+  String needle,                // Substring to find
+  String replacement)
   {
     int i = haystack.lastIndexOf(needle);
     if (i != -1)
@@ -418,18 +419,18 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <CASCADE:      "cascade">
 | <CHAR:         "char">
 | <CHECK:        "check">
-| <COUNT:        "count">
-| <CONST:       ("const"|"constant")>
-| <CURSOR:       "cursor">
 | <CLUSTERED:    "clustered">
+| <CONST:       ("const"|"constant")>
+| <COUNT:        "count">
+| <CURSOR:       "cursor">
 | <DATABASE:     "database">
 | <DATE:         "date">
 | <DATETIME:     "datetime">
 | <DECLARE:      "declare">
 | <DEFAULTV:     "default">
 | <DELETE:       "delete">
-| <DELETEBY:     "deleteby">
 | <DELETEALL:    "deleteall">
+| <DELETEBY:     "deleteby">
 | <DELETEONE:    "deleteone">
 | <DESC:         "desc" >
 | <DOUBLE:       "double">
@@ -439,6 +440,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <FLAGS:        "flags">
 | <FLOAT:        "float">
 | <FOR:          "for">
+| <FROM:         "from">
 | <GRANT:        "grant">
 | <IDENTITY:     "identity">
 | <IMPORT:       "import">
@@ -450,6 +452,7 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <KEY:          "key">
 | <LINK:         "link">
 | <LONG:         "long">
+| <MAXTMSTAMP:   "maxtmstamp">
 | <MERGE:        "merge">
 | <MONEY:        "money">
 | <MULTIPLE:     "multiple">
@@ -460,7 +463,15 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <ORDER:       ("order"|"sorted")>
 | <OUTPUT:       "output">
 | <PACKAGE:      "package">
-| <USING:        "using">
+| <PARM:         "{parm}">
+| <PARMCACHE:    "{cache}">
+| <PARMDELETE:   "{delete}">
+| <PARMINSERT:   "{insert}">
+| <PARMREADER:   "{reader}">
+| <PARMSHOWS:    "{shows}">
+| <PARMSUPPLIED: "{supplied}">
+| <PARMUPDATE:   "{update}">
+| <PARMVIEWONLY: "{viewonly}">
 | <PASSWORD:     "password">
 | <PRIMARY:      "primary">
 | <PROC:         "proc">
@@ -470,16 +481,14 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <SELECT:       "select">
 | <SELECTALL:    "selectall">
 | <SELECTBY:     "selectby">
-| <FROM:         "from">
-| <WHERE:        "where">
-| <SELECTONEBY:  "selectoneby">
 | <SELECTONE:    "selectone">
+| <SELECTONEBY:  "selectoneby">
 | <SEQUENCE:     "sequence">
 | <SERVER:       "server">
 | <SHORT:        "short">
 | <SINGLE:       "single">
-| <SQL:          "sql">
 | <SPROC:       ("storedproc"|"sproc")>
+| <SQL:          "sql">
 | <STANDARD:     "standard">
 | <TABLE:        "table">
 | <TIME:         "time">
@@ -489,25 +498,18 @@ TOKEN[IGNORE_CASE] :          // Keywords
 | <UID:          "uid">
 | <UNIQUE:       "unique">
 | <UPDATE:       "update">
-| <UPDATEFOR:    "updatefor">
 | <UPDATEBY:     "updateby">
-| <MAXTMSTAMP:   "maxtmstamp">
+| <UPDATEFOR:    "updatefor">
 | <USERID:       "userid">
 | <USERSTAMP:    "userstamp">
+| <USING:        "using">
 | <UTF8:         "utf8">
 | <VIEW:         "view">
 | <WANSICHAR:   ("wansi"|"wansichar")>
 | <WCHAR:        "wchar">
+| <WHERE:        "where">
+| <WITH:         "with">
 | <XML:          "xml">
-| <PARM:         "{parm}">
-| <PARMSHOWS:    "{shows}">
-| <PARMVIEWONLY: "{viewonly}">
-| <PARMCACHE:    "{cache}">
-| <PARMREADER:   "{reader}">
-| <PARMINSERT:   "{insert}">
-| <PARMDELETE:   "{delete}">
-| <PARMUPDATE:   "{update}">
-| <PARMSUPPLIED: "{supplied}">
 }
 
 TOKEN[IGNORE_CASE] :        // BigBlock
@@ -750,7 +752,7 @@ void jTables() :
       save = false;
     }
   )
-  (jProc())*
+  (jProc() | jWith())*
   (<PARM>
     {
       parameter = new Parameter();
@@ -1733,7 +1735,7 @@ void jProc() :
       proc.isSProc = true;
     }
   )
-  (jStdProc() | (LOOKAHEAD(3) jNewProc() |jUserProc()))
+  (jStdProc() | (LOOKAHEAD(3) jNewProc() | jUserProc()))
   {
     if (table.hasProc(proc))
       outLog.println("proc "+proc.name+" already present in table");
@@ -2149,6 +2151,61 @@ void jRowCount() :
   }
 }
 
+void jWith() :
+{
+  Token t;
+  String s;
+}
+{
+  t = <WITH>
+  {
+    with = new With();
+    with.table = table;
+    with.start = t.beginLine;
+    table.withs.addElement(with);
+  }
+  s = jIdent()
+  {
+    with.name = s;
+  }
+  ( s = jComment()
+    {
+      with.comments.addElement(s);
+    }
+  )*
+  (
+    <OPTIONS>
+    ( s = jString()
+      {
+        with.options.addElement(s);
+      }
+    )+
+  )*
+  jWithCode()
+}
+
+void jWithCode() :
+{
+  Token t;
+  String s;
+  Integer size;
+  Line line;
+}
+{
+  (
+    ( t = <CODELINE>
+      {
+        s = t.image.trim() + " ";
+        if (s.length() > 0)
+        {
+          line = new Line(s);
+          with.lines.addElement(line);
+        }
+      }
+    )
+  )*
+}
+
 void jUserProc() :
 {
   String s;
@@ -2272,6 +2329,17 @@ void jUserProc() :
         }
       }
     )*
+  )?
+  ( LOOKAHEAD(2)<WITH>
+    (
+      s = jIdent()
+      {
+        if (table.hasWith(s))
+          proc.withs.addElement(s);
+        else
+          outLog.println("With "+s+" not present.");
+      }
+    )+
   )?
   {
     if (isStdProc == true)

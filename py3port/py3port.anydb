@@ -13,12 +13,13 @@ binary_dir=/main/jportal/build/py3port
 jportal
   AdoPythonCode     ${binary_dir}/sql/AdoPython   %a.py
   BinPythonCode     ${binary_dir}/sql/BinPython   binu_%l.py
+  DBPyCode          ${binary_dir}/sql/DBPy        %aAnyDB.py
+  IdlCode           ${binary_dir}/sql/ii          %l.ii %a.cs
+  Lite3PyCode       ${binary_dir}/sql/Lite3Py     %aLite3.py
   PyParamCode       ${binary_dir}/sql/PyParam     %a.py
   PythonCliCode     ${binary_dir}/sql/PythonCli   DB_%u.py
   PythonCode        ${binary_dir}/sql/Python      %a.py
   PythonTreeCode    ${binary_dir}/sql/PythonTree  %a.py
-  DBPyCode          ${binary_dir}/sql/DBPy        %aAnyDB.py
-  Lite3PyCode       ${binary_dir}/sql/Lite3Py     %aLite3.py
 
 crackle  
   PopUbiPuffin       ${binary_dir}/idl/UbiPuffin       %lPython.cpp %lpython.h
@@ -27,7 +28,7 @@ crackle
   PopUbiPython3      ${binary_dir}/idl/UbiPython3      %u_CODE.py
   PopUbiPythonTree   ${binary_dir}/idl/UbiPythonTree   %l_tree.py
   PopUbiServer       ${binary_dir}/idl/UbiServer       %l.h
-  PopUbiServer2      ${binary_dir}/idl/UbiServer2      %l.h
+ #PopUbiServer2      ${binary_dir}/idl/UbiServer2      %l.h
 
 source
   ${jportal_dir}/sql/si/ZedZed.si

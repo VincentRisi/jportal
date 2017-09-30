@@ -52,251 +52,257 @@ public interface JPortalConstants {
   /** RegularExpression Id. */
   int CHECK = 21;
   /** RegularExpression Id. */
-  int COUNT = 22;
+  int CLUSTERED = 22;
   /** RegularExpression Id. */
   int CONST = 23;
   /** RegularExpression Id. */
-  int CURSOR = 24;
+  int COUNT = 24;
   /** RegularExpression Id. */
-  int DATABASE = 25;
+  int CURSOR = 25;
   /** RegularExpression Id. */
-  int DATE = 26;
+  int DATABASE = 26;
   /** RegularExpression Id. */
-  int DATETIME = 27;
+  int DATE = 27;
   /** RegularExpression Id. */
-  int DECLARE = 28;
+  int DATETIME = 28;
   /** RegularExpression Id. */
-  int DEFAULTV = 29;
+  int DECLARE = 29;
   /** RegularExpression Id. */
-  int DELETE = 30;
+  int DEFAULTV = 30;
   /** RegularExpression Id. */
-  int DELETEBY = 31;
+  int DELETE = 31;
   /** RegularExpression Id. */
   int DELETEALL = 32;
   /** RegularExpression Id. */
-  int DELETEONE = 33;
+  int DELETEBY = 33;
   /** RegularExpression Id. */
-  int DESC = 34;
+  int DELETEONE = 34;
   /** RegularExpression Id. */
-  int DOUBLE = 35;
+  int DESC = 35;
   /** RegularExpression Id. */
-  int DYNAMIC = 36;
+  int DOUBLE = 36;
   /** RegularExpression Id. */
-  int EXECUTE = 37;
+  int DYNAMIC = 37;
   /** RegularExpression Id. */
-  int EXISTS = 38;
+  int EXECUTE = 38;
   /** RegularExpression Id. */
-  int FLAGS = 39;
+  int EXISTS = 39;
   /** RegularExpression Id. */
-  int FLOAT = 40;
+  int FLAGS = 40;
   /** RegularExpression Id. */
-  int FOR = 41;
+  int FLOAT = 41;
   /** RegularExpression Id. */
-  int GRANT = 42;
+  int FOR = 42;
   /** RegularExpression Id. */
-  int IDENTITY = 43;
+  int FROM = 43;
   /** RegularExpression Id. */
-  int IMPORT = 44;
+  int GRANT = 44;
   /** RegularExpression Id. */
-  int IN = 45;
+  int IDENTITY = 45;
   /** RegularExpression Id. */
-  int INOUT = 46;
+  int IMPORT = 46;
   /** RegularExpression Id. */
-  int INPUT = 47;
+  int IN = 47;
   /** RegularExpression Id. */
-  int INSERT = 48;
+  int INOUT = 48;
   /** RegularExpression Id. */
-  int INT = 49;
+  int INPUT = 49;
   /** RegularExpression Id. */
-  int KEY = 50;
+  int INSERT = 50;
   /** RegularExpression Id. */
-  int LINK = 51;
+  int INT = 51;
   /** RegularExpression Id. */
-  int LONG = 52;
+  int KEY = 52;
   /** RegularExpression Id. */
-  int MERGE = 53;
+  int LINK = 53;
   /** RegularExpression Id. */
-  int MONEY = 54;
+  int LONG = 54;
   /** RegularExpression Id. */
-  int MULTIPLE = 55;
+  int MAXTMSTAMP = 55;
   /** RegularExpression Id. */
-  int NAMES = 56;
+  int MERGE = 56;
   /** RegularExpression Id. */
-  int NOT = 57;
+  int MONEY = 57;
   /** RegularExpression Id. */
-  int NULL = 58;
+  int MULTIPLE = 58;
   /** RegularExpression Id. */
-  int OPTIONS = 59;
+  int NAMES = 59;
   /** RegularExpression Id. */
-  int ORDER = 60;
+  int NOT = 60;
   /** RegularExpression Id. */
-  int OUTPUT = 61;
+  int NULL = 61;
   /** RegularExpression Id. */
-  int PACKAGE = 62;
+  int OPTIONS = 62;
   /** RegularExpression Id. */
-  int PASSWORD = 63;
+  int ORDER = 63;
   /** RegularExpression Id. */
-  int PRIMARY = 64;
+  int OUTPUT = 64;
   /** RegularExpression Id. */
-  int PROC = 65;
+  int PACKAGE = 65;
   /** RegularExpression Id. */
-  int READONLY = 66;
+  int PARM = 66;
   /** RegularExpression Id. */
-  int RETURNING = 67;
+  int PARMCACHE = 67;
   /** RegularExpression Id. */
-  int SCHEMA = 68;
+  int PARMDELETE = 68;
   /** RegularExpression Id. */
-  int SELECT = 69;
+  int PARMINSERT = 69;
   /** RegularExpression Id. */
-  int SELECTALL = 70;
+  int PARMREADER = 70;
   /** RegularExpression Id. */
-  int SELECTBY = 71;
+  int PARMSHOWS = 71;
   /** RegularExpression Id. */
-  int FROM = 72;
+  int PARMSUPPLIED = 72;
   /** RegularExpression Id. */
-  int WHERE = 73;
+  int PARMUPDATE = 73;
   /** RegularExpression Id. */
-  int SELECTONEBY = 74;
+  int PARMVIEWONLY = 74;
   /** RegularExpression Id. */
-  int SELECTONE = 75;
+  int PASSWORD = 75;
   /** RegularExpression Id. */
-  int SEQUENCE = 76;
+  int PRIMARY = 76;
   /** RegularExpression Id. */
-  int SERVER = 77;
+  int PROC = 77;
   /** RegularExpression Id. */
-  int SHORT = 78;
+  int READONLY = 78;
   /** RegularExpression Id. */
-  int SINGLE = 79;
+  int RETURNING = 79;
   /** RegularExpression Id. */
-  int SQL = 80;
+  int SCHEMA = 80;
   /** RegularExpression Id. */
-  int SPROC = 81;
+  int SELECT = 81;
   /** RegularExpression Id. */
-  int STANDARD = 82;
+  int SELECTALL = 82;
   /** RegularExpression Id. */
-  int TABLE = 83;
+  int SELECTBY = 83;
   /** RegularExpression Id. */
-  int TIME = 84;
+  int SELECTONE = 84;
   /** RegularExpression Id. */
-  int TIMESTAMP = 85;
+  int SELECTONEBY = 85;
   /** RegularExpression Id. */
-  int TLOB = 86;
+  int SEQUENCE = 86;
   /** RegularExpression Id. */
-  int TO = 87;
+  int SERVER = 87;
   /** RegularExpression Id. */
-  int UID = 88;
+  int SHORT = 88;
   /** RegularExpression Id. */
-  int UNIQUE = 89;
+  int SINGLE = 89;
   /** RegularExpression Id. */
-  int UPDATE = 90;
+  int SPROC = 90;
   /** RegularExpression Id. */
-  int UPDATEFOR = 91;
+  int SQL = 91;
   /** RegularExpression Id. */
-  int UPDATEBY = 92;
+  int STANDARD = 92;
   /** RegularExpression Id. */
-  int MAXTMSTAMP = 93;
+  int TABLE = 93;
   /** RegularExpression Id. */
-  int USERID = 94;
+  int TIME = 94;
   /** RegularExpression Id. */
-  int USERSTAMP = 95;
+  int TIMESTAMP = 95;
   /** RegularExpression Id. */
-  int UTF8 = 96;
+  int TLOB = 96;
   /** RegularExpression Id. */
-  int VIEW = 97;
+  int TO = 97;
   /** RegularExpression Id. */
-  int WANSICHAR = 98;
+  int UID = 98;
   /** RegularExpression Id. */
-  int WCHAR = 99;
+  int UNIQUE = 99;
   /** RegularExpression Id. */
-  int XML = 100;
+  int UPDATE = 100;
   /** RegularExpression Id. */
-  int PARM = 101;
+  int UPDATEBY = 101;
   /** RegularExpression Id. */
-  int PARMSHOWS = 102;
+  int UPDATEFOR = 102;
   /** RegularExpression Id. */
-  int PARMVIEWONLY = 103;
+  int USERID = 103;
   /** RegularExpression Id. */
-  int PARMCACHE = 104;
+  int USERSTAMP = 104;
   /** RegularExpression Id. */
-  int PARMREADER = 105;
+  int USING = 105;
   /** RegularExpression Id. */
-  int PARMINSERT = 106;
+  int UTF8 = 106;
   /** RegularExpression Id. */
-  int PARMDELETE = 107;
+  int VIEW = 107;
   /** RegularExpression Id. */
-  int PARMUPDATE = 108;
+  int WANSICHAR = 108;
   /** RegularExpression Id. */
-  int PARMSUPPLIED = 109;
+  int WCHAR = 109;
   /** RegularExpression Id. */
-  int CODE = 110;
+  int WHERE = 110;
   /** RegularExpression Id. */
-  int DATA = 111;
+  int WITH = 111;
   /** RegularExpression Id. */
-  int ENDCODE = 112;
+  int XML = 112;
   /** RegularExpression Id. */
-  int ENDDATA = 113;
+  int CODE = 113;
   /** RegularExpression Id. */
-  int COMMENT = 114;
+  int DATA = 114;
   /** RegularExpression Id. */
-  int ATSIGN = 115;
+  int ENDCODE = 115;
   /** RegularExpression Id. */
-  int COLON = 116;
+  int ENDDATA = 116;
   /** RegularExpression Id. */
-  int COMMA = 117;
+  int COMMENT = 117;
   /** RegularExpression Id. */
-  int EQUALS = 118;
+  int ATSIGN = 118;
   /** RegularExpression Id. */
-  int LEFTBRACE = 119;
+  int COLON = 119;
   /** RegularExpression Id. */
-  int LEFTBRACK = 120;
+  int COMMA = 120;
   /** RegularExpression Id. */
-  int LEFTPAREN = 121;
+  int EQUALS = 121;
   /** RegularExpression Id. */
-  int RIGHTBRACE = 122;
+  int LEFTBRACE = 122;
   /** RegularExpression Id. */
-  int RIGHTBRACK = 123;
+  int LEFTBRACK = 123;
   /** RegularExpression Id. */
-  int RIGHTPAREN = 124;
+  int LEFTPAREN = 124;
   /** RegularExpression Id. */
-  int SEMICOLON = 125;
+  int RIGHTBRACE = 125;
   /** RegularExpression Id. */
-  int NUMBER = 126;
+  int RIGHTBRACK = 126;
   /** RegularExpression Id. */
-  int STRING = 127;
+  int RIGHTPAREN = 127;
   /** RegularExpression Id. */
-  int DQUOTEDS = 128;
+  int SEMICOLON = 128;
   /** RegularExpression Id. */
-  int SQUOTEDS = 129;
+  int NUMBER = 129;
   /** RegularExpression Id. */
-  int IDENTIFIER = 130;
+  int STRING = 130;
   /** RegularExpression Id. */
-  int LIDENTIFIER = 131;
+  int DQUOTEDS = 131;
   /** RegularExpression Id. */
-  int LETTER = 132;
+  int SQUOTEDS = 132;
   /** RegularExpression Id. */
-  int DIGIT = 133;
+  int IDENTIFIER = 133;
   /** RegularExpression Id. */
-  int EXTRA = 134;
+  int LIDENTIFIER = 134;
   /** RegularExpression Id. */
-  int LITERAL = 135;
+  int LETTER = 135;
   /** RegularExpression Id. */
-  int SQLCODE = 136;
+  int DIGIT = 136;
   /** RegularExpression Id. */
-  int ENDSQLCODE = 137;
+  int EXTRA = 137;
   /** RegularExpression Id. */
-  int CODELINE = 138;
+  int LITERAL = 138;
   /** RegularExpression Id. */
-  int SQLDATA = 139;
+  int SQLCODE = 139;
   /** RegularExpression Id. */
-  int ENDSQLDATA = 140;
+  int ENDSQLCODE = 140;
   /** RegularExpression Id. */
-  int DATALINE = 141;
+  int CODELINE = 141;
   /** RegularExpression Id. */
-  int IDLCODE = 142;
+  int SQLDATA = 142;
   /** RegularExpression Id. */
-  int ENDIDLCODE = 143;
+  int ENDSQLDATA = 143;
   /** RegularExpression Id. */
-  int IDLLINE = 144;
+  int DATALINE = 144;
+  /** RegularExpression Id. */
+  int IDLCODE = 145;
+  /** RegularExpression Id. */
+  int ENDIDLCODE = 146;
+  /** RegularExpression Id. */
+  int IDLLINE = 147;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -331,8 +337,9 @@ public interface JPortalConstants {
     "\"cascade\"",
     "\"char\"",
     "\"check\"",
-    "\"count\"",
+    "\"clustered\"",
     "<CONST>",
+    "\"count\"",
     "\"cursor\"",
     "\"database\"",
     "\"date\"",
@@ -340,8 +347,8 @@ public interface JPortalConstants {
     "\"declare\"",
     "\"default\"",
     "\"delete\"",
-    "\"deleteby\"",
     "\"deleteall\"",
+    "\"deleteby\"",
     "\"deleteone\"",
     "\"desc\"",
     "\"double\"",
@@ -351,6 +358,7 @@ public interface JPortalConstants {
     "\"flags\"",
     "\"float\"",
     "\"for\"",
+    "\"from\"",
     "\"grant\"",
     "\"identity\"",
     "\"import\"",
@@ -362,6 +370,7 @@ public interface JPortalConstants {
     "\"key\"",
     "\"link\"",
     "\"long\"",
+    "\"maxtmstamp\"",
     "\"merge\"",
     "\"money\"",
     "\"multiple\"",
@@ -372,6 +381,15 @@ public interface JPortalConstants {
     "<ORDER>",
     "\"output\"",
     "\"package\"",
+    "\"{parm}\"",
+    "\"{cache}\"",
+    "\"{delete}\"",
+    "\"{insert}\"",
+    "\"{reader}\"",
+    "\"{shows}\"",
+    "\"{supplied}\"",
+    "\"{update}\"",
+    "\"{viewonly}\"",
     "\"password\"",
     "\"primary\"",
     "\"proc\"",
@@ -381,16 +399,14 @@ public interface JPortalConstants {
     "\"select\"",
     "\"selectall\"",
     "\"selectby\"",
-    "\"from\"",
-    "\"where\"",
-    "\"selectoneby\"",
     "\"selectone\"",
+    "\"selectoneby\"",
     "\"sequence\"",
     "\"server\"",
     "\"short\"",
     "\"single\"",
-    "\"sql\"",
     "<SPROC>",
+    "\"sql\"",
     "\"standard\"",
     "\"table\"",
     "\"time\"",
@@ -400,25 +416,18 @@ public interface JPortalConstants {
     "\"uid\"",
     "\"unique\"",
     "\"update\"",
-    "\"updatefor\"",
     "\"updateby\"",
-    "\"maxtmstamp\"",
+    "\"updatefor\"",
     "\"userid\"",
     "\"userstamp\"",
+    "\"using\"",
     "\"utf8\"",
     "\"view\"",
     "<WANSICHAR>",
     "\"wchar\"",
+    "\"where\"",
+    "\"with\"",
     "\"xml\"",
-    "\"{parm}\"",
-    "\"{shows}\"",
-    "\"{viewonly}\"",
-    "\"{cache}\"",
-    "\"{reader}\"",
-    "\"{insert}\"",
-    "\"{delete}\"",
-    "\"{update}\"",
-    "\"{supplied}\"",
     "\"code\"",
     "\"data\"",
     "\"endcode\"",

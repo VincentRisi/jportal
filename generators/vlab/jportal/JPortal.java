@@ -31,6 +31,7 @@ public class JPortal implements JPortalConstants {
   protected static Link      link;
   protected static View      view;
   protected static Proc      proc;
+  protected static With      with;
   protected static Parameter parameter;
   protected static String    perm;
   protected static String    user;
@@ -428,6 +429,16 @@ public class JPortal implements JPortalConstants {
       jj_la1[2] = jj_gen;
       ;
     }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case USING:
+      jj_consume_token(USING);
+      s = jPackageIdent();
+      database.portalName = s;
+      break;
+    default:
+      jj_la1[3] = jj_gen;
+      ;
+    }
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -436,7 +447,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[3] = jj_gen;
+        jj_la1[4] = jj_gen;
         break label_3;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -451,7 +462,7 @@ public class JPortal implements JPortalConstants {
             database.imports.addElement(s);
         break;
       default:
-        jj_la1[4] = jj_gen;
+        jj_la1[5] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -470,7 +481,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[5] = jj_gen;
+        jj_la1[6] = jj_gen;
         break label_4;
       }
     }
@@ -481,7 +492,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[6] = jj_gen;
+        jj_la1[7] = jj_gen;
         break label_5;
       }
       jView();
@@ -503,7 +514,7 @@ public class JPortal implements JPortalConstants {
       database.schema = s;
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[8] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -516,7 +527,7 @@ public class JPortal implements JPortalConstants {
       database.password = s;
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[9] = jj_gen;
       ;
     }
   }
@@ -528,14 +539,14 @@ public class JPortal implements JPortalConstants {
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 145:
+      case 148:
         ;
         break;
       default:
-        jj_la1[9] = jj_gen;
+        jj_la1[10] = jj_gen;
         break label_6;
       }
-      jj_consume_token(145);
+      jj_consume_token(148);
       n = jIdent();
       s = s + "." + n;
     }
@@ -559,7 +570,7 @@ public class JPortal implements JPortalConstants {
     {if (true) return fixString(s);}
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -585,7 +596,7 @@ public class JPortal implements JPortalConstants {
     {if (true) return replaceAllLiteral(s.substring(2, s.length()-1));}
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[12] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -613,7 +624,7 @@ public class JPortal implements JPortalConstants {
       save = false;
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[13] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -622,16 +633,32 @@ public class JPortal implements JPortalConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PROC:
       case SPROC:
+      case WITH:
       case DATA:
       case DATALINE:
       case IDLLINE:
         ;
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[14] = jj_gen;
         break label_8;
       }
-      jProc();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case PROC:
+      case SPROC:
+      case DATA:
+      case DATALINE:
+      case IDLLINE:
+        jProc();
+        break;
+      case WITH:
+        jWith();
+        break;
+      default:
+        jj_la1[15] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
     }
     label_9:
     while (true) {
@@ -640,7 +667,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[16] = jj_gen;
         break label_9;
       }
       jj_consume_token(PARM);
@@ -671,14 +698,14 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[15] = jj_gen;
+          jj_la1[17] = jj_gen;
           break label_10;
         }
       }
       jj_consume_token(RIGHTBRACK);
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[18] = jj_gen;
       ;
     }
     loadTableModule(s, v);
@@ -689,7 +716,7 @@ public class JPortal implements JPortalConstants {
                    table.alias = s;
       break;
     default:
-      jj_la1[17] = jj_gen;
+      jj_la1[19] = jj_gen;
       ;
     }
   }
@@ -711,7 +738,7 @@ public class JPortal implements JPortalConstants {
                    table.alias = s;
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[20] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -721,7 +748,7 @@ public class JPortal implements JPortalConstants {
                           s = t.image; table.check = fixString(s);
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[21] = jj_gen;
       ;
     }
     label_11:
@@ -731,7 +758,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[20] = jj_gen;
+        jj_la1[22] = jj_gen;
         break label_11;
       }
       s = jComment();
@@ -744,7 +771,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[21] = jj_gen;
+        jj_la1[23] = jj_gen;
         break label_12;
       }
       jj_consume_token(OPTIONS);
@@ -757,7 +784,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[22] = jj_gen;
+          jj_la1[24] = jj_gen;
           break label_13;
         }
       }
@@ -770,7 +797,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[25] = jj_gen;
         break label_14;
       }
       jField();
@@ -798,7 +825,7 @@ public class JPortal implements JPortalConstants {
                    field.alias = s;
       break;
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[26] = jj_gen;
       ;
     }
     jDatatype();
@@ -813,7 +840,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[27] = jj_gen;
         break label_15;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -831,7 +858,7 @@ public class JPortal implements JPortalConstants {
             state = false;
           break;
         default:
-          jj_la1[26] = jj_gen;
+          jj_la1[28] = jj_gen;
           ;
         }
         jj_consume_token(NULL);
@@ -848,7 +875,7 @@ public class JPortal implements JPortalConstants {
       field.checkValue = fixString(s);
         break;
       default:
-        jj_la1[27] = jj_gen;
+        jj_la1[29] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -860,7 +887,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[28] = jj_gen;
+        jj_la1[30] = jj_gen;
         break label_16;
       }
       s = jComment();
@@ -885,7 +912,7 @@ public class JPortal implements JPortalConstants {
                    field.alias = s;
       break;
     default:
-      jj_la1[29] = jj_gen;
+      jj_la1[31] = jj_gen;
       ;
     }
     jDatatype();
@@ -900,7 +927,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[30] = jj_gen;
+        jj_la1[32] = jj_gen;
         break label_17;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -918,7 +945,7 @@ public class JPortal implements JPortalConstants {
             state = false;
           break;
         default:
-          jj_la1[31] = jj_gen;
+          jj_la1[33] = jj_gen;
           ;
         }
         jj_consume_token(NULL);
@@ -935,7 +962,7 @@ public class JPortal implements JPortalConstants {
       field.checkValue = fixString(s);
         break;
       default:
-        jj_la1[32] = jj_gen;
+        jj_la1[34] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -947,7 +974,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[35] = jj_gen;
         break label_18;
       }
       s = jComment();
@@ -978,7 +1005,7 @@ public class JPortal implements JPortalConstants {
         jCharsize();
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[36] = jj_gen;
         ;
       }
       break;
@@ -1002,13 +1029,13 @@ public class JPortal implements JPortalConstants {
           jCharList();
           break;
         default:
-          jj_la1[35] = jj_gen;
+          jj_la1[37] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[36] = jj_gen;
+        jj_la1[38] = jj_gen;
         ;
       }
       break;
@@ -1023,7 +1050,7 @@ public class JPortal implements JPortalConstants {
         jCharsize();
         break;
       default:
-        jj_la1[37] = jj_gen;
+        jj_la1[39] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1031,7 +1058,7 @@ public class JPortal implements JPortalConstants {
         jCharList();
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[40] = jj_gen;
         ;
       }
       break;
@@ -1046,7 +1073,7 @@ public class JPortal implements JPortalConstants {
         jEnumChar();
         break;
       default:
-        jj_la1[39] = jj_gen;
+        jj_la1[41] = jj_gen;
         ;
       }
       break;
@@ -1061,7 +1088,7 @@ public class JPortal implements JPortalConstants {
         jCharsize();
         break;
       default:
-        jj_la1[40] = jj_gen;
+        jj_la1[42] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1069,7 +1096,7 @@ public class JPortal implements JPortalConstants {
         jCharList();
         break;
       default:
-        jj_la1[41] = jj_gen;
+        jj_la1[43] = jj_gen;
         ;
       }
       break;
@@ -1084,7 +1111,7 @@ public class JPortal implements JPortalConstants {
         jEnumChar();
         break;
       default:
-        jj_la1[42] = jj_gen;
+        jj_la1[44] = jj_gen;
         ;
       }
       break;
@@ -1099,7 +1126,7 @@ public class JPortal implements JPortalConstants {
         jCharsize();
         break;
       default:
-        jj_la1[43] = jj_gen;
+        jj_la1[45] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1107,7 +1134,7 @@ public class JPortal implements JPortalConstants {
         jCharList();
         break;
       default:
-        jj_la1[44] = jj_gen;
+        jj_la1[46] = jj_gen;
         ;
       }
       break;
@@ -1126,13 +1153,13 @@ public class JPortal implements JPortalConstants {
           jCharList();
           break;
         default:
-          jj_la1[45] = jj_gen;
+          jj_la1[47] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[46] = jj_gen;
+        jj_la1[48] = jj_gen;
         ;
       }
       break;
@@ -1151,13 +1178,13 @@ public class JPortal implements JPortalConstants {
           jCharList();
           break;
         default:
-          jj_la1[47] = jj_gen;
+          jj_la1[49] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[48] = jj_gen;
+        jj_la1[50] = jj_gen;
         ;
       }
       break;
@@ -1209,7 +1236,7 @@ public class JPortal implements JPortalConstants {
         jCharsize();
         break;
       default:
-        jj_la1[49] = jj_gen;
+        jj_la1[51] = jj_gen;
         ;
       }
       break;
@@ -1224,7 +1251,7 @@ public class JPortal implements JPortalConstants {
         jCharsize();
         break;
       default:
-        jj_la1[50] = jj_gen;
+        jj_la1[52] = jj_gen;
         ;
       }
       break;
@@ -1239,7 +1266,7 @@ public class JPortal implements JPortalConstants {
         jCharsize();
         break;
       default:
-        jj_la1[51] = jj_gen;
+        jj_la1[53] = jj_gen;
         ;
       }
       break;
@@ -1287,7 +1314,7 @@ public class JPortal implements JPortalConstants {
         jj_consume_token(FLOAT);
         break;
       default:
-        jj_la1[52] = jj_gen;
+        jj_la1[54] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1299,7 +1326,7 @@ public class JPortal implements JPortalConstants {
         jFloatsize();
         break;
       default:
-        jj_la1[53] = jj_gen;
+        jj_la1[55] = jj_gen;
         ;
       }
       break;
@@ -1312,7 +1339,7 @@ public class JPortal implements JPortalConstants {
       jLookup();
       break;
     default:
-      jj_la1[54] = jj_gen;
+      jj_la1[56] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1329,7 +1356,7 @@ public class JPortal implements JPortalConstants {
       jj_consume_token(RIGHTPAREN);
       break;
     default:
-      jj_la1[55] = jj_gen;
+      jj_la1[57] = jj_gen;
       ;
     }
     other = proc.getInput(name);
@@ -1363,7 +1390,7 @@ public class JPortal implements JPortalConstants {
         field.enumLink = s;
       break;
     default:
-      jj_la1[56] = jj_gen;
+      jj_la1[58] = jj_gen;
       ;
     }
     label_19:
@@ -1376,7 +1403,7 @@ public class JPortal implements JPortalConstants {
         jj_consume_token(COMMA);
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[59] = jj_gen;
         ;
       }
         entry = new Enum();
@@ -1389,7 +1416,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[58] = jj_gen;
+        jj_la1[60] = jj_gen;
         break label_19;
       }
     }
@@ -1418,7 +1445,7 @@ public class JPortal implements JPortalConstants {
       jj_consume_token(RIGHTPAREN);
       break;
     default:
-      jj_la1[59] = jj_gen;
+      jj_la1[61] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1451,7 +1478,7 @@ public class JPortal implements JPortalConstants {
           field.enumLink = s;
           break;
         default:
-          jj_la1[60] = jj_gen;
+          jj_la1[62] = jj_gen;
           ;
         }
         label_20:
@@ -1464,7 +1491,7 @@ public class JPortal implements JPortalConstants {
             jj_consume_token(COMMA);
             break;
           default:
-            jj_la1[61] = jj_gen;
+            jj_la1[63] = jj_gen;
             ;
           }
           entry = new Enum();
@@ -1477,13 +1504,13 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[62] = jj_gen;
+            jj_la1[64] = jj_gen;
             break label_20;
           }
         }
         break;
       default:
-        jj_la1[63] = jj_gen;
+        jj_la1[65] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1494,7 +1521,7 @@ public class JPortal implements JPortalConstants {
     field.length = n;
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[66] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1520,7 +1547,7 @@ public class JPortal implements JPortalConstants {
     field.length = n;
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[67] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1537,7 +1564,7 @@ public class JPortal implements JPortalConstants {
         jj_consume_token(COMMA);
         break;
       default:
-        jj_la1[66] = jj_gen;
+        jj_la1[68] = jj_gen;
         ;
       }
       field.valueList.addElement(s);
@@ -1547,7 +1574,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[67] = jj_gen;
+        jj_la1[69] = jj_gen;
         break label_21;
       }
     }
@@ -1574,24 +1601,24 @@ public class JPortal implements JPortalConstants {
       parameter.title = s;
       break;
     default:
-      jj_la1[68] = jj_gen;
+      jj_la1[70] = jj_gen;
       ;
     }
     label_22:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case PARMSHOWS:
-      case PARMVIEWONLY:
       case PARMCACHE:
-      case PARMREADER:
-      case PARMINSERT:
       case PARMDELETE:
-      case PARMUPDATE:
+      case PARMINSERT:
+      case PARMREADER:
+      case PARMSHOWS:
       case PARMSUPPLIED:
+      case PARMUPDATE:
+      case PARMVIEWONLY:
         ;
         break;
       default:
-        jj_la1[69] = jj_gen;
+        jj_la1[71] = jj_gen;
         break label_22;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1610,7 +1637,7 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[70] = jj_gen;
+            jj_la1[72] = jj_gen;
             break label_23;
           }
         }
@@ -1634,7 +1661,7 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[71] = jj_gen;
+            jj_la1[73] = jj_gen;
             break label_24;
           }
         }
@@ -1651,7 +1678,7 @@ public class JPortal implements JPortalConstants {
                                  s = "SelectAll";
           break;
         default:
-          jj_la1[72] = jj_gen;
+          jj_la1[74] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1668,7 +1695,7 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[73] = jj_gen;
+            jj_la1[75] = jj_gen;
             break label_25;
           }
           s = jIdent();
@@ -1687,7 +1714,7 @@ public class JPortal implements JPortalConstants {
                                  s = "SelectAll";
           break;
         default:
-          jj_la1[74] = jj_gen;
+          jj_la1[76] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1709,7 +1736,7 @@ public class JPortal implements JPortalConstants {
                               s = "Insert";
           break;
         default:
-          jj_la1[75] = jj_gen;
+          jj_la1[77] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1731,7 +1758,7 @@ public class JPortal implements JPortalConstants {
                               s = "Update";
           break;
         default:
-          jj_la1[76] = jj_gen;
+          jj_la1[78] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1753,7 +1780,7 @@ public class JPortal implements JPortalConstants {
                                  s = "DeleteOne";
           break;
         default:
-          jj_la1[77] = jj_gen;
+          jj_la1[79] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1764,7 +1791,7 @@ public class JPortal implements JPortalConstants {
         outLog.println(s+" is not present in table as a deleter.");
         break;
       default:
-        jj_la1[78] = jj_gen;
+        jj_la1[80] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1794,7 +1821,7 @@ public class JPortal implements JPortalConstants {
     table.consts.addElement(constant);
       break;
     default:
-      jj_la1[79] = jj_gen;
+      jj_la1[81] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1816,7 +1843,7 @@ public class JPortal implements JPortalConstants {
         jj_consume_token(COMMA);
         break;
       default:
-        jj_la1[80] = jj_gen;
+        jj_la1[82] = jj_gen;
         ;
       }
       value = new Value();
@@ -1829,7 +1856,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[81] = jj_gen;
+        jj_la1[83] = jj_gen;
         break label_26;
       }
     }
@@ -1855,7 +1882,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[82] = jj_gen;
+        jj_la1[84] = jj_gen;
         break label_27;
       }
     }
@@ -1873,7 +1900,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[83] = jj_gen;
+        jj_la1[85] = jj_gen;
         break label_28;
       }
     }
@@ -1915,7 +1942,7 @@ public class JPortal implements JPortalConstants {
     table.hasExecute = true;
       break;
     default:
-      jj_la1[84] = jj_gen;
+      jj_la1[86] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1938,7 +1965,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[85] = jj_gen;
+        jj_la1[87] = jj_gen;
         break label_29;
       }
       jj_consume_token(OPTIONS);
@@ -1951,7 +1978,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[86] = jj_gen;
+          jj_la1[88] = jj_gen;
           break label_30;
         }
       }
@@ -1959,12 +1986,13 @@ public class JPortal implements JPortalConstants {
     label_31:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case CLUSTERED:
       case PRIMARY:
       case UNIQUE:
         ;
         break;
       default:
-        jj_la1[87] = jj_gen;
+        jj_la1[89] = jj_gen;
         break label_31;
       }
       jModifier();
@@ -1978,7 +2006,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[88] = jj_gen;
+        jj_la1[90] = jj_gen;
         break label_32;
       }
     }
@@ -1995,8 +2023,12 @@ public class JPortal implements JPortalConstants {
     key.isPrimary = true;
     table.hasPrimaryKey = true;
       break;
+    case CLUSTERED:
+      jj_consume_token(CLUSTERED);
+    key.isClustered = true;
+      break;
     default:
-      jj_la1[89] = jj_gen;
+      jj_la1[91] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2038,14 +2070,14 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[90] = jj_gen;
+          jj_la1[92] = jj_gen;
           break label_33;
         }
       }
       jj_consume_token(RIGHTPAREN);
       break;
     default:
-      jj_la1[91] = jj_gen;
+      jj_la1[93] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2056,13 +2088,13 @@ public class JPortal implements JPortalConstants {
         jj_consume_token(CASCADE);
         break;
       default:
-        jj_la1[92] = jj_gen;
+        jj_la1[94] = jj_gen;
         ;
       }
       link.isDeleteCascade = true;
       break;
     default:
-      jj_la1[93] = jj_gen;
+      jj_la1[95] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2073,13 +2105,13 @@ public class JPortal implements JPortalConstants {
         jj_consume_token(CASCADE);
         break;
       default:
-        jj_la1[94] = jj_gen;
+        jj_la1[96] = jj_gen;
         ;
       }
       link.isUpdateCascade = true;
       break;
     default:
-      jj_la1[95] = jj_gen;
+      jj_la1[97] = jj_gen;
       ;
     }
     label_34:
@@ -2089,7 +2121,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[96] = jj_gen;
+        jj_la1[98] = jj_gen;
         break label_34;
       }
       jj_consume_token(OPTIONS);
@@ -2102,7 +2134,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[97] = jj_gen;
+          jj_la1[99] = jj_gen;
           break label_35;
         }
       }
@@ -2116,7 +2148,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[98] = jj_gen;
+        jj_la1[100] = jj_gen;
         break label_36;
       }
     }
@@ -2157,13 +2189,13 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[99] = jj_gen;
+          jj_la1[101] = jj_gen;
           break label_37;
         }
       }
       break;
     default:
-      jj_la1[100] = jj_gen;
+      jj_la1[102] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2178,13 +2210,13 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[101] = jj_gen;
+          jj_la1[103] = jj_gen;
           break label_38;
         }
       }
       break;
     default:
-      jj_la1[102] = jj_gen;
+      jj_la1[104] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2192,7 +2224,7 @@ public class JPortal implements JPortalConstants {
       jOldViewCode();
       break;
     default:
-      jj_la1[103] = jj_gen;
+      jj_la1[105] = jj_gen;
       jNewViewCode();
     }
   }
@@ -2206,7 +2238,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[104] = jj_gen;
+        jj_la1[106] = jj_gen;
         break label_39;
       }
       t = jj_consume_token(CODELINE);
@@ -2224,7 +2256,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[105] = jj_gen;
+        jj_la1[107] = jj_gen;
         break label_40;
       }
       jLine();
@@ -2289,7 +2321,7 @@ public class JPortal implements JPortalConstants {
       proc.isSProc = true;
         break;
       default:
-        jj_la1[106] = jj_gen;
+        jj_la1[108] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2301,11 +2333,11 @@ public class JPortal implements JPortalConstants {
       case DELETEONE:
       case EXISTS:
       case INSERT:
+      case MAXTMSTAMP:
       case MERGE:
       case SELECTALL:
       case SELECTONE:
       case UPDATE:
-      case MAXTMSTAMP:
         jStdProc();
         break;
       case IDENTIFIER:
@@ -2319,14 +2351,14 @@ public class JPortal implements JPortalConstants {
             jUserProc();
             break;
           default:
-            jj_la1[107] = jj_gen;
+            jj_la1[109] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
         }
         break;
       default:
-        jj_la1[108] = jj_gen;
+        jj_la1[110] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2352,14 +2384,14 @@ public class JPortal implements JPortalConstants {
         jIdlCode();
         break;
       default:
-        jj_la1[109] = jj_gen;
+        jj_la1[111] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
     table.procs.addElement(proc);
       break;
     default:
-      jj_la1[110] = jj_gen;
+      jj_la1[112] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2381,7 +2413,7 @@ public class JPortal implements JPortalConstants {
                    proc.hasReturning = true;
         break;
       default:
-        jj_la1[111] = jj_gen;
+        jj_la1[113] = jj_gen;
         ;
       }
       table.hasSequenceReturning = table.hasSequence;
@@ -2416,7 +2448,7 @@ public class JPortal implements JPortalConstants {
         jRowCount();
         break;
       default:
-        jj_la1[112] = jj_gen;
+        jj_la1[114] = jj_gen;
         ;
       }
       proc.name = "BulkInsert";
@@ -2436,7 +2468,7 @@ public class JPortal implements JPortalConstants {
         jRowCount();
         break;
       default:
-        jj_la1[113] = jj_gen;
+        jj_la1[115] = jj_gen;
         ;
       }
       if (!table.hasPrimaryKey)
@@ -2459,7 +2491,7 @@ public class JPortal implements JPortalConstants {
         proc.isStd = true;
         break;
       default:
-        jj_la1[114] = jj_gen;
+        jj_la1[116] = jj_gen;
         ;
       }
         table.hasStdProcs = true;
@@ -2489,7 +2521,7 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(FOR);
           break;
         default:
-          jj_la1[115] = jj_gen;
+          jj_la1[117] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2502,13 +2534,13 @@ public class JPortal implements JPortalConstants {
                                                           forReadOnly = true;
           break;
         default:
-          jj_la1[116] = jj_gen;
+          jj_la1[118] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[117] = jj_gen;
+        jj_la1[119] = jj_gen;
         ;
       }
       if (!table.hasPrimaryKey)
@@ -2532,7 +2564,7 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(IN);
           break;
         default:
-          jj_la1[118] = jj_gen;
+          jj_la1[120] = jj_gen;
           ;
         }
         jj_consume_token(ORDER);
@@ -2545,7 +2577,7 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[119] = jj_gen;
+            jj_la1[121] = jj_gen;
             break label_41;
           }
           jOrderColumn();
@@ -2556,12 +2588,12 @@ public class JPortal implements JPortalConstants {
                                                                   descending = true;
           break;
         default:
-          jj_la1[120] = jj_gen;
+          jj_la1[122] = jj_gen;
           ;
         }
         break;
       default:
-        jj_la1[121] = jj_gen;
+        jj_la1[123] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2573,7 +2605,7 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(FOR);
           break;
         default:
-          jj_la1[122] = jj_gen;
+          jj_la1[124] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2586,13 +2618,13 @@ public class JPortal implements JPortalConstants {
                                                           forReadOnly = true;
           break;
         default:
-          jj_la1[123] = jj_gen;
+          jj_la1[125] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[124] = jj_gen;
+        jj_la1[126] = jj_gen;
         ;
       }
       if (table.hasBigXML)
@@ -2635,7 +2667,7 @@ public class JPortal implements JPortalConstants {
       }
       break;
     default:
-      jj_la1[125] = jj_gen;
+      jj_la1[127] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2646,7 +2678,7 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[126] = jj_gen;
+        jj_la1[128] = jj_gen;
         break label_42;
       }
       jj_consume_token(OPTIONS);
@@ -2659,7 +2691,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[127] = jj_gen;
+          jj_la1[129] = jj_gen;
           break label_43;
         }
       }
@@ -2686,7 +2718,7 @@ public class JPortal implements JPortalConstants {
             proc.isStd = true;
         break;
       default:
-        jj_la1[128] = jj_gen;
+        jj_la1[130] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2697,7 +2729,7 @@ public class JPortal implements JPortalConstants {
           jInputType();
           break;
         default:
-          jj_la1[129] = jj_gen;
+          jj_la1[131] = jj_gen;
           ;
         }
           proc.extendsStd = true;
@@ -2730,13 +2762,13 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[130] = jj_gen;
+            jj_la1[132] = jj_gen;
             break label_44;
           }
         }
         break;
       default:
-        jj_la1[131] = jj_gen;
+        jj_la1[133] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2747,7 +2779,7 @@ public class JPortal implements JPortalConstants {
           jOutputType();
           break;
         default:
-          jj_la1[132] = jj_gen;
+          jj_la1[134] = jj_gen;
           ;
         }
         label_45:
@@ -2758,7 +2790,7 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[133] = jj_gen;
+            jj_la1[135] = jj_gen;
             break label_45;
           }
           jPackageField();
@@ -2792,7 +2824,7 @@ public class JPortal implements JPortalConstants {
         }
         break;
       default:
-        jj_la1[134] = jj_gen;
+        jj_la1[136] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2801,7 +2833,7 @@ public class JPortal implements JPortalConstants {
         jOldCode();
         break;
       default:
-        jj_la1[135] = jj_gen;
+        jj_la1[137] = jj_gen;
         jNewCode();
       }
         table.buildSelectFrom(proc, table, outLog);
@@ -2819,7 +2851,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[136] = jj_gen;
+          jj_la1[138] = jj_gen;
           break label_46;
         }
       }
@@ -2832,7 +2864,7 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(FOR);
           break;
         default:
-          jj_la1[137] = jj_gen;
+          jj_la1[139] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2845,13 +2877,13 @@ public class JPortal implements JPortalConstants {
                                                             forReadOnly = true;
           break;
         default:
-          jj_la1[138] = jj_gen;
+          jj_la1[140] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[139] = jj_gen;
+        jj_la1[141] = jj_gen;
         ;
       }
         proc.isSingle = true;
@@ -2869,7 +2901,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[140] = jj_gen;
+          jj_la1[142] = jj_gen;
           break label_47;
         }
       }
@@ -2881,7 +2913,7 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(IN);
           break;
         default:
-          jj_la1[141] = jj_gen;
+          jj_la1[143] = jj_gen;
           ;
         }
         jj_consume_token(ORDER);
@@ -2894,7 +2926,7 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[142] = jj_gen;
+            jj_la1[144] = jj_gen;
             break label_48;
           }
           jOrderColumn();
@@ -2905,12 +2937,12 @@ public class JPortal implements JPortalConstants {
                                                                     descending = true;
           break;
         default:
-          jj_la1[143] = jj_gen;
+          jj_la1[145] = jj_gen;
           ;
         }
         break;
       default:
-        jj_la1[144] = jj_gen;
+        jj_la1[146] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2922,7 +2954,7 @@ public class JPortal implements JPortalConstants {
           jj_consume_token(FOR);
           break;
         default:
-          jj_la1[145] = jj_gen;
+          jj_la1[147] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2935,13 +2967,13 @@ public class JPortal implements JPortalConstants {
                                                             forReadOnly = true;
           break;
         default:
-          jj_la1[146] = jj_gen;
+          jj_la1[148] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[147] = jj_gen;
+        jj_la1[149] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2952,7 +2984,7 @@ public class JPortal implements JPortalConstants {
           jOutputType();
           break;
         default:
-          jj_la1[148] = jj_gen;
+          jj_la1[150] = jj_gen;
           ;
         }
         label_49:
@@ -2963,7 +2995,7 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[149] = jj_gen;
+            jj_la1[151] = jj_gen;
             break label_49;
           }
           jField();
@@ -2997,7 +3029,7 @@ public class JPortal implements JPortalConstants {
         }
         break;
       default:
-        jj_la1[150] = jj_gen;
+        jj_la1[152] = jj_gen;
         ;
       }
         table.buildSelectBy(proc, forUpdate, forReadOnly, inOrder, descending, outLog);
@@ -3014,7 +3046,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[151] = jj_gen;
+          jj_la1[153] = jj_gen;
           break label_50;
         }
       }
@@ -3032,7 +3064,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[152] = jj_gen;
+          jj_la1[154] = jj_gen;
           break label_51;
         }
       }
@@ -3051,7 +3083,7 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[153] = jj_gen;
+          jj_la1[155] = jj_gen;
           break label_52;
         }
       }
@@ -3067,13 +3099,13 @@ public class JPortal implements JPortalConstants {
             ;
             break;
           default:
-            jj_la1[154] = jj_gen;
+            jj_la1[156] = jj_gen;
             break label_53;
           }
         }
         break;
       default:
-        jj_la1[155] = jj_gen;
+        jj_la1[157] = jj_gen;
         ;
       }
         proc.isUpdate = true;
@@ -3081,7 +3113,7 @@ public class JPortal implements JPortalConstants {
         table.hasStdProcs = true;
       break;
     default:
-      jj_la1[156] = jj_gen;
+      jj_la1[158] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -3149,6 +3181,82 @@ public class JPortal implements JPortalConstants {
     proc.noRows = n;
   }
 
+  static final public void jWith() throws ParseException {
+  Token t;
+  String s;
+    t = jj_consume_token(WITH);
+    with = new With();
+    with.table = table;
+    with.start = t.beginLine;
+    table.withs.addElement(with);
+    s = jIdent();
+    with.name = s;
+    label_54:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case COMMENT:
+        ;
+        break;
+      default:
+        jj_la1[159] = jj_gen;
+        break label_54;
+      }
+      s = jComment();
+      with.comments.addElement(s);
+    }
+    label_55:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case OPTIONS:
+        ;
+        break;
+      default:
+        jj_la1[160] = jj_gen;
+        break label_55;
+      }
+      jj_consume_token(OPTIONS);
+      label_56:
+      while (true) {
+        s = jString();
+        with.options.addElement(s);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case STRING:
+          ;
+          break;
+        default:
+          jj_la1[161] = jj_gen;
+          break label_56;
+        }
+      }
+    }
+    jWithCode();
+  }
+
+  static final public void jWithCode() throws ParseException {
+  Token t;
+  String s;
+  Integer size;
+  Line line;
+    label_57:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case CODELINE:
+        ;
+        break;
+      default:
+        jj_la1[162] = jj_gen;
+        break label_57;
+      }
+      t = jj_consume_token(CODELINE);
+        s = t.image.trim() + " ";
+        if (s.length() > 0)
+        {
+          line = new Line(s);
+          with.lines.addElement(line);
+        }
+    }
+  }
+
   static final public void jUserProc() throws ParseException {
   String s;
   boolean isStdProc = false;
@@ -3166,34 +3274,34 @@ public class JPortal implements JPortalConstants {
         proc.outputs.addElement(table.fields.elementAt(i));
       break;
     default:
-      jj_la1[157] = jj_gen;
+      jj_la1[163] = jj_gen;
       ;
     }
-    label_54:
+    label_58:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMMENT:
         ;
         break;
       default:
-        jj_la1[158] = jj_gen;
-        break label_54;
+        jj_la1[164] = jj_gen;
+        break label_58;
       }
       s = jComment();
       proc.comments.addElement(s);
     }
-    label_55:
+    label_59:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case OPTIONS:
         ;
         break;
       default:
-        jj_la1[159] = jj_gen;
-        break label_55;
+        jj_la1[165] = jj_gen;
+        break label_59;
       }
       jj_consume_token(OPTIONS);
-      label_56:
+      label_60:
       while (true) {
         s = jString();
         proc.options.addElement(s);
@@ -3202,8 +3310,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[160] = jj_gen;
-          break label_56;
+          jj_la1[166] = jj_gen;
+          break label_60;
         }
       }
     }
@@ -3215,10 +3323,10 @@ public class JPortal implements JPortalConstants {
         jInputType();
         break;
       default:
-        jj_la1[161] = jj_gen;
+        jj_la1[167] = jj_gen;
         ;
       }
-      label_57:
+      label_61:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
@@ -3226,8 +3334,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[162] = jj_gen;
-          break label_57;
+          jj_la1[168] = jj_gen;
+          break label_61;
         }
         jField();
         if (proc.hasInput(field.name))
@@ -3240,6 +3348,8 @@ public class JPortal implements JPortalConstants {
           if (proc.extendsStd == true && proc.hasOutput(field.name) == false)
           {
             proc.useStd = false;
+            if (table.getField(field.name) == null)
+              field.isExtStd = true;
             isStdProc = false;
           }
           if (!field.isNull)
@@ -3250,7 +3360,7 @@ public class JPortal implements JPortalConstants {
       }
       break;
     default:
-      jj_la1[163] = jj_gen;
+      jj_la1[169] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3261,10 +3371,10 @@ public class JPortal implements JPortalConstants {
         jOutputType();
         break;
       default:
-        jj_la1[164] = jj_gen;
+        jj_la1[170] = jj_gen;
         ;
       }
-      label_58:
+      label_62:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
@@ -3272,8 +3382,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[165] = jj_gen;
-          break label_58;
+          jj_la1[171] = jj_gen;
+          break label_62;
         }
         jField();
         if (proc.hasInput(field.name))
@@ -3305,7 +3415,7 @@ public class JPortal implements JPortalConstants {
       }
       break;
     default:
-      jj_la1[166] = jj_gen;
+      jj_la1[172] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -3316,10 +3426,10 @@ public class JPortal implements JPortalConstants {
         jOutputType();
         break;
       default:
-        jj_la1[167] = jj_gen;
+        jj_la1[173] = jj_gen;
         ;
       }
-      label_59:
+      label_63:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
@@ -3327,8 +3437,8 @@ public class JPortal implements JPortalConstants {
           ;
           break;
         default:
-          jj_la1[168] = jj_gen;
-          break label_59;
+          jj_la1[174] = jj_gen;
+          break label_63;
         }
         jField();
         if (proc.isSProc == true)
@@ -3351,6 +3461,7 @@ public class JPortal implements JPortalConstants {
             if (proc.extendsStd == true)
             {
               proc.useStd = false;
+              field.isExtStd = true;
               isStdProc = false;
             }
             if (!field.isNull)
@@ -3361,7 +3472,29 @@ public class JPortal implements JPortalConstants {
       }
       break;
     default:
-      jj_la1[169] = jj_gen;
+      jj_la1[175] = jj_gen;
+      ;
+    }
+    if (jj_2_3(2)) {
+      jj_consume_token(WITH);
+      label_64:
+      while (true) {
+        s = jIdent();
+        if (table.hasWith(s))
+          proc.withs.addElement(s);
+        else
+          outLog.println("With "+s+" not present.");
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IDENTIFIER:
+        case LIDENTIFIER:
+          ;
+          break;
+        default:
+          jj_la1[176] = jj_gen;
+          break label_64;
+        }
+      }
+    } else {
       ;
     }
     if (isStdProc == true)
@@ -3372,7 +3505,7 @@ public class JPortal implements JPortalConstants {
       jOldCode();
       break;
     default:
-      jj_la1[170] = jj_gen;
+      jj_la1[177] = jj_gen;
       jNewCode();
     }
   }
@@ -3386,11 +3519,11 @@ public class JPortal implements JPortalConstants {
       proc.isSql = true;
       break;
     default:
-      jj_la1[171] = jj_gen;
+      jj_la1[178] = jj_gen;
       ;
     }
     jj_consume_token(CODE);
-    label_60:
+    label_65:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STRING:
@@ -3399,8 +3532,8 @@ public class JPortal implements JPortalConstants {
         ;
         break;
       default:
-        jj_la1[172] = jj_gen;
-        break label_60;
+        jj_la1[179] = jj_gen;
+        break label_65;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STRING:
@@ -3423,7 +3556,7 @@ public class JPortal implements JPortalConstants {
       }
         break;
       default:
-        jj_la1[173] = jj_gen;
+        jj_la1[180] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -3436,15 +3569,15 @@ public class JPortal implements JPortalConstants {
   String s;
   Integer size;
   Line line;
-    label_61:
+    label_66:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CODELINE:
         ;
         break;
       default:
-        jj_la1[174] = jj_gen;
-        break label_61;
+        jj_la1[181] = jj_gen;
+        break label_66;
       }
       t = jj_consume_token(CODELINE);
         s = parseDynamics(t.image.trim() + " ");
@@ -3466,7 +3599,7 @@ public class JPortal implements JPortalConstants {
       jj_consume_token(RIGHTPAREN);
       break;
     default:
-      jj_la1[175] = jj_gen;
+      jj_la1[182] = jj_gen;
       ;
     }
     {if (true) return new Integer(n);}
@@ -3475,18 +3608,18 @@ public class JPortal implements JPortalConstants {
 
   static final public void jInputType() throws ParseException {
   int n;
-    if (jj_2_3(2)) {
+    if (jj_2_4(2)) {
       jj_consume_token(LEFTPAREN);
       jj_consume_token(MULTIPLE);
       jj_consume_token(RIGHTPAREN);
     proc.isMultipleInput = true;
-    } else if (jj_2_4(2)) {
+    } else if (jj_2_5(2)) {
       jj_consume_token(LEFTPAREN);
       n = jNumber();
       jj_consume_token(RIGHTPAREN);
     proc.noRows = n;
     proc.isMultipleInput = true;
-    } else if (jj_2_5(2)) {
+    } else if (jj_2_6(2)) {
       jj_consume_token(LEFTPAREN);
       jj_consume_token(STANDARD);
     for (int i=0; i<table.fields.size(); i++)
@@ -3500,22 +3633,25 @@ public class JPortal implements JPortalConstants {
 
   static final public void jOutputType() throws ParseException {
   int n;
-    if (jj_2_6(2)) {
+    if (jj_2_7(2)) {
       jj_consume_token(LEFTPAREN);
       jj_consume_token(SINGLE);
     proc.isSingle = true;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STANDARD:
         jj_consume_token(STANDARD);
-      for (int i=0; i<table.fields.size(); i++)
-        proc.outputs.addElement(table.fields.elementAt(i));
+      if (proc.outputs.size() != table.fields.size() && table.fields.size() > 0)
+      {
+        for (int i=0; i<table.fields.size(); i++)
+          proc.outputs.addElement(table.fields.elementAt(i));
+      }
         break;
       default:
-        jj_la1[176] = jj_gen;
+        jj_la1[183] = jj_gen;
         ;
       }
       jj_consume_token(RIGHTPAREN);
-    } else if (jj_2_7(2)) {
+    } else if (jj_2_8(2)) {
       jj_consume_token(LEFTPAREN);
       jj_consume_token(SINGLE);
     proc.isSingle = true;
@@ -3525,27 +3661,30 @@ public class JPortal implements JPortalConstants {
       proc.hasUpdates = true;
         break;
       default:
-        jj_la1[177] = jj_gen;
+        jj_la1[184] = jj_gen;
         ;
       }
       jj_consume_token(RIGHTPAREN);
-    } else if (jj_2_8(2)) {
+    } else if (jj_2_9(2)) {
       jj_consume_token(LEFTPAREN);
       n = jNumber();
       jj_consume_token(RIGHTPAREN);
     proc.noRows = n;
-    } else if (jj_2_9(2)) {
+    } else if (jj_2_10(2)) {
       jj_consume_token(LEFTPAREN);
       jj_consume_token(STANDARD);
-    for (int i=0; i<table.fields.size(); i++)
-      proc.outputs.addElement(table.fields.elementAt(i));
+    if (proc.outputs.size() != table.fields.size() && table.fields.size() > 0)
+    {
+      for (int i=0; i<table.fields.size(); i++)
+        proc.outputs.addElement(table.fields.elementAt(i));
+    }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SINGLE:
         jj_consume_token(SINGLE);
       proc.isSingle = true;
         break;
       default:
-        jj_la1[178] = jj_gen;
+        jj_la1[185] = jj_gen;
         ;
       }
       jj_consume_token(RIGHTPAREN);
@@ -3559,15 +3698,15 @@ public class JPortal implements JPortalConstants {
     jj_consume_token(DATA);
     proc = new Proc();
     proc.isData = true;
-    label_62:
+    label_67:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STRING:
         ;
         break;
       default:
-        jj_la1[179] = jj_gen;
-        break label_62;
+        jj_la1[186] = jj_gen;
+        break label_67;
       }
       jLine();
       Line l1 = new Line(line);
@@ -3583,12 +3722,12 @@ public class JPortal implements JPortalConstants {
     proc.isData = true;
     Line l1 = new Line(t.image.trim());
     proc.lines.addElement(l1);
-    label_63:
+    label_68:
     while (true) {
-      if (jj_2_10(2)) {
+      if (jj_2_11(2)) {
         ;
       } else {
-        break label_63;
+        break label_68;
       }
       t = jj_consume_token(DATALINE);
       Line l2 = new Line(t.image.trim());
@@ -3603,12 +3742,12 @@ public class JPortal implements JPortalConstants {
     proc.isIdlCode = true;
     Line l1 = new Line(t.image.trim());
     proc.lines.addElement(l1);
-    label_64:
+    label_69:
     while (true) {
-      if (jj_2_11(2)) {
+      if (jj_2_12(2)) {
         ;
       } else {
-        break label_64;
+        break label_69;
       }
       t = jj_consume_token(IDLLINE);
       Line l2 = new Line(t.image.trim());
@@ -3693,352 +3832,213 @@ public class JPortal implements JPortalConstants {
     finally { jj_save(10, xla); }
   }
 
-  static private boolean jj_3R_99() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_104()) jj_scanpos = xsp;
-    if (jj_scan_token(CODE)) return true;
-    return false;
+  static private boolean jj_2_12(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_12(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(11, xla); }
   }
 
-  static private boolean jj_3R_90() {
-    if (jj_3R_99()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_97() {
-    if (jj_3R_103()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_6() {
+  static private boolean jj_3_8() {
     if (jj_scan_token(LEFTPAREN)) return true;
     if (jj_scan_token(SINGLE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_80() {
-    if (jj_scan_token(GRANT)) return true;
-    Token xsp;
-    if (jj_3R_97()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_97()) { jj_scanpos = xsp; break; }
-    }
+  static private boolean jj_3_1() {
+    if (jj_3R_70()) return true;
     return false;
   }
 
-  static private boolean jj_3_11() {
+  static private boolean jj_3R_102() {
+    if (jj_3R_108()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_107() {
+    if (jj_3R_79()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_110() {
+    if (jj_scan_token(SQL)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_105() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_110()) jj_scanpos = xsp;
+    if (jj_scan_token(CODE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_12() {
     if (jj_scan_token(IDLLINE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_83() {
-    if (jj_scan_token(VIEW)) return true;
-    if (jj_3R_73()) return true;
+  static private boolean jj_3R_101() {
+    if (jj_3R_107()) return true;
     return false;
   }
 
-  static private boolean jj_3_1() {
-    if (jj_3R_65()) return true;
+  static private boolean jj_3_7() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(SINGLE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_90() {
+    if (jj_scan_token(CONST)) return true;
+    if (jj_3R_79()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_87() {
+    if (jj_scan_token(KEY)) return true;
+    if (jj_3R_79()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_100() {
+    if (jj_3R_107()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_95() {
+    if (jj_scan_token(OUTPUT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_85() {
+    if (jj_scan_token(UPDATEBY)) return true;
+    Token xsp;
+    if (jj_3R_102()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_102()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_92() {
+    if (jj_scan_token(LIDENTIFIER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_84() {
+    if (jj_scan_token(UPDATEFOR)) return true;
+    Token xsp;
+    if (jj_3R_101()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_101()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_78() {
+    if (jj_3R_90()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_6() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(STANDARD)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_79() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_91()) {
+    jj_scanpos = xsp;
+    if (jj_3R_92()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_91() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_72() {
+    if (jj_3R_79()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_77() {
+    if (jj_3R_89()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_83() {
+    if (jj_scan_token(DELETEBY)) return true;
+    Token xsp;
+    if (jj_3R_100()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_100()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
   static private boolean jj_3_5() {
     if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_scan_token(STANDARD)) return true;
+    if (jj_3R_73()) return true;
     return false;
   }
 
-  static private boolean jj_3R_96() {
-    if (jj_3R_102()) return true;
+  static private boolean jj_3_11() {
+    if (jj_scan_token(DATALINE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_3() {
+    if (jj_scan_token(WITH)) return true;
+    Token xsp;
+    if (jj_3R_72()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_72()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_117() {
+    if (jj_scan_token(EXECUTE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_76() {
+    if (jj_3R_88()) return true;
     return false;
   }
 
   static private boolean jj_3_4() {
     if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_3R_67()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_101() {
-    if (jj_3R_73()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_3() {
-    if (jj_scan_token(LEFTPAREN)) return true;
     if (jj_scan_token(MULTIPLE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_84() {
-    if (jj_scan_token(CONST)) return true;
-    if (jj_3R_73()) return true;
+  static private boolean jj_3R_75() {
+    if (jj_3R_87()) return true;
     return false;
   }
 
-  static private boolean jj_3_10() {
-    if (jj_scan_token(DATALINE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_95() {
-    if (jj_3R_101()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_81() {
-    if (jj_scan_token(KEY)) return true;
-    if (jj_3R_73()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_94() {
-    if (jj_3R_101()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_86() {
-    if (jj_scan_token(LIDENTIFIER)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_89() {
-    if (jj_scan_token(OUTPUT)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_79() {
-    if (jj_scan_token(UPDATEBY)) return true;
-    Token xsp;
-    if (jj_3R_96()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_96()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_72() {
-    if (jj_3R_84()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_73() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_85()) {
-    jj_scanpos = xsp;
-    if (jj_3R_86()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_85() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_78() {
-    if (jj_scan_token(UPDATEFOR)) return true;
-    Token xsp;
-    if (jj_3R_95()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_95()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_71() {
-    if (jj_3R_83()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_111() {
-    if (jj_scan_token(EXECUTE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_70() {
-    if (jj_3R_82()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_77() {
-    if (jj_scan_token(DELETEBY)) return true;
-    Token xsp;
-    if (jj_3R_94()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_94()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_69() {
-    if (jj_3R_81()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_110() {
+  static private boolean jj_3R_116() {
     if (jj_scan_token(UPDATE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_68() {
-    if (jj_3R_80()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_65() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_68()) {
-    jj_scanpos = xsp;
-    if (jj_3R_69()) {
-    jj_scanpos = xsp;
-    if (jj_3R_70()) {
-    jj_scanpos = xsp;
-    if (jj_3R_71()) {
-    jj_scanpos = xsp;
-    if (jj_3R_72()) return true;
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_109() {
-    if (jj_scan_token(SELECT)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_105() {
-    if (jj_scan_token(CODELINE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_67() {
-    if (jj_scan_token(NUMBER)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_100() {
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_105()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3_2() {
-    if (jj_3R_66()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_108() {
-    if (jj_scan_token(INSERT)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_88() {
-    if (jj_scan_token(INPUT)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_82() {
-    if (jj_scan_token(LINK)) return true;
-    if (jj_3R_98()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_107() {
-    if (jj_scan_token(DELETE)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_87() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_9() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_scan_token(STANDARD)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_93() {
-    if (jj_3R_101()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_74() {
-    if (jj_scan_token(SELECT)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_87()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_88()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_89()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_90()) {
-    jj_scanpos = xsp;
-    if (jj_3R_91()) return true;
-    }
+    if (jj_3R_86()) return true;
     return false;
   }
 
-  static private boolean jj_3R_106() {
-    if (jj_scan_token(ALL)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_103() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_106()) {
-    jj_scanpos = xsp;
-    if (jj_3R_107()) {
-    jj_scanpos = xsp;
-    if (jj_3R_108()) {
-    jj_scanpos = xsp;
-    if (jj_3R_109()) {
-    jj_scanpos = xsp;
-    if (jj_3R_110()) {
-    jj_scanpos = xsp;
-    if (jj_3R_111()) return true;
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_98() {
-    if (jj_3R_73()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_8() {
-    if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_3R_67()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_92() {
-    if (jj_3R_101()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_66() {
-    if (jj_3R_73()) return true;
+  static private boolean jj_3R_70() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_74()) {
@@ -4049,10 +4049,7 @@ public class JPortal implements JPortalConstants {
     jj_scanpos = xsp;
     if (jj_3R_77()) {
     jj_scanpos = xsp;
-    if (jj_3R_78()) {
-    jj_scanpos = xsp;
-    if (jj_3R_79()) return true;
-    }
+    if (jj_3R_78()) return true;
     }
     }
     }
@@ -4060,45 +4057,210 @@ public class JPortal implements JPortalConstants {
     return false;
   }
 
-  static private boolean jj_3R_91() {
-    if (jj_3R_100()) return true;
+  static private boolean jj_3R_115() {
+    if (jj_scan_token(SELECT)) return true;
     return false;
   }
 
-  static private boolean jj_3R_102() {
-    if (jj_3R_73()) return true;
+  static private boolean jj_3_2() {
+    if (jj_3R_71()) return true;
     return false;
   }
 
-  static private boolean jj_3R_76() {
-    if (jj_scan_token(SELECTBY)) return true;
-    Token xsp;
-    if (jj_3R_93()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_93()) { jj_scanpos = xsp; break; }
-    }
+  static private boolean jj_3R_73() {
+    if (jj_scan_token(NUMBER)) return true;
     return false;
   }
 
-  static private boolean jj_3_7() {
+  static private boolean jj_3R_94() {
+    if (jj_scan_token(INPUT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_88() {
+    if (jj_scan_token(LINK)) return true;
+    if (jj_3R_104()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_114() {
+    if (jj_scan_token(INSERT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_93() {
     if (jj_scan_token(LEFTPAREN)) return true;
-    if (jj_scan_token(SINGLE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_113() {
+    if (jj_scan_token(DELETE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_99() {
+    if (jj_3R_107()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_80() {
+    if (jj_scan_token(SELECT)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_93()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_94()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_95()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_96()) {
+    jj_scanpos = xsp;
+    if (jj_3R_97()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_98() {
+    if (jj_3R_107()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_112() {
+    if (jj_scan_token(ALL)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_109() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_112()) {
+    jj_scanpos = xsp;
+    if (jj_3R_113()) {
+    jj_scanpos = xsp;
+    if (jj_3R_114()) {
+    jj_scanpos = xsp;
+    if (jj_3R_115()) {
+    jj_scanpos = xsp;
+    if (jj_3R_116()) {
+    jj_scanpos = xsp;
+    if (jj_3R_117()) return true;
+    }
+    }
+    }
+    }
+    }
     return false;
   }
 
   static private boolean jj_3R_104() {
-    if (jj_scan_token(SQL)) return true;
+    if (jj_3R_79()) return true;
     return false;
   }
 
-  static private boolean jj_3R_75() {
-    if (jj_scan_token(SELECTONEBY)) return true;
+  static private boolean jj_3R_71() {
+    if (jj_3R_79()) return true;
     Token xsp;
-    if (jj_3R_92()) return true;
+    xsp = jj_scanpos;
+    if (jj_3R_80()) {
+    jj_scanpos = xsp;
+    if (jj_3R_81()) {
+    jj_scanpos = xsp;
+    if (jj_3R_82()) {
+    jj_scanpos = xsp;
+    if (jj_3R_83()) {
+    jj_scanpos = xsp;
+    if (jj_3R_84()) {
+    jj_scanpos = xsp;
+    if (jj_3R_85()) return true;
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_111() {
+    if (jj_scan_token(CODELINE)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_97() {
+    if (jj_3R_106()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_108() {
+    if (jj_3R_79()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_106() {
+    Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_92()) { jj_scanpos = xsp; break; }
+      if (jj_3R_111()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_82() {
+    if (jj_scan_token(SELECTBY)) return true;
+    Token xsp;
+    if (jj_3R_99()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_99()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_81() {
+    if (jj_scan_token(SELECTONEBY)) return true;
+    Token xsp;
+    if (jj_3R_98()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_98()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3_10() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_scan_token(STANDARD)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_96() {
+    if (jj_3R_105()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_9() {
+    if (jj_scan_token(LEFTPAREN)) return true;
+    if (jj_3R_73()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_103() {
+    if (jj_3R_109()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_89() {
+    if (jj_scan_token(VIEW)) return true;
+    if (jj_3R_79()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_86() {
+    if (jj_scan_token(GRANT)) return true;
+    Token xsp;
+    if (jj_3R_103()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_103()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -4115,7 +4277,7 @@ public class JPortal implements JPortalConstants {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[180];
+  static final private int[] jj_la1 = new int[187];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -4129,21 +4291,21 @@ public class JPortal implements JPortalConstants {
       jj_la1_init_4();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200000,0x0,0x0,0x0,0x0,0x0,0x20240000,0x0,0x20240000,0x0,0x0,0x20240000,0x0,0x20240000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc127f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x0,0x0,0x40000080,0x0,0x40000080,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000,0x40000000,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x418000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x418000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200000,0x0,0x0,0x0,0x0,0x0,0x40240000,0x0,0x40240000,0x0,0x0,0x40240000,0x0,0x40240000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x18127f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x0,0x0,0x80000080,0x0,0x80000080,0x0,0x0,0x400000,0x0,0x400000,0x0,0x0,0x80000,0x80000000,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1018000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1018000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x80,0x0,0x40000000,0x20001000,0x20001000,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000000,0x0,0x0,0x0,0x6000000,0x2000000,0x6000000,0x0,0x0,0x6000000,0x2000000,0x6000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x108,0x0,0x520908,0x0,0x80000,0x0,0x0,0x0,0x80000,0x0,0x0,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x2,0x0,0xc0400,0x0,0x0,0x10020,0x0,0x10020,0x8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000000,0x0,0x0,0x0,0x0,0x0,0x20000000,0x0,0x0,0x0,0x0,0x0,0x210043,0x0,0x0,0x0,0x0,0x0,0x0,0x200,0x0,0x200,0x2000,0x0,0x4,0x10002000,0x200,0x0,0x200,0x210043,0x8000000,0x0,0x0,0x0,0x0,0x8000,0x0,0x0,0x20000000,0x0,0x0,0x200,0x0,0x200,0x0,0x2000,0x0,0x4,0x10002000,0x200,0x0,0x200,0x0,0x0,0x20000000,0x0,0x0,0x0,0x0,0x200,0x0,0x0,0x0,0x8000000,0x0,0x0,0x0,0x8000,0x0,0x0,0x4000,0x0,0x0,0x20000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x100,0x0,0x0,0x0,0x4000,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40000000,0x0,0x0,0x0,0x30000000,0x10000000,0x30000000,0x0,0x0,0x30000000,0x10000000,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x210,0x0,0x2482210,0x0,0x200000,0x0,0x0,0x0,0x200000,0x0,0x0,0x200000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40000,0x0,0x4,0x0,0x301000,0x0,0x0,0x40040,0x0,0x40040,0x40000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1840085,0x0,0x0,0x0,0x0,0x0,0x0,0x400,0x0,0x400,0x8000,0x0,0x8,0x80008000,0x400,0x0,0x400,0x1840085,0x40000000,0x0,0x0,0x0,0x0,0x20000,0x0,0x0,0x0,0x0,0x0,0x400,0x0,0x400,0x0,0x8000,0x0,0x8,0x80008000,0x400,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x400,0x2,0x0,0x40000000,0x0,0x0,0x0,0x0,0x40000000,0x0,0x0,0x0,0x20000,0x0,0x0,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x80000,0x0,0x10,0x40000000,0x0,0x0,0x0,0x80000,0x20002,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x81705000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40,0x0,0x40,0x0,0x4000000,0x0,0x0,0x0,0x0,0x0,0x4000020,0x0,0x4000020,0x0,0x0,0x2000001,0x0,0x2000001,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x0,0x0,0x800000,0x0,0x0,0x0,0x0,0x0,0x20002,0x0,0x24000840,0x0,0x20002,0x8,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x0,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x24000840,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x0,0x4000004,0x4000004,0x0,0x0,0x0,0x0,0x0,0x0,0x4000004,0x4000004,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x180004a0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x40000,0x4000000,0x8000,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x2,0x0,0x1,0x1,0x20000000,0x0,0x10000,0x0,0x0,0x0,0x0,0x20000000,0x4002000,0x4002000,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc1400000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7f8,0x0,0x0,0x40000,0x0,0x40000,0x0,0x0,0x0,0x7f8,0x0,0x0,0x0,0x20000,0x0,0x20000,0x0,0x0,0x1000,0x0,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x4002000,0x0,0x140000,0x0,0x4002000,0x8000,0x0,0x0,0x0,0x0,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x4000,0x4000,0x140000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x8000000,0x0,0x0,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x4000,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x2a0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x8000000,0x8000000,0x0,0x0,0x0,0x0,0x10000000,0x0,0x2000000,0x0,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x80000000,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x80000000,0x0,0x0,0x8000,0x20,0x0,0x1000000,0x2000000,0x2000000,0x0,0x40000,0x0,0x80000000,0x0,0x2000000,0x0,0x0,0x0,0x40000,0x2000000,0x0,0x0,0x0,0x40000,0x43000000,0x2800000,0x2800000,0x43000000,0x800000,0x43000000,0x43000000,0x800000,0x43000000,0x43000000,0x800000,0x2800000,0x2800000,0x2800000,0x2800000,0x43000000,0x43000000,0x43000000,0x0,0x3000000,0x40001d,0x2000000,0x0,0x200000,0x0,0x3000000,0x0,0x200000,0x0,0x40000000,0x43000000,0x43000000,0x200000,0x0,0x80000000,0x3fc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fc0,0x2,0x200000,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x2000000,0x0,0x0,0x0,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x4000,0x0,0x80000000,0x0,0x0,0x0,0x8000,0x8000,0x0,0x2000000,0x2000000,0x2000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x2000000,0x2000000,0x0,0x0,0x2000000,0x0,0x0,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000000,0x40000,0x0,0x80000000,0x2000000,0x0,0x0,0x2000000,0x0,0x0,0x2000000,0x0,0x0,0x4000,0x0,0x80000000,0x80000000,0x0,0x2000000,0x0,0x0,0x0,0x80000000,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x200,0x0,0x0,0x0,0x800,0x0,0x80,0x0,0x0,0x0,0x0,0x48000,0x48000,0x0,0x0,0x8000000,0x10000000,0x10000000,0x0,0x200000,0x0,0x0,0x0,0x10000000,0x0,0x0,0x0,0x200000,0x10000000,0x0,0x0,0x0,0x200000,0x18000000,0x14000000,0x14000000,0x18000000,0x4000000,0x18000000,0x18000000,0x4000000,0x18000000,0x18000000,0x4000000,0x14000000,0x14000000,0x14000000,0x14000000,0x18000000,0x18000000,0x18000000,0x0,0x18000000,0x2013505,0x10000000,0x0,0x1000000,0x0,0x18000000,0x0,0x1000000,0x0,0x0,0x18000000,0x18000000,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x0,0x0,0x800,0x1000000,0x0,0x10,0x0,0x10,0x0,0x0,0x8,0x0,0x8,0x0,0x10000000,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x20000,0x0,0x0,0x0,0x0,0x10,0x40000,0x40000,0x0,0x10000000,0x10000000,0x10000000,0x0,0x10,0x10,0x0,0x0,0x0,0x0,0x0,0x10,0x10,0x10,0x0,0x0,0x10000000,0x10000000,0x0,0x0,0x10000000,0x0,0x0,0x20000,0x0,0x0,0x10,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x10,0x10000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60,0x200000,0x0,0x0,0x0,0x10000000,0x200000,0x0,0x0,0x10000000,0x0,0x0,0x10000000,0x0,0x0,0x10000000,0x0,0x0,0x0,0x20000,0x0,0x0,0x0,0x0,0x10000000,0x0,0x10,0x0,0x0,};
    }
    private static void jj_la1_init_4() {
-      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000,0xc,0xc,0x0,0x12000,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0xc,0xc,0x0,0x0,0x0,0xc,0x0,0x0,0xc,0xc,0xc,0xc,0xc,0xc,0xc,0xc,0x0,0x0,0x0,0xc,0x0,0xc,0x0,0x0,0x0,0x0,0xc,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0xc,0x0,0xc,0x0,0x0,0x400,0x0,0x0,0xc,0xc,0x12000,0x12000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0x0,0xc,0x0,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0xc,0xc,0xc,0xc,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0xc,0x0,0x0,0x0,0xc,0xc,0x400,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_4 = new int[] {0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x100000,0x64,0x60,0x0,0x90000,0x90000,0x0,0x60,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x60,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x2,0x0,0x2,0x2,0x0,0x2,0x2,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x60,0x0,0x0,0x0,0x60,0x62,0x2,0x2,0x0,0x60,0x4,0x0,0x60,0x60,0x60,0x60,0x60,0x60,0x60,0x60,0x0,0x0,0x0,0x60,0x0,0x60,0x0,0x0,0x4,0x0,0x60,0x0,0x60,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x60,0x60,0x0,0x60,0x0,0x0,0x2000,0x4,0x0,0x60,0x60,0x90000,0x90000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x60,0x0,0x0,0x60,0x0,0x0,0x60,0x0,0x0,0x0,0x60,0x0,0x60,0x0,0x0,0x0,0x0,0x0,0x0,0x60,0x0,0x60,0x60,0x60,0x60,0x0,0x0,0x0,0x0,0x4,0x2000,0x0,0x0,0x0,0x4,0x0,0x60,0x0,0x0,0x60,0x0,0x0,0x60,0x0,0x60,0x0,0x0,0x64,0x64,0x2000,0x0,0x0,0x0,0x0,0x4,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[11];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[12];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -4165,7 +4327,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 187; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4180,7 +4342,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 187; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4198,7 +4360,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 187; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4209,7 +4371,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 187; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4226,7 +4388,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 187; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4236,7 +4398,7 @@ public class JPortal implements JPortalConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 180; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 187; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -4348,12 +4510,12 @@ public class JPortal implements JPortalConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[146];
+    boolean[] la1tokens = new boolean[149];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 180; i++) {
+    for (int i = 0; i < 187; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -4374,7 +4536,7 @@ public class JPortal implements JPortalConstants {
         }
       }
     }
-    for (int i = 0; i < 146; i++) {
+    for (int i = 0; i < 149; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -4401,7 +4563,7 @@ public class JPortal implements JPortalConstants {
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 12; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -4419,6 +4581,7 @@ public class JPortal implements JPortalConstants {
             case 8: jj_3_9(); break;
             case 9: jj_3_10(); break;
             case 10: jj_3_11(); break;
+            case 11: jj_3_12(); break;
           }
         }
         p = p.next;

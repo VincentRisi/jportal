@@ -49,6 +49,7 @@ public class Database implements Serializable
     userid = "";
     password = "";
     packageName = "";
+    portalName = "";
     tables = new Vector<Table>();
     flags = new Vector<String>();
     sequences = new Vector<Sequence>();
@@ -56,7 +57,7 @@ public class Database implements Serializable
     imports = new Vector<String>();
   }
   /**
-   * Check for the existance of a table
+   * Check for the existence of a table
    */
   public boolean hasTable(String s)
   {

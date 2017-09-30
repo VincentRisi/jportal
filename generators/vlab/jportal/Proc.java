@@ -63,6 +63,7 @@ public class Proc implements Serializable
   public Vector<String> updateFields;
   /** Select in order fields */
   public Vector<String> orderFields;
+  public Vector<String> withs;
   /** Indicates the procedure uses stored procedure logic Code */
   public boolean isProc;
   /** Indicates the procedure uses stored procedure logic Code */
@@ -118,7 +119,8 @@ public class Proc implements Serializable
     options         = new Vector<String>();
     fields          = new Vector<String>();
     updateFields    = new Vector<String>();
-    orderFields = new Vector<String>();
+    orderFields     = new Vector<String>();
+    withs           = new Vector<String>();
     isProc          = false;
     isSProc         = false;
     isData          = false;
@@ -215,6 +217,18 @@ public class Proc implements Serializable
       String value = ids.readUTF();
       updateFields.addElement(value);
     }
+    noOf = ids.readInt();
+    for (int i = 0; i < noOf; i++)
+    {
+      String value = ids.readUTF();
+      orderFields.addElement(value);
+    }
+    noOf = ids.readInt();
+    for (int i = 0; i < noOf; i++)
+    {
+      String value = ids.readUTF();
+      withs.addElement(value);
+    }
     isProc          = ids.readBoolean();
     isSProc         = ids.readBoolean();
     isData          = ids.readBoolean();
@@ -305,6 +319,18 @@ public class Proc implements Serializable
     for (int i = 0; i < updateFields.size(); i++)
     {
       String value = (String)updateFields.elementAt(i);
+      ods.writeUTF(value);
+    }
+    ods.writeInt(orderFields.size());
+    for (int i = 0; i < orderFields.size(); i++)
+    {
+      String value = (String)orderFields.elementAt(i);
+      ods.writeUTF(value);
+    }
+    ods.writeInt(withs.size());
+    for (int i = 0; i < withs.size(); i++)
+    {
+      String value = withs.elementAt(i);
       ods.writeUTF(value);
     }
     ods.writeBoolean(isProc);

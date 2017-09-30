@@ -11,8 +11,10 @@
 /// ------------------------------------------------------------------
 
 package vlab.jportal;
+
 import java.io.Serializable;
 import java.util.Vector;
+
 /**
  * @author vince
  */
@@ -24,25 +26,29 @@ class PlaceHolderPairs implements Serializable
   private static final long serialVersionUID = 1L;
   public Field field;
   public int pos;
+
   PlaceHolderPairs(Field field, int pos)
   {
     this.field = field;
     this.pos = pos;
   }
 }
+
 public class PlaceHolder implements Serializable
 {
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
-  public static final byte COLON=0, QUESTION=1, AT=2, CURLY=3, AT_NAMED=4, PERC_STRING=5, DOLLAR_NO=6;
+  public static final byte COLON = 0, QUESTION = 1, AT = 2, CURLY = 3,
+      AT_NAMED = 4, PERC_STRING = 5, DOLLAR_NO = 6;
   private Proc proc;
   public Vector<PlaceHolderPairs> pairs;
   private StringBuffer command, upper;
   private int questionsSeen;
   private String varPrefix;
   public int totalDynamicSize;
+
   public PlaceHolder(Proc proc, byte useMark, String varPrefix)
   {
     this.proc = proc;
@@ -70,9 +76,11 @@ public class PlaceHolder implements Serializable
     case DOLLAR_NO:
       makeDollarNo();
       break;
+    }
   }
-  }
-	private static final String BEGIN = "\uFFBB", END = "\uFFEE";
+
+  private static final String BEGIN = "\uFFBB", END = "\uFFEE";
+
   public Vector<String> getLines()
   {
     Vector<String> result = new Vector<String>();
@@ -106,94 +114,125 @@ public class PlaceHolder implements Serializable
     }
     return result;
   }
+
   public Vector<PlaceHolderPairs> getPairs()
   {
     return pairs;
   }
+
   public int getTotalDynamicSize()
   {
     return totalDynamicSize;
   }
+
   private void makeCommand()
   {
     command = new StringBuffer();
-		for (int i = 0; i < proc.lines.size(); i++)
-		{
-			Line l = (Line) proc.lines.elementAt(i);
+    if (proc.withs.size() > 0)
+    {
+      String comma = "with";
+      for (int i = 0; i < proc.withs.size(); i++)
+      {
+        String withName = proc.withs.elementAt(i);
+        if (proc.table.hasWith(withName) == true)
+        {
+          command.append(BEGIN);
+          command.append(comma + " " + withName + " as (");
+          command.append(END);
+          With with = proc.table.getWith(withName);
+          for (int j = 0; j < with.lines.size(); j++)
+          {
+            Line l = (Line) with.lines.elementAt(j);
+            command.append(BEGIN);
+            command.append(question(new StringBuffer(l.line)));
+            command.append(END);
+          }
+          comma = ",";
+        }
+        command.append(BEGIN);
+        command.append(")");
+        command.append(END);
+      }
+    }
+    for (int i = 0; i < proc.lines.size(); i++)
+    {
+      Line l = (Line) proc.lines.elementAt(i);
       if (l.isVar)
       {
         command.append(varPrefix);
         command.append(l.line);
         totalDynamicSize += proc.getDynamicSize(l.line);
-      }
-      else
+      } else
       {
         command.append(BEGIN);
         command.append(question(new StringBuffer(l.line)));
         command.append(END);
       }
-		}
+    }
   }
+
   private void makePairs()
   {
-		pairs = new Vector<PlaceHolderPairs>();
-		upper = new StringBuffer(command.toString().toUpperCase());
-		for (int i=0; i<proc.inputs.size();)
-		{
-			Field field = (Field) proc.inputs.elementAt(i);
-			int pos = colonIndexOf(field);
-			if (pos != -1)
-			{
-				int j = 0;
-				while(j < pairs.size())
-				{
-					PlaceHolderPairs jPair = (PlaceHolderPairs) pairs.elementAt(j);
-					if (jPair.pos > pos)
-						break;
-					else
-						j++;
-				}
-				pairs.insertElementAt(new PlaceHolderPairs(field, pos), j);
-			}
-			else
-				i++;
-		}
+    pairs = new Vector<PlaceHolderPairs>();
+    upper = new StringBuffer(command.toString().toUpperCase());
+    for (int i = 0; i < proc.inputs.size();)
+    {
+      Field field = (Field) proc.inputs.elementAt(i);
+      int pos = colonIndexOf(field);
+      if (pos != -1)
+      {
+        int j = 0;
+        while (j < pairs.size())
+        {
+          PlaceHolderPairs jPair = (PlaceHolderPairs) pairs.elementAt(j);
+          if (jPair.pos > pos)
+            break;
+          else
+            j++;
+        }
+        pairs.insertElementAt(new PlaceHolderPairs(field, pos), j);
+      } else
+        i++;
+    }
   }
+
   private void makeQuestionMarks()
   {
-		for (int i=pairs.size()-1; i>=0; i--)
-		{
-			PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
-			Field field = pair.field;
-			int pos = pair.pos;
-			if (pos != -1)
-			{
-        String parm = "?";
-        delete(command, pos, field.name.length() + 1);
-        command.insert(pos, parm);
-      }
-		}
-  }
-  private void makeAtMarks()
-  {
-    for (int i=pairs.size()-1; i>=0; i--)
+    for (int i = pairs.size() - 1; i >= 0; i--)
     {
       PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
       Field field = pair.field;
       int pos = pair.pos;
       if (pos != -1)
       {
-        String parm = "@P"+i;
-        delete(command, pos, field.name.length()+1);
+        String parm = "?";
+        delete(command, pos, field.name.length() + 1);
         command.insert(pos, parm);
       }
     }
   }
+
+  private void makeAtMarks()
+  {
+    for (int i = pairs.size() - 1; i >= 0; i--)
+    {
+      PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
+      Field field = pair.field;
+      int pos = pair.pos;
+      if (pos != -1)
+      {
+        String parm = "@P" + i;
+        delete(command, pos, field.name.length() + 1);
+        command.insert(pos, parm);
+      }
+    }
+  }
+
   private void makeAtNamed()
   {
     for (int i = pairs.size() - 1; i >= 0; i--)
     {
-      PlaceHolderPairs pair = (PlaceHolderPairs)pairs.elementAt(i);
+      PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
       Field field = pair.field;
       int pos = pair.pos;
       if (pos != -1)
@@ -204,9 +243,10 @@ public class PlaceHolder implements Serializable
       }
     }
   }
+
   private void makeCurlyMarks()
   {
-    for (int i=pairs.size()-1; i>=0; i--)
+    for (int i = pairs.size() - 1; i >= 0; i--)
     {
       PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
       Field field = pair.field;
@@ -214,16 +254,17 @@ public class PlaceHolder implements Serializable
       if (pos != -1)
       {
         String curly = "{" + i + "}";
-        delete(command, pos, field.name.length()+1);
+        delete(command, pos, field.name.length() + 1);
         command.insert(pos, curly);
       }
     }
   }
+
   private void makePercString()
   {
     for (int i = pairs.size() - 1; i >= 0; i--)
     {
-      PlaceHolderPairs pair = (PlaceHolderPairs)pairs.elementAt(i);
+      PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
       Field field = pair.field;
       int pos = pair.pos;
       if (pos != -1)
@@ -234,45 +275,49 @@ public class PlaceHolder implements Serializable
       }
     }
   }
+
   private void makeDollarNo()
   {
     for (int i = pairs.size() - 1; i >= 0; i--)
     {
-      PlaceHolderPairs pair = (PlaceHolderPairs)pairs.elementAt(i);
+      PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
       Field field = pair.field;
       int pos = pair.pos;
       if (pos != -1)
       {
-        String parm = "$" + (i+1);
+        String parm = "$" + (i + 1);
         delete(command, pos, field.name.length() + 1);
         command.insert(pos, parm);
       }
     }
   }
+
   static private void delete(StringBuffer buffer, int from, int size)
   {
-    int len = buffer.length()-size;
-    for (int i=from; i<len; i++)
-      buffer.setCharAt(i, buffer.charAt(i+size));
+    int len = buffer.length() - size;
+    for (int i = from; i < len; i++)
+      buffer.setCharAt(i, buffer.charAt(i + size));
     buffer.setLength(len);
   }
+
   static private String substring(StringBuffer buffer, int from, int to, char ch)
   {
-    int len = to-from+2;
+    int len = to - from + 2;
     char work[] = new char[len];
     work[0] = ch;
     buffer.getChars(from, to, work, 1);
-    work[len-1] = ch;
+    work[len - 1] = ch;
     return new String(work);
   }
+
   static private int indexOf(StringBuffer buffer, String key, int offset)
   {
-    for (int i=offset; i<buffer.length(); i++)
+    for (int i = offset; i < buffer.length(); i++)
     {
       int pos = i;
-      for (int j=0; j<key.length(); j++)
+      for (int j = 0; j < key.length(); j++)
       {
-        if (buffer.charAt(i+j) != key.charAt(j))
+        if (buffer.charAt(i + j) != key.charAt(j))
         {
           pos = -1;
           break;
@@ -283,6 +328,7 @@ public class PlaceHolder implements Serializable
     }
     return -1;
   }
+
   private String question(StringBuffer line)
   {
     int anchor = 0;
@@ -312,8 +358,7 @@ public class PlaceHolder implements Serializable
           field = (Field) proc.inputs.elementAt(questionsSeen++);
         line.insert(findPos, ":" + field.name);
         anchor = findPos + field.name.length() + 1;
-      }
-      else
+      } else
       {
         line.insert(findPos, ":<UNKNOWN(" + questionsSeen + ")>");
         anchor = findPos + 12;
@@ -321,28 +366,27 @@ public class PlaceHolder implements Serializable
     }
     return line.toString();
   }
+
   private int colonIndexOf(Field field)
   {
-  	int anchor = 0;
-    String holder = ":"+field.name.toUpperCase();
+    int anchor = 0;
+    String holder = ":" + field.name.toUpperCase();
     int pos, len = holder.length();
-    while(true)
+    while (true)
     {
       pos = indexOf(upper, holder, anchor);
       if (pos == -1)
         break;
-      char ch = upper.charAt(pos+len);
-      if ((ch >= 'A' && ch <= 'Z') 
-      ||  (ch >= '0' && ch <= '9')
-      ||  (ch == '_'))
+      char ch = upper.charAt(pos + len);
+      if ((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || (ch == '_'))
       {
-      	anchor = pos+1;
-      	continue;
+        anchor = pos + 1;
+        continue;
       }
-      for (int i=0; i<len; i++)
-        upper.setCharAt(pos+i, '?');
+      for (int i = 0; i < len; i++)
+        upper.setCharAt(pos + i, '?');
       return pos;
-		}
+    }
     return pos;
   }
 }

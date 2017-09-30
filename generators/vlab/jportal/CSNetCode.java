@@ -240,7 +240,7 @@ public class CSNetCode extends Generator
       }
       catch (Exception e)
       {
-        outLog.println("Generate Procs IO Error" + e.toString());
+        outLog.println("Generate Procs IO Error " + e.toString());
       }
       finally
       {

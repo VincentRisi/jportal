@@ -37,6 +37,7 @@ public class Table implements Serializable
   public Vector<Grant> grants;
   public Vector<View> views;
   public Vector<Proc> procs;
+  public Vector<With> withs;
   public Vector<String> comments;
   public Vector<String> options;
   public Vector<String> allUsers;
@@ -59,6 +60,7 @@ public class Table implements Serializable
   public boolean isStoredProc;
   public boolean isLiteral;
   public int start;
+
   public Table()
   {
     name = "";
@@ -71,6 +73,7 @@ public class Table implements Serializable
     grants = new Vector<Grant>();
     views = new Vector<View>();
     procs = new Vector<Proc>();
+    withs = new Vector<With>();
     comments = new Vector<String>();
     options = new Vector<String>();
     allUsers = new Vector<String>();
@@ -94,11 +97,14 @@ public class Table implements Serializable
     isLiteral = false;
     start = 0;
   }
+
   public void reader(DataInputStream ids) throws IOException
   {
     reader(ids, null);
   }
-  public void reader(DataInputStream ids, Vector<?> useProcs) throws IOException
+
+  public void reader(DataInputStream ids, Vector<?> useProcs)
+      throws IOException
   {
     int signature = ids.readInt();
     if (signature != 0xBABA00D)
@@ -163,6 +169,13 @@ public class Table implements Serializable
     noOf = ids.readInt();
     for (int i = 0; i < noOf; i++)
     {
+      With value = new With();
+      value.reader(ids);
+      withs.addElement(value);
+    }
+    noOf = ids.readInt();
+    for (int i = 0; i < noOf; i++)
+    {
       String value = ids.readUTF();
       comments.addElement(value);
     }
@@ -204,6 +217,7 @@ public class Table implements Serializable
     isLiteral = ids.readBoolean();
     start = ids.readInt();
   }
+
   public void writer(DataOutputStream ods) throws IOException
   {
     ods.writeInt(0xBABA00D);
@@ -257,6 +271,12 @@ public class Table implements Serializable
         continue;
       value.writer(ods);
     }
+    ods.writeInt(withs.size());
+    for (int i = 0; i < withs.size(); i++)
+    {
+      With value = withs.elementAt(i);
+      value.writer(ods);
+    }
     ods.writeInt(comments.size());
     for (int i = 0; i < comments.size(); i++)
     {
@@ -299,6 +319,7 @@ public class Table implements Serializable
     ods.writeBoolean(isLiteral);
     ods.writeInt(start);
   }
+
   /** If there is an literal uses that else returns name */
   public String useLiteral()
   {
@@ -306,6 +327,7 @@ public class Table implements Serializable
       return literalName;
     return name;
   }
+
   /**
    * If there is an alias uses that else returns name
    */
@@ -315,6 +337,32 @@ public class Table implements Serializable
       return alias;
     return name;
   }
+
+  /**
+   * Checks for the existence of a with
+   */
+  public boolean hasWith(String s)
+  {
+    for (int i = 0; i < withs.size(); i++)
+    {
+      With with = withs.elementAt(i);
+      if (with.name.equalsIgnoreCase(s))
+        return true;
+    }
+    return false;
+  }
+
+  public With getWith(String s)
+  {
+    for (int i = 0; i < withs.size(); i++)
+    {
+      With with = withs.elementAt(i);
+      if (with.name.equalsIgnoreCase(s))
+        return with;
+    }
+    return null;
+  }
+
   /**
    * Checks for the existence of a field
    */
@@ -329,6 +377,7 @@ public class Table implements Serializable
     }
     return false;
   }
+
   public Field getField(String s)
   {
     int i;
@@ -340,6 +389,7 @@ public class Table implements Serializable
     }
     return null;
   }
+
   public int getFieldIndex(String s)
   {
     int i;
@@ -351,6 +401,7 @@ public class Table implements Serializable
     }
     return -1;
   }
+
   /**
    * Checks if table field is declared as null
    */
@@ -365,6 +416,7 @@ public class Table implements Serializable
     }
     return false;
   }
+
   /**
    * Checks for the existence of a proc
    */
@@ -378,6 +430,7 @@ public class Table implements Serializable
     }
     return false;
   }
+
   /**
    * Returns proc or null
    */
@@ -391,6 +444,7 @@ public class Table implements Serializable
     }
     return null;
   }
+
   /**
    * Checks for the existence of a proc
    */
@@ -399,11 +453,13 @@ public class Table implements Serializable
     for (int i = 0; i < procs.size(); i++)
     {
       Proc proc = procs.elementAt(i);
-      if (proc.isStd == true && proc.isSingle == false && proc.outputs.size() > 0)
+      if (proc.isStd == true && proc.isSingle == false
+          && proc.outputs.size() > 0)
         return true;
     }
     return false;
   }
+
   /**
    * Sets a field to be primary key
    */
@@ -420,6 +476,7 @@ public class Table implements Serializable
       }
     }
   }
+
   public String tableName()
   {
     if (database.schema.length() == 0)
@@ -431,6 +488,7 @@ public class Table implements Serializable
       return database.schema + "." + literalName;
     return database.schema + "." + name;
   }
+
   /**
    * Builds a merge proc generated as part of standard record class
    */
@@ -450,7 +508,8 @@ public class Table implements Serializable
     for (i = 0; i < fields.size(); i++)
     {
       Field field = fields.elementAt(i);
-      proc.lines.addElement(new Line("        " + comma + "cast(? as " + varType(field) + ")"));
+      proc.lines.addElement(new Line("        " + comma + "cast(? as "
+          + varType(field) + ")"));
       proc.inputs.addElement(field);
       comma = ", ";
     }
@@ -472,7 +531,8 @@ public class Table implements Serializable
       Field field = fields.elementAt(i);
       if (field.isPrimaryKey == true)
       {
-        proc.lines.addElement(new Line(front + name + "." + field.useLiteral() + " = temp_" + proc.table.name + "." + field.useLiteral()));
+        proc.lines.addElement(new Line(front + name + "." + field.useLiteral()
+            + " = temp_" + proc.table.name + "." + field.useLiteral()));
         front = "and ";
       }
     }
@@ -484,7 +544,8 @@ public class Table implements Serializable
       Field field = fields.elementAt(i);
       if (field.isPrimaryKey == false)
       {
-        proc.lines.addElement(new Line(comma + name + "." + field.useLiteral() + " = temp_" + proc.table.name + "." + field.useLiteral()));
+        proc.lines.addElement(new Line(comma + name + "." + field.useLiteral()
+            + " = temp_" + proc.table.name + "." + field.useLiteral()));
         comma = "  , ";
       }
     }
@@ -505,19 +566,23 @@ public class Table implements Serializable
     for (i = 0; i < fields.size(); i++)
     {
       Field field = fields.elementAt(i);
-      proc.lines.addElement(new Line(comma + "temp_" + proc.table.name + "." + field.useLiteral()));
+      proc.lines.addElement(new Line(comma + "temp_" + proc.table.name + "."
+          + field.useLiteral()));
       comma = "  , ";
     }
     proc.lines.addElement(new Line("  )"));
   }
+
   static boolean isIdentity(Field field)
   {
     return field.type == Field.BIGIDENTITY || field.type == Field.IDENTITY;
   }
+
   static boolean isSequence(Field field)
   {
     return field.type == Field.BIGSEQUENCE || field.type == Field.SEQUENCE;
   }
+
   /**
    * Builds an insert proc generated as part of standard record class
    */
@@ -553,14 +618,13 @@ public class Table implements Serializable
         proc.outputs.addElement(field);
         proc.isSingle = true;
         proc.hasUpdates = true;
-        proc.lines.addElement(new Line("_ret.checkUse(\"" + line + field.useLiteral() + comma + "\")", true));
+        proc.lines.addElement(new Line("_ret.checkUse(\"" + line
+            + field.useLiteral() + comma + "\")", true));
         continue;
-      }
-      else if (isSequence(field) == true && proc.isMultipleInput == true)
+      } else if (isSequence(field) == true && proc.isMultipleInput == true)
       {
         continue;
-      }
-      else if (isSequence(field) == true && proc.hasReturning == false)
+      } else if (isSequence(field) == true && proc.hasReturning == false)
       {
         proc.outputs.addElement(field);
         proc.isSingle = true;
@@ -596,6 +660,7 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
+
   /**
    * Builds an insert proc generated as part of standard record class
    */
@@ -604,6 +669,7 @@ public class Table implements Serializable
     proc.isMultipleInput = true;
     buildInsert(proc);
   }
+
   /**
    * Builds an identity proc generated as part of standard record class
    */
@@ -620,10 +686,12 @@ public class Table implements Serializable
       if (field.type != Field.IDENTITY)
         continue;
       proc.outputs.addElement(field);
-      line = "select max(" + field.useLiteral() + ") " + field.useLiteral() + " from " + name;
+      line = "select max(" + field.useLiteral() + ") " + field.useLiteral()
+          + " from " + name;
       proc.lines.addElement(new Line(line));
     }
   }
+
   /**
    * Builds an update proc generated as part of standard record class
    */
@@ -668,6 +736,7 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
+
   /**
    * Builds an update proc generated as part of standard record class
    */
@@ -741,7 +810,8 @@ public class Table implements Serializable
         {
 
           Field field = (Field) fields.elementAt(i);
-          if (field.isPrimaryKey || field.isCalc || field.name.equalsIgnoreCase(fieldName) || field.isSequence)
+          if (field.isPrimaryKey || field.isCalc
+              || field.name.equalsIgnoreCase(fieldName) || field.isSequence)
             continue;
           proc.inputs.addElement(field);
           if (j == 0)
@@ -753,8 +823,7 @@ public class Table implements Serializable
 
         }
       }
-    }
-    else
+    } else
     {
       for (i = 0, j = 0; i < proc.fields.size(); i++)
       {
@@ -798,6 +867,7 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
+
   private void AddTimeStampUserStamp(Proc proc)
   {
     int k;
@@ -817,8 +887,7 @@ public class Table implements Serializable
 
           proc.lines.addElement(new Line(line + field.useLiteral() + " = ?"));
         }
-      }
-      else if (field.type == Field.TIMESTAMP && !tmAdded)
+      } else if (field.type == Field.TIMESTAMP && !tmAdded)
       {
         tmAdded = true;
         if (!proc.inputs.contains(field))
@@ -830,6 +899,7 @@ public class Table implements Serializable
       }
     }
   }
+
   /**
    * Builds an update proc generated as part of standard record class
    */
@@ -838,6 +908,7 @@ public class Table implements Serializable
     proc.isMultipleInput = true;
     buildUpdate(proc);
   }
+
   /**
    * Builds a delete by primary key proc
    */
@@ -866,6 +937,7 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
+
   /**
    * Builds a delete all rows proc
    */
@@ -877,6 +949,7 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
+
   /**
    * Builds a count rows proc
    */
@@ -892,6 +965,7 @@ public class Table implements Serializable
     proc.outputs.addElement(field);
     proc.lines.addElement(new Line("select count(*) noOf from " + name));
   }
+
   /**
    * Builds a check for primary key existance proc
    */
@@ -924,6 +998,7 @@ public class Table implements Serializable
       }
     }
   }
+
   /**
    * Builds a select on primary key proc
    */
@@ -971,6 +1046,7 @@ public class Table implements Serializable
     else if (readonly)
       proc.lines.addElement(new Line(" for read only"));
   }
+
   /**
    * Builds a select on primary key proc
    */
@@ -993,10 +1069,12 @@ public class Table implements Serializable
     }
     proc.lines.addElement(new Line(" from " + name));
   }
+
   /**
    * Builds a select all rows proc
    */
-  public void buildSelectAll(Proc proc, boolean update, boolean readonly, boolean inOrder, boolean descending)
+  public void buildSelectAll(Proc proc, boolean update, boolean readonly,
+      boolean inOrder, boolean descending)
   {
     String name = tableName();
     int i;
@@ -1018,6 +1096,7 @@ public class Table implements Serializable
     selectFor(proc, update, readonly);
     selectOrderBy(proc, inOrder, descending);
   }
+
   private void selectOrderBy(Proc proc, boolean inOrder, boolean descending)
   {
     int i, n;
@@ -1026,7 +1105,7 @@ public class Table implements Serializable
       return;
     if (proc.orderFields.size() == 0)
     {
-      for (i=0; i < fields.size(); i++)
+      for (i = 0; i < fields.size(); i++)
       {
         Field field = fields.elementAt(i);
         if (field.isPrimaryKey)
@@ -1041,13 +1120,14 @@ public class Table implements Serializable
         line = " order by ";
       else
         line = ", ";
-      if (descending == true && i+1 == n)
+      if (descending == true && i + 1 == n)
         tail = " desc";
       else
         tail = "";
       proc.lines.addElement(new Line(line + fieldName + tail));
     }
   }
+
   private void selectFor(Proc proc, boolean update, boolean readonly)
   {
     if (update)
@@ -1055,6 +1135,7 @@ public class Table implements Serializable
     else if (readonly)
       proc.lines.addElement(new Line(" for read only"));
   }
+
   public void buildDeleteBy(Proc proc, PrintWriter outLog)
   {
     String name = tableName();
@@ -1090,7 +1171,9 @@ public class Table implements Serializable
       throw new Error("Error generating buildDeleteBy");
     }
   }
-  public void buildSelectBy(Proc proc, boolean forUpdate, boolean forReadOnly, boolean inOrder, boolean descending, PrintWriter outLog)
+
+  public void buildSelectBy(Proc proc, boolean forUpdate, boolean forReadOnly,
+      boolean inOrder, boolean descending, PrintWriter outLog)
   {
     String name = tableName();
     int i, j, k;
@@ -1116,8 +1199,7 @@ public class Table implements Serializable
           }
         }
       }
-    }
-    else
+    } else
     {
       for (i = 0; i < fields.size(); i++)
       {
@@ -1157,10 +1239,11 @@ public class Table implements Serializable
     }
     selectOrderBy(proc, inOrder, descending);
   }
+
   public void buildSelectFrom(Proc proc, Table table, PrintWriter outLog)
   {
     String name = tableName();
-    int i, j, k;
+    int j, k;
     String line;
     proc.extendsStd = false;
     proc.isSql = true;
@@ -1173,10 +1256,12 @@ public class Table implements Serializable
       for (k = 0; k < proc.lines.size(); k++)
       {
         first = (Line) proc.lines.elementAt(k);
-        if (first.line.toLowerCase().indexOf("select ") > -1 && first.line.toLowerCase().indexOf("select ") < 5)
+        if (first.line.toLowerCase().indexOf("select ") > -1
+            && first.line.toLowerCase().indexOf("select ") < 5)
         {
           doSelect = false;
-          outLog.println("Select found not generating SELECT." + first.line.toLowerCase().indexOf("select "));
+          outLog.println("Select found not generating SELECT."
+              + first.line.toLowerCase().indexOf("select "));
           break;
         }
       }
@@ -1190,13 +1275,16 @@ public class Table implements Serializable
           first = (Line) proc.lines.elementAt(k);
           if (first.line.toLowerCase().indexOf(name.toLowerCase()) > -1)
           {
-            preFix = first.line.substring(first.line.toLowerCase().indexOf(name.toLowerCase()) + name.length()).trim();
+            preFix = first.line.substring(
+                first.line.toLowerCase().indexOf(name.toLowerCase())
+                    + name.length()).trim();
             int n = preFix.indexOf(' ');
             if (n > 0)
             {
               preFix = preFix.substring(0, n).trim();
             }
-            if (!name.toLowerCase().startsWith(preFix.toLowerCase().substring(0, 1)))
+            if (!name.toLowerCase().startsWith(
+                preFix.toLowerCase().substring(0, 1)))
             {
               outLog.println("PREFIX mismatch. Dropping PREFIX");
               preFix = "";
@@ -1224,8 +1312,7 @@ public class Table implements Serializable
             line = ", " + preFix + ".";
           else
             line = ", ";
-        }
-        else
+        } else
         {
           fieldName.isExtStd = true;
           fieldName.isExtStdOut = true;
@@ -1234,7 +1321,8 @@ public class Table implements Serializable
           else
             line = ", ";
         }
-        proc.lines.insertElementAt(new Line(line + fieldName.useLiteral() + " "), j + 1);
+        proc.lines.insertElementAt(
+            new Line(line + fieldName.useLiteral() + " "), j + 1);
       }
       if (proc.isStd)
       {
@@ -1244,26 +1332,32 @@ public class Table implements Serializable
       }
     }
   }
+
   public String toString()
   {
     return name;
   }
+
   private String set(String a, String b, String what, PrintWriter outLog)
   {
     if (a.length() == 0)
       a = b;
     else if (a.equalsIgnoreCase(b) == false)
-      outLog.println("Import " + what + " name :" + a + " not the same as :" + b);
+      outLog.println("Import " + what + " name :" + a + " not the same as :"
+          + b);
     return a;
   }
+
   private boolean set(boolean a, boolean b, String what, PrintWriter outLog)
   {
     if (a == false)
       a = b;
     else if (b == false)
-      outLog.println("Import " + what + " is already true and is not set to false.");
+      outLog.println("Import " + what
+          + " is already true and is not set to false.");
     return a;
   }
+
   private void copy(Table addin, PrintWriter outLog)
   {
     name = addin.name;
@@ -1292,14 +1386,17 @@ public class Table implements Serializable
     hasIdentity = addin.hasIdentity;
     start = addin.start;
   }
+
   private void merge(Table addin, PrintWriter outLog)
   {
     alias = set(alias, addin.alias, "alias", outLog);
     check = set(check, addin.check, "check", outLog);
-    hasPrimaryKey = set(hasPrimaryKey, addin.hasPrimaryKey, "hasPrimaryKey", outLog);
+    hasPrimaryKey = set(hasPrimaryKey, addin.hasPrimaryKey, "hasPrimaryKey",
+        outLog);
     hasSequence = set(hasSequence, addin.hasSequence, "hasSequence", outLog);
     hasTimeStamp = set(hasTimeStamp, addin.hasTimeStamp, "hasTimeStamp", outLog);
-    hasAutoTimeStamp = set(hasAutoTimeStamp, addin.hasAutoTimeStamp, "hasAutoTimeStamp", outLog);
+    hasAutoTimeStamp = set(hasAutoTimeStamp, addin.hasAutoTimeStamp,
+        "hasAutoTimeStamp", outLog);
     hasUserStamp = set(hasUserStamp, addin.hasUserStamp, "hasUserStamp", outLog);
     hasExecute = set(hasExecute, addin.hasExecute, "hasExecute", outLog);
     hasSelect = set(hasSelect, addin.hasSelect, "hasSelect", outLog);
@@ -1309,6 +1406,7 @@ public class Table implements Serializable
     hasStdProcs = set(hasStdProcs, addin.hasStdProcs, "hasStdProcs", outLog);
     hasIdentity = set(hasIdentity, addin.hasIdentity, "hasIdentity", outLog);
   }
+
   public Table add(Table addin, PrintWriter outLog)
   {
     Table table = new Table();
@@ -1316,6 +1414,7 @@ public class Table implements Serializable
     table.merge(addin, outLog);
     return table;
   }
+
   public boolean hasOption(String value)
   {
     for (int i = 0; i < options.size(); i++)
@@ -1326,6 +1425,7 @@ public class Table implements Serializable
     }
     return false;
   }
+
   /**
    * Translates field type to DB2 SQL column types
    */
@@ -1364,7 +1464,8 @@ public class Table implements Serializable
     case Field.FLOAT:
     case Field.DOUBLE:
       if (field.scale != 0)
-        return "DECIMAL(" + String.valueOf(field.precision) + ", " + String.valueOf(field.scale) + ")";
+        return "DECIMAL(" + String.valueOf(field.precision) + ", "
+            + String.valueOf(field.scale) + ")";
       else if (field.precision != 0)
         return "DECIMAL(" + String.valueOf(field.precision) + ", 0)";
       return "DOUBLE";
