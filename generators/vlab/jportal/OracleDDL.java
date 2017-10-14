@@ -19,8 +19,6 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import com.sun.org.apache.bcel.internal.generic.Type;
-
 public class OracleDDL extends Generator
 {
   /**
@@ -95,7 +93,7 @@ public class OracleDDL extends Generator
         for (int i = 0; i < database.tables.size(); i++)
           generateTable(database.tables.elementAt(i), outData);
         for (int i = 0; i < database.views.size(); i++)
-          generateView(database.views.elementAt(i), outData, "", tableOwner);
+          generateView(database.views.elementAt(i), outData, null, tableOwner);
         for (int i = 0; i < database.sequences.size(); i++)
           generateSequence(database.sequences.elementAt(i), outData, tableOwner);
         if (addExit == true)
@@ -130,13 +128,13 @@ public class OracleDDL extends Generator
     boolean bigSequence = false;
     if (table.fields.size() > 0)
     {
-      outData.println("DROP TABLE " + tableOwner + table.name + " CASCADE CONSTRAINTS;");
+      outData.println("DROP TABLE " + tableOwner + table.fixEscape() + " CASCADE CONSTRAINTS;");
       outData.println();
-      outData.println("CREATE TABLE " + tableOwner + table.name);
+      outData.println("CREATE TABLE " + tableOwner + table.fixEscape());
       for (int i = 0; i < table.fields.size(); i++, comma = ", ")
       {
         Field field = (Field)table.fields.elementAt(i);
-        outData.println(comma + field.name + " " + varType(field));
+        outData.println(comma + field.fixEscape() + " " + varType(field));
         if (field.defaultValue.length() > 0)
           hasNotNull = true;
         if (field.checkValue.length() > 0)
@@ -161,20 +159,20 @@ public class OracleDDL extends Generator
       }
       outData.println(";");
       outData.println();
-      outData.println("DROP PUBLIC SYNONYM " + table.name + ";");
+      outData.println("DROP PUBLIC SYNONYM " + table.fixEscape() + ";");
       outData.println();
-      outData.println("CREATE PUBLIC SYNONYM " + table.name + " FOR " + tableOwner + table.name + ";");
+      outData.println("CREATE PUBLIC SYNONYM " + table.fixEscape() + " FOR " + tableOwner + table.fixEscape() + ";");
       outData.println();
       for (int i = 0; i < table.grants.size(); i++)
       {
         Grant grant = table.grants.elementAt(i);
-        generateGrant(grant, outData, tableOwner + table.name);
+        generateGrant(grant, outData, tableOwner + table.fixEscape());
       }
       if (table.hasSequence)
       {
-        outData.println("DROP SEQUENCE " + tableOwner + table.name + "Seq;");
+        outData.println("DROP SEQUENCE " + tableOwner + table.useExtra("Seq;"));
         outData.println();
-        outData.println("CREATE SEQUENCE " + tableOwner + table.name + "Seq");
+        outData.println("CREATE SEQUENCE " + tableOwner + table.useExtra("Seq"));
         outData.println("  MINVALUE 1");
         if (bigSequence == true)
           outData.println("  MAXVALUE 999999999999999999");
@@ -183,9 +181,9 @@ public class OracleDDL extends Generator
         outData.println("  CYCLE");
         outData.println("  ORDER;");
         outData.println();
-        outData.println("DROP PUBLIC SYNONYM " + table.name + "SEQ;");
+        outData.println("DROP PUBLIC SYNONYM " + table.useExtra("SEQ;"));
         outData.println();
-        outData.println("CREATE PUBLIC SYNONYM " + table.name + "SEQ FOR " + tableOwner + table.name + "SEQ;");
+        outData.println("CREATE PUBLIC SYNONYM " + table.useExtra("SEQ") + " FOR " + tableOwner + table.useExtra("SEQ;"));
         outData.println();
         if (table.grants.size() > 0)
         {
@@ -193,7 +191,7 @@ public class OracleDDL extends Generator
           for (int j = 0; j < grant.users.size(); j++)
           {
             String user = grant.users.elementAt(j);
-            outData.println("GRANT SELECT ON " + tableOwner + table.name + "SEQ TO " + user + ";");
+            outData.println("GRANT SELECT ON " + tableOwner + table.useExtra("SEQ") + " TO " + user + ";");
             outData.println();
           }
         }
@@ -208,7 +206,7 @@ public class OracleDDL extends Generator
     for (int i = 0; i < table.views.size(); i++)
     {
       View view = (View)table.views.elementAt(i);
-      generateView(view, outData, table.name, tableOwner);
+      generateView(view, outData, table, tableOwner);
     }
     if (hasNotNull == true)
     {
@@ -220,7 +218,7 @@ public class OracleDDL extends Generator
         Field field = table.fields.elementAt(i);
         if (field.isNull && field.defaultValue.length() == 0 && field.checkValue.length() == 0)
           continue;
-        outData.print(comma + field.name + " CONSTRAINT " + table.name + "_NN" + bSO(i));
+        outData.print(comma + field.fixEscape() + " CONSTRAINT " + table.name + "_NN" + bSO(i));
         if (field.defaultValue.length() > 0)
           outData.print(" DEFAULT " + field.defaultValue);
         if (field.checkValue.length() > 0)
@@ -397,9 +395,12 @@ public class OracleDDL extends Generator
   /**
   * Generates views for Oracle
   */
-  static void generateView(View view, PrintWriter outData, String tableName, String tableOwner)
+  static void generateView(View view, PrintWriter outData, Table table, String tableOwner)
   {
-    outData.println("CREATE OR REPLACE FORCE VIEW " + tableName + view.name);
+    String viewName = view.name;   
+    if (table != null)
+      viewName = table.useExtra(view.name); 	  
+    outData.println("CREATE OR REPLACE FORCE VIEW " + viewName);
     String comma = "( ";
     for (int i = 0; i < view.aliases.size(); i++)
     {
@@ -419,12 +420,12 @@ public class OracleDDL extends Generator
     for (int i = 0; i < view.users.size(); i++)
     {
       String user = (String)view.users.elementAt(i);
-      outData.println("GRANT SELECT ON " + tableName + view.name + " TO " + user + ";");
+      outData.println("GRANT SELECT ON " + viewName + " TO " + user + ";");
     }
     outData.println();
-    outData.println("DROP PUBLIC SYNONYM " + tableName + view.name + ";");
+    outData.println("DROP PUBLIC SYNONYM " + viewName + ";");
     outData.println();
-    outData.println("CREATE PUBLIC SYNONYM " + tableName + view.name + " FOR " + tableOwner + tableName + view.name + ";");
+    outData.println("CREATE PUBLIC SYNONYM " + viewName + " FOR " + tableOwner + viewName + ";");
     outData.println();
   }
   /**

@@ -88,29 +88,25 @@ public class Lite3DDL extends Generator
       outLog.println("Generate LITE3 SQL IO Error");
     }
   }
-  /**
-   * @param database
-   * @param table
-   * @param outData
-   */
   private static void generateTable(Database database, Table table, PrintWriter outData)
   {
+	String tablename = tableOwner + table.fixEscape();
     if (table.fields.size() > 0)
     {
-      outData.println("DROP TABLE IF EXISTS " + tableOwner + table.name + ";");
+      outData.println("DROP TABLE IF EXISTS " + tablename + ";");
       outData.println();
     }
     String comma = "( ";
     boolean primeDone = false;
     if (table.fields.size() > 0)
     {
-      outData.println("CREATE TABLE " + tableOwner + table.name);
+      outData.println("CREATE TABLE " + tablename);
       for (int i = 0; i < table.fields.size(); i++, comma = ", ")
       {
         Field field = (Field) table.fields.elementAt(i);
         if (field.isSequence && field.isPrimaryKey)
           primeDone = true;
-        outData.println(comma + field.name + " " + varType(field));
+        outData.println(comma + field.fixEscape() + " " + varType(field));
         comma = ", ";
       }
       for (int i = 0; i < table.keys.size(); i++)
@@ -153,7 +149,7 @@ public class Lite3DDL extends Generator
     for (int i = 0; i < table.views.size(); i++)
     {
       View view = (View) table.views.elementAt(i);
-      generateView(view, outData, table.name, tableOwner);
+      generateView(view, outData, table, tableOwner);
     }
     for (int i = 0; i < table.procs.size(); i++)
     {
@@ -274,12 +270,21 @@ public class Lite3DDL extends Generator
    * @param name
    * @param tableOwner
    */
-  private static void generateView(View view, PrintWriter outData,
-      String tableName, String tableOwner)
+  static String useExtra(String name, String extra)
   {
-    outData.println("DROP VIEW IF EXISTS " + tableOwner + tableName + view.name);
+	String work = name + extra;
+	int last = name.length()-1;
+	if (name.charAt(0) == '\"' && name.charAt(last) == '\"')
+	  work = name.substring(0, last-1)+extra+name.substring(last);
+	return work;
+  }
+ private static void generateView(View view, PrintWriter outData,
+      Table table, String tableOwner)
+  {
+    String viewname = tableOwner + useExtra(table.fixEscape(), view.name);
+    outData.println("DROP VIEW IF EXISTS " + viewname);
     outData.println("");
-    outData.println("CREATE VIEW " + tableOwner + tableName + view.name);
+    outData.println("CREATE VIEW " + viewname);
     outData.println("AS (");
     for (int i = 0; i < view.lines.size(); i++)
     {
@@ -303,7 +308,7 @@ public class Lite3DDL extends Generator
     outData.println("DROP INDEX IF EXISTS " + tableOwner + table.name + keyname + ";");
     outData.println("");
     outData.print(
-        "CREATE INDEX " + table.name + keyname + " ON " + tableOwner + table.name);
+        "CREATE INDEX "  + tableOwner + table.name + keyname + " ON " + tableOwner + table.name);
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
       String name = (String) key.fields.elementAt(i);

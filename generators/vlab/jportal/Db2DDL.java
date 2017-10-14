@@ -113,7 +113,7 @@ public class Db2DDL extends Generator
       tableOwner = table.database.schema + ".";
     else if (table.database.server.length() > 0)
       tableOwner = table.database.server + ".";
-    String tableName = tableOwner + table.name;
+    String tableName = tableOwner + table.fixEscape();
     String comma = "( ";
     boolean useBigSequence = false;
     if (table.fields.size() > 0)
@@ -126,7 +126,7 @@ public class Db2DDL extends Generator
         Field field = (Field)table.fields.elementAt(i);
         if (field.type == Field.BIGSEQUENCE)
           useBigSequence = true;
-        outData.print(comma + field.name + " " + varType(field));
+        outData.print(comma + field.fixEscape() + " " + varType(field));
         if (field.defaultValue.length() > 0)
           outData.print(" DEFAULT " + field.defaultValue);
         if (field.checkValue.length() > 0)
@@ -167,9 +167,9 @@ public class Db2DDL extends Generator
       outData.println();
       if (table.database.server.length() > 0)
       {
-        outData.println("DROP ALIAS " + table.name + ";");
+        outData.println("DROP ALIAS " + table.fixEscape() + ";");
         outData.println();
-        outData.println("CREATE ALIAS " + table.name + " FOR " + tableName + ";");
+        outData.println("CREATE ALIAS " + table.fixEscape() + " FOR " + tableName + ";");
         outData.println();
       }
       for (int i = 0; i < table.grants.size(); i++)

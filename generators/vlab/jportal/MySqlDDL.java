@@ -91,22 +91,23 @@ public class MySqlDDL extends Generator
   private static void generateTable(Database database, Table table, PrintWriter outData)
   {
     String tableOwner = "";
+    String tablename = table.fixEscape();
     if (table.database.schema.length() > 0)
       tableOwner = table.database.schema + ".";
     boolean hasNotNull = false;
     if (table.fields.size() > 0)
     {
-      outData.println("DROP TABLE IF EXISTS " + tableOwner + table.name + " CASCADE;");
+      outData.println("DROP TABLE IF EXISTS " + tableOwner + tablename + " CASCADE;");
       outData.println();
     }
     String comma = "( ";
     if (table.fields.size() > 0)
     {
-      outData.println("CREATE TABLE " + tableOwner + table.name);
+      outData.println("CREATE TABLE " + tableOwner + tablename);
       for (int i = 0; i < table.fields.size(); i++, comma = ", ")
       {
         Field field = (Field)table.fields.elementAt(i);
-        outData.print(comma + field.name + " " + varType(field));
+        outData.print(comma + field.fixEscape() + " " + varType(field));
         if (field.defaultValue.length() > 0)
           hasNotNull = true;
         if (field.checkValue.length() > 0)
@@ -132,7 +133,7 @@ public class MySqlDDL extends Generator
       for (int i = 0; i < table.grants.size(); i++)
       {
         Grant grant = (Grant)table.grants.elementAt(i);
-        generateGrant(grant, outData, tableOwner + table.name);
+        generateGrant(grant, outData, tableOwner + tablename);
       }
       for (int i = 0; i < table.keys.size(); i++)
       {
@@ -144,11 +145,11 @@ public class MySqlDDL extends Generator
     for (int i = 0; i < table.views.size(); i++)
     {
       View view = (View)table.views.elementAt(i);
-      generateView(view, outData, table.name, tableOwner);
+      generateView(view, outData, tablename, tableOwner);
     }
     if (hasNotNull == true)
     {
-      String alterTable = "ALTER TABLE " + tableOwner + table.name;
+      String alterTable = "ALTER TABLE " + tableOwner + tablename;
       for (int i = 0; i < table.fields.size(); i++)
       {
         Field field = (Field)table.fields.elementAt(i);
@@ -170,13 +171,13 @@ public class MySqlDDL extends Generator
         Key key = (Key)table.keys.elementAt(i);
         if (key.isPrimary)
         {
-          outData.println("ALTER TABLE " + tableOwner + table.name);
+          outData.println("ALTER TABLE " + tableOwner + tablename);
           generatePrimary(table, key, outData);
           outData.println(";");
         }
         else if (key.isUnique)
         {
-          outData.println("ALTER TABLE " + tableOwner + table.name);
+          outData.println("ALTER TABLE " + tableOwner + tablename);
           generateUnique(table, key, outData);
           outData.println(";");
         }
@@ -188,7 +189,7 @@ public class MySqlDDL extends Generator
       for (int i = 0; i < table.links.size(); i++)
       {
         Link link = (Link)table.links.elementAt(i);
-        outData.println("ALTER TABLE " + tableOwner + table.name);
+        outData.println("ALTER TABLE " + tableOwner + tablename);
         if (link.linkName.length() == 0)
           link.linkName = table.name.toUpperCase() + "_FK" + bSO(i);
         generateLink(link, tableOwner, outData);
@@ -355,13 +356,14 @@ public class MySqlDDL extends Generator
   private static void generateIndex(Table table, Key key, PrintWriter outData)
   {
     String tableOwner = "";
+    String tablename = table.fixEscape();
     if (table.database.schema.length() > 0)
       tableOwner = table.database.schema + ".";
     String comma = "( ";
     String keyname = key.name.toUpperCase();
     if (keyname.indexOf(table.name.toUpperCase()) == -1)
       keyname = table.name.toUpperCase() + "_" + keyname;
-    outData.println("CREATE INDEX " + keyname + " ON " + tableOwner + table.name);
+    outData.println("CREATE INDEX " + keyname + " ON " + tableOwner + tablename);
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
       String name = (String)key.fields.elementAt(i);

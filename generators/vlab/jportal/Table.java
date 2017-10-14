@@ -340,6 +340,24 @@ public class Table implements Serializable
     }
     return name;
   }
+  public String fixEscape()
+  {
+	String result = useLiteral(false);
+	if (result.charAt(0) == '[')
+	  result = result.replace('[', '"').replace(']', '"');
+	else if (result.charAt(0) == '`')
+	  result = result.replace('`', '"');
+	return result;
+  }
+  public String useExtra(String extra)
+  {
+	String name = fixEscape(); 
+    String work = name + extra;
+	int last = name.length()-1;
+	if (name.charAt(0) == '\"' && name.charAt(last) == '\"')
+	  work = name.substring(0, last-1)+extra+name.substring(last);
+	return work;
+  }
   /**
    * If there is an alias uses that else returns name
    */

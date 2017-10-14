@@ -99,13 +99,13 @@ public class PostgreDDL extends Generator
     boolean hasNotNull = false;
     if (table.fields.size() > 0)
     {
-      outData.println("DROP TABLE " + tableOwner + table.name + " CASCADE;");
+      outData.println("DROP TABLE " + tableOwner + table.fixEscape() + " CASCADE;");
       outData.println();
-      outData.println("CREATE TABLE " + tableOwner + table.name);
+      outData.println("CREATE TABLE " + tableOwner + table.fixEscape());
       for (int i = 0; i < table.fields.size(); i++, comma = ", ")
       {
         Field field = (Field)table.fields.elementAt(i);
-        outData.println(comma + field.name + " " + varType(field));
+        outData.println(comma + field.fixEscape() + " " + varType(field));
         if (field.defaultValue.length() > 0)
           hasNotNull = true;
         if (field.checkValue.length() > 0)
@@ -150,7 +150,7 @@ public class PostgreDDL extends Generator
         Field field = (Field)table.fields.elementAt(i);
         if (field.isNull && field.defaultValue.length() == 0 && field.checkValue.length() == 0)
           continue;
-        outData.print(alterTable + " ALTER " + field.name + " SET");
+        outData.print(alterTable + " ALTER " + field.fixEscape() + " SET");
         if (field.defaultValue.length() > 0)
           outData.print(" DEFAULT " + field.defaultValue);
         if (field.checkValue.length() > 0)
@@ -168,13 +168,13 @@ public class PostgreDDL extends Generator
         Key key = (Key)table.keys.elementAt(i);
         if (key.isPrimary)
         {
-          outData.println("ALTER TABLE " + tableOwner + table.name);
+          outData.println("ALTER TABLE " + tableOwner + table.fixEscape());
           generatePrimary(table, key, outData);
           outData.println(";");
         }
         else if (key.isUnique)
         {
-          outData.println("ALTER TABLE " + tableOwner + table.name);
+          outData.println("ALTER TABLE " + tableOwner + table.fixEscape());
           generateUnique(table, key, outData);
           outData.println(";");
         }
@@ -186,7 +186,7 @@ public class PostgreDDL extends Generator
       for (int i = 0; i < table.links.size(); i++)
       {
         Link link = (Link)table.links.elementAt(i);
-        outData.println("ALTER TABLE " + tableOwner + table.name);
+        outData.println("ALTER TABLE " + tableOwner + table.fixEscape());
         if (link.linkName.length() == 0)
           link.linkName = table.name.toUpperCase() + "_FK" + bSO(i);
         generateLink(link, tableOwner, outData);
@@ -351,7 +351,7 @@ public class PostgreDDL extends Generator
       keyname = table.name.toUpperCase() + "_" + keyname;
     outData.println("-- DROP INDEX " + keyname + ";");
     outData.println("");
-    outData.println("CREATE INDEX " + keyname + " ON " + tableOwner + table.name);
+    outData.println("CREATE INDEX " + keyname + " ON " + tableOwner + table.fixEscape());
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
       String name = (String)key.fields.elementAt(i);

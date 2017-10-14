@@ -336,6 +336,15 @@ public class Field implements Serializable
     }
     return name;
   }
+  public String fixEscape()
+  {
+	String result = useLiteral(false);
+	if (result.charAt(0) == '[')
+	  result = result.replace('[', '"').replace(']', '"');
+	else if (result.charAt(0) == '`')
+	  result = result.replace('`', '"');
+	return result;
+  }
   public boolean isEnum()
   {
     if (enums.size() > 0)

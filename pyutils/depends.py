@@ -3,12 +3,12 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option("-b", "--buildPath",  dest="buildPath",  default="/main/jportal/build/picktester")
-parser.add_option("-s", "--sourcePath", dest="sourcePath", default="/main/jportal/picktester")
+#parser.add_option("-s", "--sourcePath", dest="sourcePath", default="/main/jportal/picktester")
 parser.add_option("-w", "--wildCard",   dest="wildCard",   default="/main/jportal/picktester/sql/si/*.si")
-parser.add_option("-H", "--hostName",   dest="hostName",   default="localhost")
-parser.add_option("-u", "--userName",   dest="userName",   default="vince")
-parser.add_option("-l", "--logName",    dest="logName",    default="/main/jportal/build/picktester/logfile.txt")
-parser.add_option("-d", "--dbName",     dest="dbName",     default="postgres")
+#parser.add_option("-H", "--hostName",   dest="hostName",   default="localhost")
+#parser.add_option("-u", "--userName",   dest="userName",   default="vince")
+#parser.add_option("-l", "--logName",    dest="logName",    default="/main/jportal/build/picktester/logfile.txt")
+#parser.add_option("-d", "--dbName",     dest="dbName",     default="postgres")
 (options, args) = parser.parse_args()
 
 class Table(object):

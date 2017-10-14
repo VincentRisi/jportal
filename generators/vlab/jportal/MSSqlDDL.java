@@ -169,7 +169,7 @@ public class MSSqlDDL extends Generator
         for (int i = 0; i < database.tables.size(); i++)
           generateTable((Table) database.tables.elementAt(i), outData);
         for (int i = 0; i < database.views.size(); i++)
-          generateView((View) database.views.elementAt(i), outData, "");
+          generateView((View)database.views.elementAt(i), outData);
         outData.flush();
       }
       finally
@@ -325,13 +325,14 @@ public class MSSqlDDL extends Generator
     }
     if (useInsertTrigger)
     {
+      String insertTrigger = tableOwner + useExtra(table.useLiteral(), "InsertTrigger");
       if (table.hasSequence || table.hasUserStamp || table.hasTimeStamp)
       {
-        outData.println("IF OBJECT_ID('" + tableName + "InsertTrigger','TR') IS NOT NULL");
-        outData.println("    DROP TRIGGER " + tableName + "InsertTrigger");
+        outData.println("IF OBJECT_ID('" + insertTrigger + "','TR') IS NOT NULL");
+        outData.println("    DROP TRIGGER " + insertTrigger);
         outData.println("GO");
         outData.println();
-        outData.println("CREATE TRIGGER " + tableName + "InsertTrigger ON " + tableName + " FOR INSERT AS");
+        outData.println("CREATE TRIGGER " + insertTrigger + " ON " + tableName + " FOR INSERT AS");
         for (int i = 0; i < table.fields.size(); i++)
         {
           Field field = (Field) table.fields.elementAt(i);
@@ -379,11 +380,12 @@ public class MSSqlDDL extends Generator
     }
     if ((table.hasUserStamp || table.hasTimeStamp) && auditTrigger)
     {
-      outData.println("IF OBJECT_ID('" + tableName + "UpdateTrigger','TR') IS NOT NULL");
-      outData.println("    DROP TRIGGER " + tableName + "UpdateTrigger");
+      String updateTrigger = tableOwner + useExtra(table.useLiteral(), "UpdateTrigger");
+      outData.println("IF OBJECT_ID('" + updateTrigger + "','TR') IS NOT NULL");
+      outData.println("    DROP TRIGGER " + updateTrigger);
       outData.println("GO");
       outData.println();
-      outData.println("CREATE TRIGGER " + tableName + "UpdateTrigger ON " + tableName + " FOR UPDATE AS");
+      outData.println("CREATE TRIGGER " + updateTrigger + " ON " + tableName + " FOR UPDATE AS");
       outData.println("UPDATE " + tableName);
       outData.println("SET");
       comma = "  ";
@@ -423,7 +425,7 @@ public class MSSqlDDL extends Generator
     for (int i = 0; i < table.views.size(); i++)
     {
       View view = (View) table.views.elementAt(i);
-      generateView(view, outData, tableName);
+      generateView(view, outData, table);
     }
     for (int i = 0; i < table.procs.size(); i++)
     {
@@ -492,7 +494,7 @@ public class MSSqlDDL extends Generator
   static void generateUnique(Key key, String table, PrintWriter outData)
   {
     String comma = "    ";
-    outData.println(", CONSTRAINT UK_"  + table + "_" + key.name + (key.isClustered ? " CLUSTERED UNIQUE (" : "UNIQUE (") );
+    outData.println(", CONSTRAINT UK_"  + table + "_" + key.name + (key.isClustered ? " CLUSTERED UNIQUE (" : " UNIQUE (") );
     for (int i = 0; i < key.fields.size(); i++, comma = "  , ")
     {
       String name = (String) key.fields.elementAt(i);
@@ -582,13 +584,13 @@ public class MSSqlDDL extends Generator
   /**
    * Generates view SQL Code for SQL Server
    */
-  static void generateView(View view, PrintWriter outData, String tableName)
+  private static void generateView(View view, PrintWriter outData, String viewName) 
   {
-    outData.println("IF OBJECT_ID('" + tableName + view.name + "','V') IS NOT NULL");
-    outData.println("    DROP VIEW " + tableName + view.name);
+	outData.println("IF OBJECT_ID('" + viewName + "','V') IS NOT NULL");
+    outData.println("    DROP VIEW " + viewName);
     outData.println("GO");
     outData.println();
-    outData.println("CREATE VIEW " + tableName + view.name);
+    outData.println("CREATE VIEW " + viewName);
     outData.println("(");
     String comma = "  ";
     for (int i = 0; i < view.aliases.size(); i++)
@@ -610,13 +612,22 @@ public class MSSqlDDL extends Generator
     for (int i = 0; i < view.users.size(); i++)
     {
       String user = (String) view.users.elementAt(i);
-      outData.println("GRANT SELECT ON " + tableName + view.name + " TO " + user);
+      outData.println("GRANT SELECT ON " + viewName + " TO " + user);
     }
     if (view.users.size() > 0)
     {
       outData.println("GO");
       outData.println();
     }
+  }
+  static void generateView(View view, PrintWriter outData, Table table)
+  {
+	String viewName = tableOwner + useExtra(table.useLiteral(), view.name);
+    generateView(view, outData, viewName);
+  }
+  static void generateView(View view, PrintWriter outData)
+  {
+    generateView(view, outData, view.name);
   }
   static void generateData(Proc proc, PrintWriter outData)
   {
