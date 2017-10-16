@@ -30,6 +30,8 @@ public class Field implements Serializable
   private static final long serialVersionUID = 1L;
   /** Name to use in the database */
   public String name;
+  /** Name to use in the database for a literal*/
+  public String literalName;
   /** Name to use in the class if not present (normal case) then name is used */
   public String alias;
   /** Default value to apply for the field on insert if not specified */
@@ -68,7 +70,6 @@ public class Field implements Serializable
   /** Indicates the field is EXT */
   public boolean isExtStd;
   public boolean isExtStdOut;
-  public String literalName;
   public static final byte
     BLOB       = 1
   , BOOLEAN    = 2

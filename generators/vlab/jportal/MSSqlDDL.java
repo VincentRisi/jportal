@@ -477,10 +477,10 @@ public class MSSqlDDL extends Generator
   /**
    * Generates SQL code for ORACLE Primary Key create
    */
-  static void generatePrimary(Key key, String table, PrintWriter outData)
+  static void generatePrimary(Key key, String tableName, PrintWriter outData)
   {
     String comma = "    ";
-    outData.println(", CONSTRAINT PK_" + table + "_" + key.name + " PRIMARY KEY (");
+    outData.println(", CONSTRAINT PK_" + tableName + "_" + key.name + " PRIMARY KEY (");
     for (int i = 0; i < key.fields.size(); i++, comma = "  , ")
     {
       String name = (String) key.fields.elementAt(i);
@@ -491,10 +491,10 @@ public class MSSqlDDL extends Generator
   /**
    * Generates SQL code for ORACLE Unique Key create
    */
-  static void generateUnique(Key key, String table, PrintWriter outData)
+  static void generateUnique(Key key, String tableName, PrintWriter outData)
   {
     String comma = "    ";
-    outData.println(", CONSTRAINT UK_"  + table + "_" + key.name + (key.isClustered ? " CLUSTERED UNIQUE (" : " UNIQUE (") );
+    outData.println(", CONSTRAINT UK_"  + tableName + "_" + key.name + (key.isClustered ? " CLUSTERED UNIQUE (" : " UNIQUE (") );
     for (int i = 0; i < key.fields.size(); i++, comma = "  , ")
     {
       String name = (String) key.fields.elementAt(i);

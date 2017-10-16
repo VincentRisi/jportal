@@ -208,8 +208,7 @@ public class Lite3DDL extends Generator
   /**
    * Generates foreign key SQL Code for DB2
    */
-  static void generateLink(Link link, PrintWriter outData,
-      String tableName, String owner, int no)
+  static void generateLink(Link link, PrintWriter outData, String tableName, String owner, int no)
   {
     String comma = "( ";
     String linkname = "FK" + no + link.linkName.toUpperCase();
@@ -278,8 +277,7 @@ public class Lite3DDL extends Generator
 	  work = name.substring(0, last-1)+extra+name.substring(last);
 	return work;
   }
- private static void generateView(View view, PrintWriter outData,
-      Table table, String tableOwner)
+ private static void generateView(View view, PrintWriter outData, Table table, String tableOwner)
   {
     String viewname = tableOwner + useExtra(table.fixEscape(), view.name);
     outData.println("DROP VIEW IF EXISTS " + viewname);
@@ -307,8 +305,7 @@ public class Lite3DDL extends Generator
       keyname = table.name.toUpperCase() + "_" + keyname;
     outData.println("DROP INDEX IF EXISTS " + tableOwner + table.name + keyname + ";");
     outData.println("");
-    outData.print(
-        "CREATE INDEX "  + tableOwner + table.name + keyname + " ON " + tableOwner + table.name);
+    outData.print("CREATE INDEX "  + tableOwner + table.name + keyname + " ON " + tableOwner + table.name);
     for (int i = 0; i < key.fields.size(); i++, comma = ", ")
     {
       String name = (String) key.fields.elementAt(i);

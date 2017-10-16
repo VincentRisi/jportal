@@ -183,7 +183,7 @@ public class OracleDDL extends Generator
         outData.println();
         outData.println("DROP PUBLIC SYNONYM " + table.name + "SEQ;");
         outData.println();
-        outData.println("CREATE PUBLIC SYNONYM " + table.name + "SEQ" + " FOR " + tableOwner + table.name+ "SEQ;");
+        outData.println("CREATE PUBLIC SYNONYM " + table.name + "SEQ FOR " + tableOwner + table.name+ "SEQ;");
         outData.println();
         if (table.grants.size() > 0)
         {
@@ -191,7 +191,7 @@ public class OracleDDL extends Generator
           for (int j = 0; j < grant.users.size(); j++)
           {
             String user = grant.users.elementAt(j);
-            outData.println("GRANT SELECT ON " + tableOwner + table.name + "SEQ" + " TO " + user + ";");
+            outData.println("GRANT SELECT ON " + tableOwner + table.name + "SEQ TO " + user + ";");
             outData.println();
           }
         }

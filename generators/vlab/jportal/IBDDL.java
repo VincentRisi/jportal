@@ -319,7 +319,7 @@ public class IBDDL extends Generator
     case Field.MONEY:
       return "NUMERIC(15,2)";
     case Field.USERSTAMP:
-      return "VARCHAR(50)";
+      return "VARCHAR("+String.valueOf(field.length)+")";
     case Field.IDENTITY:
       return "<not supported>";
     }

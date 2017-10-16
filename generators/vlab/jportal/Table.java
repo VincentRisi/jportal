@@ -63,9 +63,9 @@ public class Table implements Serializable
   public Table()
   {
     name = "";
+    literalName = "";
     alias = "";
     check = "";
-    literalName = "";
     fields = new Vector<Field>();
     keys = new Vector<Key>();
     links = new Vector<Link>();
@@ -743,7 +743,6 @@ public class Table implements Serializable
     if (proc.hasReturning)
       proc.lines.add(new Line("_ret.tail", true));
   }
-
   /**
    * Builds an update proc generated as part of standard record class
    */
