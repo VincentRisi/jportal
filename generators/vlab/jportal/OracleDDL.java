@@ -170,9 +170,9 @@ public class OracleDDL extends Generator
       }
       if (table.hasSequence)
       {
-        outData.println("DROP SEQUENCE " + tableOwner + table.useExtra("Seq;"));
+        outData.println("DROP SEQUENCE " + tableOwner + table.name + "Seq;");
         outData.println();
-        outData.println("CREATE SEQUENCE " + tableOwner + table.useExtra("Seq"));
+        outData.println("CREATE SEQUENCE " + tableOwner + table.name + "Seq");
         outData.println("  MINVALUE 1");
         if (bigSequence == true)
           outData.println("  MAXVALUE 999999999999999999");
@@ -181,9 +181,9 @@ public class OracleDDL extends Generator
         outData.println("  CYCLE");
         outData.println("  ORDER;");
         outData.println();
-        outData.println("DROP PUBLIC SYNONYM " + table.useExtra("SEQ;"));
+        outData.println("DROP PUBLIC SYNONYM " + table.name + "SEQ;");
         outData.println();
-        outData.println("CREATE PUBLIC SYNONYM " + table.useExtra("SEQ") + " FOR " + tableOwner + table.useExtra("SEQ;"));
+        outData.println("CREATE PUBLIC SYNONYM " + table.name + "SEQ" + " FOR " + tableOwner + table.name+ "SEQ;");
         outData.println();
         if (table.grants.size() > 0)
         {
@@ -191,7 +191,7 @@ public class OracleDDL extends Generator
           for (int j = 0; j < grant.users.size(); j++)
           {
             String user = grant.users.elementAt(j);
-            outData.println("GRANT SELECT ON " + tableOwner + table.useExtra("SEQ") + " TO " + user + ";");
+            outData.println("GRANT SELECT ON " + tableOwner + table.name + "SEQ" + " TO " + user + ";");
             outData.println();
           }
         }

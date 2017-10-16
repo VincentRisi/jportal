@@ -144,7 +144,7 @@ public class PostgreDDL extends Generator
     }
     if (hasNotNull == true)
     {
-      String alterTable = "ALTER TABLE " + tableOwner + table.name;
+      String alterTable = "ALTER TABLE " + tableOwner + table.fixEscape();
       for (int i = 0; i < table.fields.size(); i++)
       {
         Field field = (Field)table.fields.elementAt(i);
@@ -402,8 +402,10 @@ public class PostgreDDL extends Generator
         return "smallint";
       case Field.INT:
         return "integer";
+      case Field.IDENTITY:
       case Field.SEQUENCE:
         return "serial";
+      case Field.BIGIDENTITY:
       case Field.BIGSEQUENCE:
         return "bigserial";
       case Field.LONG:
@@ -432,8 +434,8 @@ public class PostgreDDL extends Generator
         return "numeric(18,2)";
       case Field.USERSTAMP:
         return "VARCHAR(50)";
-      case Field.IDENTITY:
-        return "<not supported>";
+      //case Field.IDENTITY:
+      //  return "<not supported>";
     }
     return "unknown";
   }

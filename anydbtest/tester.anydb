@@ -31,11 +31,14 @@ jportal
   JavaSCCode        ${binary_dir}/sql/JavaSC      %a.java
   JavaWRCode        ${binary_dir}/sql/JavaWR      %a.java
   JSONCode          ${binary_dir}/sql/json        %l.json
+  Lite3DDL          ${binary_dir}/sql/Lite3       %a.sql
   MSSqlDDL          ${binary_dir}/sql/MSSql       %a.sql
   MySqlDDL          ${binary_dir}/sql/MySql       %a.sql
   MySqlCCode        ${binary_dir}/sql/MySqlC      %l.c %l.h
   OciCCode          ${binary_dir}/sql/OciC        %l.cpp %l.sh
+  OracleDDL         ${binary_dir}/sql/Oracle      %a.sql
   ParmCode          ${binary_dir}/sql/Parm        %a.pi
+  PostgreDDL        ${binary_dir}/sql/Postgre     %a.sql
   PythonCliCode     ${binary_dir}/sql/PythonCli   DB_%u.py
   PythonTreeCode    ${binary_dir}/sql/PythonTree  %a.py
 

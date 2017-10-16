@@ -179,9 +179,9 @@ public class Db2DDL extends Generator
       }
       if (table.hasSequence)
       {
-        outData.println("DROP SEQUENCE " + tableName + "Seq;");
+        outData.println("DROP SEQUENCE " + tableOwner + table.name + "Seq;");
         outData.println();
-        outData.println("CREATE SEQUENCE " + tableName + "Seq");
+        outData.println("CREATE SEQUENCE " + tableOwner + table.name + "Seq");
         if (useBigSequence == true)
           outData.println("  AS BIGINT");
         else
@@ -199,7 +199,7 @@ public class Db2DDL extends Generator
           for (int j = 0; j < grant.users.size(); j++)
           {
             String user = (String)grant.users.elementAt(j);
-            outData.println("GRANT SELECT ON " + tableName + "SEQ TO " + user + ";");
+            outData.println("GRANT SELECT ON " + tableOwner + table.name + "SEQ TO " + user + ";");
             outData.println();
           }
         }
