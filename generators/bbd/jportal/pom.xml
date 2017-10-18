@@ -8,16 +8,9 @@
     <packaging>jar</packaging>
 
     <name>JPortal</name>
-    <url>https://github.com/VincentRisi/jportal</url>
+    <url>https://github.com/dieterrosch/jportal</url>
 
     <dependencies>
-        <!--<dependency>-->
-        <!--<groupId>junit</groupId>-->
-        <!--<artifactId>junit</artifactId>-->
-        <!--<version>4.8.2</version>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!-- http://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
@@ -29,11 +22,23 @@
             <artifactId>javacc-maven-plugin</artifactId>
             <version>2.6</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.23</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
 
     </dependencies>
     <build>
-        <sourceDirectory>.</sourceDirectory>
-
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -114,7 +119,7 @@
                             <addClasspath>true</addClasspath>
                         </manifest>
                         <manifestEntries>
-                            <Main-Class>bbd.jportal.Compiler</Main-Class>
+                            <Main-Class>main.java.bbd.jportal.Compiler</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>

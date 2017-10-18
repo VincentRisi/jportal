@@ -11,7 +11,7 @@ sudo apt-get install -y log4j
 sudo apt-get install -y postgresql 
 
 #Install IntelliJ IDEA
-wget https://s3-eu-west-1.amazonaws.com/devops-static-downloads-public/ideaIC-2017.1.tar.gz
+wget --continue https://s3-eu-west-1.amazonaws.com/devops-static-downloads-public/ideaIC-2017.1.tar.gz
 tar xzvf ideaIC-2017.1.tar.gz
 
 #Install some eclipse plugins
