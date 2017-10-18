@@ -394,8 +394,7 @@ public class JavaJCCode
         outData.println("  /**");
         outData.println("   * @param Connector for specific database");
         outData.println("   */");
-
-          outData.println("  public "+table.useName()+"()");
+        outData.println("  public "+table.useName()+"()");
         outData.println("  {");
         outData.println("    super();");
         outData.println("  }");
@@ -543,6 +542,22 @@ public class JavaJCCode
   /** Emits class method for processing the database activity */
   static void emitProc(Proc proc, PrintWriter outData)
   {              //  12345
+    boolean isBulkInsert = false;
+    boolean isBulkUpdate = false;
+    
+    /** FIXME: The Proc class has no way of identifying a bulk update or insert, so these comparisons are required. */
+    if (proc.name.toUpperCase().equals("BULKINSERT")) {
+      isBulkInsert = true;
+      outData.println("  protected List<"+proc.table.useName()+"Struct> inserts = new ArrayList<>();");
+      outData.println("  public void setInserts(List<"+proc.table.useName()+"Struct> inserts) { this.inserts = inserts; }");
+      outData.println("  public void addForInsert("+proc.table.useName()+"Struct struct) { inserts.add(struct); }");
+    } else if (proc.name.toUpperCase().equals("BULKUPDATE")) {
+      isBulkUpdate = true;
+      outData.println("  protected List<"+proc.table.useName()+"Struct> updates = new ArrayList<>();");
+      outData.println("  public void setUpdates(List<"+proc.table.useName()+"Struct> updates) { this.updates = updates; }");
+      outData.println("  public void addForUpdate("+proc.table.useName()+"Struct struct) { updates.add(struct); }");
+    }
+
     outData.println("  /**");
     if (proc.comments.size() > 0)
     {
@@ -552,7 +567,9 @@ public class JavaJCCode
         outData.println("    *"+comment);
       }
     }
-    if (!proc.extendsStd && proc.outputs.size() == 0)
+    if (isBulkInsert || isBulkUpdate) {
+      outData.println("   * Returns a list of update counts for every operation performed.");
+    } else if (!proc.extendsStd && proc.outputs.size() == 0)
       outData.println("   * Returns no output.");
     else if (proc.isSingle)
     {
@@ -567,7 +584,9 @@ public class JavaJCCode
     outData.println("   * @exception SQLException is passed through");
     outData.println("   */");
     String procName = proc.lowerFirst();
-    if (!proc.extendsStd && proc.outputs.size() == 0)
+    if (isBulkInsert || isBulkUpdate) {
+      outData.println("  public int[] "+procName+"() throws SQLException");
+    } else if (!proc.extendsStd && proc.outputs.size() == 0)
       outData.println("  public void "+procName+"() throws SQLException");
     else if (proc.isSingle)
       outData.println("  public boolean "+procName+"() throws SQLException");
@@ -577,16 +596,15 @@ public class JavaJCCode
 		placeHolders = new PlaceHolder(proc, PlaceHolder.QUESTION, "");
 		Vector<?> lines = placeHolders.getLines();
 
-      Field primaryKeyField = null;
-      for(int i = 0; i < proc.table.fields.size() && primaryKeyField == null; i++){
-          Field fEval = proc.table.fields.get(i);
-          if(fEval.isPrimaryKey)
-              primaryKeyField = fEval;
+    Field primaryKeyField = null;
+    for (int i = 0; i < proc.table.fields.size() && primaryKeyField == null; i++) {
+        Field fEval = proc.table.fields.get(i);
+        if (fEval.isPrimaryKey)
+            primaryKeyField = fEval;
     }    
 
-      if(proc.hasReturning)
-          outData.println("Connector.Returning _ret = connector.getReturning(\""+proc.table.name+"\",\""+ primaryKeyField.useName()+"\");");
-
+    if (proc.hasReturning)
+        outData.println("Connector.Returning _ret = connector.getReturning(\""+proc.table.name+"\",\""+ primaryKeyField.useName()+"\");");
 
 		outData.println("    String statement = ");
     String plus = "      ";
@@ -597,34 +615,80 @@ public class JavaJCCode
     }
 		outData.println("    ;");
     outData.println("    PreparedStatement prep = connection.prepareStatement(statement);");
+
+    if (isBulkInsert) {
+      outData.println("    for ("+proc.table.useName()+"Struct struct : inserts) {");
+    } else if (isBulkUpdate) {
+      outData.println("    for ("+proc.table.useName()+"Struct struct : updates) {");
+    }
+
     for (int i=0; i<proc.inputs.size(); i++)
     {
       Field field = (Field) proc.inputs.elementAt(i);
-      if (proc.isInsert)
-      {
-        if (field.type == Field.BIGSEQUENCE)
-          outData.println("    "+field.useName()+" = connector.getBigSequence(\""+proc.table.name+"\");");
-        else if (field.type == Field.SEQUENCE)
-          outData.println("    "+field.useName()+" = connector.getSequence(\""+proc.table.name+"\");");      
+      if (proc.isInsert) {
+        if (field.type == Field.BIGSEQUENCE) {
+          if (isBulkInsert || isBulkUpdate) {
+            outData.println("      struct."+field.useName()+" = connector.getBigSequence(\""+proc.table.name+"\");");
+          } else {
+            outData.println("    "+field.useName()+" = connector.getBigSequence(\""+proc.table.name+"\");");
+         }
+        } else if (field.type == Field.SEQUENCE) {
+          if (isBulkInsert || isBulkUpdate) {
+            outData.println("      struct."+field.useName()+" = connector.getSequence(\""+proc.table.name+"\");");      
+          } else {
+            outData.println("    "+field.useName()+" = connector.getSequence(\""+proc.table.name+"\");");                  
+          }
+        }
       }
-      if (field.type == Field.TIMESTAMP)
-        outData.println("    "+field.useName()+" = connector.getTimestamp();");
-      if (field.type == Field.USERSTAMP)
-        outData.println("    "+field.useName()+" = connector.getUserstamp();");
+      if (field.type == Field.TIMESTAMP) {
+        if (isBulkInsert || isBulkUpdate) {
+          outData.println("      struct."+field.useName()+" = connector.getTimestamp();");
+        } else {
+          outData.println("    "+field.useName()+" = connector.getTimestamp();");
+        }
+      }
+      if (field.type == Field.USERSTAMP) {
+        if (isBulkInsert || isBulkUpdate) {
+          outData.println("      struct."+field.useName()+" = connector.getUserstamp();");
+        } else {
+          outData.println("    "+field.useName()+" = connector.getUserstamp();");
+        }
+      }
     }
+
+
     Vector<?> pairs = placeHolders.getPairs();
     for (int i=0; i<pairs.size(); i++)
     {
       PlaceHolderPairs pair = (PlaceHolderPairs) pairs.elementAt(i);
       Field field = pair.field;
-      outData.print("    prep.set");
+
+      if (isBulkInsert || isBulkUpdate) {
+        outData.print("      prep.set");
+      } else {
+        outData.print("    prep.set");
+      }
       outData.print(setType(field));
       outData.print("(");
       outData.print(i+1);
-      outData.println(", "+field.useName()+");");
+
+      if (isBulkInsert || isBulkUpdate) {
+        outData.println(", struct."+field.useName()+");");
+      } else {
+        outData.println(", "+field.useName()+");");
+      }
     }
-    if (proc.extendsStd || proc.outputs.size() > 0)
-    {
+    
+    if (isBulkInsert || isBulkUpdate) {
+      outData.println("      prep.addBatch();");
+      outData.println("    }");
+    }
+
+    if (isBulkInsert || isBulkUpdate) {
+      outData.println("    int updateCounts[] = prep.executeBatch();");
+      outData.println("    prep.close();");
+      outData.println("    return updateCounts;");
+    } else if (proc.extendsStd || proc.outputs.size() > 0) {
       outData.println("    ResultSet result = prep.executeQuery();");
       if (!proc.isSingle)
       {
@@ -690,6 +754,11 @@ public class JavaJCCode
     }
     outData.println("  }");
     
+    if (isBulkInsert || isBulkUpdate) {
+      // Skip the generation of a secondary function.
+      return;
+    }
+
     if ((proc.extendsStd || (proc.outputs.size() > 0)) && !proc.isSingle)
     {
       outData.println("  /**");
