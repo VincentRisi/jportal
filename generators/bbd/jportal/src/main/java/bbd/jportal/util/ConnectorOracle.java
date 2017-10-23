@@ -21,7 +21,6 @@ public class ConnectorOracle extends Connector
 {
   String userId;
   /**
-  ** @param driverName - gets inserted into oracle.jdbc.----.OracleDriver
   ** @param driverType - get inserted into  jdbc:oracle:----:user/password[@server]
   ** @param server     - get inserted into  jdbc:oracle:driverType:user/password[@----]
   ** @param user       - get inserted into  jdbc:oracle:driverType:----/password[@server]
