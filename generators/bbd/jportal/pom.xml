@@ -158,7 +158,7 @@
                             <addClasspath>true</addClasspath>
                         </manifest>
                         <manifestEntries>
-                            <Main-Class>main.java.bbd.jportal.Compiler</Main-Class>
+                            <Main-Class>bbd.jportal.Compiler</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>

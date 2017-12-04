@@ -12,15 +12,11 @@
 
 package bbd.jportal;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Compiler
 {
@@ -132,6 +128,23 @@ public class Compiler
                 i++;
                 continue;
             }
+            if (args.length > i && args[i].equals("-d"))
+            {
+                if (i + 1 < args.length) {
+                    String dirName = args[++i];
+                    File folder = new File(dirName);
+                    File[] listOfFiles = folder.listFiles();
+                    for (File file : listOfFiles) {
+                        if (file.isFile()) {
+                            Path path = Paths.get( dirName,file.getName());
+                            inputs = inputs + path.toString() + ";";
+                        }
+                    }
+                }
+                i++;
+                continue;
+            }
+
             if (args.length > i && args[i].equals("-f"))
             {
                 if (i + 1 < args.length)
@@ -189,7 +202,7 @@ public class Compiler
             System.out.println(abbreviate(inputs));
             if (args.length < 1)
             {
-                outLog.println("usage java jportal.Compiler -l log -n nubDir (- f inputs | infile) (generators)+");
+                outLog.println("usage java jportal.Compiler -l log -n nubDir (- f inputs | -d directory | infile) (generators)+");
                 outLog.println("for example to create DDL for Sql Server and Java, VB and Delphi code");
                 outLog.println();
                 outLog.println(
