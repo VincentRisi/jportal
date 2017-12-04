@@ -65,9 +65,24 @@ public class Compiler
                 if (i + 1 < args.length)
                 {
                     output = args[++i];
-                    char term = '\\';
-                    if (output.indexOf('/') != -1)
-                        term = '/';
+                    File theDir = new File(output);
+                    // if the directory does not exist, create it
+                    if (!theDir.exists()) {
+                        System.out.println("creating directory: " + theDir.getName());
+                        boolean result = false;
+
+                        try{
+                            theDir.mkdirs();
+                            result = true;
+                        }
+                        catch(SecurityException se){
+                            //handle it
+                            System.out.println("A Security Exception occurred:" + se.toString());
+                        }
+                    }
+                    char term = File.separatorChar;
+//                    if (output.indexOf('/') != -1)
+//                        term = '/';
                     char ch = output.charAt(output.length() - 1);
                     if (ch != term)
                         output = output + term;
