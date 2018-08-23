@@ -1,5 +1,7 @@
 # JPortal (or AnyDB)
 
+## (NB: This repo is not longer maintained - see https://github.com/SI-Gen for the latest version of the code)
+
 ## Database, Module and Application code generators for varying platforms, vendors and languages.
 
 There are three code generator types written using the same mechanism: 
