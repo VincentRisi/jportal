@@ -1,0 +1,16 @@
+<Combine fileversion="1.0" name="Projects" description="Any DB Ide Project Files">
+  <StartMode startupentry="Projects" single="True">
+    <Execute entry="Projects" type="None" />
+  </StartMode>
+  <Entries>
+    <Entry filename=".\Project.prjx" />
+  </Entries>
+  <Configurations active="Debug">
+    <Configuration name="Release">
+      <Entry name="Project" configurationname="Release" build="False" />
+    </Configuration>
+    <Configuration name="Debug">
+      <Entry name="Project" configurationname="Debug" build="False" />
+    </Configuration>
+  </Configurations>
+</Combine>

@@ -1,0 +1,12 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>MsSQL CSharp Example DDL</title>
+</head>
+<body>
+<h1>MsSQL CSharp Example DDL</h1>
+<pre>use AnyDB<br><br>drop table kopaCodes<br>go<br><br>create table kopaCodes<br>(<br>  ecoCode varchar(24) not null<br>, setId varchar(2) not null<br>, kopaCode varchar(24) not null<br>, pageId varchar(24) not null<br>, period varchar(1) not null<br>, description varchar(250) not null<br>, selected integer not null<br>, strategy integer not null<br>, disUsed integer not null<br>, updBy varchar(16) not null<br>, updWhen datetime not null<br>, primary key (<br>    ecoCode<br>  )<br>, unique (<br>    setId<br>  , kopaCode<br>  )<br>)<br>go<br></pre>
+</body>
+</html>

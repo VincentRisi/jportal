@@ -1,0 +1,17 @@
+<AnyDBIde>
+ <Project Name="J:\sharp\Help\examples\AdnNetCSharp.xml" Switches="5" Sources="1" />
+ <SwitchList>
+  <Switch Name="CSNetCodeDirectory" Value="J:\sharp\Help\examples\" />
+  <Switch Name="CSNetCodeGenerator" Value="True" />
+  <Switch Name="initialSourceDirectory" Value="J:\sharp\Help\examples\" />
+  <Switch Name="MSSqlDDLDirectory" Value="J:\sharp\Help\examples\" />
+  <Switch Name="MSSqlDDLGenerator" Value="True" />
+ </SwitchList>
+ <SourceList>
+  <Source Name="J:\sharp\Help\examples\WefaCodes.si" Targets="3" Exists="True" >
+   <Target Name="J:\sharp\Help\examples\kopaCodes.cs" />
+   <Target Name="J:\sharp\Help\examples\kopaCodes.sproc.sql" />
+   <Target Name="J:\sharp\Help\examples\kopaCodes.sql" />
+  </Source>
+ </SourceList>
+</AnyDBIde>

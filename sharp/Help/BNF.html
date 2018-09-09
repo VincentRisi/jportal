@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Backus Naur Form</title>
+</head>
+<body>
+<h1>Backus Naur Form</h1>
+The following rules apply to the BNF diagram.<br>
+<ul>
+  <li>all lowercase indicates a lexical token (see identifier below)</li>
+  <li>all uppercase indicates the actual character sequence.</li>
+  <li>Capitilised words indicate a parser production.</li>
+  <li>Single characters are enclosed in single or double quotes.</li>
+  <li>A question mark indicates zero or one occurrence. </li>
+  <li>An asterisk indicate zero or more occurrences.</li>
+  <li>A plus indicates one or more occurrences.</li>
+</ul>
+The BNF is described in alphabetical sequence the start point is at <a
+ href="#Database">Database</a>.<br>
+<span style="font-family: monospace;"><br>
+</span>All whitespace is ignored, this includes single line comment
+which start with "//" and multi line comments which start with "/*" and
+end with "*/" and cannot have embedded multi line comments. These must
+not be confused with "**" line comments which are regarded a lexical
+tokens.<br>
+<br>
+<h4><span style="text-decoration: underline;">Lexical Tokens</span></h4>
+codeline = (~["\n","\r"])* ("\r\n" | "\n" | "\r")<br>
+comment = "**" (~["\n","\r"])* ("\n"|"\r\n")<br>
+digit = ["0"-"9", "#", "$"]<br>
+dquoted = ("\"" (~["\"", "\\"] | "\\" (["\\", "\"", "\'"])?)* "\"")<br>
+identifier = letter (letter|digit)*&gt;<br>
+letter = ["a"-"z", "_", "A"-"Z"]<br>
+lidentifier = ("l"|"L") "'" letter (letter&gt;|digit)* "'"<br>
+number = (["1"-"9"] (["0"-"9"])*)|"0"<br>
+squoted = ("\'" (~["\'", "\\"] | "\\" (["\\", "\"", "\'"])?)* "\'")<br>
+string = dquoted | squoted<br>
+<br>
+<h4 style="text-decoration: underline;"><a name="Alias">Alias</a></h4>
+<pre>'(' <a href="#Ident">Ident</a> ')'<br></pre>
+<h4 style="text-decoration: underline;"><a name="CharSize"></a>CharSize</h4>
+<pre>'(' number ')' | '[' number ']' | number<br></pre>
+<h4 style="text-decoration: underline;"><a name="Check"></a>Check</h4>
+<pre>CHECK string<br></pre>
+<h4 style="text-decoration: underline;"><a name="Column"></a>Column</h4>
+<pre><a href="#Ident">Ident</a><br></pre>
+<h4 style="text-decoration: underline;"><a name="Database"></a>Database</h4>
+<pre>DATABASE <a href="#Ident">Ident</a><br>(FLAGS (string)+ )*<br>(PACKAGE <a
+ href="#Ident">Ident</a> (.<a href="#Ident">Ident</a>)* )?<br>(OUTPUT (<a
+ href="#Ident">Ident</a> | string) )?<br>SERVER <a href="#Ident">Ident</a> (USERID <a
+ href="#Ident">Ident</a> PASSWORD <a href="#Ident">Ident</a>)?<br>(<a
+ href="#Tabledef">Tabledef</a>)+<br>(<a href="#View">View</a>)*<br></pre>
+<h4 style="text-decoration: underline;"><a name="DataType"></a>DataType</h4>
+<pre>ANSICHAR (<a href="#CharSize">CharSize</a>)? |<br>BLOB (<a
+ href="#CharSize">CharSize</a>)? |<br>BOOLEAN |<br>BYTE |<br>CHAR (<a
+ href="#CharSize">CharSize</a>)? |<br>DATE |<br>DATETIME |<br>DOUBLE (<a
+ href="#FloatSize">FloatSize</a>)? |<br>FLOAT (<a href="#FloatSize">FloatSize</a>)? |<br>IDENTITY |<br>INT (<a
+ href="#EnumValue">EnumValue</a>)? |<br>LONG |<br>MONEY<br>SEQUENCE |<br>SHORT (<a
+ href="#EnumValue">EnumValue</a>)? |<br>TIME |<br>TIMESTAMP |<br>TLOB (<a
+ href="#CharSize">CharSize</a>)? |<br>UID |<br>USERSTAMP |<br></pre>
+<h4 style="text-decoration: underline;"><a name="Default"></a>Default</h4>
+<pre>DEFAULT string<br></pre>
+<h4 style="text-decoration: underline;"><a name="EnumValue"></a>EnumValue</h4>
+<pre>'(' (<a href="#Ident">Ident</a> '=' number (',')? )+ ')'<br></pre>
+<h4 style="text-decoration: underline;"><a name="Extras"></a>Extras</h4>
+<pre><a href="#Grant">Grant</a> | <a href="#Key">Key</a> | <a
+ href="#Link">Link</a> | <a href="#View">View</a><br></pre>
+<h4 style="text-decoration: underline;"><a name="Field"></a>Field</h4>
+<pre><a href="#Ident">Ident</a><br>(<a href="#Alias">Alias</a>)?<br><a
+ href="#DataType">DataType</a><br>(<a href="#Default">Default</a>|<a
+ href="#Null">Null</a>|<a href="#Check">Check</a>)*<br>(comment)*<br></pre>
+<h4 style="text-decoration: underline;"><a name="FloatSize"></a>FloatSize</h4>
+<pre>'(' number ',' number  ')' | '[' number ',' number ']'<br></pre>
+<h4 style="text-decoration: underline;"><a name="Grant"></a>Grant</h4>
+<pre>GRANT (<a href="#Permission">Permission</a>)+ TO (<a href="#User">User</a>)+<br></pre>
+<h4 style="text-decoration: underline;"><a name="Ident"></a>Ident</h4>
+<pre>(identifier | lidentifier)<br></pre>
+<h4 style="text-decoration: underline;"><a name="Input"></a>Input</h4>
+<pre>(<a href="#InputType">InputType</a>)? (<a href="#Field">Field</a>)+<br></pre>
+<h4 style="text-decoration: underline;"><a name="InputType"></a>InputType</h4>
+<pre>'(' (MULTIPLE | number) ')'<br></pre>
+<h4 style="text-decoration: underline;"><a name="Key"></a>Key</h4>
+<pre>KEY<a href="#Ident">Ident</a> (<a
+ href="#Options">Options</a>)* (<a href="#Modifier">Modifier</a>)* (<a
+ href="#Column">Column</a>)+<br></pre>
+<h4 style="text-decoration: underline;"><a name="Link"></a>Link</h4>
+<pre>LINK <a href="#Ident">Ident</a> (<a href="#Column">Column</a>)+<br></pre>
+<h4 style="text-decoration: underline;"><a name="Modifier"></a>Modifier</h4>
+<pre>UNIQUE | PRIMARY<br></pre>
+<h4 style="text-decoration: underline;"><a name="NewCode"></a>NewCode</h4>
+<pre>SQLCODE<br>(codeline)+  // with embedded <a href="#Param">Param</a><br>ENDCODE<br></pre>
+<h4 style="text-decoration: underline;"><a name="NewData"></a>NewData</h4>
+<pre>SQLDATA<br>(codeline)+<br>ENDDATA<br></pre>
+<h4 style="text-decoration: underline;"><a name="NewViewCode"></a>NewViewCode</h4>
+<pre>SQLCODE<br>(codeline)+<br>ENDCODE<br></pre>
+<h4 style="text-decoration: underline;"><a name="Null"></a>Null</h4>
+<pre>(NOT)? NULL<br></pre>
+<h4 style="text-decoration: underline;"><a name="OldCode"></a>OldCode</h4>
+<pre>CODE<br>(string | <a href="#Ident">Ident</a>)+<br>ENDCODE<br></pre>
+<h4 style="text-decoration: underline;"><a name="OldData"></a>OldData</h4>
+<pre>DATA<br>(string | <a href="#Ident">Ident</a>)+<br>ENDDATA<br></pre>
+<h4 style="text-decoration: underline;"><a name="OldViewCode"></a>OldViewCode</h4>
+<pre>CODE<br>(string)+<br>ENDCODE<br></pre>
+<h4 style="text-decoration: underline;"><a name="Options"></a>Options</h4>
+<pre>OPTIONS (string)+<br></pre>
+<h4 style="text-decoration: underline;"><a name="Output"></a>Output</h4>
+<pre>(<a href="#OutputType">OutputType</a>)?(<a href="#Field">Field</a>)+<br></pre>
+<h4 style="text-decoration: underline;"><a name="OutputType"></a>OutputType</h4>
+<pre>'(' (SINGLE | number) ')'<br></pre>
+<h4 style="text-decoration: underline;"><a name="Param"></a>Param</h4>
+<pre>'&amp;' <a href="#Ident">Ident</a> ('(' number ')')?<br></pre>
+<h4 style="text-decoration: underline;"><a name="Permission"></a>Permission</h4>
+<pre>ALL | DELETE | SELECT | UPDATE | EXECUTE<br></pre>
+<h4 style="text-decoration: underline;"><a name="Proc"></a>Proc</h4>
+<pre>(PROC (<a href="#StdProc">StdProc</a> | <a href="#UserProc">UserProc</a>) | <a
+ href="#OldData">OldData</a> | <a href="#NewData">NewData</a><br></pre>
+<h4 style="text-decoration: underline;"><a name="StdProc"></a>StdProc</h4>
+<pre>BULKINSERT (number)? |<br>BULKUPDATE (number)? |<br>COUNT |<br>DELETEALL |<br>DELETEONE |<br>EXISTS |<br>INSERT |<br>SELECTALL ((IN)? ORDER)? ((FOR)? UPDATE)? |<br>SELECTONE ((FOR)? UPDATE)? |<br>UPDATE<br>(<a
+ href="#Options">Options</a>)*<br></pre>
+<h4 style="text-decoration: underline;"><a name="Table"></a>Table</h4>
+<pre>TABLE <a href="#Ident">Ident</a><br>(<a href="#Alias">Alias</a>)?<br>(<a
+ href="#Check">Check</a>)?<br>(comment)*<br>(<a href="#Options">Options</a>)*<br>(<a
+ href="#Field">Field</a>)*<br></pre>
+<h4 style="text-decoration: underline;"><a name="Tabledef"></a>Tabledef</h4>
+<pre><a href="#Table">Table</a><br>(<a href="#Extras">Extras</a>)*<br>(<a
+ href="#Proc">Proc</a>)*<br></pre>
+<h4 style="text-decoration: underline;"><a name="User"></a>User</h4>
+<pre><a href="#Ident">Ident</a><br></pre>
+<h4 style="text-decoration: underline;"><a name="UserProc"></a>UserProc</h4>
+<pre><a href="#Ident">Ident</a> (comment)*<br>(<a href="#Input">Input</a>)?<br>(<a
+ href="#Output">Output</a>)?<br>(<a href="#OldCode">OldCode</a> | <a
+ href="#NewCode">NewCode</a>)<br></pre>
+<h4 style="text-decoration: underline;"><a name="View">View</a></h4>
+<pre><a href="#Ident">Ident</a> (TO (<a href="#User">User</a>)+)?<br>OUTPUT (<a
+ href="#Ident">Ident</a> (<a href="#Alias">Alias</a>)?)+<br>(<a
+ href="#OldViewCode">OldViewCode</a> | <a href="#NewViewCode">NewViewCode</a>)<br></pre>
+</body>
+</html>

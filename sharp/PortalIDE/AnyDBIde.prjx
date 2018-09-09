@@ -1,0 +1,42 @@
+<Project name="AnyDBIde" standardNamespace="Bbd.AnyDB" description="" newfilesearch="None" enableviewstate="True" version="1.1" projecttype="C#">
+  <Contents>
+    <File name=".\AssemblyInfo.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\IDEForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\GoToLineForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\AboutForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\CodeCompletion.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\FindReplaceForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\FlagForm.cs" subtype="Code" buildaction="Compile" dependson="" data="" />
+    <File name=".\IDEForm.resx" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\GoToLineForm.resx" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\AboutForm.resx" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\FindReplaceForm.resx" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+    <File name=".\FlagForm.resx" subtype="Code" buildaction="EmbedAsResource" dependson="" data="" />
+  </Contents>
+  <References>
+    <Reference type="Gac" refto="vjslib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" localcopy="True" />
+    <Reference type="Gac" refto="ActiproSoftware.Shared, Version=0.8.38.0, Culture=neutral, PublicKeyToken=e635d2e34b10c027" localcopy="True" />
+    <Reference type="Gac" refto="ActiproSoftware.SyntaxEditor, Version=1.0.50.0, Culture=neutral, PublicKeyToken=8f6aba0139aba723" localcopy="True" />
+    <Reference type="Gac" refto="ActiproSoftware.WinUICore, Version=0.8.38.0, Culture=neutral, PublicKeyToken=2cc592537636495d" localcopy="True" />
+    <Reference type="Assembly" refto="..\Bin\Bbd.Projects.dll" localcopy="True" />
+    <Reference type="Assembly" refto="..\Bin\Bbd.JPortal.dll" localcopy="True" />
+  </References>
+  <DeploymentInformation target="" script="" strategy="File" />
+  <Configuration runwithwarnings="False" name="Debug">
+    <CodeGeneration runtime="MsNet" compiler="Csc" compilerversion="Standard" warninglevel="4" nowarn="" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="WinExe" definesymbols="" generatexmldocumentation="False" win32Icon="" noconfig="False" nostdlib="False" />
+    <Execution commandlineparameters="" consolepause="False" />
+    <Output directory="..\bin" assembly="Bbd.AnyDBIde" executeScript="" executeBeforeBuild="" executeAfterBuild="" executeBeforeBuildArguments="" executeAfterBuildArguments="" />
+  </Configuration>
+  <Configurations active="Debug">
+    <Configuration runwithwarnings="False" name="Debug">
+      <CodeGeneration runtime="MsNet" compiler="Csc" compilerversion="Standard" warninglevel="4" nowarn="" includedebuginformation="True" optimize="False" unsafecodeallowed="False" generateoverflowchecks="True" mainclass="" target="WinExe" definesymbols="" generatexmldocumentation="False" win32Icon="" noconfig="False" nostdlib="False" />
+      <Execution commandlineparameters="" consolepause="False" />
+      <Output directory="..\bin" assembly="Bbd.AnyDBIde" executeScript="" executeBeforeBuild="" executeAfterBuild="" executeBeforeBuildArguments="" executeAfterBuildArguments="" />
+    </Configuration>
+    <Configuration runwithwarnings="True" name="Release">
+      <CodeGeneration runtime="MsNet" compiler="Csc" compilerversion="" warninglevel="4" nowarn="" includedebuginformation="False" optimize="True" unsafecodeallowed="False" generateoverflowchecks="False" mainclass="" target="WinExe" definesymbols="" generatexmldocumentation="False" win32Icon="" noconfig="False" nostdlib="False" />
+      <Execution commandlineparameters="" consolepause="False" />
+      <Output directory="..\bin" assembly="Bbd.AnyDBIde" executeScript="" executeBeforeBuild="" executeAfterBuild="" executeBeforeBuildArguments="" executeAfterBuildArguments="" />
+    </Configuration>
+  </Configurations>
+</Project>

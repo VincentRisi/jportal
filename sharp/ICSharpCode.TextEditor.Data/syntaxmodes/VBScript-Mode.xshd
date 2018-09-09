@@ -1,0 +1,767 @@
+<?xml version="1.0"?>
+<!--
+ Copyright (c) 1996, 2004 Vincent Risi in Association
+                          with Barone Budge and Dominick
+ All rights reserved.
+ This program and the accompanying materials are made available
+ under the terms of the Common Public License v1.0
+ which accompanies this distribution and is available at
+ http://www.eclipse.org/legal/cpl-v10.html
+ Contributors:
+    Vincent Risi
+
+ System : JPortal
+ $Date: 2004/10/18 13:48:11 $
+ $Revision: 411.1 $ // YMM.Revision
+ -->
+
+<SyntaxDefinition name = "VBSCRIPT" extensions = ".vbs">
+	
+	<Properties>
+		<Property name="LineComment" value="'"/>
+	</Properties>
+	
+	<Digits   name = "Digits"   bold = "false" italic = "false" color = "Black"/>
+
+  	<RuleSets>
+		<RuleSet ignorecase = "true">
+			<Delimiters>&amp;&lt;&gt;~!@%^*()-+=|\#/{}[]:;"' ,	.?</Delimiters>
+		
+		    <Span name = "STRING" bold = "false" italic = "false" color = "DarkGreen" bgcolor="Honeydew"  stopateol = "true">
+		        <Begin>"</Begin>
+		        <End>"</End>
+		    </Span>
+
+		    <Span name = "LINECOMMENT" bold = "false" italic = "false" color = "SandyBrown" stopateol = "true">
+		        <Begin>'</Begin>
+		    </Span>
+
+		    <Span name = "LINECOMMENT" bold = "false" italic = "false" color = "SandyBrown" stopateol = "true">
+		        <Begin>REM</Begin>
+		    </Span>
+	
+			<KeyWords name="Punctuation" bold="false" italic="false" color="DarkViolet" >
+                <Key word="`" />
+                <Key word="~" />
+                <Key word="!" />
+                <Key word="@" />
+                <Key word="#" />
+                <Key word="$" />
+                <Key word="%" />
+                <Key word="^" />
+                <Key word="&amp;" />
+                <Key word="*" />
+                <Key word="(" />
+                <Key word=")" />
+                <Key word="_" />
+                <Key word="+" />
+				<Key word="-" />
+				<Key word="=" />
+				<Key word="[" />
+				<Key word="]" />
+				<Key word="\" />
+				<Key word="{" />
+				<Key word="}" />
+				<Key word="|" />
+				<Key word=";" />
+				<Key word=":" />
+				<Key word="&lt;" />
+				<Key word="&gt;" />
+				<Key word="&lt;" />
+				<Key word="?" />
+				<Key word="," />
+				<Key word="." />
+				<Key word="/" />
+			</KeyWords>
+
+			<KeyWords name = "DataTypes" bold="false" italic="false" color="Blue">
+		        <Key word = "Boolean" />
+		        <Key word = "Byte" />
+		        <Key word = "Char" />
+		        <Key word = "Date" />
+		        <Key word = "Decimal" />
+		        <Key word = "Double" />
+		        <Key word = "Integer" />
+		        <Key word = "Long" />
+		        <Key word = "Object" />
+		        <Key word = "Short" />
+		        <Key word = "Single" />
+		        <Key word = "String" />
+		        <Key word = "Exception" />
+			</KeyWords>
+			
+			<KeyWords name = "Methods" bold="false" italic="false" color="Blue">
+                <Key word = "Clear" />
+                <Key word = "Execute" />
+                <Key word = "Raise" />
+                <Key word = "Replace" />
+                <Key word = "Test" />
+                <Key word = "Write" />
+                <Key word = "WriteLine" />
+			</KeyWords>
+			
+			<KeyWords name = "Objects" bold="false" italic="false" color="Blue">
+                <Key word = "Class" />
+                <Key word = "Debug" />
+                <Key word = "Err" />
+                <Key word = "Match" />
+                <Key word = "Matches" />
+                <Key word = "RegExp" />
+                <Key word = "SubMatches" />
+            </KeyWords>
+			
+			<KeyWords name = "Keywords" bold="false" italic="false" color="Blue">
+		        <Key word = "Empty" />
+		        <Key word = "False" />
+		        <Key word = "Nothing" />
+		        <Key word = "Null" />
+		        <Key word = "True" />
+			</KeyWords>
+			
+			<KeyWords name = "Operators" bold="false" italic="false" color="Navy">
+		        <Key word = "And" />
+		        <Key word = "Is" />
+		        <Key word = "Mod" />
+                <Key word = "New" />
+		        <Key word = "Not" />
+		        <Key word = "Or" />
+		        <Key word = "Xor" />
+			</KeyWords>
+			
+            <KeyWords name = "Statements" bold="false" italic="false" color="Blue">
+                <Key word = "Call" />
+                <Key word = "Case" />
+                <Key word = "Class" />
+                <Key word = "Const" />
+                <Key word = "Dim" />
+                <Key word = "Do" />
+                <Key word = "Each" />
+                <Key word = "Else" />
+                <Key word = "End" />
+                <Key word = "Erase" />
+                <Key word = "Error" />
+                <Key word = "Execute" />
+                <Key word = "ExecuteGlobal" />
+                <Key word = "Exit" />
+                <Key word = "Explicit" />
+                <Key word = "For" />
+                <Key word = "Function" />
+                <Key word = "Get" />
+                <Key word = "If" />
+                <Key word = "Let" />
+                <Key word = "Loop" />
+                <Key word = "Next" />
+                <Key word = "On" />
+                <Key word = "Option" />
+                <Key word = "Preserve" />
+                <Key word = "Private" />
+                <Key word = "Property" />
+                <Key word = "Public" />
+                <Key word = "Randomize" />
+                <Key word = "ReDim" />
+                <Key word = "Select" />
+                <Key word = "Set" />
+                <Key word = "Stop" />
+                <Key word = "Sub" />
+                <Key word = "Then" />
+                <Key word = "Wend" />
+                <Key word = "While" />
+                <Key word = "With" />
+            </KeyWords>
+
+			<KeyWords name = "Properties" bold="false" italic="false" color="Blue">
+                <Key word = "Description" />
+                <Key word = "FirstIndex" />
+                <Key word = "Global" />
+                <Key word = "HelpContext" />
+                <Key word = "HelpFile" />
+                <Key word = "IgnoreCase" />
+                <Key word = "Length" />
+                <Key word = "Number" />
+                <Key word = "Pattern" />
+                <Key word = "Source" />
+                <Key word = "Value" />
+			</KeyWords>
+
+			<KeyWords name = "Functions" bold="false" italic="false" color="Blue">
+                <Key word = "Abs" />
+                <Key word = "Array" />
+                <Key word = "Asc" />
+                <Key word = "Atn" />
+                <Key word = "CBool" />
+                <Key word = "CByte" />
+                <Key word = "CCur" />
+                <Key word = "CDate" />
+                <Key word = "CDbl" />
+                <Key word = "Chr" />
+                <Key word = "CInt" />
+                <Key word = "CLng" />
+                <Key word = "Conversions" />
+                <Key word = "Cos" />
+                <Key word = "CreateObject" />
+                <Key word = "CSng" />
+                <Key word = "CStr" />
+                <Key word = "Date" />
+                <Key word = "DateAdd" />
+                <Key word = "DateDiff" />
+                <Key word = "DatePart" />
+                <Key word = "DateSerial" />
+                <Key word = "DateValue" />
+                <Key word = "Day" />
+                <Key word = "Derived" />
+                <Key word = "Math" />
+                <Key word = "Escape" />
+                <Key word = "Eval" />
+                <Key word = "Exp" />
+                <Key word = "Filter" />
+                <Key word = "FormatCurrency" />
+                <Key word = "FormatDateTime" />
+                <Key word = "FormatNumber" />
+                <Key word = "FormatPercent" />
+                <Key word = "GetLocale" />
+                <Key word = "GetObject" />
+                <Key word = "GetRef" />
+                <Key word = "Hex" />
+                <Key word = "Hour" />
+                <Key word = "InputBox" />
+                <Key word = "InStr" />
+                <Key word = "InStrRev" />
+                <Key word = "Int," />
+                <Key word = "Fix" />
+                <Key word = "IsArray" />
+                <Key word = "IsDate" />
+                <Key word = "IsEmpty" />
+                <Key word = "IsNull" />
+                <Key word = "IsNumeric" />
+                <Key word = "IsObject" />
+                <Key word = "Join" />
+                <Key word = "LBound" />
+                <Key word = "LCase" />
+                <Key word = "Left" />
+                <Key word = "Len" />
+                <Key word = "LoadPicture" />
+                <Key word = "Log" />
+                <Key word = "LTrim" />
+                <Key word = "RTrim" />
+                <Key word = "and" />
+                <Key word = "Trim" />
+                <Key word = "Maths" />
+                <Key word = "Mid" />
+                <Key word = "Minute" />
+                <Key word = "Month" />
+                <Key word = "MonthName" />
+                <Key word = "MsgBox" />
+                <Key word = "Now" />
+                <Key word = "Oct" />
+                <Key word = "Replace" />
+                <Key word = "RGB" />
+                <Key word = "Right" />
+                <Key word = "Rnd" />
+                <Key word = "Round" />
+                <Key word = "ScriptEngine" />
+                <Key word = "ScriptEngineBuildVersion" />
+                <Key word = "ScriptEngineMajorVersion" />
+                <Key word = "ScriptEngineMinorVersion" />
+                <Key word = "Second" />
+                <Key word = "SetLocale" />
+                <Key word = "Sgn" />
+                <Key word = "Sin" />
+                <Key word = "Space" />
+                <Key word = "Split" />
+                <Key word = "Sqr" />
+                <Key word = "StrComp" />
+                <Key word = "String" />
+                <Key word = "StrReverse" />
+                <Key word = "Tan" />
+                <Key word = "Time" />
+                <Key word = "Timer" />
+                <Key word = "TimeSerial" />
+                <Key word = "TimeValue" />
+                <Key word = "TypeName" />
+                <Key word = "UBound" />
+                <Key word = "UCase" />
+                <Key word = "Unescape" />
+                <Key word = "VarType" />
+                <Key word = "Weekday" />
+                <Key word = "WeekdayName" />
+                <Key word = "Year" />
+			</KeyWords>
+
+			<KeyWords name = "vbConstants" bold="false" italic="false" color="Blue">
+                <Key word = "vbBlack" />
+                <Key word = "vbRed" />
+                <Key word = "vbGreen" />
+                <Key word = "vbYellow"  />
+                <Key word = "vbBlue"  />
+                <Key word = "vbMagenta" />
+                <Key word = "vbCyan" />
+                <Key word = "vbWhite" />
+                <Key word = "vbBinaryCompare" />
+                <Key word = "vbTextCompare" />
+                <Key word = "vbSunday" />
+                <Key word = "vbMonday" />
+                <Key word = "vbTuesday" />
+                <Key word = "vbWednesday" />
+                <Key word = "vbThursday 5 Thursday" />
+                <Key word = "vbFriday" />
+                <Key word = "vbSaturday" />
+                <Key word = "vbUseSystemDayOfWeek" />
+                <Key word = "vbFirstJan1" />
+                <Key word = "vbFirstFourDays" />
+                <Key word = "vbFirstFullWeek" />
+                <Key word = "vbGeneralDate" />
+                <Key word = "vbLongDate" />
+                <Key word = "vbShortDate" />
+                <Key word = "vbLongTime" />
+                <Key word = "vbShortTime" />
+                <Key word = "vbObjectError" />
+                <Key word = "vbOKOnly" />
+                <Key word = "vbOKCancel" />
+                <Key word = "vbAbortRetryIgnore" />
+                <Key word = "vbYesNoCancel" />
+                <Key word = "vbYesNo" />
+                <Key word = "vbRetryCancel" />
+                <Key word = "vbCritical" />
+                <Key word = "vbQuestion" />
+                <Key word = "vbExclamation" />
+                <Key word = "vbInformation" />
+                <Key word = "vbDefaultButton1" />
+                <Key word = "vbDefaultButton2" />
+                <Key word = "vbDefaultButton3" />
+                <Key word = "vbDefaultButton4" />
+                <Key word = "vbApplicationModal" />
+                <Key word = "vbSystemModal" />
+                <Key word = "vbOK" />
+                <Key word = "vbCancel" />
+                <Key word = "vbAbort" />
+                <Key word = "vbRetry" />
+                <Key word = "vbIgnore" />
+                <Key word = "vbYes" />
+                <Key word = "vbNo" />
+                <Key word = "vbCr" />
+                <Key word = "VbCrLf" />
+                <Key word = "vbFormFeed" />
+                <Key word = "vbLf" />
+                <Key word = "vbNewLine" />
+                <Key word = "vbNullChar" />
+                <Key word = "vbNullString" />
+                <Key word = "vbTab" />
+                <Key word = "vbVerticalTab" />
+                <Key word = "vbUseDefault" />
+                <Key word = "vbTrue" />
+                <Key word = "vbFalse" />
+                <Key word = "vbEmpty" />
+                <Key word = "vbNull" />
+                <Key word = "vbInteger" />
+                <Key word = "vbLong" />
+                <Key word = "vbSingle" />
+                <Key word = "vbDouble" />
+                <Key word = "vbCurrency" />
+                <Key word = "vbDate" />
+                <Key word = "vbString" />
+                <Key word = "vbObject" />
+                <Key word = "vbError" />
+                <Key word = "vbBoolean" />
+                <Key word = "vbVariant" />
+                <Key word = "vbDataObject" />
+                <Key word = "vbDecimal" />
+                <Key word = "vbByte" />
+                <Key word = "vbArray" />
+             </KeyWords>
+ 	
+ 			<KeyWords name = "adoConstants" bold="false" italic="true" color="Blue">
+                <Key word ="adAddNew" />
+                <Key word ="adAffectAllChapters" />
+                <Key word ="adAffectCurrent" />
+                <Key word ="adAffectGroup" />
+                <Key word ="adApproxPosition" />
+                <Key word ="adArray" />
+                <Key word ="adAsyncConnect" />
+                <Key word ="adAsyncExecute" />
+                <Key word ="adAsyncFetch" />
+                <Key word ="adAsyncFetchNonBlocking" />
+                <Key word ="adBigInt" />
+                <Key word ="adBinary" />
+                <Key word ="adBookmark" />
+                <Key word ="adBookmarkCurrent" />
+                <Key word ="adBookmarkFirst" />
+                <Key word ="adBookmarkLast" />
+                <Key word ="adBoolean" />
+                <Key word ="adBSTR" />
+                <Key word ="adChapter" />
+                <Key word ="adChar" />
+                <Key word ="adClipString" />
+                <Key word ="adCmdFile" />
+                <Key word ="adCmdStoredProc" />
+                <Key word ="adCmdTable" />
+                <Key word ="adCmdTableDirect" />
+                <Key word ="adCmdText" />
+                <Key word ="adCmdUnknown" />
+                <Key word ="adCollectionRecord" />
+                <Key word ="adCompareEqual" />
+                <Key word ="adCompareGreaterThan" />
+                <Key word ="adCompareLessThan" />
+                <Key word ="adCompareNotComparable" />
+                <Key word ="adCompareNotEqual" />
+                <Key word ="adCopyAllowEmulation" />
+                <Key word ="adCopyNonRecursive" />
+                <Key word ="adCopyOverWrite" />
+                <Key word ="adCopyUnspecified" />
+                <Key word ="adCR" />
+                <Key word ="adCreateCollection" />
+                <Key word ="adCreateNonCollection" />
+                <Key word ="adCreateOverwrite" />
+                <Key word ="adCreateStructDoc" />
+                <Key word ="adCriteriaAllCols" />
+                <Key word ="adCriteriaKey" />
+                <Key word ="adCriteriaTimeStamp" />
+                <Key word ="adCriteriaUpdCols" />
+                <Key word ="adCRLF" />
+                <Key word ="adCurrency" />
+                <Key word ="adDate" />
+                <Key word ="adDBDate" />
+                <Key word ="adDBTime" />
+                <Key word ="adDBTimeStamp" />
+                <Key word ="adDecimal" />
+                <Key word ="adDefaultStream" />
+                <Key word ="adDelayFetchFields" />
+                <Key word ="adDelayFetchStream" />
+                <Key word ="adDelete" />
+                <Key word ="adDouble" />
+                <Key word ="adEditAdd" />
+                <Key word ="adEditDelete" />
+                <Key word ="adEditInProgress" />
+                <Key word ="adEditNone" />
+                <Key word ="adEmpty" />
+                <Key word ="adErrBoundToCommand" />
+                <Key word ="adErrCannotComplete" />
+                <Key word ="adErrCantChangeConnection" />
+                <Key word ="adErrCantChangeProvider" />
+                <Key word ="adErrCantConvertvalue" />
+                <Key word ="adErrCantCreate" />
+                <Key word ="adErrCatalogNotSet" />
+                <Key word ="adErrColumnNotOnThisRow" />
+                <Key word ="adErrDataConversion" />
+                <Key word ="adErrDataOverflow" />
+                <Key word ="adErrDelResOutOfScope" />
+                <Key word ="adErrDenyNotSupported" />
+                <Key word ="adErrDenyTypeNotSupported" />
+                <Key word ="adErrFeatureNotAvailable" />
+                <Key word ="adErrFieldsUpdateFailed" />
+                <Key word ="adErrIllegalOperation" />
+                <Key word ="adErrIntegrityViolation" />
+                <Key word ="adErrInTransaction" />
+                <Key word ="adErrInvalidArgument" />
+                <Key word ="adErrInvalidConnection" />
+                <Key word ="adErrInvalidParamInfo" />
+                <Key word ="adErrInvalidTransaction" />
+                <Key word ="adErrInvalidURL" />
+                <Key word ="adErrItemNotFound" />
+                <Key word ="adErrNoCurrentRecord" />
+                <Key word ="adErrNotReentrant" />
+                <Key word ="adErrObjectClosed" />
+                <Key word ="adErrObjectInCollection" />
+                <Key word ="adErrObjectNotSet" />
+                <Key word ="adErrObjectOpen" />
+                <Key word ="adErrOpeningFile" />
+                <Key word ="adErrOperationCancelled" />
+                <Key word ="adError" />
+                <Key word ="adErrOutOfSpace" />
+                <Key word ="adErrPermissionDenied" />
+                <Key word ="adErrPropConflicting" />
+                <Key word ="adErrPropInvalidColumn" />
+                <Key word ="adErrPropInvalidOption" />
+                <Key word ="adErrPropInvalidValue" />
+                <Key word ="adErrPropNotAllSettable" />
+                <Key word ="adErrPropNotSet" />
+                <Key word ="adErrPropNotSettable" />
+                <Key word ="adErrPropNotSupported" />
+                <Key word ="adErrProviderFailed" />
+                <Key word ="adErrProviderNotFound" />
+                <Key word ="adErrReadFile" />
+                <Key word ="adErrResourceExists" />
+                <Key word ="adErrResourceLocked" />
+                <Key word ="adErrResourceOutOfScope" />
+                <Key word ="adErrSchemaViolation" />
+                <Key word ="adErrSignMismatch" />
+                <Key word ="adErrStillConnecting" />
+                <Key word ="adErrStillExecuting" />
+                <Key word ="adErrTreePermissionDenied" />
+                <Key word ="adErrUnavailable" />
+                <Key word ="adErrUnsafeOperation" />
+                <Key word ="adErrURLDoesNotExist" />
+                <Key word ="adErrURLIntegrViolSetColumns" />
+                <Key word ="adErrURLNamedRowDoesNotExist" />
+                <Key word ="adErrVolumeNotFound" />
+                <Key word ="adErrWriteFile" />
+                <Key word ="adExecuteNoRecords" />
+                <Key word ="adFailIfNotExists" />
+                <Key word ="adFieldAlreadyExists" />
+                <Key word ="adFieldBadStatus" />
+                <Key word ="adFieldCannotComplete" />
+                <Key word ="adFieldCannotDeleteSource" />
+                <Key word ="adFieldCantConvertValue" />
+                <Key word ="adFieldCantCreate" />
+                <Key word ="adFieldDataOverflow" />
+                <Key word ="adFieldDefault" />
+                <Key word ="adFieldDoesNotExist" />
+                <Key word ="adFieldIgnore" />
+                <Key word ="adFieldIntegrityViolation" />
+                <Key word ="adFieldInvalidURL" />
+                <Key word ="adFieldIsNull" />
+                <Key word ="adFieldOK" />
+                <Key word ="adFieldOutOfSpace" />
+                <Key word ="adFieldPendingChange" />
+                <Key word ="adFieldPendingDelete" />
+                <Key word ="adFieldPendingInsert" />
+                <Key word ="adFieldPendingUnknown" />
+                <Key word ="adFieldPendingUnknownDelete" />
+                <Key word ="adFieldPermissionDenied" />
+                <Key word ="adFieldReadOnly" />
+                <Key word ="adFieldResourceExists" />
+                <Key word ="adFieldResourceLocked" />
+                <Key word ="adFieldResourceOutOfScope" />
+                <Key word ="adFieldSchemaViolation" />
+                <Key word ="adFieldSignMismatch" />
+                <Key word ="adFieldTruncated" />
+                <Key word ="adFieldUnavailable" />
+                <Key word ="adFieldVolumeNotFound" />
+                <Key word ="adFileTime" />
+                <Key word ="adFilterAffectedRecords" />
+                <Key word ="adFilterConflictingRecords" />
+                <Key word ="adFilterFetchedRecords" />
+                <Key word ="adFilterNone" />
+                <Key word ="adFilterPendingRecords" />
+                <Key word ="adFind" />
+                <Key word ="adFldCacheDeferred" />
+                <Key word ="adFldFixed" />
+                <Key word ="adFldIsChapter" />
+                <Key word ="adFldIsCollection" />
+                <Key word ="adFldIsDefaultStream" />
+                <Key word ="adFldIsNullable" />
+                <Key word ="adFldIsRowURL" />
+                <Key word ="adFldKeyColumn" />
+                <Key word ="adFldLong" />
+                <Key word ="adFldMayBeNull" />
+                <Key word ="adFldMayDefer" />
+                <Key word ="adFldNegativeScale" />
+                <Key word ="adFldRowID" />
+                <Key word ="adFldRowVersion" />
+                <Key word ="adFldUnknownUpdatable" />
+                <Key word ="adFldUpdatable" />
+                <Key word ="adGetRowsRest" />
+                <Key word ="adGUID" />
+                <Key word ="adHoldRecords" />
+                <Key word ="adIDispatch" />
+                <Key word ="adIndex" />
+                <Key word ="adInteger" />
+                <Key word ="adIUnknown" />
+                <Key word ="adLF" />
+                <Key word ="adLockBatchOptimistic" />
+                <Key word ="adLockOptimistic" />
+                <Key word ="adLockPessimistic" />
+                <Key word ="adLockReadOnly" />
+                <Key word ="adLongVarBinary" />
+                <Key word ="adLongVarChar" />
+                <Key word ="adLongVarWChar" />
+                <Key word ="adMarshalAll" />
+                <Key word ="adMarshalModifiedOnly" />
+                <Key word ="adModeRead" />
+                <Key word ="adModeReadWrite" />
+                <Key word ="adModeRecursive" />
+                <Key word ="adModeShareDenyNone" />
+                <Key word ="adModeShareDenyRead" />
+                <Key word ="adModeShareDenyWrite" />
+                <Key word ="adModeShareExclusive" />
+                <Key word ="adModeUnknown" />
+                <Key word ="adModeWrite" />
+                <Key word ="adMoveAllowEmulation" />
+                <Key word ="adMoveDontUpdateLinks" />
+                <Key word ="adMoveOverWrite" />
+                <Key word ="adMovePrevious" />
+                <Key word ="adMoveUnspecified" />
+                <Key word ="adNotify" />
+                <Key word ="adNumeric" />
+                <Key word ="adOpenAsync" />
+                <Key word ="adOpenDynamic" />
+                <Key word ="adOpenForwardOnly" />
+                <Key word ="adOpenIfExists" />
+                <Key word ="adOpenKeyset" />
+                <Key word ="adOpenRecordUnspecified" />
+                <Key word ="adOpenSource" />
+                <Key word ="adOpenStatic" />
+                <Key word ="adOpenStreamAsync" />
+                <Key word ="adOpenStreamFromRecord" />
+                <Key word ="adOpenStreamUnspecified" />
+                <Key word ="adParamInput" />
+                <Key word ="adParamInputOutput" />
+                <Key word ="adParamLong" />
+                <Key word ="adParamNullable" />
+                <Key word ="adParamOutput" />
+                <Key word ="adParamReturnValue" />
+                <Key word ="adParamSigned" />
+                <Key word ="adParamUnknown" />
+                <Key word ="adPersistADTG" />
+                <Key word ="adPersistXML" />
+                <Key word ="adPosBOF" />
+                <Key word ="adPosEOF" />
+                <Key word ="adPosUnknown" />
+                <Key word ="adPriorityAboveNormal" />
+                <Key word ="adPriorityBelowNormal" />
+                <Key word ="adPriorityHighest" />
+                <Key word ="adPriorityLowest" />
+                <Key word ="adPriorityNormal" />
+                <Key word ="adPromptAlways" />
+                <Key word ="adPromptComplete" />
+                <Key word ="adPromptCompleteRequired" />
+                <Key word ="adPromptNever" />
+                <Key word ="adPropNotSupported" />
+                <Key word ="adPropOptional" />
+                <Key word ="adPropRead" />
+                <Key word ="adPropRequired" />
+                <Key word ="adPropVariant" />
+                <Key word ="adPropWrite" />
+                <Key word ="adReadAll" />
+                <Key word ="adReadLine" />
+                <Key word ="adRecalcAlways" />
+                <Key word ="adRecalcUpFront" />
+                <Key word ="adRecCanceled" />
+                <Key word ="adRecCantRelease" />
+                <Key word ="adRecConcurrencyViolation" />
+                <Key word ="adRecDBDeleted" />
+                <Key word ="adRecDeleted" />
+                <Key word ="adRecIntegrityViolation" />
+                <Key word ="adRecInvalid" />
+                <Key word ="adRecMaxChangesExceeded" />
+                <Key word ="adRecModified" />
+                <Key word ="adRecMultipleChanges" />
+                <Key word ="adRecNew" />
+                <Key word ="adRecObjectOpen" />
+                <Key word ="adRecOK" />
+                <Key word ="adRecordURL" />
+                <Key word ="adRecOutOfMemory" />
+                <Key word ="adRecPendingChanges" />
+                <Key word ="adRecPermissionDenied" />
+                <Key word ="adRecSchemaViolation" />
+                <Key word ="adRecUnmodified" />
+                <Key word ="adResync" />
+                <Key word ="adResyncAllValues" />
+                <Key word ="adResyncUnderlyingValues" />
+                <Key word ="adRsnAddNew" />
+                <Key word ="adRsnClose" />
+                <Key word ="adRsnDelete" />
+                <Key word ="adRsnFirstChange" />
+                <Key word ="adRsnMove" />
+                <Key word ="adRsnMoveFirst" />
+                <Key word ="adRsnMoveLast" />
+                <Key word ="adRsnMoveNext" />
+                <Key word ="adRsnMovePrevious" />
+                <Key word ="adRsnRequery" />
+                <Key word ="adRsnResynch" />
+                <Key word ="adRsnUndoAddNew" />
+                <Key word ="adRsnUndoDelete" />
+                <Key word ="adRsnUndoUpdate" />
+                <Key word ="adRsnUpdate" />
+                <Key word ="adSaveCreateNotExist" />
+                <Key word ="adSaveCreateOverWrite" />
+                <Key word ="adSchemaAsserts" />
+                <Key word ="adSchemaCatalogs" />
+                <Key word ="adSchemaCharacterSets" />
+                <Key word ="adSchemaCheckConstraints" />
+                <Key word ="adSchemaCollations" />
+                <Key word ="adSchemaColumnPrivileges" />
+                <Key word ="adSchemaColumns" />
+                <Key word ="adSchemaColumnsDomainUsage" />
+                <Key word ="adSchemaConstraintColumnUsage" />
+                <Key word ="adSchemaConstraintTableUsage" />
+                <Key word ="adSchemaCubes" />
+                <Key word ="adSchemaDBInfoKeywords" />
+                <Key word ="adSchemaDBInfoLiterals" />
+                <Key word ="adSchemaDimensions" />
+                <Key word ="adSchemaForeignKeys" />
+                <Key word ="adSchemaHierarchies" />
+                <Key word ="adSchemaIndexes" />
+                <Key word ="adSchemaKeyColumnUsage" />
+                <Key word ="adSchemaLevels" />
+                <Key word ="adSchemaMeasures" />
+                <Key word ="adSchemaMembers" />
+                <Key word ="adSchemaPrimaryKeys" />
+                <Key word ="adSchemaProcedureColumns" />
+                <Key word ="adSchemaProcedureParameters" />
+                <Key word ="adSchemaProcedures" />
+                <Key word ="adSchemaProperties" />
+                <Key word ="adSchemaProviderSpecific" />
+                <Key word ="adSchemaProviderTypes" />
+                <Key word ="adSchemaReferentialConstraints" />
+                <Key word ="adSchemaSchemata" />
+                <Key word ="adSchemaSQLLanguages" />
+                <Key word ="adSchemaStatistics" />
+                <Key word ="adSchemaTableConstraints" />
+                <Key word ="adSchemaTablePrivileges" />
+                <Key word ="adSchemaTables" />
+                <Key word ="adSchemaTranslations" />
+                <Key word ="adSchemaTrustees" />
+                <Key word ="adSchemaUsagePrivileges" />
+                <Key word ="adSchemaViewColumnUsage" />
+                <Key word ="adSchemaViews" />
+                <Key word ="adSchemaViewTableUsage" />
+                <Key word ="adSearchBackward" />
+                <Key word ="adSearchForward" />
+                <Key word ="adSeek" />
+                <Key word ="adSeekAfter" />
+                <Key word ="adSeekAfterEQ" />
+                <Key word ="adSeekBefore" />
+                <Key word ="adSeekBeforeEQ" />
+                <Key word ="adSeekFirstEQ" />
+                <Key word ="adSeekLastEQ" />
+                <Key word ="adSimpleRecord" />
+                <Key word ="adSingle" />
+                <Key word ="adSmallInt" />
+                <Key word ="adStateClosed" />
+                <Key word ="adStateConnecting" />
+                <Key word ="adStateExecuting" />
+                <Key word ="adStateFetching" />
+                <Key word ="adStateOpen" />
+                <Key word ="adStatusCancel" />
+                <Key word ="adStatusCantDeny" />
+                <Key word ="adStatusErrorsOccurred" />
+                <Key word ="adStatusOK" />
+                <Key word ="adStatusUnwantedEvent" />
+                <Key word ="adStructDoc" />
+                <Key word ="adTinyInt" />
+                <Key word ="adTypeBinary" />
+                <Key word ="adTypeText" />
+                <Key word ="adUnsignedBigInt" />
+                <Key word ="adUnsignedInt" />
+                <Key word ="adUnsignedSmallInt" />
+                <Key word ="adUnsignedTinyInt" />
+                <Key word ="adUpdate" />
+                <Key word ="adUpdateBatch" />
+                <Key word ="adUseClient" />
+                <Key word ="adUserDefined" />
+                <Key word ="adUseServer" />
+                <Key word ="adVarBinary" />
+                <Key word ="adVarChar" />
+                <Key word ="adVariant" />
+                <Key word ="adVarNumeric" />
+                <Key word ="adVarWChar" />
+                <Key word ="adWChar" />
+                <Key word ="adWriteChar" />
+                <Key word ="adWriteLine" />
+                <Key word ="adwrnSecurityDialog" />
+                <Key word ="adwrnSecurityDialogHeader" />
+                <Key word ="adXactAbortRetaining" />
+                <Key word ="adXactBrowse" />
+                <Key word ="adXactChaos" />
+                <Key word ="adXactCommitRetaining" />
+                <Key word ="adXactCursorStability" />
+                <Key word ="adXactIsolated" />
+                <Key word ="adXactReadCommitted" />
+                <Key word ="adXactReadUncommitted" />
+                <Key word ="adXactRepeatableRead" />
+                <Key word ="adXactSerializable" />
+                <Key word ="adXactUnspecified" />
+            </KeyWords>
+		</RuleSet>
+	</RuleSets>
+</SyntaxDefinition>

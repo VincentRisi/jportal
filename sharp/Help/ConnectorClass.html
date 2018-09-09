@@ -1,0 +1,12 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Connector Class</title>
+</head>
+<body>
+<h1>Connector Class</h1>
+<pre>package bbd.jportal;<br><br>import java.util.*;<br>import java.sql.*;<br><br>abstract public class Connector<br>{<br>  class Calendar extends GregorianCalendar<br>  {<br>    long AsMillis()<br>    {<br>      return getTimeInMillis();<br>    }<br>  }<br>  public Connection connection;<br>  abstract public String getUserstamp()              throws SQLException;<br>  public Timestamp getTimestamp()                    throws SQLException<br>  {<br>    Calendar now = new Calendar();<br>    return new Timestamp(now.AsMillis());<br>  }<br>  abstract public int getSequence(String table)      throws SQLException;<br>  public void setAutoCommit(boolean cond)            throws SQLException<br>  {<br>    connection.setAutoCommit(cond);<br>  }<br>  public void commit()                               throws SQLException<br>  {<br>    connection.commit();<br>  }<br>  public void rollback()                             throws SQLException<br>  {<br>    connection.rollback();<br>  }<br>}<br></pre>
+</body>
+</html>

@@ -1,0 +1,33 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=AnyDB.chm
+Contents file=Table of Contents.hhc
+Default topic=MCDemoSI.html
+Display compile progress=No
+Index file=Index.hhk
+Language=0x1c09 English (South Africa)
+
+
+[FILES]
+SIFileFormat.html
+BNF.html
+GenerationPrinciple.html
+Keywords.html
+OJMasterJava.html
+OJContactsJava.html
+OJDemoDDL.html
+OJDemoSi.html
+MCDemoSI.html
+MCDemoCS.html
+MCDemoStoredProcs.html
+MCDemoDDL.html
+QueryClass.html
+ConnectCursorClasses.html
+ConnectorClass.html
+ConnectorOracleClass.html
+ODExampleSI.html
+ODOracleJava.html
+ODOracleREJava.html
+
+[INFOTYPES]
+

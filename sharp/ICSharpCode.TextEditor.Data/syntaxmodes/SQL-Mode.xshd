@@ -1,0 +1,539 @@
+<?xml version="1.0" ?>
+<!--
+ Copyright (c) 1996, 2004 Vincent Risi in Association
+                          with Barone Budge and Dominick
+ All rights reserved.
+ This program and the accompanying materials are made available
+ under the terms of the Common Public License v1.0
+ which accompanies this distribution and is available at
+ http://www.eclipse.org/legal/cpl-v10.html
+ Contributors:
+    Vincent Risi
+
+ System : JPortal
+ $Date: 2004/10/22 14:02:27 $
+ $Revision: 411.2 $ // YMM.Revision
+ -->
+<SyntaxDefinition name="SQL" extensions=".sql;.sqc">
+  <Environment>
+    <Default bold="false" italic="false" color="MidnightBlue" bgcolor="FloralWhite" />
+    <Selection bold="false" italic="false" color="White" bgcolor="MidnightBlue" />
+    <VRuler bold="false" italic="false" color="GhostWhite" />
+    <InvalidLines bold="false" italic="false" color="Red" />
+    <CaretMarker bold="false" italic="false" color="Yellow" />
+    <LineNumbers bold="false" italic="false" color="SaddleBrown" bgcolor="FloralWhite" />
+    <FoldLine bold="false" italic="false" color="Gray" bgcolor="Black" />
+    <FoldMarker bold="false" italic="false" color="Gray" bgcolor="White" />
+    <EOLMarkers bold="false" italic="false" color="#E0E0E5" />
+    <SpaceMarkers bold="false" italic="false" color="#E0E0E5" />
+    <TabMarkers bold="false" italic="false" color="#E0E0E5" />
+  </Environment>
+	<Digits name="Digits" bold="false" italic="false" color="Blue" bgcolor="Azure"/>
+	<RuleSets>
+		<RuleSet ignorecase="true" noescapesequences="true">
+			<Delimiters>&amp;&lt;&gt;~!@%^*()-+=|\#/{}[]:;"' ,	.?</Delimiters>
+			<Span name="LineComment" bold="false" italic="true" color="Gray" stopateol="true">
+				<Begin>--</Begin>
+			</Span>
+			<Span name="BlockComment" bold="false" italic="true" color="Gray" stopateol="false">
+				<Begin>/*</Begin>
+				<End>*/</End>
+			</Span>
+			<Span name="String1" bold="true" italic="false" color="DarkGreen" bgcolor="Honeydew" stopateol="true">
+        <Begin color="DarkGreen" bgcolor="Honeydew">'</Begin>
+        <End color="DarkGreen" bgcolor="Honeydew">'</End>
+			</Span>
+			<Span name="String2" bold="true" italic="false" color="DarkGreen" bgcolor="Honeydew" stopateol="true">
+        <Begin color="DarkGreen" bgcolor="Honeydew">"</Begin>
+        <End color="DarkGreen" bgcolor="Honeydew">"</End>
+			</Span>
+			<MarkFollowing markmarker = "true" bold = "true" italic = "false" color = "MidnightBlue" bgcolor="LightCyan">:</MarkFollowing>
+			<MarkFollowing markmarker = "true" bold = "true" italic = "false" color = "MidnightBlue" bgcolor="LightCyan">@</MarkFollowing>
+			<MarkFollowing markmarker = "true" bold = "true" italic = "false" color = "DarkSlateGray" bgcolor="LemonChiffon">&amp;</MarkFollowing>
+            <KeyWords name="Punctuation" bold="false" italic="false" color="DarkViolet">
+                <Key word="`" />
+                <Key word="~" />
+                <Key word="!" />
+                <Key word="@" />
+                <Key word="#" />
+                <Key word="$" />
+                <Key word="%" />
+                <Key word="^" />
+                <Key word="&amp;" />
+                <Key word="*" />
+                <Key word="(" />
+                <Key word=")" />
+                <Key word="_" />
+                <Key word="+" />
+				<Key word="-" />
+				<Key word="=" />
+				<Key word="[" />
+				<Key word="]" />
+				<Key word="\" />
+				<Key word="{" />
+				<Key word="}" />
+				<Key word="|" />
+				<Key word=";" />
+				<Key word="&quot;" />
+				<Key word=":" />
+				<Key word="&apos;" />
+				<Key word="&lt;" />
+				<Key word="&gt;" />
+				<Key word="&lt;" />
+				<Key word="?" />
+				<Key word="," />
+				<Key word="." />
+				<Key word="/" />
+			</KeyWords>
+			<KeyWords name="KeyWords" bold="true" italic="false" color="Blue">
+                <Key word="access" />
+                <Key word="add" />
+                <Key word="alter" />
+                <Key word="array" />
+                <Key word="as" />
+                <Key word="asc" />
+                <Key word="at" />
+                <Key word="audit" />
+                <Key word="authid" />
+                <Key word="authorization" />
+                <Key word="avg" />
+                <Key word="backup" />
+                <Key word="begin" />
+                <Key word="binary_integer" />
+                <Key word="body" />
+                <Key word="boolean" />
+                <Key word="break" />
+                <Key word="browse" />
+                <Key word="bulk" />
+                <Key word="by" />
+                <Key word="cascade" />
+                <Key word="case" />
+                <Key word="char_base" />
+                <Key word="check" />
+                <Key word="checkpoint" />
+                <Key word="close" />
+                <Key word="cluster" />
+                <Key word="clustered" />
+                <Key word="coalesce" />
+                <Key word="collate" />
+                <Key word="collect" />
+                <Key word="column" />
+                <Key word="comment" />
+                <Key word="commit" />
+                <Key word="compress" />
+                <Key word="compute" />
+                <Key word="connect" />
+                <Key word="constant" />
+                <Key word="constraint" />
+                <Key word="contains" />
+                <Key word="containstable" />
+                <Key word="continue" />
+                <Key word="convert" />
+                <Key word="create" />
+                <Key word="cross" />
+                <Key word="current" />
+                <Key word="current_date" />
+                <Key word="current_time" />
+                <Key word="current_timestamp" />
+                <Key word="current_user" />
+                <Key word="currval" />
+                <Key word="cursor" />
+                <Key word="cycle" />
+                <Key word="database" />
+                <Key word="date" />
+                <Key word="day" />
+                <Key word="dbcc" />
+                <Key word="deallocate" />
+                <Key word="declare" />
+                <Key word="default" />
+                <Key word="delete" />
+                <Key word="deny" />
+                <Key word="desc" />
+                <Key word="disk" />
+                <Key word="distinct" />
+                <Key word="distributed" />
+                <Key word="do" />
+                <Key word="drop" />
+                <Key word="dummy" />
+                <Key word="dump" />
+                <Key word="else" />
+                <Key word="elsif" />
+                <Key word="end" />
+                <Key word="errlvl" />
+                <Key word="escape" />
+                <Key word="except" />
+                <Key word="exception" />
+                <Key word="exclusive" />
+                <Key word="exec" />
+                <Key word="execute" />
+                <Key word="exit" />
+                <Key word="extends" />
+                <Key word="false" />
+                <Key word="fetch" />
+                <Key word="file" />
+                <Key word="fillfactor" />
+                <Key word="for" />
+                <Key word="forall" />
+                <Key word="foreign" />
+                <Key word="freetext" />
+                <Key word="freetexttable" />
+                <Key word="from" />
+                <Key word="full" />
+                <Key word="function" />
+                <Key word="goto" />
+                <Key word="grant" />
+                <Key word="group" />
+                <Key word="having" />
+                <Key word="heap" />
+                <Key word="holdlock" />
+                <Key word="hour" />
+                <Key word="identity" />
+                <Key word="identity_insert" />
+                <Key word="identitycol" />
+                <Key word="if" />
+                <Key word="immediate" />
+                <Key word="increment" />
+                <Key word="index" />
+                <Key word="indicator" />
+                <Key word="inner" />
+                <Key word="insert" />
+                <Key word="interface" />
+                <Key word="intersect" />
+                <Key word="interval" />
+                <Key word="into" />
+                <Key word="is" />
+                <Key word="isolation" />
+                <Key word="java" />
+                <Key word="join" />
+                <Key word="key" />
+                <Key word="kill" />
+                <Key word="left" />
+                <Key word="level" />
+                <Key word="limited" />
+                <Key word="lineno" />
+                <Key word="load" />
+                <Key word="lock" />
+                <Key word="loop" />
+                <Key word="max" />
+                <Key word="maxvalue" />
+                <Key word="min" />
+                <Key word="minus" />
+                <Key word="minute" />
+                <Key word="minvalue" />
+                <Key word="mlslabel" />
+                <Key word="mod" />
+                <Key word="mode" />
+                <Key word="month" />
+                <Key word="natural" />
+                <Key word="naturaln" />
+                <Key word="new" />
+                <Key word="nextval" />
+                <Key word="nocheck" />
+                <Key word="nocache" />
+                <Key word="nocopy" />
+                <Key word="nonclustered" />
+                <Key word="nowait" />
+                <Key word="null" />
+                <Key word="nullif" />
+                <Key word="number" />
+                <Key word="number_base" />
+                <Key word="ocirowid" />
+                <Key word="of" />
+                <Key word="off" />
+                <Key word="offsets" />
+                <Key word="on" />
+                <Key word="opaque" />
+                <Key word="open" />
+                <Key word="opendatasource" />
+                <Key word="openquery" />
+                <Key word="openrowset" />
+                <Key word="openxml" />
+                <Key word="operator" />
+                <Key word="option" />
+                <Key word="order" />
+                <Key word="organization" />
+                <Key word="others" />
+                <Key word="out" />
+                <Key word="outer" />
+                <Key word="over" />
+                <Key word="package" />
+                <Key word="partition" />
+                <Key word="pctfree" />
+                <Key word="percent" />
+                <Key word="plan" />
+                <Key word="pls_integer" />
+                <Key word="positive" />
+                <Key word="positiven" />
+                <Key word="pragma" />
+                <Key word="primary" />
+                <Key word="print" />
+                <Key word="prior" />
+                <Key word="private" />
+                <Key word="proc" />
+                <Key word="procedure" />
+                <Key word="public" />
+                <Key word="raise" />
+                <Key word="raiserror" />
+                <Key word="range" />
+                <Key word="read" />
+                <Key word="readtext" />
+                <Key word="reconfigure" />
+                <Key word="record" />
+                <Key word="ref" />
+                <Key word="references" />
+                <Key word="release" />
+                <Key word="replication" />
+                <Key word="restore" />
+                <Key word="restrict" />
+                <Key word="return" />
+                <Key word="returning" />
+                <Key word="reverse" />
+                <Key word="revoke" />
+                <Key word="right" />
+                <Key word="rollback" />
+                <Key word="row" />
+                <Key word="rowcount" />
+                <Key word="rowguidcol" />
+                <Key word="rowid" />
+                <Key word="rownum" />
+                <Key word="rowtype" />
+                <Key word="rule" />
+                <Key word="save" />
+                <Key word="savepoint" />
+                <Key word="schema" />
+                <Key word="second" />
+                <Key word="select" />
+                <Key word="separate" />
+                <Key word="sequence" />
+                <Key word="session_user" />
+                <Key word="set" />
+                <Key word="setuser" />
+                <Key word="share" />
+                <Key word="shutdown" />
+                <Key word="space" />
+                <Key word="sqlerrm" />
+                <Key word="start" />
+                <Key word="statistics" />
+                <Key word="stddev" />
+                <Key word="subtype" />
+                <Key word="successful" />
+                <Key word="sum" />
+                <Key word="synonym" />
+                <Key word="sysdate" />
+                <Key word="system_user" />
+                <Key word="table" />
+                <Key word="textsize" />
+                <Key word="then" />
+                <Key word="to" />
+                <Key word="top" />
+                <Key word="tran" />
+                <Key word="transaction" />
+                <Key word="trigger" />
+                <Key word="true" />
+                <Key word="truncate" />
+                <Key word="tsequal" />
+                <Key word="type" />
+                <Key word="uid" />
+                <Key word="union" />
+                <Key word="unique" />
+                <Key word="update" />
+                <Key word="updatetext" />
+                <Key word="use" />
+                <Key word="user" />
+                <Key word="validate" />
+                <Key word="values" />
+                <Key word="variance" />
+                <Key word="view" />
+                <Key word="waitfor" />
+                <Key word="when" />
+                <Key word="whenever" />
+                <Key word="where" />
+                <Key word="while" />
+                <Key word="with" />
+                <Key word="work" />
+                <Key word="write" />
+                <Key word="writetext" />
+                <Key word="year" />
+                <Key word="zone" />
+			</KeyWords>
+			<KeyWords name="Functions" bold="false" italic="false" color="Red">
+                <Key word="WRITETEXT" />
+                <Key word="ABS" />
+                <Key word="ACOS" />
+                <Key word="APP_NAME" />
+                <Key word="ASCII" />
+                <Key word="ASIN" />
+                <Key word="ATAN" />
+                <Key word="ATN2" />
+                <Key word="AVG" />
+                <Key word="CASE" />
+                <Key word="CAST" />
+                <Key word="CEILING" />
+                <Key word="CHARINDEX" />
+                <Key word="COALESCE" />
+                <Key word="COL_LENGTH" />
+                <Key word="COL_NAME" />
+                <Key word="COLUMNPROPERTY" />
+                <Key word="CONTAINSTABLE" />
+                <Key word="CONVERT" />
+                <Key word="COS" />
+                <Key word="COT" />
+                <Key word="COUNT" />
+                <Key word="CURRENT_TIMESTAMP" />
+                <Key word="CURRENT_USER" />
+                <Key word="CURSOR_STATUS" />
+                <Key word="DATABASEPROPERTY" />
+                <Key word="DATALENGTH" />
+                <Key word="DATEADD" />
+                <Key word="DATEDIFF" />
+                <Key word="DATENAME" />
+                <Key word="DATEPART" />
+                <Key word="DAY" />
+                <Key word="DB_ID" />
+                <Key word="DB_NAME" />
+                <Key word="DEGREES" />
+                <Key word="DIFFERENCE" />
+                <Key word="EXP" />
+                <Key word="FILE_ID" />
+                <Key word="FILE_NAME" />
+                <Key word="FILEGROUP_ID" />
+                <Key word="FILEGROUP_NAME" />
+                <Key word="FILEGROUPPROPERTY" />
+                <Key word="FILEPROPERTY" />
+                <Key word="FLOOR" />
+                <Key word="FORMATMESSAGE" />
+                <Key word="FREETEXTTABLE" />
+                <Key word="FULLTEXTCATALOGPROPERTY" />
+                <Key word="FULLTEXTSERVICEPROPERTY" />
+                <Key word="GETANSINULL" />
+                <Key word="GETDATE" />
+                <Key word="GROUPING" />
+                <Key word="HOST_ID" />
+                <Key word="HOST_NAME" />
+                <Key word="IDENT_INCR" />
+                <Key word="IDENT_SEED" />
+                <Key word="IDENTITY" />
+                <Key word="INDEX_COL" />
+                <Key word="INDEXPROPERTY" />
+                <Key word="IS_MEMBER" />
+                <Key word="IS_SRVROLEMEMBER" />
+                <Key word="ISDATE" />
+                <Key word="ISNULL" />
+                <Key word="ISNUMERIC" />
+                <Key word="LEFT" />
+                <Key word="LEN" />
+                <Key word="LOG" />
+                <Key word="LOG10" />
+                <Key word="LOWER" />
+                <Key word="LTRIM" />
+                <Key word="MAX" />
+                <Key word="MIN" />
+                <Key word="MONTH" />
+                <Key word="NEWID" />
+                <Key word="NULLIF" />
+                <Key word="OBJECT_ID" />
+                <Key word="OBJECT_NAME" />
+                <Key word="OBJECTPROPERTY" />
+                <Key word="OPENQUERY" />
+                <Key word="OPENROWSET" />
+                <Key word="PARSENAME" />
+                <Key word="PATINDEX" />
+                <Key word="PERMISSIONS" />
+                <Key word="PI" />
+                <Key word="POWER" />
+                <Key word="QUOTENAME" />
+                <Key word="RADIANS" />
+                <Key word="RAND" />
+                <Key word="REPLACE" />
+                <Key word="REPLICATE" />
+                <Key word="REVERSE" />
+                <Key word="RIGHT" />
+                <Key word="ROUND" />
+                <Key word="RTRIM" />
+                <Key word="SESSION_USER" />
+                <Key word="SIGN" />
+                <Key word="SIN" />
+                <Key word="SOUNDEX" />
+                <Key word="SPACE" />
+                <Key word="SQRT" />
+                <Key word="SQUARE" />
+                <Key word="STATS_DATE" />
+                <Key word="STDEV" />
+                <Key word="STDEVP" />
+                <Key word="STR" />
+                <Key word="STUFF" />
+                <Key word="SUBSTRING" />
+                <Key word="SUM" />
+                <Key word="SUSER_ID" />
+                <Key word="SUSER_NAME" />
+                <Key word="SUSER_SID" />
+                <Key word="SUSER_SNAME" />
+                <Key word="SYSTEM_USER" />
+                <Key word="TAN" />
+                <Key word="TEXTPTR" />
+                <Key word="TEXTVALID" />
+                <Key word="TO_CHAR" />
+                <Key word="TO_DATE" />
+                <Key word="TO_NUMBER" />
+                <Key word="TYPEPROPERTY" />
+                <Key word="UNICODE" />
+                <Key word="UPPER" />
+                <Key word="USER" />
+                <Key word="USER_ID" />
+                <Key word="USER_NAME" />
+                <Key word="VAR" />
+                <Key word="VARP" />
+                <Key word="YEAR" />
+			</KeyWords>
+			<KeyWords name="Datatypes" bold="false" italic="false" color="Green">
+                <Key word="binary" />
+                <Key word="bit" />
+                <Key word="char" />
+                <Key word="character" />
+                <Key word="datetime" />
+                <Key word="dec" />
+                <Key word="decimal" />
+                <Key word="double" />
+                <Key word="float" />
+                <Key word="int" />
+                <Key word="integer" />
+                <Key word="image" />
+                <Key word="long" />
+                <Key word="money" />
+                <Key word="national" />
+                <Key word="nchar" />
+                <Key word="ntext" />
+                <Key word="number" />
+                <Key word="nvarchar" />
+                <Key word="precision" />
+                <Key word="raw" />
+                <Key word="real" />
+                <Key word="single" />
+                <Key word="smalldatetime" />
+                <Key word="smallint" />
+                <Key word="smallmoney" />
+                <Key word="text" />
+                <Key word="timestamp" />
+                <Key word="tinyint" />
+                <Key word="uniqueidentifier" />
+                <Key word="varbinary" />
+                <Key word="varchar" />
+                <Key word="varchar2" />
+                <Key word="varying" />
+			</KeyWords>
+			<KeyWords name="Operator" bold="false" italic="false" color="DarkViolet">
+                <Key word="ALL" />
+                <Key word="AND" />
+                <Key word="ANY" />
+                <Key word="BETWEEN" />
+                <Key word="EXISTS" />
+                <Key word="IN" />
+                <Key word="LIKE" />
+                <Key word="NOT" />
+                <Key word="OR" />
+                <Key word="SOME" />
+			</KeyWords>
+		</RuleSet>
+		<RuleSet name="RuleDefinition" ignorecase="false" noescapesequences="true"></RuleSet>
+	</RuleSets>
+</SyntaxDefinition>

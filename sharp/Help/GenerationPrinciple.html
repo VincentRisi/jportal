@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Principle of Generation</title>
+</head>
+<body>
+<h1>Principle of Generation</h1>
+All the current generators are written in java, at the level of java
+1.1 and
+therefore can be used as is in j#. They all derive from the abstract
+class <a href="#Generator">Generator</a>. The classes are shown
+without braces in a mix of
+python and java for the reason of brevity and clarity. Also the vectors
+are described with 'Vector of x' instead of the normal generic c++
+syntax of 'Vector&lt;x&gt;'. Of course generics are not currently
+available to java 1.1, j# and c#. These
+are the methods that a new generator must implement in order to be used
+as an addin. There is nothing that stops one from writing addins in c#
+or Herbert forbid vb.net, but j# allows for cross development between
+the java and dotnet platforms. The compiler produces an instance of the
+class <a href="#Database">Database</a> which contains the translated
+text as a network of class instances. The parse tree of the translated
+text is written to be language and platform independent. They have all
+members and methods defined as public as they are in essence simple
+data structures.
+<h2><a name="Generator"></a>Generator</h2>
+<pre>public abstract class Generator<br>  public static void generate(Database database, String output, PrintWriter outLog)<br>  public static String description()<br>  public static String documentation()<br>  public static Vector of <a
+ href="#Flag">Flag</a> flags()<br></pre>
+<h2><a name="Database"></a>Database</h2>
+<pre>public class Database implements Serializable<br>  public String  name;<br>  public String  output;<br>  public String  server;<br>  public String  userid;<br>  public String  password;<br>  public String  packageName;<br>  public Vector of <a
+ href="#Table">Table</a> tables;<br>  public Vector of <a href="#Flag">Flag</a> flags;<br>  public Vector of <a
+ href="#Sequence">Sequence</a> sequences;<br>  public Vector of <a
+ href="#View">View</a> views;<br>  public boolean hasTable(String s)<br></pre>
+<h2><a name="Table"></a>Table</h2>
+<pre>public class Table implements Serializable<br>  public <a
+ href="#Database">Database</a> database;<br>  public String   name;<br>  public String   alias;<br>  public String   check;<br>  public Vector of <a
+ href="#Field">Field</a> fields;<br>  public Vector of <a href="#Key">Key</a> keys;<br>  public Vector of <a
+ href="#Link">Link</a> links;<br>  public Vector of <a href="#Grant">Grant</a> grants;<br>  public Vector of <a
+ href="#View">View</a> views;<br>  public Vector of <a href="#Proc">Proc</a> procs;<br>  public Vector of String comments; <br>  public Vector of String options;<br>  public Vector of String allUsers;<br>  public boolean  hasPrimaryKey;<br>  public boolean  hasSequence;<br>  public boolean  hasTimeStamp;<br>  public boolean  hasUserStamp;<br>  public boolean  hasExecute;<br>  public boolean  hasSelect;<br>  public boolean  hasInsert;<br>  public boolean  hasDelete;<br>  public boolean  hasUpdate;<br>  public boolean  hasStdProcs;<br>  public boolean  hasIdentity;<br>  public int      start;<br>  public String useName()<br>  public boolean hasField(String s)<br>  public boolean hasFieldAsNull(String s)<br>  public boolean hasProc(Proc p)<br>  public boolean hasCursorStdProc()<br>  public void setPrimary(String s)<br>  public void buildInsert(Proc proc)<br>  public void buildBulkInsert(Proc proc)<br>  public void buildIdentity(Proc proc)<br>  public void buildUpdate(Proc proc)<br>  public void buildBulkUpdate(Proc proc)<br>  public void buildDeleteOne(Proc proc)<br>  public void buildDeleteAll(Proc proc)<br>  public void buildCount(Proc proc)<br>  public void buildExists(Proc proc)<br>  public void buildSelectOne(Proc proc, boolean update)<br>  public void buildSelectAll(Proc proc, boolean forUpdate, boolean inOrder)<br>  public String toString()<br></pre>
+<h2><a name="Flag"></a>Flag</h2>
+<pre>public class Flag implements Serializable<br>  String name;<br>  boolean value;<br>  String description;<br></pre>
+<h2><a name="Sequence"></a>Sequence</h2>
+<pre>public class Sequence implements Serializable<br>  public String  name;<br>  public int     minValue;<br>  public int     maxValue;<br>  public int     increment;<br>  public boolean cycleFlag;<br>  public boolean orderFlag;<br>  public int     startWith;<br>  public int     start;<br></pre>
+<h2><a name="View"></a>View</h2>
+<pre>public class View implements Serializable<br>  public String name;<br>  public Vector of String aliases;<br>  public Vector of String lines;<br>  public Vector of String users;<br>  public int start;<br>  public boolean hasAlias(String s)<br>  public boolean hasUser(String s)<br>  public String toString()<br></pre>
+<h2><a name="Field"></a>Field</h2>
+<pre>public class Field implements Serializable<br>  public String name;<br>  public String alias;<br>  public String defaultValue;<br>  public String checkValue;<br>  public byte type;<br>  public int length;<br>  public int precision;<br>  public int scale;<br>  public int bindPos;<br>  public int definePos;<br>  public Vector of String comments;<br>  public Vector of <a
+ href="#Enum">Enum</a> enums;<br>  public boolean isPrimaryKey;<br>  public boolean isSequence;<br>  public boolean isNull;<br>  public static final byte<br>    BLOB       = 1<br>  , BOOLEAN    = 2<br>  , BYTE       = 3<br>  , CHAR       = 4<br>  , DATE       = 5<br>  , DATETIME   = 6<br>  , DOUBLE     = 7<br>  , DYNAMIC    = 8<br>  , FLOAT      = 9<br>  , IDENTITY   = 10<br>  , INT        = 11<br>  , LONG       = 12<br>  , MONEY      = 13<br>  , SEQUENCE   = 14<br>  , SHORT      = 15<br>  , STATUS     = 16<br>  , TIME       = 17<br>  , TIMESTAMP  = 18<br>  , TLOB       = 19<br>  , USERSTAMP  = 20<br>  , ANSICHAR   = 21<br>  , UID        = 22<br>  public String useName()<br>  public String useLowerName()<br>  public String useUpperName()<br></pre>
+<h2><a name="Key"></a>Key</h2>
+<pre>public class Key implements Serializable<br>  public String name;<br>  public Vector of String fields;<br>  public Vector of String options;<br>  public boolean isPrimary;<br>  public boolean isUnique;<br>  public boolean hasField(String s)<br></pre>
+<h2><a name="Link"></a>Link</h2>
+<pre>public class Link implements Serializable<br>  public String name;<br>  public String linkName;<br>  public Vector of String fields;<br>  public boolean hasField(String s)<br></pre>
+<h2><a name="Grant"></a>Grant</h2>
+<pre>public class Grant implements Serializable<br>  public Vector of String perms;<br>  public Vector of String users;<br>  public boolean hasPerm(String s)<br>  public boolean hasUser(String s)<br></pre>
+<h2><a name="Proc"></a>Proc</h2>
+<pre>public class Proc implements Serializable<br>  public <a
+ href="#Table">Table</a>   table;<br>  public String  name;<br>  public int     noRows;<br>  public Vector of <a
+ href="#Field">Field</a> inputs;<br>  public Vector of <a href="#Field">Field</a> outputs;<br>  public Vector of String dynamics;<br>  public Vector of Integer dynamicSizes;<br>  public Vector of String placeHolders;<br>  public Vector of <a
+ href="#Line">Line</a> lines;<br>  public Vector of String comments;<br>  public Vector of String options;<br>  public boolean isData;<br>  public boolean isSql;<br>  public boolean isSingle;<br>  public boolean isStd;<br>  public boolean useStd;<br>  public boolean useKey;<br>  public boolean hasImage;<br>  public boolean isMultipleInput;<br>  public boolean isInsert;<br>  public int start;<br>  public String upperFirst()<br>  public String lowerFirst()<br>  public boolean hasInput(String s)<br>  public int indexOf(String s)<br>  public boolean hasOutput(String s)<br>  public Field getOutput(String s)<br>  public boolean hasDynamic(String s)<br>  public int getDynamicSize(String s)<br>  public boolean hasNoData()<br>  public boolean hasDiscreteInput()<br>  public void checkPlaceHolders()<br>  public String toString()<br></pre>
+<h2><a name="Enum"></a>Enum</h2>
+<pre>public class Enum implements Serializable<br>  public String name;<br>  public int value;<br></pre>
+<h2><a name="Line"></a>Line</h2>
+<pre>public class Line implements Serializable<br>  public String line;<br>  public boolean isVar;<br></pre>
+</body>
+</html>

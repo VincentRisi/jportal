@@ -1,0 +1,13 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>ConnectorOracle Class</title>
+</head>
+<body>
+<h1>ConnectorOracle Class</h1>
+<pre>package bbd.jportal;<br><br>import java.io.*;<br>import java.sql.*;<br>import java.math.*;<br><br>public class ConnectorOracle extends Connector<br>{<br>  String userId;<br>  /**<br>  ** @param driverName - gets inserted into oracle.jdbc.----.OracleDriver<br>  ** @param driverType - get inserted into  jdbc:oracle:----:user/password[@server]<br>  ** @param server     - get inserted into  jdbc:oracle:driverType:user/password[@----]<br>  ** @param user       - get inserted into  jdbc:oracle:driverType:----/password[@server]<br>  ** @param password   - get inserted into  jdbc:oracle:driverType:user/----[@server]<br>  */<br>  public ConnectorOracle(String driverType, String server,<br>                  String user, String password) throws ClassNotFoundException, SQLException<br>  {<br>    String url = "jdbc:oracle:"+driverType+":";<br>    if (server.length() &gt; 0)<br>      url = url+"@"+server;<br>    connect(url, user, password);<br>  }<br>  void connect(String url,<br>               String user, String password) throws ClassNotFoundException, SQLException<br>  {<br>    userId = user;<br>    DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());<br>    connection = DriverManager.getConnection(url, user, password);<br>    System.out.println(!connection.isClosed ());<br>    connection.setAutoCommit(false);<br>  }<br>  public String getUserstamp() throws SQLException<br>  {<br>    return userId;<br>  }<br>  public int getSequence(String table) throws SQLException<br>  {<br>    int nextNo;<br>    PreparedStatement prep = connection.prepareStatement("select "+table+"Seq.NextVal from dual");<br>    ResultSet result = prep.executeQuery();<br>    result.next();<br>    nextNo =  result.getInt(1);<br>    result.close();<br>    prep.close();<br>    return nextNo;<br>  }<br>}<br></pre>
+<br>
+</body>
+</html>

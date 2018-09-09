@@ -1,0 +1,23 @@
+<AnyDBIde>
+ <Project Name="J:\sharp\Help\examples\OracleDemo.xml" Switches="7" Sources="2" />
+ <SwitchList>
+  <Switch Name="initialSourceDirectory" Value="J:\sharp\Help\examples\" />
+  <Switch Name="Java2CodeDirectory" Value="J:\sharp\Help\examples\" />
+  <Switch Name="Java2CodeGenerator" Value="False" />
+  <Switch Name="JavaCodeDirectory" Value="J:\sharp\Help\examples\" />
+  <Switch Name="JavaCodeGenerator" Value="True" />
+  <Switch Name="OracleDDLDirectory" Value="J:\sharp\Help\examples\" />
+  <Switch Name="OracleDDLGenerator" Value="True" />
+ </SwitchList>
+ <SourceList>
+  <Source Name="J:\sharp\Help\examples\oracleDemo.si" Targets="3" Exists="True" >
+   <Target Name="J:\sharp\Help\examples\Contacts.java" />
+   <Target Name="J:\sharp\Help\examples\Master.java" />
+   <Target Name="J:\sharp\Help\examples\oracleDemo.sql" />
+  </Source>
+  <Source Name="J:\sharp\Help\examples\oracle.si" Targets="2" Exists="True" >
+   <Target Name="J:\sharp\Help\examples\Oracle.java" />
+   <Target Name="J:\sharp\Help\examples\OracleALL.sql" />
+  </Source>
+ </SourceList>
+</AnyDBIde>

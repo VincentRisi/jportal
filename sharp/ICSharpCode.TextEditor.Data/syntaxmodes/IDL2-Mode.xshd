@@ -1,0 +1,135 @@
+<?xml version="1.0" ?>
+<!--
+ Copyright (c) 1996, 2004 Vincent Risi in Association 
+                          with Barone Budge and Dominick 
+ All rights reserved. 
+ This program and the accompanying materials are made available 
+ under the terms of the Common Public License v1.0 
+ which accompanies this distribution and is available at 
+ http://www.eclipse.org/legal/cpl-v10.html 
+ Contributors:
+    Vincent Risi
+ 
+ System : JPortal
+ $Date: 2004/10/18 13:48:11 $
+ $Revision: 411.1 $ // YMM.Revision
+ -->
+<SyntaxDefinition name="IDL2" extensions=".idl;.ii;.ib;.ic;.im">
+  <Environment>
+    <Default bold="false" italic="false" color="MidnightBlue" bgcolor="Azure" />
+    <Selection bold="false" italic="false" color="Azure" bgcolor="MidnightBlue" />
+    <VRuler bold="false" italic="false" color="Gainsboro" />
+    <InvalidLines bold="false" italic="false" color="Red" />
+    <CaretMarker bold="false" italic="false" color="Yellow" />
+    <LineNumbers bold="false" italic="false" color="SaddleBrown" bgcolor="FloralWhite" />
+    <FoldLine bold="false" italic="false" color="Gray" bgcolor="Black" />
+    <FoldMarker bold="false" italic="false" color="Gray" bgcolor="White" />
+    <EOLMarkers bold="false" italic="false" color="#E0E0E5" />
+    <SpaceMarkers bold="false" italic="false" color="GhostWhite" />
+    <TabMarkers bold="true" italic="true" color="Thistle"/>
+  </Environment>
+  <Digits name="Digits" bold="false" italic="false" color="DarkBlue" />
+  <RuleSets>
+    <RuleSet ignorecase="true" noescapesequences="true">
+      <Delimiters>&amp;&lt;&gt;~!@%^*()-+=|\#/{}[]:;"',.?</Delimiters>
+      <Span name = "LineComment1" bold = "false" italic = "true" color = "Gray" stopateol = "true">
+        <Begin>//</Begin>
+      </Span>
+      <Span name = "LineComment2" bold = "false" italic = "true" color = "LimeGreen" stopateol = "true">
+        <Begin>#</Begin>
+      </Span>
+      <Span name = "LineComment3" bold = "false" italic = "true" color = "SandyBrown" stopateol = "true">
+        <Begin>**</Begin>
+      </Span>
+      <Span name = "BlockComment" bold = "false" italic = "true" color = "Gray" stopateol = "false">
+        <Begin>/*</Begin>
+        <End>*/</End>
+      </Span>
+      <Span name = "String1" bold = "false" italic = "false" bgcolor = "Honeydew" color = "DarkGreen" stopateol = "true">
+        <Begin bgcolor = "Honeydew" color = "DarkGreen">'</Begin>
+        <End bgcolor = "Honeydew" color = "DarkGreen">'</End>
+      </Span>
+      <Span name = "String2" bold = "false" italic = "false" bgcolor = "Honeydew" color = "DarkGreen" stopateol = "true">
+        <Begin bgcolor = "Honeydew" color = "DarkGreen">"</Begin>
+        <End bgcolor = "Honeydew" color = "DarkGreen">"</End>
+      </Span>
+      <Span name="CPPCode" rule="CPPCode" bold="false" italic="false" color = "Black" stopateol="false">
+        <Begin bold = "true" color="Blue">code</Begin>
+        <End bold = "true" color="Blue">endcode</End>
+      </Span>
+      <MarkPrevious bold = "true" italic = "false" color = "Blue">(</MarkPrevious>
+      <KeyWords name="Punctuation" bold="false" italic="false" color="DarkBlue" >
+        <Key word="`" />
+        <Key word="~" />
+        <Key word="!" />
+        <Key word="@" />
+        <Key word="#" />
+        <Key word="$" />
+        <Key word="%" />
+        <Key word="^" />
+        <Key word="&amp;" />
+        <Key word="*" />
+        <Key word="(" />
+        <Key word=")" />
+        <Key word="_" />
+        <Key word="+" />
+        <Key word="-" />
+        <Key word="=" />
+        <Key word="[" />
+        <Key word="]" />
+        <Key word="\" />
+        <Key word="{" />
+        <Key word="}" />
+        <Key word="|" />
+        <Key word=";" />
+        <Key word=":" />
+        <Key word="&lt;" />
+        <Key word="&gt;" />
+        <Key word="&lt;" />
+        <Key word="?" />
+        <Key word="," />
+        <Key word="." />
+        <Key word="/" />
+      </KeyWords>
+      <KeyWords name = "KeyWords" bold = "false" italic = "false" color = "Blue">
+        <Key word="enum" />
+        <Key word="input" />
+        <Key word="output" />
+        <Key word="pragma" />
+        <Key word="private" />
+        <Key word="protected" />
+        <Key word="public" />
+        <Key word="message" />
+        <Key word="module" />
+        <Key word="size" />
+        <Key word="struct" />
+        <Key word="table" />
+        <Key word="version" />
+      </KeyWords>
+      <KeyWords name = "NativeTypes" bold = "false" italic = "false" color = "Green">
+        <Key word="bool" />
+        <Key word="boolean" />
+        <Key word="byte" />
+        <Key word="char" />
+        <Key word="double" />
+        <Key word="float" />
+        <Key word="int" />
+        <Key word="int8" />
+        <Key word="int16" />
+        <Key word="int32" />
+        <Key word="int64" />
+        <Key word="long" />
+        <Key word="short" />
+        <Key word="string" />
+        <Key word="String" />
+        <Key word="unsigned" />
+        <Key word="void" />
+      </KeyWords>
+    </RuleSet>
+    <RuleSet name="CPPCode" reference = "C++.NET" ignorecase="false" noescapesequences="true">
+    </RuleSet>
+    <RuleSet name="RuleDefinition" ignorecase="false" noescapesequences="true">
+    </RuleSet>
+  </RuleSets>
+</SyntaxDefinition>
+

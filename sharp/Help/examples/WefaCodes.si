@@ -1,0 +1,153 @@
+DATABASE AnyDB FLAGS "mssql storedprocs"
+PACKAGE  Kam.DBRoutines
+OUTPUT   kopaCodes
+SERVER   Kopa
+
+TABLE kopaCodes           ** List of availble Kopa Series Codes
+  ecoCode       char 24   ** The Normalised Economic Time Series Code
+  setId         char 2    ** The two character selector code
+  kopaCode      char 24   ** The Kopa code used for time series
+  pageId        char 24   ** They seem to have page type selection 
+  period        char      ** D=Daily W=Weekly M=Monthly Q=Quarterly A=Annually S=SemiAnnually
+  description   char 250  ** Qualifying Description of Series
+  selected      int       (No=0 Yes=1)
+  strategy      int       (L'Update'=0 Replace=1 TakeOn=2)
+  disUsed       int       (InUse=0 NotInUse=1)
+  updBy         char 16   
+  updWhen       timestamp
+
+KEY kopaCodesPK PRIMARY
+  ecoCode
+
+KEY kopaCodesUK UNIQUE
+  setId
+  kopaCode
+
+PROC Insert
+PROC SelectOne
+PROC Update
+PROC DeleteOne
+PROC SelectAll
+
+PROC List
+INPUT
+  setId           char 2    ** The two character selector code
+  period          char      ** D=Daily W=Weekly M=Monthly Q=Quarterly S=SemiAnnually A=Annually 
+OUTPUT
+  ecoCode         char 24   ** The Normalised Economic Time Series Code
+  pageId          char 24   ** They seem to have page type selection 
+  kopaCode        char 24   ** The code used for time series
+  period          char      ** D=Daily W=Weekly M=Monthly Q=Quarterly S=SemiAnnually A=Annually 
+  description     char 250  ** Qualifying Description of Series
+  disUsed         int       
+SQLCODE
+  SELECT ecoCode, pageId, kopaCode, period, description, disUsed
+  FROM kopaCodes
+  WHERE setId = :setId
+  AND   period = :period
+  ORDER BY kopaCode
+ENDCODE
+
+PROC ListBySet
+INPUT
+  setId         char 2    ** The two character selector code
+  pageId        char 24   ** They seem to have page type selection 
+  period        char      ** D=Daily W=Weekly M=Monthly Q=Quarterly A=Annually S=???
+OUTPUT
+  ecoCode       char 24   ** The code used for time series
+  selected      int       
+  strategy      int       
+  disUsed       int       
+  description   char 250  ** Qualifying Description of Series
+  setId         char 2    ** The two character selector code
+  kopaCode      char 24   ** The code used for time series
+  pageId        char 24   ** They seem to have page type selection 
+  period        char      ** D=Daily W=Weekly M=Monthly Q=Quarterly A=Annually S=???
+  updBy         char 16   
+  updWhen       timestamp
+SQLCODE
+  SELECT ecoCode, selected, strategy, disUsed, description, setId, kopaCode, pageId, period, updBy, updWhen
+  FROM kopaCodes
+  WHERE setId = :setId
+  AND  pageId = :pageId
+  AND  period = :period
+  ORDER BY ecoCode
+ENDCODE
+
+PROC UpdateFromK
+INPUT
+  setId           char 2    ** The two character selector code
+  pageId          char 24   ** They seem to have page type selection 
+  kopaCode        char 24   ** The code used for time series
+  description     char 250  ** Qualifying Description of Series
+  updBy           char 16   
+  updWhen         timestamp
+SQLCODE
+  UPDATE kopaCodes 
+  SET pageId = :pageId
+    , description = :description
+	, disUsed = 0
+  WHERE setId = :setId
+  AND   kopaCode = :kopaCode
+ENDCODE
+
+PROC MarkNotUsed
+INPUT
+  setId           char 2    ** The two character selector code
+  kopaCode        char 24   ** The code used for time series
+SQLCODE
+  UPDATE kopaCodes 
+  SET disUsed = 1
+  WHERE setId = :setId
+  AND   kopaCode = :kopaCode
+ENDCODE
+
+PROC UpdateSelect
+INPUT
+  setId         char 2    ** The two character selector code
+  kopaCode      char 24   ** The Kopa code used for time series
+  ecoCode       char 24   ** The normalised code used for time series
+  selected      int       
+  strategy      int       
+SQLCODE
+  UPDATE kopaCodes 
+  SET ecoCode  = :ecoCode
+    , selected = :selected
+    , strategy = :strategy
+  WHERE setId  = :setId
+  AND kopaCode = :kopaCode
+ENDCODE
+
+PROC BuildSetList
+INPUT
+  setId         char 2    ** The two character selector code
+OUTPUT
+  ecoCode       char 24   ** The normalised code used for time series
+  selected      int       
+  strategy      int       
+  dir           char 16   ** Directory on CD where the Data is found
+  setId         char 2    ** The two character selector code
+  kopaCode      char 24   ** The Kopa code used for time series
+  period        char      ** Period for update
+  lastNo        integer   ** Set no to be used for update
+SQLCODE
+  SELECT c.ecoCode, c.selected, c.strategy, s.dir, c.setId, c.kopaCode, c.period, s.lastNo
+  FROM kopaCodes c, KopaSets s
+  WHERE c.selected > 0
+  AND   (s.setId = :setId or :setId = '**')
+  AND   c.setId = s.SetId
+ENDCODE
+
+PROC ChangeAlias
+INPUT
+  setId         char 2    ** The two character selector code
+  kopaCode      char 24   ** The Kopa code used for time series
+  ecoCode       char 24   ** This code is unique here and will be unique if present in kopaCodes on JohnnyDB
+SQLCODE
+  update kopaCodes set ecoCode = :ecoCode 
+  where  setId = :setId 
+  and    kopaCode = :kopaCode
+ENDCODE
+
+
+

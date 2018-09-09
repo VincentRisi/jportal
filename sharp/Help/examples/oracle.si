@@ -1,0 +1,350 @@
+DATABASE OracleALL
+PACKAGE  jportal.decompilers
+SERVER   orcl
+USERID   scott
+PASSWORD tiger
+
+TABLE Oracle ** PLEASE NOTE no fields as we are not defining anything new
+             ** but the name Oracle will be tagged onto the procedures.
+
+PROC Tables
+INPUT
+  OWNER           (owner)          char 64
+OUTPUT
+  TABLE_NAME      (tableName)      char 64
+  TABLESPACE_NAME (tableSpaceName) char 64
+  INITIAL_EXTENT  (initialExtent)  int
+  NEXT_EXTENT     (nextExtent)     int
+SQLCODE
+  select TABLE_NAME
+  , TABLESPACE_NAME
+  , INITIAL_EXTENT
+  , NEXT_EXTENT
+   from SYS.ALL_TABLES
+   where OWNER = :OWNER
+   order by TABLE_NAME
+ENDCODE
+
+PROC TablePrimaryKey
+INPUT
+  OWNER            (owner)          char 64
+  TABLE_NAME       (tableName)      char 64
+OUTPUT (single)
+  CONSTRAINT_NAME  (constraintName) char 64
+SQLCODE
+  select CONSTRAINT_NAME
+   from SYS.ALL_CONSTRAINTS
+   where OWNER = :OWNER
+   and   TABLE_NAME = :TABLE_NAME
+   and   CONSTRAINT_TYPE = 'P'
+ENDCODE
+
+PROC TableUniqueKeys
+INPUT
+  OWNER            (owner)          char 64
+  TABLE_NAME       (tableName)      char 64
+OUTPUT
+  CONSTRAINT_NAME  (constraintName) char 64
+SQLCODE
+  select CONSTRAINT_NAME
+   from SYS.ALL_CONSTRAINTS
+   where OWNER = :OWNER
+   and   TABLE_NAME = :TABLE_NAME
+   and   CONSTRAINT_TYPE = 'U'
+   order by CONSTRAINT_NAME
+ENDCODE
+
+PROC ForeignLinks
+INPUT
+  OWNER             (owner)           char 64
+OUTPUT
+  TABLE_NAME        (tableName)       char 64
+  LINK_NAME         (linkName)        char 64
+SQLCODE
+  select distinct a.TABLE_NAME
+  , b.TABLE_NAME LINK_NAME
+   from SYS.ALL_CONSTRAINTS a, SYS.ALL_CONSTRAINTS b
+   where a.OWNER = :OWNER
+   and   a.CONSTRAINT_TYPE = 'R'
+   and   b.OWNER = a.R_OWNER
+   and   b.CONSTRAINT_NAME = a.R_CONSTRAINT_NAME
+   and   a.TABLE_NAME <> b.TABLE_NAME
+   order by a.TABLE_NAME
+ENDCODE
+
+PROC TableForeignKeys
+INPUT
+  OWNER             (owner)           char 64
+  TABLE_NAME        (tableName)       char 64
+OUTPUT
+  CONSTRAINT_NAME   (constraintName)  char 64
+  R_CONSTRAINT_NAME (rConstraintName) char 64
+  R_OWNER           (rOwner)          char 64
+  R_TABLE_NAME      (rTableName)      char 64
+SQLCODE
+  select a.CONSTRAINT_NAME
+  , a.R_CONSTRAINT_NAME
+  , a.R_OWNER
+  , b.TABLE_NAME R_TABLE_NAME
+   from SYS.ALL_CONSTRAINTS a, SYS.ALL_CONSTRAINTS b
+   where a.OWNER = :OWNER
+   and   a.TABLE_NAME = :TABLE_NAME
+   and   a.CONSTRAINT_TYPE = 'R'
+   and   b.OWNER = a.R_OWNER
+   and   b.CONSTRAINT_NAME = a.R_CONSTRAINT_NAME
+   order by a.CONSTRAINT_NAME
+ENDCODE
+
+PROC TableTypeC
+INPUT
+  OWNER            (owner)          char 64
+  TABLE_NAME       (tableName)      char 64
+OUTPUT
+  CONSTRAINT_NAME  (constraintName) char 64
+  SEARCH_CONDITION (condition)      tlob
+SQLCODE
+  select CONSTRAINT_NAME
+  , SEARCH_CONDITION
+   from SYS.ALL_CONSTRAINTS
+   where OWNER = :OWNER
+   and   CONSTRAINT_TYPE = 'C'
+ENDCODE
+
+PROC ConstraintColumns
+INPUT
+  OWNER            (owner)          char 64
+  CONSTRAINT_NAME  (constraintName) char 64
+OUTPUT
+  TABLE_NAME       (tableName)      char 64
+  COLUMN_NAME      (column)         char 64
+  POSITION         (position)       int
+SQLCODE
+  select TABLE_NAME
+  , COLUMN_NAME
+  , POSITION
+   from SYS.ALL_CONS_COLUMNS
+   where OWNER = :OWNER
+   and   CONSTRAINT_NAME = :CONSTRAINT_NAME
+   order by POSITION
+ENDCODE
+
+PROC GetIndexTableSpace
+INPUT
+  OWNER            (owner)          char 64
+  INDEX_NAME       (indexName)      char 64
+OUTPUT (single)
+  TABLESPACE_NAME  (tableSpaceName) char 64
+  INITIAL_EXTENT   (initialExtent)  int
+  NEXT_EXTENT      (nextExtent)     int
+SQLCODE
+  select TABLESPACE_NAME
+  , INITIAL_EXTENT
+  , NEXT_EXTENT
+   from SYS.ALL_INDEXES
+   Where OWNER = :OWNER
+   and   INDEX_NAME = :INDEX_NAME
+   order by TABLESPACE_NAME
+ENDCODE
+
+PROC Indexes
+INPUT
+  OWNER            (owner)          char 64
+OUTPUT
+  INDEX_NAME       (indexName)      char 64
+  TABLE_NAME       (tableName)      char 64
+  TABLESPACE_NAME  (tableSpaceName) char 64
+  INITIAL_EXTENT   (initialExtent)  int
+  NEXT_EXTENT      (nextExtent)     int
+SQLCODE
+  select INDEX_NAME
+  , TABLE_NAME
+  , TABLESPACE_NAME
+  , INITIAL_EXTENT
+  , NEXT_EXTENT
+   from SYS.ALL_INDEXES
+   where OWNER = :OWNER
+   and   INDEX_NAME not in (select CONSTRAINT_NAME from ALL_CONSTRAINTS where OWNER = :OWNER)
+   order by INDEX_NAME
+ENDCODE
+
+PROC TableIndexes
+INPUT
+  OWNER            (owner)          char 64
+  TABLE_NAME       (tableName)      char 64
+OUTPUT
+  INDEX_NAME       (indexName)      char 64
+  TABLESPACE_NAME  (tableSpaceName) char 64
+  INITIAL_EXTENT   (initialExtent)  int
+  NEXT_EXTENT      (nextExtent)     int
+SQLCODE
+  select INDEX_NAME
+  , TABLESPACE_NAME
+  , INITIAL_EXTENT
+  , NEXT_EXTENT
+   from SYS.ALL_INDEXES
+   where OWNER = :OWNER
+   and   TABLE_NAME = :TABLE_NAME
+   and   INDEX_NAME not in (select CONSTRAINT_NAME from ALL_CONSTRAINTS where OWNER = :OWNER)
+   order by INDEX_NAME
+ENDCODE
+
+PROC IndexColumns
+INPUT
+  INDEX_OWNER      (owner)          char 64
+  INDEX_NAME       (indexName)      char 64
+OUTPUT
+  COLUMN_POSITION  (position)       int
+  TABLE_OWNER      (tableOwner)     char 64
+  TABLE_NAME       (tableName)      char 64
+  COLUMN_NAME      (column)         char 64
+SQLCODE
+  select COLUMN_POSITION
+  , TABLE_OWNER
+  , TABLE_NAME
+  , COLUMN_NAME
+   from SYS.ALL_IND_COLUMNS
+   where INDEX_OWNER = :INDEX_OWNER
+   and   INDEX_NAME = :INDEX_NAME
+   order by COLUMN_POSITION
+ENDCODE
+
+PROC TableColumns
+INPUT
+  OWNER              (owner)          char 64
+  TABLE_NAME         (tableName)      char 64
+OUTPUT
+  COLUMN_ID          (columnID)       int
+  COLUMN_NAME        (columnName)     char 64
+  DATA_TYPE          (dataType)       char 32
+  DATA_LENGTH        (dataLength)     int
+  DATA_PRECISION     (dataPrecision)  int
+  DATA_SCALE         (dataScale)      int
+  NULLABLE           (nullable)       char 1
+  DEFAULT_LENGTH     (defaultLength)  int
+  DATA_DEFAULT       (defaultValue)   tlob
+SQLCODE
+  select COLUMN_ID
+  , COLUMN_NAME
+  , DATA_TYPE
+  , DATA_LENGTH
+  , nvl(DATA_PRECISION, -1)
+  , nvl(DATA_SCALE, -1)
+  , NULLABLE
+  , nvl(DEFAULT_LENGTH, -1)
+  , DATA_DEFAULT
+   from SYS.ALL_TAB_COLUMNS
+   where OWNER =  :OWNER
+   and TABLE_NAME = :TABLE_NAME
+   order by COLUMN_ID
+ENDCODE
+
+PROC TableSequence
+INPUT
+  OWNER              (owner)          char 64
+  TABLE_NAME         (tableName)      char 64
+  SEQUENCE_NAME      (sequenceName)   char 64
+OUTPUT
+  COLUMN_NAME        (columnName)     char 64
+SQLCODE
+  select
+    col.COLUMN_NAME
+   from SYS.ALL_SEQUENCES seq
+      , SYS.ALL_CONSTRAINTS con
+      , SYS.ALL_CONS_COLUMNS col
+   where seq.SEQUENCE_OWNER  = :OWNER
+   and   seq.SEQUENCE_NAME   = :SEQUENCE_NAME
+   and   con.OWNER           = :OWNER
+   and   con.CONSTRAINT_TYPE = 'P'
+   and   con.TABLE_NAME      = :TABLE_NAME
+   and   col.OWNER           = :OWNER
+   and   col.TABLE_NAME      = :TABLE_NAME
+   and   col.CONSTRAINT_NAME = con.CONSTRAINT_NAME
+ENDCODE
+
+PROC TableGrants
+INPUT
+  GRANTOR              (grantor)          char 64
+  TABLE_NAME           (tableName)        char 64
+OUTPUT
+  GRANTEE              (grantee)          char 64
+  TABLE_SCHEMA         (schema)           char 64
+  PRIVILEGE            (privilege)        char 64
+SQLCODE
+  select GRANTEE
+  , TABLE_SCHEMA
+  , PRIVILEGE
+   from SYS.ALL_TAB_PRIVS
+   where GRANTOR = :GRANTOR
+   and TABLE_NAME = :TABLE_NAME
+ENDCODE
+
+PROC Sequences
+INPUT
+  SEQUENCE_OWNER       (owner)            char 64
+OUTPUT
+  SEQUENCE_NAME        (name)             char 64
+  MIN_VALUE            (minValue)         double
+  MAX_VALUE            (maxValue)         double
+  INCREMENT_BY         (increment)        double
+  CYCLE_FLAG           (cycleFlag)        char 1
+  ORDER_FLAG           (orderFlag)        char 1
+  CACHE_SIZE           (cache)            double
+  LAST_NUMBER          (startWith)        double
+SQLCODE
+  select SEQUENCE_NAME
+  , MIN_VALUE
+  , MAX_VALUE
+  , INCREMENT_BY
+  , CYCLE_FLAG
+  , ORDER_FLAG
+  , CACHE_SIZE
+  , LAST_NUMBER
+   from SYS.ALL_SEQUENCES
+   where SEQUENCE_OWNER = :SEQUENCE_OWNER
+ENDCODE
+
+PROC Synonyms
+INPUT
+  TABLE_OWNER          (tableOwner)       char 64
+OUTPUT
+  OWNER                (owner)            char 64
+  SYNONYM_NAME         (synonym)          char 64
+  TABLE_NAME           (tableName)        char 64
+SQLCODE
+  select OWNER
+  , SYNONYM_NAME
+  , TABLE_NAME
+   from SYS.ALL_SYNONYMS
+   where TABLE_OWNER = :TABLE_OWNER
+ENDCODE
+
+PROC Views
+INPUT
+  OWNER              (owner)          char 64
+OUTPUT
+  VIEW_NAME          (name)           char 64
+  TEXT_LENGTH        (textLength)     int
+  TEXT               (text)           tlob
+SQLCODE
+  select VIEW_NAME
+  , TEXT_LENGTH
+  , TEXT
+   from SYS.ALL_VIEWS
+   where OWNER = :OWNER
+ENDCODE
+
+PROC ViewColumns
+INPUT
+  OWNER              (owner)          char 64
+  VIEW_NAME          (name)           char 64
+OUTPUT
+  COLUMN_ID          (position)       int
+  COLUMN_NAME        (column)         char 64
+SQLCODE
+  select COLUMN_ID
+  , COLUMN_NAME
+   from SYS.ALL_TAB_COLUMNS
+   where OWNER = :OWNER
+   and   TABLE_NAME = :VIEW_NAME
+   order by COLUMN_ID
+ENDCODE

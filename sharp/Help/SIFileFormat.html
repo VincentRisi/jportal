@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Format of an SI file</title>
+</head>
+<body>
+<h1>Format of an SI File</h1>
+You can use single line comments
+(those that start with // and
+multiline comments /* ... */) almost anywhere in the SI file. The
+code&nbsp; between <span style="color: rgb(51, 0, 153);">SQLCODE</span>
+... <span style="color: rgb(51, 0, 153);">ENDCODE</span>, <span
+ style="color: rgb(51, 0, 153);">SQLDATA</span> ... <span
+ style="color: rgb(51, 0, 153);">ENDDATA</span>&nbsp; must
+use Sql style comments and these comments are not recognised by the
+AnyDB
+compiler. <br>
+<br>
+The older <span style="color: rgb(51, 0, 153);">CODE</span> ... <span
+ style="color: rgb(51, 0, 153);">ENDCODE</span> and <span
+ style="color: rgb(51, 0, 153);">DATA</span> ... <span
+ style="color: rgb(51, 0, 153);">ENDDATA</span> constructs have been
+deprecated and their usage should be avoided. <br>
+<br>
+Blanks, tabs, carriage
+returns, line feeds and comments are generally regarded as whitespace
+in
+the normal lexical state. After the keywords <span
+ style="color: rgb(51, 0, 153);">SQLCODE</span> and <span
+ style="color: rgb(51, 0, 153);">SQLDATA</span> the lexical state
+changes and treats subsequent complete lines as tokens until a
+corresponding
+<span style="color: rgb(51, 0, 153);">ENDCODE</span> or <span
+ style="color: rgb(51, 0, 153);">ENDDATA</span> is seen. <br>
+<br>
+The first portion of the SI file is the <a href="#Database_Portion">Database
+Portion</a>. We are showing keywords in uppercase and the in order that
+the
+keywords must be entered. Sometimes you may want to use a keyword as a
+name, this can be done by escaping the sequence in <span
+ style="color: rgb(51, 0, 153);">L'...'</span>, eg. if the
+database name was database then you would use <span
+ style="color: rgb(51, 0, 153);">DATABASE</span> <span
+ style="color: rgb(51, 0, 153);">L'database'</span>.<br>
+<h2><a name="Database_Portion"></a>Database Portion</h2>
+<pre><span style="color: rgb(51, 0, 153);">DATABASE</span> name                // The database name<br>(<span
+ style="color: rgb(51, 0, 153);">FLAGS</span> (string)+)*           // The outer (...)* indicates 0 or more <br>                             // and the inner (...)+ indicates 1 or more<br>(<span
+ style="color: rgb(51, 0, 153);">PACKAGE</span> name(.name)*)?      // The outer (...)? indicates 0 or 1<br>(<span
+ style="color: rgb(51, 0, 153);">OUTPUT</span> (name|string))?      // The inner (...|...) indicates choice name or string<br><span
+ style="color: rgb(51, 0, 153);">SERVER</span> (name|string)         // Server name<br>(<span
+ style="color: rgb(51, 0, 153);">USERID</span> name <span
+ style="color: rgb(51, 0, 153);">PASSWORD</span> name)? // Connection information for DDL Generator<br>(<a
+ href="#Table_Definitions"><span style="font-weight: bold;">Table Definitions</span></a>)*<br></pre>
+As you can see from above <span style="color: rgb(51, 0, 153);">DATABASE</span>
+and <span style="color: rgb(51, 0, 153);">SERVER</span> are
+always required, but the others may be required for the generators
+used. If you are generating java or dotnet code you may wish to have a
+<span style="color: rgb(51, 0, 153);">PACKAGE</span>. The DDL is
+generated using the <span style="color: rgb(51, 0, 153);">DATABASE</span>
+name for the SQL file and
+you may wish to use <span style="color: rgb(51, 0, 153);">OUTPUT</span>
+name for this, because you have more than
+one SI file with the same <span style="color: rgb(51, 0, 153);">DATABASE</span>
+name. Following the <a href="#Database_Portion">Database Portion</a>
+you can have one or more <a href="#Table_Definitions">Table Definitions</a>.
+Some people like one table
+definition per file, others like to place the tables in dependancy
+sequence and have clusters of tables per file.<br>
+<h2><a name="Table_Definitions"></a>Table Definitions</h2>
+<pre><span style="color: rgb(51, 0, 153);">TABLE</span> name (<span
+ style="font-weight: bold;">'('</span> alias <span
+ style="font-weight: bold;">')'</span>)? // the alias is optional, the generators <br>                            // generally use this for Code (not DDL)<br>(<span
+ style="color: rgb(51, 0, 153);">CHECK</span> string)?             // Check string for DDL Generators<br>(<span
+ style="font-weight: bold;">'<span style="color: rgb(51, 0, 153);">**</span>'</span> restline)*            // Comments about the table the generators can use<br>(<span
+ style="color: rgb(51, 0, 153);">OPTIONS</span> (string)+)*        // Options about the table the generators can use<br>(<a
+ href="#Field_Definitions"><span style="font-weight: bold;">Field Definitions</span></a>)*        // An existing table may be defined without field definitions<br>(<a
+ href="#Extra_Definitions"><span style="font-weight: bold;">Extra Definitions</span></a>)*        // The extras are the Keys, Grants, Links, Views<br>(<a
+ href="#Proc_Definitions"><span style="font-weight: bold;">Proc Definitions</span></a>)*         // These are the things that AnyDB is really about</pre>
+<h2><a name="Field_Definitions"></a>Field Definitions</h2>
+<pre>name (<span style="font-weight: bold;">'('</span> alias <span
+ style="font-weight: bold;">')'</span>)?       // Optional alias for Code (DDL normally uses name)<br>(<span
+ style="color: rgb(51, 0, 153);">ANSICHAR</span> (<span
+ style="font-weight: bold;">charSize</span>)?       // Blank padded character<br>|<span
+ style="color: rgb(51, 0, 153);">BLOB</span> (<span
+ style="font-weight: bold;">charSize</span>)?           // Binary large object (generator dependant)<br>|<span
+ style="color: rgb(51, 0, 153);">TLOB</span> (<span
+ style="font-weight: bold;">charSize</span>)?           // Text large object (generator dependant)<br>|<span
+ style="color: rgb(51, 0, 153);">BOOLEAN</span>                    // Not often implemented non standard type<br>|<span
+ style="color: rgb(51, 0, 153);">BYTE</span> (<span
+ style="font-weight: bold;">enumDef</span>)?            // 8 bit number (0 to 255 or -128 to 127)<br>|<span
+ style="color: rgb(51, 0, 153);">CHAR</span> (<span
+ style="font-weight: bold;">charSize</span>)?           // Null terminated var char<br>|<span
+ style="color: rgb(51, 0, 153);">SHORT</span> (<span
+ style="font-weight: bold;">enumDef</span>)?           // 16 bit number (0 to 65535 or -32768 to 32767<br>|<span
+ style="color: rgb(51, 0, 153);">INT</span> (<span
+ style="font-weight: bold;">enumDef</span>)?             // 32 bit number (work it out for yourself)<br>|<span
+ style="color: rgb(51, 0, 153);">LONG</span>                       // 32 or 64 bit integer <br>|<span
+ style="color: rgb(51, 0, 153);">UID</span>                        // Not often implemented non standard type<br>|<span
+ style="color: rgb(51, 0, 153);">DATE</span>                       // Just the Date<br>|<span
+ style="color: rgb(51, 0, 153);">DATETIME</span>                   // The Date together with the time<br>|<span
+ style="color: rgb(51, 0, 153);">TIME</span>                       // Just the Time<br>|<span
+ style="color: rgb(51, 0, 153);">TIMESTAMP</span>                  // The Date and Time as a TimeStamp<br>|<span
+ style="color: rgb(51, 0, 153);">USERSTAMP</span>                  // A UserStamp<br>|<span
+ style="color: rgb(51, 0, 153);">SEQUENCE</span>                   // Used for sequence number generators<br>|<span
+ style="color: rgb(51, 0, 153);">IDENTITY</span>                   // Used for RDBMS that have identity<br>|<span
+ style="color: rgb(51, 0, 153);">DOUBLE</span> (<span
+ style="font-weight: bold;">floatDef</span>)?         // 64 bit IEEE double<br>|<span
+ style="color: rgb(51, 0, 153);">FLOAT</span> (<span
+ style="font-weight: bold;">floatDef</span>)?          // 32 or 64 bit IEEE double<br>|<span
+ style="color: rgb(51, 0, 153);">MONEY</span>)                     // Not often implemented non standard type<br>(<span
+ style="color: rgb(51, 0, 153);">DEFAULT</span> string|(<span
+ style="color: rgb(51, 0, 153);">NOT</span>)? <span
+ style="color: rgb(51, 0, 153);">NULL</span>|<span
+ style="color: rgb(51, 0, 153);">CHECK</span> string)* <br></pre>
+The charSize is either an integral number or an integral number in
+parenthesis or brackets, e.g. Fred char(10). FloatDef is two numbers
+indicating precision and scale, e.g. Value float(15,4) indicating a 15
+digit number with 4 decimal places. Generally the generator do not
+distinguish between float and double, they are both treated as double
+normally, but again that is up to the generation required. The enumDef
+is a very powerful construct, e.g. State byte (ok=1, err=2). The DDL
+could implement a check in the database, although we have found that
+checks can be restrictive from a developers point of view, especially
+when a Database is maintained by DBA's. By default fields are generally
+assumed to be NOT NULL, ie. fields that can be NULL must be stated to
+be so. This is not the norm in ANSI SQL but from a programmers point of
+view I do not like the the extra testing and uncertainty that NULL
+fields introduce. There is certainly a place for null fields but not by
+default. SEQUENCE is useful for databases that have sequence
+generators, Oracle, Interbase, PostgreSQL. IDENTITY is useful for those
+that do not use sequence generators like MsSqlServer, MySql.
+<h2><a name="Extra_Definitions"></a>Extra Definitions</h2>
+<pre>(<span style="color: rgb(51, 0, 153);">GRANT</span> (<span
+ style="color: rgb(51, 0, 153);">ALL</span>|<span
+ style="color: rgb(51, 0, 153);">DELETE</span>|<span
+ style="color: rgb(51, 0, 153);">INSERT</span>|<span
+ style="color: rgb(51, 0, 153);">SELECT</span>|<span
+ style="color: rgb(51, 0, 153);">UPDATE</span>)+ <span
+ style="color: rgb(51, 0, 153);">TO</span> (name)+ // Grant rights to users<br>|<span
+ style="color: rgb(51, 0, 153);">KEY</span> name (<span
+ style="color: rgb(51, 0, 153);">OPTIONS</span>)+ (<span
+ style="color: rgb(51, 0, 153);">UNIQUE</span>|<span
+ style="color: rgb(51, 0, 153);">PRIMARY</span>)? (columns)+    // Define Keys and Indexes<br>|<span
+ style="color: rgb(51, 0, 153);">LINK</span> table (columns)+                               // Define Foreign Keys<br>|<a
+ href="#View_Definition"><span style="font-weight: bold;">View Definition</span></a>)<br></pre>
+It is normally good pracise to have a primary key for each table in the
+database. Unique keys and other indexes to help speed up queries should
+also be discovered. Links are used to define foreign keys to other
+tables (or even perhaps to itself on occasion). The links expect that
+the target table has a primary key and often null fields are useful for
+foreign keys. In the quest for simplicity most of the time programmers
+like to have a single logon to the database. In this case grants are
+not used very often. The problem with grants generally occurs when
+migrating database data to other machines. But grants should be
+considered together with different logins. I have chosen to expand (or
+expound) view definition separately.
+<h2><a name="View_Definition"></a>View Definition</h2>
+<pre><span style="color: rgb(51, 0, 153);">VIEW</span> name (<span
+ style="color: rgb(51, 0, 153);">TO </span>(user)+)?<br><span
+ style="color: rgb(51, 0, 153);">OUTPUT</span> (name (<span
+ style="font-weight: bold;">'('</span> alias <span
+ style="font-weight: bold;">')'</span>)?)+<br><span
+ style="color: rgb(51, 0, 153);">SQLCODE</span><br>lines<br><span
+ style="color: rgb(51, 0, 153);">ENDCODE</span><br></pre>
+Views are a powerful construct and allow for the simplification of
+queries in some cases. Normally views are readonly but I am sure that
+in some RDBMS you may be able to do updates and inserts. I personally
+would avoid updates to views, mainly because I dislike defining NULL
+fields.<br>
+<h2><a name="Proc_Definitions"></a>Proc Definitions</h2>
+<pre>(<a href="#Standard_Proc">Standard Proc</a>|<a href="#User_Proc">User Proc</a>|<a
+ href="#Data_Blocks">Data Blocks</a>)</pre>
+<h3><a name="Standard_Proc"></a>Standard Proc</h3>
+<pre><span style="color: rgb(51, 0, 153);">PROC</span> <br>(<span
+ style="color: rgb(51, 0, 153);">INSERT</span><br>|<span
+ style="color: rgb(51, 0, 153);">BULKINSERT</span> (<span
+ style="font-weight: bold;">'('</span> number <span
+ style="font-weight: bold;">')'</span>)?<br>|<span
+ style="color: rgb(51, 0, 153);">UPDATE</span><br>|<span
+ style="color: rgb(51, 0, 153);">BULKUPDATE</span> (<span
+ style="font-weight: bold;">'('</span> number <span
+ style="font-weight: bold;">')'</span>)?<br>|<span
+ style="color: rgb(51, 0, 153);">DELETEONE</span><br>|<span
+ style="color: rgb(51, 0, 153);">DELETEALL</span><br>|<span
+ style="color: rgb(51, 0, 153);">SELECTONE</span> ((<span
+ style="color: rgb(51, 0, 153);">FOR</span>)? <span
+ style="color: rgb(51, 0, 153);">UPDATE</span>)?<br>|<span
+ style="color: rgb(51, 0, 153);">SELECTALL</span> ((<span
+ style="color: rgb(51, 0, 153);">IN</span>)? <span
+ style="color: rgb(51, 0, 153);">ORDER</span>)? ((<span
+ style="color: rgb(51, 0, 153);">FOR</span>)? <span
+ style="color: rgb(51, 0, 153);">UPDATE</span>)?<br>|<span
+ style="color: rgb(51, 0, 153);">COUNT</span><br>|<span
+ style="color: rgb(51, 0, 153);">EXISTS</span>)<br>(<span
+ style="color: rgb(51, 0, 153);">OPTIONS</span> (string)+)*</pre>
+<h3><a name="User_Proc"></a>User Proc</h3>
+<pre><span style="color: rgb(51, 0, 153);">PROC</span> name<br>(<span
+ style="font-weight: bold;">'<span style="color: rgb(51, 0, 153);">**</span>'</span> restline)*            // Comments about the proc the generators can use<br>(<span
+ style="color: rgb(51, 0, 153);">OPTIONS</span> (string)+)*        // Options about the proc the generators can use<br>(<span
+ style="color: rgb(51, 0, 153);">INPUT</span> (<span
+ style="font-weight: bold;">'('</span> <span
+ style="color: rgb(51, 0, 153);">MULTIPLE</span> | number <span
+ style="font-weight: bold;">')'</span>)? (<a
+ href="file:///C:/Download/codecs/Dichotomy_of_an_SI_file.html#Field_Definitions"><span
+ style="font-weight: bold;">Field Definitions</span></a>)+)? <br>(<span
+ style="color: rgb(51, 0, 153);">OUTPUT</span> (<span
+ style="font-weight: bold;">'('</span> <span
+ style="color: rgb(51, 0, 153);">SINGLE</span> | number <span
+ style="font-weight: bold;">')'</span>)? (<a
+ href="file:///C:/Download/codecs/Dichotomy_of_an_SI_file.html#Field_Definitions"><span
+ style="font-weight: bold;">Field Definitions</span></a>)+)?<br><span
+ style="color: rgb(51, 0, 153);">SQLCODE</span><br>(lines)+    // Each line parsed later for dynamic parameters &amp;inp('('number')')?<br><span
+ style="color: rgb(51, 0, 153);">ENDCODE</span></pre>
+<h3><a name="User_Proc"></a></h3>
+<h3><a name="Data_Blocks"></a>Data Blocks</h3>
+<pre><span style="color: rgb(51, 0, 153);">SQLDATA</span><br>(lines)+<br><span
+ style="color: rgb(51, 0, 153);">ENDDATA</span><br></pre>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Query Class</title>
+</head>
+<body>
+<h1>Query Class</h1>
+<pre>package bbd.jportal;<br><br>import java.util.*;<br>import java.sql.*;<br><br>public class Query<br>{<br>  public PreparedStatement prep;<br>  public ResultSet result;<br>  public Query(PreparedStatement prep, ResultSet result)<br>  {<br>    this.prep = prep;<br>    this.result = result;<br>  }<br>  public void close() throws SQLException<br>  {<br>    result.close();<br>    prep.close();<br>  }<br>}<br></pre>
+</body>
+</html>

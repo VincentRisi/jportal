@@ -1,0 +1,205 @@
+<?xml version="1.0" ?>
+<!--
+ Copyright (c) 1996, 2004 Vincent Risi in Association 
+                          with Barone Budge and Dominick 
+ All rights reserved. 
+ This program and the accompanying materials are made available 
+ under the terms of the Common Public License v1.0 
+ which accompanies this distribution and is available at 
+ http://www.eclipse.org/legal/cpl-v10.html 
+ Contributors:
+    Vincent Risi
+ 
+ System : JPortal
+ $Date: 2004/10/18 13:48:11 $
+ $Revision: 411.1 $ // YMM.Revision
+ -->
+<SyntaxDefinition name="AnyDB" extensions=".si">
+  <Environment>
+    <Default bold="true" italic="false" color="MidnightBlue" bgcolor="Azure" />
+    <Selection bold="false" italic="false" color="White" bgcolor="MidnightBlue" />
+    <VRuler bold="false" italic="false" color="Gainsboro" />
+    <InvalidLines bold="false" italic="false" color="Red" />
+    <CaretMarker bold="false" italic="false" color="Yellow" />
+    <LineNumbers bold="false" italic="false" color="SaddleBrown" bgcolor="FloralWhite" />
+    <FoldLine bold="false" italic="false" color="Gray" bgcolor="Black" />
+    <FoldMarker bold="false" italic="false" color="Gray" bgcolor="White" />
+    <EOLMarkers bold="false" italic="false" color="#E0E0E5" />
+    <SpaceMarkers bold="false" italic="false" color="GhostWhite" />
+    <TabMarkers bold="true" italic="true" color="DeepPink"/>
+  </Environment>
+  <Properties>
+    <Property name="LineComment1" value="//"/>
+  </Properties>
+  <Digits name="Digits" bold="true" italic="false" bgcolor="LightCyan" color="DarkBlue" />
+	<RuleSets>
+		<RuleSet ignorecase="true" noescapesequences="true">
+			<Delimiters>&amp;&lt;&gt;~!@%^*-+=|\#/[]:;"' ,.?(){}</Delimiters>
+			<Span name = "LineComment1" bold = "false" italic = "true" color = "Gray" stopateol = "true">
+			   	<Begin>//</Begin>
+			</Span>
+			<Span name = "LineComment2" bold = "false" italic = "true" color = "LimeGreen" stopateol = "true">
+			   	<Begin>#</Begin>
+			</Span>
+			<Span name = "LineComment3" bold = "true" italic = "true" color = "Olive" stopateol = "true">
+			   	<Begin>**</Begin>
+			</Span>
+			<Span name = "BlockComment" bold = "false" italic = "true" color = "Gray" stopateol = "false">
+				<Begin>/*</Begin>
+				<End>*/</End>
+			</Span>
+			<Span name = "String1" bold = "false" italic = "false" color = "DarkGreen" bgcolor="MintCream" stopateol = "true">
+        <Begin color="DarkGreen" bgcolor="MintCream">'</Begin>
+				<End color="DarkGreen" bgcolor="MintCream">'</End>
+			</Span>
+			<Span name = "String2" bold = "false" italic = "false" color = "DarkGreen" bgcolor="MintCream" stopateol = "true">
+        <Begin color="DarkGreen" bgcolor="MintCream">"</Begin>
+        <End color="DarkGreen" bgcolor="MintCream">"</End>
+			</Span>
+      <Span name = "Curlies" rule="curlies"  bold = "true" italic = "false" bgcolor="Linen" color = "SaddleBrown" stopateol = "true">
+        <Begin bgcolor="Linen" color = "SaddleBrown">{</Begin>
+        <End bgcolor="Linen" color = "SaddleBrown">}</End>
+      </Span>
+      <Span name="SqlCode" rule="SqlCode" bold="true" italic="false" color="DarkSlateGray" stopateol="false">
+				<Begin bold = "true" color="DarkBlue">sqlcode</Begin>
+				<End bold = "true" color="DarkBlue">endcode</End>
+			</Span>
+			<Span name="SqlData" rule="SqlCode" bold="true" italic="false" color="DarkSlateGray" stopateol="false">
+				<Begin bold="true" color="DarkBlue">sqldata</Begin>
+				<End bold="true" color="DarkBlue">enddata</End>
+			</Span>
+      <KeyWords name="Punctuation" bold="true" italic="false" color="DarkViolet" >
+                <Key word="`" />
+                <Key word="~" />
+                <Key word="!" />
+                <Key word="@" />  
+                <Key word="#" />
+                <Key word="$" /> 
+                <Key word="%" />  
+                <Key word="^" />  
+                <Key word="&amp;" />  
+                <Key word="*" />
+                <Key word="(" />
+                <Key word=")" />
+                <Key word="_" />  
+                <Key word="+" />  
+				<Key word="-" />
+				<Key word="=" />
+				<Key word="[" />
+				<Key word="]" />
+				<Key word="\" />
+				<Key word="{" />
+				<Key word="}" />
+				<Key word="|" />
+				<Key word=";" />
+				<Key word=":" />
+				<Key word="&lt;" />
+				<Key word="&gt;" />
+				<Key word="&lt;" />
+				<Key word="?" />
+				<Key word="," />
+				<Key word="." />
+				<Key word="/" />
+			</KeyWords>
+      <KeyWords name = "KeyWords" bold = "true" italic = "false" color = "Blue">
+                <Key word="all" />
+                <Key word="cascade" />
+                <Key word="check" />
+                <Key word="code" />
+                <Key word="data" />
+                <Key word="database" />
+                <Key word="default" />
+                <Key word="delete" />
+                <Key word="dynamic" />
+                <Key word="flags" />
+                <Key word="grant" />
+                <Key word="import" />
+                <Key word="key" />
+                <Key word="link" />
+                <Key word="multiple" />
+                <Key word="names" />
+                <Key word="options" />
+                <Key word="package" />
+                <Key word="password" />
+                <Key word="primary" />
+                <Key word="server" />
+                <Key word="single" />
+                <Key word="sql" />
+                <Key word="table" />
+                <Key word="to" />
+                <Key word="unique" />
+                <Key word="userid" />
+                <Key word="view" />
+                <Key word="parm" />
+                <Key word="shows" />
+                <Key word="lookup" />
+			</KeyWords>
+      <KeyWords name = "KeyWords2" bold = "true" italic = "false" color = "Navy">
+        <Key word="bulkinsert" />
+        <Key word="bulkupdate" />
+        <Key word="delete" />
+        <Key word="deleteall" />
+        <Key word="deleteone" />
+        <Key word="exists" />
+        <Key word="insert" />
+        <Key word="selectall" />
+        <Key word="sorted" />
+        <Key word="selectone" />
+        <Key word="update" />
+      </KeyWords>
+      <KeyWords name = "KeyWords3" bold = "true" italic = "false" color = "DarkBlue">
+        <Key word="proc" />
+        <Key word="input" />
+        <Key word="inout" />
+        <Key word="output" />
+      </KeyWords>
+      <KeyWords name = "NativeTypes" bold = "true" italic = "false" color = "Green">
+                <Key word="ansi" />
+                <Key word="ansichar" />
+                <Key word="blob" />
+                <Key word="boolean" />
+                <Key word="byte" />
+                <Key word="char" />
+                <Key word="clob" />
+                <Key word="date" />
+                <Key word="datetime" />
+                <Key word="double" />
+                <Key word="float" />
+                <Key word="identity" />
+                <Key word="int" />
+                <Key word="integer" />
+                <Key word="long" />
+                <Key word="money" />
+                <Key word="sequence" />
+                <Key word="short" />
+                <Key word="single" />
+                <Key word="time" />
+                <Key word="timestamp" />
+                <Key word="tlob" />
+                <Key word="userstamp" />
+			</KeyWords>
+			<KeyWords name = "DradNats" bold = "true" italic = "true" bgcolor="PowderBlue" color = "DarkBlue">
+        <Key word="standard" />
+			</KeyWords>
+		</RuleSet>	
+		<RuleSet name="SqlCode" reference = "SQL" ignorecase="true" noescapesequences="true">
+		</RuleSet>
+		<RuleSet name="RuleDefinition" ignorecase="false" noescapesequences="true">
+		</RuleSet>
+    <RuleSet name="curlies" ignorecase="true">
+      <KeyWords name = "ParmTypes" bold = "true" italic = "false" bgcolor="Linen" color = "Sienna">
+        <Key word="parm" />
+        <Key word="shows" />
+        <Key word="supplied" />
+        <Key word="viewonly" />
+        <Key word="reader" />
+        <Key word="cache" />
+        <Key word="delete" />
+        <Key word="insert" />
+        <Key word="delete" />
+        <Key word="update" />
+      </KeyWords>
+    </RuleSet>
+	</RuleSets>
+</SyntaxDefinition>
+		

@@ -1,0 +1,555 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+<li><object type="text/sitemap">
+  <param name="Name" value="Alias">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Alias">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="CharSize">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#CharSize">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Check">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Check">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Column">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Column">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="DataType">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#DataType">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Data_Blocks">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Data_Blocks">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Database">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Database">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Database">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Database_Portion">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Database_Portion">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Default">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Default">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Enum">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Enum">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="EnumValue">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#EnumValue">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Extra_Definitions">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Extra_Definitions">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Extras">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Extras">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Field">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Field">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Field">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Field_Definitions">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Field_Definitions">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Flag">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Flag">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="FloatSize">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#FloatSize">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Generator">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Generator">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Grant">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Grant">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Grant">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Ident">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Ident">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Input">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Input">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="InputType">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#InputType">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Key">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Key">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Key">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Line">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Line">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Link">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Link">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Link">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Modifier">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Modifier">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="NewCode">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#NewCode">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="NewData">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#NewData">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="NewViewCode">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#NewViewCode">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Null">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Null">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="OldCode">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#OldCode">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="OldData">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#OldData">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="OldViewCode">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#OldViewCode">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Options">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Options">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Output">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Output">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="OutputType">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#OutputType">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Param">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Param">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Permission">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Permission">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Proc">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Proc">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Proc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Proc_Definitions">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Proc_Definitions">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Sequence">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Sequence">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Standard_Proc">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Standard_Proc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="StdProc">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#StdProc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Table">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Table">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Table">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Table_Definitions">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Table_Definitions">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="Tabledef">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Tabledef">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="User">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#User">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="UserProc">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#UserProc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="User_Proc">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#User_Proc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="View">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#View">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#View">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value="View_Definition">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#View_Definition">
+</object>
+
+J:\sharp\Help>index.py bnf.html GenerationPrinciple.html SIFileFormat.html
+<!-- Key:Backus Naur Form,bnf.html duplicate -->
+<!-- User_Proc:Format of an SI file,SIFileFormat.html duplicate -->
+<li><object type="text/sitemap">
+  <param name="Name" value=" Alias">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Alias">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" CharSize">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#CharSize">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Check">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Check">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Column">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Column">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" DataType">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#DataType">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Data_Blocks">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Data_Blocks">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Database">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Database">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Database">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Database_Portion">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Database_Portion">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Default">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Default">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Enum">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Enum">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" EnumValue">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#EnumValue">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Extra_Definitions">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Extra_Definitions">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Extras">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Extras">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Field">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Field">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Field">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Field_Definitions">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Field_Definitions">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Flag">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Flag">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" FloatSize">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#FloatSize">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Generator">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Generator">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Grant">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Grant">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Grant">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Ident">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Ident">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Input">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Input">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" InputType">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#InputType">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Key">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Key">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Key">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Line">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Line">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Link">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Link">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Link">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Modifier">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Modifier">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" NewCode">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#NewCode">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" NewData">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#NewData">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" NewViewCode">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#NewViewCode">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Null">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Null">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" OldCode">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#OldCode">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" OldData">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#OldData">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" OldViewCode">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#OldViewCode">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Options">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Options">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Output">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Output">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" OutputType">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#OutputType">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Param">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Param">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Permission">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Permission">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Proc">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Proc">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Proc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Proc_Definitions">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Proc_Definitions">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Sequence">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Sequence">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Standard_Proc">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Standard_Proc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" StdProc">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#StdProc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Table">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Table">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#Table">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Table_Definitions">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#Table_Definitions">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" Tabledef">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#Tabledef">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" User">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#User">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" UserProc">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#UserProc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" User_Proc">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#User_Proc">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" View">
+  <param name="Name" value="Backus Naur Form">
+  <param name="Local" value="bnf.html#View">
+  <param name="Name" value="Principle of Generation">
+  <param name="Local" value="GenerationPrinciple.html#View">
+</object>
+<li><object type="text/sitemap">
+  <param name="Name" value=" View_Definition">
+  <param name="Name" value="Format of an SI file">
+  <param name="Local" value="SIFileFormat.html#View_Definition">
+</object>
+</UL>
+</BODY></HTML>
