@@ -53,19 +53,18 @@ int main(int argc, char* argv[])
   sources.compare = compare;
   sources.sort();
   memset(fpath, 0, sizeof(fpath));
+#ifdef WIN32
+#define S_ISDIR(type) ((type & _S_IFDIR) == _S_IFDIR) 
+#define S_ISREG(type) ((type & _S_IFREG) == _S_IFREG) 
+#endif
   for (int i = 0; i < sources.getCount(); i++)
   {
     if (strcmp(sources[i], fpath) != 0)
     {
       struct stat path_stat;
       stat(fpath, &path_stat);
-      //printf("dir:%d chr:%d blk:%d reg:%d\n"
-      //  , S_ISDIR(path_stat.st_mode) 
-      //  , S_ISCHR(path_stat.st_mode) 
-      //  , S_ISBLK(path_stat.st_mode) 
-      //  , S_ISREG(path_stat.st_mode) 
-      //  );
-      if (S_ISDIR(path_stat.st_mode) == 0 && S_ISREG(path_stat.st_mode == 0))
+      if (S_ISDIR(path_stat.st_mode) == false
+      && (S_ISREG(path_stat.st_mode) == false))
         continue;
       strncpy(fpath, sources[i], sizeof(fpath) - 1);
       printf("%s\n", fpath);    
