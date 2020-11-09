@@ -161,6 +161,7 @@ TOKEN :
 TOKEN[IGNORE_CASE] :
 { <INPUT:      "input">
 | <OUTPUT:     "output">
+| <OPENAPI:    "openapi"|"swagger">
 }
 
 TOKEN :
@@ -187,6 +188,10 @@ SPECIAL_TOKEN[IGNORE_CASE] :
 <CODESTATE> TOKEN :
 {
   <LINENO : (" "|"\t")* "#line" (" "|"\t")+ <INTEGER> (" "|"\t")+ <QSTRING> (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+}
+
+<CODESTATE> TOKEN :
+{ <PYTHON : (" "|"\t")* "PYTHON:" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
 }
 
 <CODESTATE> TOKEN :
@@ -256,12 +261,10 @@ void idlStart() :
 
 void idlSubModule() :
 {
-  //Token t;
+  Token t;
 }
 {
-  <MODULE>
-  //t =
-  <IDENTIFIER> (";")?
+  <MODULE> t = <IDENTIFIER> (";")?
 }
 
 String idlPackage() :
@@ -289,14 +292,21 @@ void idlCodeBlock() :
 {
   Token t;
   boolean hasLinemarker = false;
+  boolean markPython = false;
 }
 {
+  (
+  LOOKAHEAD(2)
   t = <LINENO>
   {
     if (module.codeStart == 0)
       module.codeStart = t.beginLine;
     hasLinemarker = true;
-      module.code.addElement(t.image);
+    module.code.addElement(t.image);
+  }
+| t = <PYTHON>
+  {
+    markPython = true;
   }
 | t = <CODELINE>
   {
@@ -304,8 +314,11 @@ void idlCodeBlock() :
       module.codeStart = t.beginLine;
     if (module.codeLine == 0 && hasLinemarker == false)
       module.codeLine = t.beginLine;
-    module.code.addElement(t.image);
-  }
+    if (markPython == true)
+      module.python.addElement(t.image);
+    else    
+      module.code.addElement(t.image);
+  } )+
 }
 
 void idlMessage() :
@@ -417,6 +430,7 @@ void idlStructure() :
 {
   Token t;
   boolean hasLinemarker = false;
+  boolean markPython = false;
 }
 {
   {
@@ -468,11 +482,18 @@ void idlStructure() :
       hasLinemarker = true;
       structure.code.addElement(t.image);
     }
+    | t = <PYTHON>
+      {
+        markPython = true;
+      }
     | t = <CODELINE>
       {
         if (structure.codeLine == 0 && hasLinemarker == false)
           structure.codeLine = t.beginLine;
-        structure.code.addElement(t.image);
+        if (markPython == true)
+          structure.python.addElement(t.image);
+        else  
+          structure.code.addElement(t.image);
       }
     ) *
     "}"
@@ -501,6 +522,7 @@ void idlFielddef() :
 
 void idlType() :
 {
+  Token t;
 }
 {
   idlTypeLookup()
@@ -712,10 +734,12 @@ void idlPrototypeActions() :
 {
   Token t;
   boolean hasLinemarker = false;
+  boolean markPython = false;
+  String work; 
 }
 {
   (
-    <MESSAGE> ":" (
+    <MESSAGE> (":")? (
     ( t = <IDENTIFIER> | t = <INTEGER> )
       {
         prototype.message = t.image;
@@ -727,6 +751,48 @@ void idlPrototypeActions() :
       }
     )
     (";") ?
+  ) ?
+  (
+    <OPENAPI> (":")?
+    ( t = <IDENTIFIER>
+    {
+      prototype.openApi = new OpenApi();
+      String s = t.image;
+      if (s.compareToIgnoreCase("put") == 0)
+        prototype.openApi.typeof = OpenApi.PUT;
+      else if (s.compareToIgnoreCase("patch") == 0)
+        prototype.openApi.typeof = OpenApi.PATCH;
+      else if (s.compareToIgnoreCase("get") == 0)
+        prototype.openApi.typeof = OpenApi.GET;
+      else if (s.compareToIgnoreCase("delete") == 0)
+        prototype.openApi.typeof = OpenApi.DELETE;
+      else if (s.compareToIgnoreCase("options") == 0)
+        prototype.openApi.typeof = OpenApi.OPTIONS;
+      else if (s.compareToIgnoreCase("head") == 0)
+        prototype.openApi.typeof = OpenApi.HEAD;
+      else if (s.compareToIgnoreCase("trace") == 0)
+        prototype.openApi.typeof = OpenApi.HEAD;
+      else if (s.compareToIgnoreCase("post") != 0)
+        prototype.openApi.typeof = OpenApi.IN_ERROR;
+    }
+    )
+    ( t = <IDENTIFIER>
+    {
+      work = t.image;
+      prototype.openApi.path = work;
+    }
+    | t = <QSTRING>
+    {
+      work = t.image;
+      prototype.openApi.path = work.substring(1, work.length() - 1);
+    }
+    )
+    ( t = <IDENTIFIER>
+    {
+      work = t.image;
+      prototype.openApi.tags = work;
+    }
+    ) ?
   ) ?
   (
     <INPUT> (":")?
@@ -752,11 +818,18 @@ void idlPrototypeActions() :
       hasLinemarker = true;
       prototype.code.addElement(t.image);
     }
+    | t = <PYTHON>
+      {
+        markPython = true;
+      }
     | t = <CODELINE>
     {
       if (prototype.codeLine == 0 && hasLinemarker == false)
         prototype.codeLine = t.beginLine;
-      prototype.code.addElement(t.image);
+      if (markPython == true)  
+        prototype.python.addElement(t.image);
+      else        
+        prototype.code.addElement(t.image);
     }
   ) *
 }
@@ -778,7 +851,7 @@ void idlAction() :
       action.addOperation(operation);
     }
   ) ?
-  ";"
+  (";") ?
 }
 
 void idlOperation() :

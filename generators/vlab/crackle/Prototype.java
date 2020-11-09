@@ -37,6 +37,7 @@ public class Prototype implements Serializable
   public Vector<String> code;
   public int codeLine;
   public int start;
+  public OpenApi openApi;
   public Prototype()
   {
     name = "";
@@ -50,6 +51,7 @@ public class Prototype implements Serializable
     code = new Vector<String>();
     codeLine = 0;
     start = 0;
+    openApi = null;
   }
 	public int hashCode(String data)
 	{
@@ -253,6 +255,18 @@ public class Prototype implements Serializable
       return false;
     if (inputs.size() > 0 || outputs.size() > 0)
       return true;
+    return false;
+  }
+  public boolean isPythonImpl()
+  {
+    if (python.size() > 0)
+      return true;
+    for (int i = 0; i < code.size(); i++)
+    {
+      String codeLine = (String) code.elementAt(i);
+      if (codeLine.indexOf("PYTHON:") >= 0 && i == 0)
+        return true;
+    }
     return false;
   }
   public String toString()

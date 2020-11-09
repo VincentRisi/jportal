@@ -2134,17 +2134,4 @@ public class CSNetCode extends Generator
     }
     return "unknown";
   }
-  static String indent(int lvl)
-  {
-    if (lvl == 0)
-    {
-      return "";
-    }
-    String ind = "";
-    for (int i = 0; i < lvl; i++)
-    {
-      ind = ind + "    ";
-    }
-    return ind;
-  }
 }

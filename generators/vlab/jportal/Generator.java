@@ -14,7 +14,7 @@ package vlab.jportal;
 import java.io.PrintWriter;
 import java.util.Vector;
 
-public abstract class Generator
+public abstract class Generator extends Writer
 {
 	public static void generate(Database database, String output, PrintWriter outLog)
   {
