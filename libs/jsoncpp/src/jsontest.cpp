@@ -110,8 +110,10 @@ void encode()
     name = "MaryDuck";
     const char* value = "Mary had a little duck, she wished she had a little luck";
     size_t len = strlen(value)+1;
+#if defined(JSON_GENERATE_SIZE)
     string namesize = string(name) + "_size_";
     record[namesize.c_str()] = len;
+#endif    
     record[name] = value;
     root[record_name] = record;
     FastWriter writer;

@@ -66,8 +66,10 @@ void DataBuilderJson::add(const char *name, int64 value, const char *io)
 
 void DataBuilderJson::add(const char *name, char *value, size_t size, const char *io)
 {
+#if defined(JSON_GENERATE_SIZE)
     string namesize = string(name) + "_size_";
     record[namesize.c_str()] = (int)size;
+#endif
     record[name] = value;
 }
 
