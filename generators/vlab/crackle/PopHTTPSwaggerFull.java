@@ -13,8 +13,8 @@
 package vlab.crackle;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -76,8 +76,7 @@ public class PopHTTPSwaggerFull extends Generator
       InputStream input = new FileInputStream(propertiesName);
       properties = new Properties();
       properties.load(input);
-    } 
-    catch (Exception ex)
+    } catch (Exception ex)
     {
       properties = null;
     }
@@ -191,6 +190,21 @@ public class PopHTTPSwaggerFull extends Generator
   }
 
   private static Map<String, String> done = new HashMap<String, String>();
+  
+  private static boolean fileExists(String fileName)
+  {
+    try
+    {
+      File f = new File(fileName);
+      return f.exists();
+    }
+    catch (Exception e)
+    {
+      outLog.println(format("%s - Exception", fileName));
+      return false;
+    }
+  }
+
   private static void generateDefinitions(Module module)
   {
     writeln("definitions:");
@@ -216,55 +230,49 @@ public class PopHTTPSwaggerFull extends Generator
         continue;
       int end = table.indexOf('.');
       table = table.substring(0, end);
-      String yaml2File;
-      yaml2File = format("%s%s/%s.yaml", urlPrefix, defSqlSub, table);
-      done.put(structName, table);
+      String name = format("%s%s/%s", urlPrefix, defSqlSub, table);
+      String yaml2File = format("%s.yaml2", name);
       try
       {
+        if (fileExists(yaml2File) == false)
+          yaml2File = format("%s.yaml", name);
+        done.put(structName, table);
         Reader input = new FileReader(yaml2File);
-        try
+        BufferedReader reader = new BufferedReader(input);
+        String line = null;
+        int state = 0;
+        while ((line = reader.readLine()) != null)
         {
-          BufferedReader reader = new BufferedReader(input);
-          String line = null;
-          int state = 0;
-          while ((line = reader.readLine()) != null)
+          switch (state)
           {
-            switch (state)
+          case 0:
+            if (line.contains(structName) == true)
             {
-            case 0:
-              if (line.contains(structName) == true)
-              {
-                state = 1;
-                writeln(line);
-              }
-              break;
-            case 1:
-              if (line.compareTo("...") == 0 || line.charAt(2) != ' ')
-                state = 2;
-              else
-                writeln(line);
-              break;
+              state = 1;
+              writeln(line);
             }
-            if (state == 2)
-              break;
+            break;
+          case 1:
+            if (line.compareTo("...") == 0 || line.charAt(2) != ' ')
+              state = 2;
+            else
+              writeln(line);
+            break;
           }
-          reader.close();
-          input.close();
-        } 
-        catch (IOException e)
-        {
-          outLog.println(format("%s - IOException", yaml2File));
+          if (state == 2)
+            break;
         }
-      } 
-      catch (FileNotFoundException e)
+        reader.close();
+        input.close();
+      } catch (IOException e)
       {
-        outLog.println(format("%s %s - FileNotFound", yaml2File, structure.name));
+        outLog.println(format("%s - IOException", yaml2File));
       }
     }
   }
 
   private static String lastPath = "";
-  
+
   private static void generateRequest(Module module, Prototype prototype)
   {
     boolean doInBody = false;
@@ -289,7 +297,7 @@ public class PopHTTPSwaggerFull extends Generator
     else
       generateInOther(module, prototype, path);
   }
-  
+
   private static void generateInOther(Module module, Prototype prototype, String path)
   {
     boolean usePath = path.indexOf('{') > 0;

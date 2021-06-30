@@ -14,7 +14,6 @@ package vlab.crackle;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,6 +22,9 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -201,54 +203,49 @@ public class PopHTTPOpenApi2 extends Generator
       String table = structure.header.substring(1);
       if (table.endsWith(".h\""))
         continue;
-     String structName = format(" %s:", structure.name);
-     if (done.containsKey(structName) == true)
+      String structName = format(" %s:", structure.name);
+      if (done.containsKey(structName) == true)
         continue;
       int end = table.indexOf('.');
       table = table.substring(0, end);
-      String yaml3File;
-      yaml3File = format("%s%s/%s.yaml", urlPrefix, compSqlSub, table);
-      done.put(structName, yaml3File);
+      String name = format("%s%s/%s", urlPrefix, compSqlSub, table);
+      String yaml3File = format("%s.yaml3", name);
       try
       {
+        Path path = Paths.get(yaml3File);
+        if (Files.exists(path) == false)
+          yaml3File = format("%s.yaml", name);
+        done.put(structName, yaml3File);
         Reader input = new FileReader(yaml3File);
-        try
+        BufferedReader reader = new BufferedReader(input);
+        String line = null;
+        int state = 0;
+        while ((line = reader.readLine()) != null)
         {
-          BufferedReader reader = new BufferedReader(input);
-          String line = null;
-          int state = 0;
-          while ((line = reader.readLine()) != null)
+          switch (state)
           {
-            switch (state)
+          case 0:
+            if (line.contains(structName) == true)
             {
-            case 0:
-              if (line.contains(structName) == true)
-              {
-                state = 1;
-                writeln(line);
-              }
-              break;
-            case 1:
-              if (line.charAt(4) != ' ')
-                state = 2;
-              else
-                writeln(line);
-              break;
+              state = 1;
+              writeln(line);
             }
-            if (state == 2)
-              break;
+            break;
+          case 1:
+            if (line.charAt(4) != ' ')
+              state = 2;
+            else
+              writeln(line);
+            break;
           }
-          reader.close();
-          input.close();
-        } 
-        catch (IOException e)
-        {
-          outLog.println(format("%s - IOException", yaml3File));
+          if (state == 2)
+            break;
         }
-      } 
-      catch (FileNotFoundException e)
+        reader.close();
+        input.close();
+      } catch (IOException e)
       {
-        outLog.println(format("%s %s - FileNotFound", yaml3File, structure.name));
+        outLog.println(format("%s - IOException", yaml3File));
       }
     }
   }

@@ -94,6 +94,16 @@ public class PopHTTPServerFull extends Generator
       indent_size = 4;
       try
       {
+        boolean hasSlackHandler = false;
+        for (int i = 0; i < module.prototypes.size(); i++)
+        {
+          Prototype prototype = (Prototype) module.prototypes.elementAt(i);
+          if (prototype.name.equals("SlackTimeHandler") == true)
+          {
+              hasSlackHandler = true;
+              break;
+          }
+        }
         String modName = module.name;
         String lowName = module.name.toLowerCase();
         writeln(
@@ -127,13 +137,29 @@ public class PopHTTPServerFull extends Generator
         writeln(1, format("%sServer->ServiceClient(function, input, output);", lowName));
         writeln("}");
         writeln("");
+        if (hasSlackHandler == true)
+        {
+          writeln(format("void SlackHandler(void* handler)"));
+          writeln("{");
+          writeln(1, format("t%1$s* serv = (t%1$s*)handler;", modName));
+          writeln(1, "serv->SlackTimeHandler();");
+          writeln("}");
+          writeln("");
+        }
         writeln("int ServiceStart(tLogFile &logFile)");
         writeln("{");
         writeln(1, "HTTPServer &server = *httpServer;");
         writeln(1, "tDBConnect connect;");
         writeln(1, "connect.Logon(server.binFileName, server.connectString);");
+        writeln(1, "if (server.dbTimeout > 0)");
+        writeln(2, "connect.SetTimeout(server.dbTimeout);");
         writeln(1, format("t%s %s(connect, logFile);", modName, lowName));
-        writeln(1, format("%s.StartUpCode();", lowName));
+        writeln(1, format("%s.StartUpCode(&server);", lowName));
+        if (hasSlackHandler == true)
+        {
+          writeln(1, "if (server.SlackTimeHandler != 0)");
+          writeln(2, format("server.handler = &%s;", lowName));
+        }
         writeln(1, format("%1$sServer = new t%2$sServer_http(%1$s);", lowName, modName));
         writeln(1, "server.WaitForCall(logFile);");
         if (hasShutDownCode(module) == true)
@@ -569,13 +595,34 @@ public class PopHTTPServerFull extends Generator
         }
         if (field.type.reference == Type.BYPTR)
         {
+          Operation op = output.sizeOperation();
+          if (op == null)
+          {
+            if (field.type.typeof == Type.USERTYPE)
+            {
+              makeValueRec(field.name, 1);
+              writeln(1, "output_value[\"" + field.name + "\"] = " + field.name + "_out;");
+            } else
+            {
+            writeln(1, "output_value[\"" + field.name + "\"] = " + field.name + ";");
+            }
+            continue;
+          }
           if (field.type.typeof == Type.USERTYPE)
           {
-            makeValueRec(field.name, 1);
-            writeln(1, "output_value[\"" + field.name + "\"] = " + field.name + "_out;");
+            writeln(1, format("Value %s_outarray;", field.name));
+            writeln(1, format("for (int o%2$d=0; o%2$d < %1$s; o%2$d++)", op.name, i));
+            writeln(1, "{");
+            writeln(2, format("%s &rec = %s.arr[o%d];", name_of(module, field.type.name), field.name, i));
+            makeValueRec("rec", 2);
+            writeln(2, format("%s_outarray[o%d] = rec_out;", field.name, i));
+            writeln(1, "}");            writeln(1, format("output_value[\"%1$s\"] = %1$s_outarray;", field.name));
+          } else if (field.type.typeof == Type.CHAR)
+          {
+            writeln(1, "output_value[\"" + field.name + "\"] = " + field.name + ".arr;");
           } else
           {
-            writeln(1, "output_value[\"" + field.name + "\"] = " + field.name + ";");
+            writeln(1, "// " + field.name + " as simple array;");
           }
           continue;
         }
@@ -615,35 +662,44 @@ public class PopHTTPServerFull extends Generator
       no++;
     }
   }
-  
+  private static String inout(Field field)
+  {
+    if (field.isOutput)
+      return "&"+field.name;
+    return field.name;
+  }
   private static void genSplitsSet(Vector<Argument> input_args, Field field, int no)
   {
-    input_args.addElement(new Argument(field, field.name));
     switch (field.type.typeof)// == Type.CHAR)
     {
     case Type.CHAR:
     case Type.STRING:
       writeln(1, format("char %s[256];", field.name));
       writeln(1, format("in_data.toch(%s, 256, %d);", field.name, no));
+      input_args.addElement(new Argument(field, field.name));
       break;
     case Type.BYTE:
     case Type.BOOLEAN:
     case Type.SHORT:
       writeln(1, format("int16 %s;", field.name));
       writeln(1, format("in_data.tos(&%s, %d);", field.name, no));
+      input_args.addElement(new Argument(field, inout(field)));
       break;
     case Type.INT:
       writeln(1, format("int32 %s;", field.name));
       writeln(1, format("in_data.toi(&%s, %d);", field.name, no));
+      input_args.addElement(new Argument(field, inout(field)));
       break;
     case Type.LONG:
       writeln(1, format("int64 %s;", field.name));
       writeln(1, format("in_data.tol(&%s, %d);", field.name, no));
+      input_args.addElement(new Argument(field, inout(field)));
       break;
     case Type.FLOAT:
     case Type.DOUBLE:
       writeln(1, format("double %s;", field.name));
       writeln(1, format("in_data.tof(&%s, %d);", field.name, no));
+      input_args.addElement(new Argument(field, inout(field)));
       break;
     }
   }

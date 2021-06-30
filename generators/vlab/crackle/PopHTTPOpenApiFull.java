@@ -13,8 +13,8 @@
 package vlab.crackle;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -180,7 +180,22 @@ public class PopHTTPOpenApiFull extends Generator
   }
 
   private static Map<String, String> done = new HashMap<String, String>();
-  private static void generateComponents(Module module)
+
+  private static boolean fileExists(String fileName)
+  {
+    try
+    {
+      File f = new File(fileName);
+      return f.exists();
+    }
+    catch (Exception e)
+    {
+      outLog.println(format("%s - Exception", fileName));
+      return false;
+    }
+  }
+
+private static void generateComponents(Module module)
   {
     writeln("components:");
     writeln(1, "schemas:");
@@ -206,54 +221,49 @@ public class PopHTTPOpenApiFull extends Generator
         continue;
       int end = table.indexOf('.');
       table = table.substring(0, end);
-      String yaml3File;
-      yaml3File = format("%s%s/%s.yaml", urlPrefix, compSqlSub, table);
-      done.put(structName, table);
+      String name = format("%s%s/%s", urlPrefix, compSqlSub, table);
+      String yaml3File = format("%s.yaml3", name);
       try
       {
+        if (fileExists(yaml3File) == false)
+          yaml3File = format("%s.yaml", name);
+        done.put(structName, table);
         Reader input = new FileReader(yaml3File);
-        try
+        BufferedReader reader = new BufferedReader(input);
+        String line = null;
+        int state = 0;
+        while ((line = reader.readLine()) != null)
         {
-          BufferedReader reader = new BufferedReader(input);
-          String line = null;
-          int state = 0;
-          while ((line = reader.readLine()) != null)
+          switch (state)
           {
-            switch (state)
+          case 0:
+            if (line.contains(structName) == true)
             {
-            case 0:
-              if (line.contains(structName) == true)
-              {
-                state = 1;
-                writeln(line);
-              }
-              break;
-            case 1:
-              if (line.compareTo("...") == 0 || line.charAt(4) != ' ')
-                state = 2;
-              else
-                writeln(line);
-              break;
+              state = 1;
+              writeln(line);
             }
-            if (state == 2)
-              break;
+            break;
+          case 1:
+            if (line.compareTo("...") == 0 || line.charAt(4) != ' ')
+              state = 2;
+            else
+              writeln(line);
+            break;
           }
-          reader.close();
-          input.close();
-        } 
-        catch (IOException e)
-        {
-          outLog.println(format("%s - IOException", yaml3File));
+          if (state == 2)
+            break;
         }
-      } 
-      catch (FileNotFoundException e)
+        reader.close();
+        input.close();
+      } catch (IOException e)
       {
-        outLog.println(format("%s %s - FileNotFound", yaml3File, structure.name));
+        outLog.println(format("%s - IOException", yaml3File));
       }
     }
   }
 
   private static String lastPath = "";
+
   // allows post put patch options head trace - disallows get delete
   private static void generateRequest(Module module, Prototype prototype)
   {
@@ -263,7 +273,7 @@ public class PopHTTPOpenApiFull extends Generator
     String operation = openApi.getType();
     String tags = openApi.tags == null ? path : openApi.tags;
     if (lastPath.compareTo(path) != 0)
-    {  
+    {
       lastPath = path;
       writeln(1, format("/%s:", path));
     }
@@ -277,7 +287,7 @@ public class PopHTTPOpenApiFull extends Generator
     else
       generateIn(module, prototype, path);
   }
-  
+
   private static void generateRequestBody(Module module, Prototype prototype)
   {
     if (prototype.inputs.size() > 0)
@@ -330,7 +340,7 @@ public class PopHTTPOpenApiFull extends Generator
     }
   }
 
-  // allows any /{x} - query /x - path 
+  // allows any /{x} - query /x - path
   private static void generateIn(Module module, Prototype prototype, String path)
   {
     boolean usePath = path.indexOf('{') > 0;

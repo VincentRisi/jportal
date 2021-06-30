@@ -13,12 +13,15 @@
 package vlab.crackle;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -194,7 +197,7 @@ private static void GetOpenApiPragmas(Module module)
     }
   }
 
-  private static void generateDefinitions(Module module)
+  private static void generateDefinitions(Module module) throws IOException
   {
     Map<String, String> done = new HashMap<String, String>();
     writeln("definitions:");
@@ -213,7 +216,12 @@ private static void GetOpenApiPragmas(Module module)
           continue;
         int end = table.indexOf('.');
         table = table.substring(0, end);
-        ref = format("%s%s/%s.yaml", urlPrefix, defSqlSub, table);
+        String name = format("%s%s/%s", urlPrefix, defSqlSub, table);
+        Path path = Files.createTempFile(name, "yaml2");
+        if (Files.exists(path) == true)
+          ref = format("%s%s/%s.yaml2", urlPrefix, defSqlSub, table);
+        else
+           ref = format("%s%s/%s.yaml", urlPrefix, defSqlSub, table);
       }
       if (done.containsKey(structure.name) == false)
       {

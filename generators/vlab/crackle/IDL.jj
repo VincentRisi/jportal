@@ -31,6 +31,7 @@ public class IDL
   protected static Action     action;
   protected static Vector<Integer>     messageNos;
   static private   IDL parser;
+  private static   PrintWriter idlLog;
   /**
   * Reads input from standard input
   */
@@ -74,6 +75,7 @@ public class IDL
   }
   public static Module run(String inFile, Reader reader, PrintWriter outLog)
   {
+    idlLog = outLog;
     try
     {
       parser = new IDL(reader);

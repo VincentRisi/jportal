@@ -14,7 +14,6 @@ package vlab.crackle;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,6 +22,9 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -76,8 +78,7 @@ public class PopHTTPSwagger2 extends Generator
       InputStream input = new FileInputStream(propertiesName);
       properties = new Properties();
       properties.load(input);
-    } 
-    catch (Exception ex)
+    } catch (Exception ex)
     {
       properties = null;
     }
@@ -216,49 +217,44 @@ public class PopHTTPSwagger2 extends Generator
         continue;
       int end = table.indexOf('.');
       table = table.substring(0, end);
-      String yaml2File;
-      yaml2File = format("%s%s/%s.yaml", urlPrefix, defSqlSub, table);
-      done.put(structName, yaml2File);
+      String name = format("%s%s/%s", urlPrefix, defSqlSub, table);
+      String yaml2File = format("%s.yaml2", name);
       try
       {
+        Path path = Paths.get(yaml2File);
+        if (Files.exists(path) == false)
+          yaml2File = format("%s.yaml", name);
+        done.put(structName, yaml2File);
         Reader input = new FileReader(yaml2File);
-        try
+        BufferedReader reader = new BufferedReader(input);
+        String line = null;
+        int state = 0;
+        while ((line = reader.readLine()) != null)
         {
-          BufferedReader reader = new BufferedReader(input);
-          String line = null;
-          int state = 0;
-          while ((line = reader.readLine()) != null)
+          switch (state)
           {
-            switch (state)
+          case 0:
+            if (line.contains(structName) == true)
             {
-            case 0:
-              if (line.contains(structName) == true)
-              {
-                state = 1;
-                writeln(line);
-              }
-              break;
-            case 1:
-              if (line.charAt(2) != ' ')
-                state = 2;
-              else
-                writeln(line);
-              break;
+              state = 1;
+              writeln(line);
             }
-            if (state == 2)
-              break;
+            break;
+          case 1:
+            if (line.charAt(2) != ' ')
+              state = 2;
+            else
+              writeln(line);
+            break;
           }
-          reader.close();
-          input.close();
-        } 
-        catch (IOException e)
-        {
-          outLog.println(format("%s - IOException", yaml2File));
+          if (state == 2)
+            break;
         }
-      } 
-      catch (FileNotFoundException e)
+        reader.close();
+        input.close();
+      } catch (IOException e)
       {
-        outLog.println(format("%s %s - FileNotFound", yaml2File, structure.name));
+        outLog.println(format("%s - IOException", yaml2File));
       }
     }
   }

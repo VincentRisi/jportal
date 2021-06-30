@@ -13,12 +13,15 @@
 package vlab.crackle;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -185,7 +188,7 @@ public class PopHTTPOpenApi extends Generator
     }
   }
 
-  private static void generateComponents(Module module)
+  private static void generateComponents(Module module) throws IOException
   {
     Map<String, String> done = new HashMap<String, String>();
     writeln("components:");
@@ -205,7 +208,12 @@ public class PopHTTPOpenApi extends Generator
           continue;
         int end = table.indexOf('.');
         table = table.substring(0, end);
-        ref = format("%s%s/%s.yaml", urlPrefix, compSqlSub, table);
+        String name = format("%s%s/%s", urlPrefix, compSqlSub, table);
+        Path path = Files.createTempFile(name, "yaml3");
+        if (Files.exists(path) == true)
+          ref = format("%s%s/%s.yaml3", urlPrefix, compSqlSub, table);
+        else
+           ref = format("%s%s/%s.yaml", urlPrefix, compSqlSub, table);
       }
       if (done.containsKey(structure.name) == false)
       {
